@@ -1,6 +1,5 @@
 import * as React from 'react'
 import './App.css'
-import { Card, CardBody } from '@chakra-ui/react'
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 
 function App(): JSX.Element {
@@ -8,7 +7,7 @@ function App(): JSX.Element {
 
   return (
     <>
-      <div>
+      <div >
         <h1>Dedi Web</h1>
         <Tabs>
           <TabList>
