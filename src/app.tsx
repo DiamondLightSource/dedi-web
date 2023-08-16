@@ -1,14 +1,13 @@
-import './app.css'
-import Nav from './navbar'
-import { Box } from '@chakra-ui/react'
+import "./app.css";
 
 function App(): JSX.Element {
-
   return (
-    <Box>
-      <Nav />
-    </Box>
-  )
+    <>
+      <div>
+        <p className="read-the-docs">hello world</p>
+      </div>
+    </>
+  );
 }
 
-export default App
+export default App;
