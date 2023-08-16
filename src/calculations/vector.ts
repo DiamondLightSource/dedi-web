@@ -20,4 +20,8 @@ export default class Vector2D {
     length(): number {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
+
+    equals(other: Vector2D): boolean {
+        return this.x === other.x && this.y === other.y
+    }
 }
