@@ -12,7 +12,7 @@ export default function SideMenu() {
         <Box>
             <List>
                 <ListItem>
-                    <Typography>Hello there</Typography>
+                    <Typography>Maybe settings here</Typography>
                 </ListItem>
             </List>
             <Divider />
