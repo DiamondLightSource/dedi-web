@@ -1,4 +1,4 @@
-import { CircularDevice } from "../devices/circularDevice";
+import { CircularDevice } from "./circularDevice";
 import { Detector } from "../utils/types";
 
 export interface BeamlineConfig {

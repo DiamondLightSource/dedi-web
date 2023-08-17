@@ -1,37 +1,22 @@
-import "./app.css";
-import { Box, Flex, HStack, VStack } from "@chakra-ui/react";
+import { Box, Stack, } from "@mui/material";
+import DataSideBar from "./components/dataSideBar";
 
-function App(): JSX.Element {
+
+export default function App(): JSX.Element {
+
   return (
-    <Box>
-      <VStack>
-        <Box>App bar</Box>
-        <Flex>
-          <HStack>
-            <Box h="100%" bg={"red"}>
-              Side bar
-            </Box>
-            <Flex>
-              <VStack>
-                <Flex>
-                  <HStack>
-                    <Flex flexGrow={2} bg={"yellow"}>
-                      Plot
-                    </Flex>
-                    <Box flexGrow={1}>plot legend</Box>
-                  </HStack>
-                </Flex>
-                <Box bg={"green"} w={"100%"}>
-                  {" "}
-                  Results bar
-                </Box>
-              </VStack>
-            </Flex>
-          </HStack>
-        </Flex>
-      </VStack>
+    <Box sx={{ width: 1, height: 1 }}>
+      <Stack direction={'row'}>
+        <DataSideBar />
+        <Stack direction={'column'} flexGrow={1}>
+          <Stack direction={'row'} flexGrow={1}>
+            <DataSideBar />
+            <DataSideBar />
+          </Stack>
+          <DataSideBar />
+        </Stack>
+      </Stack>
     </Box>
+
   );
 }
-
-export default App;
