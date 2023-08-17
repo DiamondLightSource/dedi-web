@@ -11,8 +11,8 @@ export default function App(): JSX.Element {
     <Box sx={{ width: 1, height: 1 }}>
       <Stack direction={'row'}>
         <DataSideBar />
-        <Stack direction={'column'} flexGrow={1}>
-          <Stack direction={'row'} flexGrow={1}>
+        <Stack direction={'column'} flexGrow={2}>
+          <Stack direction={'row'} flexGrow={2}>
             <CentrePlot />
             <LegendBar />
           </Stack>
