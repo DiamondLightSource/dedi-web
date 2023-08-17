@@ -24,4 +24,8 @@ export default class Vector2D {
     equals(other: Vector2D): boolean {
         return this.x === other.x && this.y === other.y
     }
+
+    toString(): string {
+        return `(x:${this.x}, y:${this.y})`
+    }
 }
