@@ -25,10 +25,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install
-        run: npm ci
+        run: npm install
 
       - name: Unit Tests
         run: npm run test
+
+      - name: lint
+        run: npm run lint 
 
       - name: Prettier
         run: npx prettier --check './src/'
