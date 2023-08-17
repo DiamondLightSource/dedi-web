@@ -13,6 +13,8 @@ Start up
   npm run dev
 ```
 
+## Start in container
+
 Start up in a container
 
 ```bash

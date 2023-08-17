@@ -21,7 +21,7 @@ export default class NumericRange {
   }
 
   toString(): string {
-    return `min:${this.min}, max:${this.max}`;
+    return `(min:${this.min}, max:${this.max})`;
   }
 
   intersect(other: NumericRange): NumericRange | null {
@@ -29,7 +29,11 @@ export default class NumericRange {
 
     return new NumericRange(
       Math.max(other.min, this.min),
-      Math.min(other.max, this.min),
+      Math.min(other.max, this.max),
     );
+  }
+
+  equals(other: NumericRange): boolean {
+    return this.min === other.min && this.max === other.max;
   }
 }
