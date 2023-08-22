@@ -1,13 +1,42 @@
-import { Box, Card, CardContent, Stack, Typography, } from "@mui/material";
+import { Box, Card, CardContent } from "@mui/material";
+import { VisCanvas, Pan, Zoom } from '@h5web/lib';
 
 export default function CentrePlot(): JSX.Element {
     return (
-        <Box sx={{ flexGrow: 2 }} >
-            <Card sx={{ height: 1 }}>
+        <Box>
+            <Card>
                 <CardContent>
-                    <Stack spacing={2}>
-                        <Typography variant="h4"> Plot at the centre </Typography>
-                    </Stack>
+                    <div style={{ display: "grid", height: "60vh", width: "50vw" }}>
+                        <VisCanvas
+                            abscissaConfig={{
+                                isIndexAxis: true,
+                                showGrid: true,
+                                visDomain: [
+                                    50,
+                                    100
+                                ]
+                            }}
+                            aspect={{}}
+                            ordinateConfig={{
+                                isIndexAxis: true,
+                                showGrid: true,
+                                visDomain: [
+                                    50,
+                                    100
+                                ]
+                            }}
+                            showAxes={true}
+                        >
+                            <Pan
+                                button={[
+                                    0
+                                ]}
+                                modifierKey={[]}
+                            />
+                            <Zoom />
+                            {/*<f />*/}
+                        </VisCanvas>
+                    </div>
                 </CardContent>
             </Card>
         </Box >)
