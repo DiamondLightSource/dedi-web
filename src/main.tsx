@@ -7,7 +7,7 @@ import { Box } from "@mui/material";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Box sx={{ Height: '100vh' }} >
+    <Box >
       <BasicAppBar />
       <App />
     </Box>
