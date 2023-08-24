@@ -1,32 +1,26 @@
 import { Vector2 } from "three";
 
-export enum BeamlineConfig {
-  SaxAnIso = "I22 SAXS Anisotropic",
-  SaxIso = "I22 SAXS Isotripic",
-  GiSaxs = "I22 GiSAXS",
-  Wax = "I22 WAXS",
-  GiWaxs = "I22 GiWAXS",
-}
-
-export enum DetectorType {
-  pilatusP32M = "Pilatus P3-2M",
-  pilatus6m = "Pilatus6m",
-  // Add more types
-  // It could be an enum may not be right for this data
-}
-
 export interface Detector {
-  detectorType: DetectorType;
+  name: string;
   resolution: { height: number; width: number };
   pixel_size: { height: number; width: number };
 }
 
-export interface Beamstop {
+export interface CircularDevice {
+  centre: Vector2;
   diameter: number;
-  position: Vector2;
 }
 
-export interface CameraTube {
-  diameter: number;
-  position: Vector2;
+export interface BeamlineConfig {
+  name: string | null
+  detector: Detector;
+  Beamstop: CircularDevice;
+  CameraTube: CircularDevice;
+  angle: number;
+  cameraLength: number;
+  clearance: number; // remember to do int checks on this value
+  minWavelength: number;
+  maxWavelength: number;
+  minCameraLength: number;
+  maxCameraLength: number;
 }

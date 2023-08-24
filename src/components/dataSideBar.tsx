@@ -15,7 +15,7 @@ import {
   ButtonGroup,
   Input,
 } from "@mui/material";
-import { BeamlineConfig, DetectorType } from "../utils/types";
+import { Detector, BeamlineConfig } from "../utils/types";
 import React from "react";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
