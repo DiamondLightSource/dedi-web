@@ -8,6 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Drawer } from "@mui/material";
 import SideMenu from "./sideMenu";
 
+
 export default function BasicAppBar(): JSX.Element {
   const [state, setState] = React.useState({ menuOpen: false });
   const toggleDrawer = (open: boolean) => () => {

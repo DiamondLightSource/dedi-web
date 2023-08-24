@@ -19,26 +19,8 @@ import { BeamlineConfig, DetectorType } from "../utils/types";
 import React from "react";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import { DistanceUnits, EnergyUnits, WavelengthUnits, AngleUnits } from "../utils/units";
 
-enum DistanceUnits {
-  millimetre = "millimetre",
-  micrometre = "micrometre",
-}
-
-enum EnergyUnits {
-  electronVolts = "electronVolts",
-  kiloElectronVolts = "kiloElectronVolts",
-}
-
-enum WavelengthUnits {
-  nanmometres = "nanometeres",
-  angstroms = "angstroms",
-}
-
-enum AngleUnits {
-  radians = "radians",
-  degrees = "degrees",
-}
 
 export default function DataSideBar(): JSX.Element {
   const [cameraDiameterUnits, setCameraDiameterUnits] =
@@ -104,7 +86,7 @@ export default function DataSideBar(): JSX.Element {
   };
 
   return (
-    <Card sx={{ height: 1 }}>
+    <Card sx={{ height: 1 }} >
       <CardContent>
         <Stack spacing={1}>
           <Typography variant="h6">Configuration</Typography>
@@ -112,6 +94,7 @@ export default function DataSideBar(): JSX.Element {
           <Typography> Predefined Configuration Templates</Typography>
           <Stack direction={"row"}>
             <Autocomplete
+              size="small"
               disablePortal
               id="combo-box-demo"
               options={Object.values(BeamlineConfig)}
@@ -124,6 +107,7 @@ export default function DataSideBar(): JSX.Element {
           <Divider />
           <Typography variant="h6">Detector</Typography>
           <Autocomplete
+            size="small"
             disablePortal
             id="combo-box-demo"
             options={Object.values(DetectorType)}
@@ -138,13 +122,14 @@ export default function DataSideBar(): JSX.Element {
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
+                size="small"
                 value={pixelSizeUnits}
                 label="units"
                 onChange={handlePixelSizeUnits}
               >
-                <MenuItem value={DistanceUnits.millimetre}>mm x mm</MenuItem>
+                <MenuItem value={DistanceUnits.millimetre}>{DistanceUnits.millimetre}x{DistanceUnits.millimetre}</MenuItem>
                 <MenuItem value={DistanceUnits.micrometre}>
-                  {"\u03bcm x \u03bcm"}
+                  {DistanceUnits.micrometre}x{DistanceUnits.micrometre}
                 </MenuItem>
               </Select>
             </FormControl>
@@ -157,31 +142,30 @@ export default function DataSideBar(): JSX.Element {
               <FormControl>
                 <InputLabel>units</InputLabel>
                 <Select
+                  size="small"
                   value={beamstopDiameterUnits}
                   label="units"
                   onChange={handleBeamstopDiameterUnits}
                 >
-                  <MenuItem value={DistanceUnits.millimetre}>mm</MenuItem>
+                  <MenuItem value={DistanceUnits.millimetre}>{DistanceUnits.millimetre}</MenuItem>
                   <MenuItem value={DistanceUnits.micrometre}>
-                    {"\u03bcm"}
+                    {DistanceUnits.micrometre}
                   </MenuItem>
                 </Select>
               </FormControl>
             </Stack>
           </Stack>
           <Divider />
-          <Stack>
-            <Typography variant="h6">Position</Typography>
-            <Stack direction={"row"}>
-              <Typography flexGrow={2}>x:</Typography>
-              <Typography flexGrow={2}>px</Typography>
-            </Stack>
-            <Stack direction={"row"}>
-              <Typography flexGrow={2}>y:</Typography>
-              <Typography flexGrow={2}>px</Typography>
-            </Stack>
-            <Button>Centre detector</Button>
-            <Button>Centre top edge</Button>
+          <Typography variant="h6">Position</Typography>
+          <Stack direction={"row"}>
+            <Typography flexGrow={2}>x:</Typography>
+            <Typography flexGrow={2}>px</Typography>
+            <Button size="small">Centre detector</Button>
+          </Stack>
+          <Stack direction={"row"}>
+            <Typography flexGrow={2}>y:</Typography>
+            <Typography flexGrow={2}>px</Typography>
+            <Button size="small">Centre top edge</Button>
           </Stack>
           <Divider />
           <Typography variant="h6">Clearance</Typography>
@@ -190,13 +174,14 @@ export default function DataSideBar(): JSX.Element {
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
+                size="small"
                 value={clearanceDiameterUnits}
                 label="units"
                 onChange={handleClearanceDiameterUnits}
               >
-                <MenuItem value={DistanceUnits.millimetre}>mm</MenuItem>
+                <MenuItem value={DistanceUnits.millimetre}>{DistanceUnits.millimetre}</MenuItem>
                 <MenuItem value={DistanceUnits.micrometre}>
-                  {"\u03bcm"}
+                  {DistanceUnits.micrometre}
                 </MenuItem>
               </Select>
             </FormControl>
@@ -208,13 +193,13 @@ export default function DataSideBar(): JSX.Element {
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
+                size="small"
                 value={cameraDiameterUnits}
                 label="units"
                 onChange={handleCameraDiameterUnits}
               >
-                <MenuItem value={DistanceUnits.millimetre}>mm</MenuItem>
-                <MenuItem value={DistanceUnits.micrometre}>
-                  {"\u03bcm"}
+                <MenuItem value={DistanceUnits.millimetre}>{DistanceUnits.millimetre}</MenuItem>
+                <MenuItem value={DistanceUnits.micrometre}>{DistanceUnits.micrometre}
                 </MenuItem>
               </Select>
             </FormControl>
@@ -235,12 +220,13 @@ export default function DataSideBar(): JSX.Element {
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
+                size="small"
                 value={beamEnergyUnits}
                 label="units"
                 onChange={handleBeamEnergyUnits}
               >
-                <MenuItem value={EnergyUnits.electronVolts}>eV</MenuItem>
-                <MenuItem value={EnergyUnits.kiloElectronVolts}>keV</MenuItem>
+                <MenuItem value={EnergyUnits.electronVolts}>{EnergyUnits.electronVolts}</MenuItem>
+                <MenuItem value={EnergyUnits.kiloElectronVolts}>{EnergyUnits.kiloElectronVolts}</MenuItem>
               </Select>
             </FormControl>
           </Stack>
@@ -249,13 +235,13 @@ export default function DataSideBar(): JSX.Element {
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
+                size="small"
                 value={wavelengthUnits}
                 label="units"
                 onChange={handleWavelengthUnits}
               >
-                <MenuItem value={WavelengthUnits.nanmometres}>nm</MenuItem>
-                <MenuItem value={WavelengthUnits.angstroms}>
-                  {"\u212B"}
+                <MenuItem value={WavelengthUnits.nanmometres}>{WavelengthUnits.nanmometres}</MenuItem>
+                <MenuItem value={WavelengthUnits.angstroms}>{WavelengthUnits.angstroms}
                 </MenuItem>
               </Select>
             </FormControl>
@@ -272,6 +258,7 @@ export default function DataSideBar(): JSX.Element {
                 value={cameraLength}
               />
               <Button
+                size="small"
                 onClick={() =>
                   setCameraLength(Math.round((cameraLength - 2.5) * 100) / 100)
                 }
@@ -279,6 +266,7 @@ export default function DataSideBar(): JSX.Element {
                 <RemoveIcon fontSize="small" />
               </Button>
               <Button
+                size="small"
                 onClick={() =>
                   setCameraLength(Math.round((cameraLength + 2.5) * 100) / 100)
                 }
@@ -295,17 +283,18 @@ export default function DataSideBar(): JSX.Element {
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
+                size="small"
                 value={angleUnits}
                 label="units"
                 onChange={handleAngleUnits}
               >
-                <MenuItem value={AngleUnits.radians}>rad</MenuItem>
-                <MenuItem value={AngleUnits.degrees}>deg</MenuItem>
+                <MenuItem value={AngleUnits.radians}>{AngleUnits.radians}</MenuItem>
+                <MenuItem value={AngleUnits.degrees}>{AngleUnits.degrees}</MenuItem>
               </Select>
             </FormControl>
           </Stack>
         </Stack>
       </CardContent>
-    </Card>
+    </Card >
   );
 }

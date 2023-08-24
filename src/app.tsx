@@ -8,7 +8,7 @@ export default function App(): JSX.Element {
   return (
     <Box margin={1}>
       <Stack direction={"row"} spacing={1}>
-        <Box maxWidth={"40vw"} maxHeight={"92vh"}>
+        <Box >
           <DataSideBar />
         </Box>
         <Stack direction={"column"} spacing={1} flexGrow={1}>
@@ -20,7 +20,7 @@ export default function App(): JSX.Element {
           </Stack>
           <ResultsBar />
         </Stack>
-      </Stack>
-    </Box>
+      </Stack >
+    </Box >
   );
 }

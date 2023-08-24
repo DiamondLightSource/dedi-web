@@ -1,4 +1,4 @@
-import Vector2D from "../calculations/vector";
+import { Vector2 } from "three";
 
 export enum BeamlineConfig {
   SaxAnIso = "I22 SAXS Anisotropic",
@@ -23,10 +23,10 @@ export interface Detector {
 
 export interface Beamstop {
   diameter: number;
-  position: Vector2D;
+  position: Vector2;
 }
 
 export interface CameraTube {
   diameter: number;
-  position: Vector2D;
+  position: Vector2;
 }
