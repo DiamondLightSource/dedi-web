@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
-import { Button, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 export default function SideMenu() {
   return (
@@ -10,8 +10,7 @@ export default function SideMenu() {
       <List>
         <ListItem>
           <Stack direction="row">
-            <Typography flexGrow={3}>Reset to default</Typography>
-            <Button>Reset</Button>
+            <Typography flexGrow={3}>Settings</Typography>
           </Stack>
         </ListItem>
       </List>

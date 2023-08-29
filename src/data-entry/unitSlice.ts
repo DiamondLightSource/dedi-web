@@ -8,13 +8,15 @@ import {
   WavelengthUnits,
 } from "../utils/units";
 
+// Note the app will do all calculations with these units in mind and then use
+// redux selectors to display in units of your choice
 const defaultUnits: UnitConfig = {
   cameraDiameterUnits: DistanceUnits.millimetre,
-  clearanceDiameterUnits: DistanceUnits.micrometre,
-  beamEnergyUnits: EnergyUnits.electronVolts,
+  clearanceDiameterUnits: DistanceUnits.millimetre,
+  beamEnergyUnits: EnergyUnits.kiloElectronVolts,
   pixelSizeUnits: DistanceUnits.millimetre,
   angleUnits: AngleUnits.radians,
-  wavelengthUnits: WavelengthUnits.angstroms,
+  wavelengthUnits: WavelengthUnits.nanmometres,
   beamstopDiameterUnits: DistanceUnits.millimetre,
 };
 

@@ -24,20 +24,34 @@ import {
   AngleUnits,
 } from "../utils/units";
 import { useDispatch, useSelector } from "react-redux";
-import { configSelector, editConfig } from "./configSlice";
+import {
+  configSelector,
+  editConfig,
+  pixelSizeSelector,
+  clearanceSelector,
+  beamstopSelector,
+  cameraTubeSelector,
+  angleSelector,
+  wavelengthSelector,
+  energySelector,
+} from "./configSlice";
 import { editUnits, unitSelector } from "./unitSlice";
-import detectorData from "../presets/detectors.json";
-import presetData from "../presets/presetConfigs.json";
-import { BeamlineConfig, Detector } from "../utils/types";
-import { useState } from "react";
-
-
-const detectorList = detectorData as Record<string, Detector>;
-const presetList = presetData as Record<string, BeamlineConfig>;
+import { presetList, detectorList } from "../presets/presetManager";
+import { ChangeEvent, useState } from "react";
 
 export default function DataSideBar(): JSX.Element {
   const config = useSelector(configSelector);
   const units = useSelector(unitSelector);
+
+  // Selectors with unit conversion logic
+  const pixelSize = useSelector(pixelSizeSelector);
+  const clearance = useSelector(clearanceSelector);
+  const beamstopDiameter = useSelector(beamstopSelector);
+  const cameraTubeDiameter = useSelector(cameraTubeSelector);
+  const angle = useSelector(angleSelector);
+  const energy = useSelector(energySelector);
+  const wavelength = useSelector(wavelengthSelector);
+
   const dispatch = useDispatch();
   const [preset, setPreset] = useState<string | null>("test");
 
@@ -48,6 +62,45 @@ export default function DataSideBar(): JSX.Element {
 
   const handleDetectorChange = (detector: string): void => {
     dispatch(editConfig({ detector: detector }));
+  };
+
+  // Add loads of error hnadling here
+  const handleEnergyChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.value) {
+      dispatch(editConfig({ energy: null }));
+      return;
+    }
+    if (units.beamEnergyUnits === EnergyUnits.electronVolts) {
+      dispatch(editConfig({ energy: parseFloat(event.target.value) / 1000 }));
+    } else {
+      dispatch(editConfig({ energy: parseFloat(event.target.value) }));
+    }
+  };
+
+  const handleAngleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.value) {
+      dispatch(editConfig({ angle: null }));
+      return;
+    }
+    if (units.angleUnits === AngleUnits.degrees) {
+      dispatch(
+        editConfig({ angle: parseFloat(event.target.value) / (180 / Math.PI) }),
+      );
+    } else {
+      dispatch(editConfig({ angle: parseFloat(event.target.value) }));
+    }
+  };
+
+  const handleWavelengthChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.value) {
+      dispatch(editConfig({ wavelength: null }));
+      return;
+    }
+    if (units.wavelengthUnits === WavelengthUnits.angstroms) {
+      dispatch(editConfig({ wavelength: parseFloat(event.target.value) / 10 }));
+    } else {
+      dispatch(editConfig({ wavelength: parseFloat(event.target.value) }));
+    }
   };
 
   return (
@@ -95,8 +148,7 @@ export default function DataSideBar(): JSX.Element {
           </Typography>
           <Stack direction="row">
             <Typography flexGrow={2}>
-              Pixel size: {detectorList[config.detector].pixel_size} x{" "}
-              {detectorList[config.detector].pixel_size}{" "}
+              Pixel size: {pixelSize} x {pixelSize}{" "}
             </Typography>
             <FormControl>
               <InputLabel>units</InputLabel>
@@ -125,9 +177,7 @@ export default function DataSideBar(): JSX.Element {
           <Stack>
             <Typography variant="h6">Beamstop</Typography>
             <Stack direction={"row"}>
-              <Typography flexGrow={2}>
-                Diameter: {config.beamstop.diameter}
-              </Typography>
+              <Typography flexGrow={2}>Diameter: {beamstopDiameter}</Typography>
               <FormControl>
                 <InputLabel>units</InputLabel>
                 <Select
@@ -156,21 +206,21 @@ export default function DataSideBar(): JSX.Element {
           <Divider />
           <Typography variant="h6">Position</Typography>
           <Stack direction={"row"}>
-            <Typography flexGrow={2}>
-              x: {config.beamstop.centre.x} px
-            </Typography>
+            <Typography flexGrow={2}>x: </Typography>
+            <Input size="small" value={config.cameraTube.centre.x} />
+            <Typography flexGrow={2}> px</Typography>
             <Button size="small">Centre detector</Button>
           </Stack>
           <Stack direction={"row"}>
-            <Typography flexGrow={2}>
-              y: {config.beamstop.centre.y} px
-            </Typography>
+            <Typography flexGrow={2}>y: </Typography>
+            <Input size="small" value={config.cameraTube.centre.y} />
+            <Typography flexGrow={2}> px</Typography>
             <Button size="small">Centre top edge</Button>
           </Stack>
           <Divider />
           <Typography variant="h6">Clearance</Typography>
           <Stack direction="row">
-            <Typography flexGrow={2}>Diameter: {config.clearance}</Typography>
+            <Typography flexGrow={2}>Diameter: {clearance}</Typography>
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
@@ -198,9 +248,7 @@ export default function DataSideBar(): JSX.Element {
           <Divider />
           <Typography variant="h6">Camera Tube</Typography>
           <Stack direction="row">
-            <Typography flexGrow={2}>
-              Diameter: {config.cameraTube.diameter}
-            </Typography>
+            <Typography flexGrow={2}>Diameter: {cameraTubeDiameter}</Typography>
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
@@ -226,19 +274,20 @@ export default function DataSideBar(): JSX.Element {
           </Stack>
           <Typography variant="h6">Position</Typography>
           <Stack direction={"row"}>
-            <Typography flexGrow={2}>
-              x: {config.cameraTube.centre.x} px
-            </Typography>
+            <Typography flexGrow={2}>x: </Typography>
+            <Input size="small" value={config.cameraTube.centre.x} />
+            <Typography flexGrow={2}> px</Typography>
           </Stack>
           <Stack direction={"row"}>
-            <Typography flexGrow={2}>
-              y: {config.cameraTube.centre.y} px
-            </Typography>
+            <Typography flexGrow={2}>y: </Typography>
+            <Input size="small" value={config.cameraTube.centre.y} />
+            <Typography flexGrow={2}> px</Typography>
           </Stack>
           <Divider />
           <Typography variant="h6">Beam properties</Typography>
           <Stack direction={"row"}>
             <Typography flexGrow={1}>Energy: </Typography>
+            <Input size="small" value={energy} onChange={handleEnergyChange} />
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
@@ -264,6 +313,11 @@ export default function DataSideBar(): JSX.Element {
           </Stack>
           <Stack direction={"row"}>
             <Typography flexGrow={1}>WaveLength</Typography>
+            <Input
+              size="small"
+              value={wavelength}
+              onChange={handleWavelengthChange}
+            />
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
@@ -310,13 +364,7 @@ export default function DataSideBar(): JSX.Element {
           <Divider />
           <Stack direction="row" spacing={2}>
             <Typography flexGrow={2}>Angle:</Typography>
-            <Input
-              size="small"
-              value={config.angle}
-              onChange={(event) =>
-                dispatch(editConfig({ angle: parseFloat(event.target.value) }))
-              }
-            />
+            <Input size="small" value={angle} onChange={handleAngleChange} />
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
