@@ -1,8 +1,16 @@
 {
-    "name": "Pilatus P3-2M",
+  "Pilatus P3-2M": {
     "resolution": {
-        "width": "1475",
-        "height": "1679"
+      "width": 1475,
+      "height": 1679
     },
     "pixel_size": 0.172
+  },
+  "test": {
+    "resolution": {
+      "width": 1,
+      "height": 1
+    },
+    "pixel_size": 1
+  }
 }

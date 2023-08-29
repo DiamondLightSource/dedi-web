@@ -6,5 +6,11 @@ test("Getting a point from a ray", () => {
   const ray1 = new Ray(new Vector2(1, 1), new Vector2(1, 1));
   const vector1 = ray1.getPoint(5);
   const vector2 = new Vector2(6, 6);
-  expect(vector1?.equals(vector2));
+  expect(vector1.equals(vector2));
+});
+
+test("Getting point at distance", () => {
+  const ray1 = new Ray(new Vector2(1, 1), new Vector2(0, 0));
+  const point = ray1.getPointAtDistance(4);
+  console.log(point);
 });

@@ -23,6 +23,8 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
+    "no-throw-literal": "off",
+    "@typescript-eslint/no-throw-literal": "error",
   },
   settings: {
     react: {

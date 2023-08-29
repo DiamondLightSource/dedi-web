@@ -1,14 +1,16 @@
 import { Box, Stack } from "@mui/material";
-import DataSideBar from "./components/dataSideBar";
-import ResultsBar from "./components/resultsBar";
-import CentrePlot from "./components/centrePlot";
-import LegendBar from "./components/legendBar";
+import DataSideBar from "./data-entry/dataSideBar";
+import ResultsBar from "./results/resultsBar";
+import CentrePlot from "./plot/centrePlot";
+import LegendBar from "./legend/legendBar";
+import BasicAppBar from "./basicAppBar";
 
 export default function App(): JSX.Element {
   return (
-    <Box margin={1}>
-      <Stack direction={"row"} spacing={1}>
-        <Box >
+    <Box>
+      <BasicAppBar />
+      <Stack direction={"row"} spacing={1} margin={1}>
+        <Box>
           <DataSideBar />
         </Box>
         <Stack direction={"column"} spacing={1} flexGrow={1}>
@@ -20,7 +22,7 @@ export default function App(): JSX.Element {
           </Stack>
           <ResultsBar />
         </Stack>
-      </Stack >
-    </Box >
+      </Stack>
+    </Box>
   );
 }

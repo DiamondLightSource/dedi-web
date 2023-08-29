@@ -1,1 +1,50 @@
-{}
+{
+    "test": {
+        "detector": "test",
+        "beamstop": {
+            "centre": {
+                "x": 1,
+                "y": 2
+            },
+            "diameter": 1
+        },
+        "cameraTube": {
+            "centre": {
+                "x": 1,
+                "y": 2
+            },
+            "diameter": 1
+        },
+        "angle": 1,
+        "cameraLength": 1,
+        "clearance": 1,
+        "minWavelength": 1,
+        "maxWavelength": 3,
+        "minCameraLength": 2,
+        "maxCameraLength": 4
+    },
+    "second": {
+        "detector": "Pilatus P3-2M",
+        "beamstop": {
+            "centre": {
+                "x": 1,
+                "y": 2
+            },
+            "diameter": 4
+        },
+        "cameraTube": {
+            "centre": {
+                "x": 1,
+                "y": 2
+            },
+            "diameter": 1
+        },
+        "angle": 1,
+        "cameraLength": 1,
+        "clearance": 1,
+        "minWavelength": 1,
+        "maxWavelength": 1,
+        "minCameraLength": 1,
+        "maxCameraLength": 1
+    }
+}

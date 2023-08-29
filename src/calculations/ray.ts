@@ -18,21 +18,18 @@ export class Ray {
    * @param scalar
    * @returns
    */
-  getPoint(scalar: number): Vector2 | null {
-    if (scalar < 0) return null;
+  getPoint(scalar: number): Vector2 {
     const result = new Vector2(this.direction.x, this.direction.y);
     result.multiplyScalar(scalar);
     result.add(this.initial_point);
     return result;
   }
 
-  getPointAtDistance(distance: number): Vector2 | null {
+  getPointAtDistance(distance: number): Vector2 {
     return this.getPoint(distance / this.direction.length());
   }
 
-  getParameterRange(t1: number, t2: number): NumericRange | null {
-    if (t1 < 0 && t2 < 0) return null;
-
+  getParameterRange(t1: number, t2: number): NumericRange {
     let tMin = Math.min(t1, t2);
     const tMax = Math.max(t1, t2);
 
