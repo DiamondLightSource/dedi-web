@@ -53,13 +53,6 @@ export const beamstopSelector = (state: RootState) => {
   }
 };
 
-export const clearanceSelector = (state: RootState) => {
-  if (state.units.clearanceDiameterUnits === DistanceUnits.micrometre) {
-    return 1000 * state.config.clearance;
-  } else {
-    return state.config.clearance;
-  }
-};
 
 export const cameraTubeSelector = (state: RootState) => {
   if (state.units.cameraDiameterUnits === DistanceUnits.micrometre) {

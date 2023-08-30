@@ -28,8 +28,6 @@ import {
   configSelector,
   editConfig,
   pixelSizeSelector,
-  clearanceSelector,
-  beamstopSelector,
   cameraTubeSelector,
   angleSelector,
   wavelengthSelector,
@@ -38,6 +36,7 @@ import {
 import { editUnits, unitSelector } from "./unitSlice";
 import { presetList, detectorList } from "../presets/presetManager";
 import { ChangeEvent, useState } from "react";
+import BeamStopDataEntry from "./beamstop";
 
 export default function DataSideBar(): JSX.Element {
   const config = useSelector(configSelector);
@@ -45,8 +44,7 @@ export default function DataSideBar(): JSX.Element {
 
   // Selectors with unit conversion logic
   const pixelSize = useSelector(pixelSizeSelector);
-  const clearance = useSelector(clearanceSelector);
-  const beamstopDiameter = useSelector(beamstopSelector);
+
   const cameraTubeDiameter = useSelector(cameraTubeSelector);
   const angle = useSelector(angleSelector);
   const energy = useSelector(energySelector);
@@ -174,77 +172,7 @@ export default function DataSideBar(): JSX.Element {
             </FormControl>
           </Stack>
           <Divider />
-          <Stack>
-            <Typography variant="h6">Beamstop</Typography>
-            <Stack direction={"row"}>
-              <Typography flexGrow={2}>Diameter: {beamstopDiameter}</Typography>
-              <FormControl>
-                <InputLabel>units</InputLabel>
-                <Select
-                  size="small"
-                  value={units.beamstopDiameterUnits}
-                  label="units"
-                  onChange={(event) =>
-                    dispatch(
-                      editUnits({
-                        beamstopDiameterUnits: event.target
-                          .value as DistanceUnits,
-                      }),
-                    )
-                  }
-                >
-                  <MenuItem value={DistanceUnits.millimetre}>
-                    {DistanceUnits.millimetre}
-                  </MenuItem>
-                  <MenuItem value={DistanceUnits.micrometre}>
-                    {DistanceUnits.micrometre}
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </Stack>
-          </Stack>
-          <Divider />
-          <Typography variant="h6">Position</Typography>
-          <Stack direction={"row"}>
-            <Typography flexGrow={2}>x: </Typography>
-            <Input size="small" value={config.cameraTube.centre.x} />
-            <Typography flexGrow={2}> px</Typography>
-            <Button size="small">Centre detector</Button>
-          </Stack>
-          <Stack direction={"row"}>
-            <Typography flexGrow={2}>y: </Typography>
-            <Input size="small" value={config.cameraTube.centre.y} />
-            <Typography flexGrow={2}> px</Typography>
-            <Button size="small">Centre top edge</Button>
-          </Stack>
-          <Divider />
-          <Typography variant="h6">Clearance</Typography>
-          <Stack direction="row">
-            <Typography flexGrow={2}>Diameter: {clearance}</Typography>
-            <FormControl>
-              <InputLabel>units</InputLabel>
-              <Select
-                size="small"
-                value={units.clearanceDiameterUnits}
-                label="units"
-                onChange={(event) =>
-                  dispatch(
-                    editUnits({
-                      clearanceDiameterUnits: event.target
-                        .value as DistanceUnits,
-                    }),
-                  )
-                }
-              >
-                <MenuItem value={DistanceUnits.millimetre}>
-                  {DistanceUnits.millimetre}
-                </MenuItem>
-                <MenuItem value={DistanceUnits.micrometre}>
-                  {DistanceUnits.micrometre}
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Stack>
+          <BeamStopDataEntry />
           <Divider />
           <Typography variant="h6">Camera Tube</Typography>
           <Stack direction="row">
