@@ -9,6 +9,8 @@ import {
   EnergyUnits,
   WavelengthUnits,
 } from "../utils/units";
+import { Vector2 } from "three";
+import { produce } from "immer";
 
 interface BeamlineState extends BeamlineConfig {
   energy: number | null;
@@ -28,12 +30,33 @@ const beamlineConfigSlice = createSlice({
     editConfig: (state, action: PayloadAction<Partial<BeamlineState>>) => {
       return { ...state, ...action.payload };
     },
+    editBeamstopPosition: (state, action: PayloadAction<Vector2>) => {
+      return produce(state, draft => {
+        draft.beamstop.centre = action.payload
+      })
+    },
+    editBeamstopDiameter: (state, action: PayloadAction<number>) => {
+      return produce(state, draft => {
+        draft.beamstop.diameter = action.payload
+      })
+    },
+    editCameraTubePosition: (state, action: PayloadAction<Vector2>) => {
+      return produce(state, draft => {
+        draft.cameraTube.centre = action.payload
+      })
+    },
+    editCameraTubeDiameter: (state, action: PayloadAction<number>) => {
+      return produce(state, draft => {
+        draft.cameraTube.diameter = action.payload
+      })
+    },
+
   },
 });
 
 export const beamlineConfigReducer = beamlineConfigSlice.reducer;
 
-export const { editConfig } = beamlineConfigSlice.actions;
+export const { editConfig, editCameraTubeDiameter, editBeamstopDiameter, editBeamstopPosition, editCameraTubePosition } = beamlineConfigSlice.actions;
 export const configSelector = (state: RootState) => state.config;
 
 // Unit selectors
