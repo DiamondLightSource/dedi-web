@@ -293,7 +293,7 @@ export default function DataSideBar(): JSX.Element {
           <Divider />
           <Stack direction="row" spacing={2}>
             <Typography flexGrow={2}>Angle:</Typography>
-            <Input size="small" value={angle} onChange={handleAngleChange} />
+            <TextField size="small" value={angle} onChange={handleAngleChange} />
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select

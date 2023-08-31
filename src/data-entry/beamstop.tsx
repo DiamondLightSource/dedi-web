@@ -8,6 +8,7 @@ import {
     Input,
     Button,
     ButtonGroup,
+    TextField,
 } from "@mui/material";
 import {
     DistanceUnits,
@@ -16,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     configSelector,
     beamstopSelector,
-    editBeamstopPosition,
 } from "./configSlice";
 import { editUnits, unitSelector } from "./unitSlice";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -28,9 +28,6 @@ export default function BeamStopDataEntry(): JSX.Element {
     const units = useSelector(unitSelector);
     const dispatch = useDispatch();
     const config = useSelector(configSelector);
-    const handlePositionX = (event: ChangeEvent<HTMLInputElement>) => {
-        dispatch(editBeamstopPosition({x:parseFloat(event.target.value)}));
-    }
 
     return (
         <Stack spacing={2}>
@@ -64,7 +61,7 @@ export default function BeamStopDataEntry(): JSX.Element {
             <Typography >Position:</Typography>
             <Stack direction={"row"}>
                 <Typography flexGrow={2}>x: </Typography>
-                <Input size="small" defaultValue={""} value={config.cameraTube.centre.x} onChange={handlePositionX} />
+                <TextField size="small" defaultValue={""}  />
                 <Typography flexGrow={2}> px</Typography>
                 <Button size="small">Centre detector</Button>
             </Stack>
