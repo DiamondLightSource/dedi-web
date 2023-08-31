@@ -1,12 +1,15 @@
-import { Vector2 } from "three";
-
 export interface Detector {
   resolution: { height: number; width: number };
   pixel_size: number;
 }
 
+export interface SerialisedVector2 {
+  x:number;
+  y:number;
+}
+
 export interface CircularDevice {
-  centre: Vector2;
+  centre: SerialisedVector2;
   diameter: number;
 }
 

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import testBeamlineConfig from "../presets/presetConfigs.json";
-import { BeamlineConfig } from "../utils/types";
+import { BeamlineConfig, SerialisedVector2 } from "../utils/types";
 import { RootState } from "../store";
 import { detectorList } from "../presets/presetManager";
 import {
@@ -9,8 +9,6 @@ import {
   EnergyUnits,
   WavelengthUnits,
 } from "../utils/units";
-import { Vector2 } from "three";
-import { produce } from "immer";
 
 interface BeamlineState extends BeamlineConfig {
   energy: number | null;
@@ -30,33 +28,15 @@ const beamlineConfigSlice = createSlice({
     editConfig: (state, action: PayloadAction<Partial<BeamlineState>>) => {
       return { ...state, ...action.payload };
     },
-    editBeamstopPosition: (state, action: PayloadAction<Vector2>) => {
-      return produce(state, draft => {
-        draft.beamstop.centre = action.payload
-      })
+    editBeamstopPosition: (state, action: PayloadAction<Partial<SerialisedVector2>>) => {
+      action.payload.x? state.angle = action.payload.x: {}
     },
-    editBeamstopDiameter: (state, action: PayloadAction<number>) => {
-      return produce(state, draft => {
-        draft.beamstop.diameter = action.payload
-      })
-    },
-    editCameraTubePosition: (state, action: PayloadAction<Vector2>) => {
-      return produce(state, draft => {
-        draft.cameraTube.centre = action.payload
-      })
-    },
-    editCameraTubeDiameter: (state, action: PayloadAction<number>) => {
-      return produce(state, draft => {
-        draft.cameraTube.diameter = action.payload
-      })
-    },
-
   },
 });
 
 export const beamlineConfigReducer = beamlineConfigSlice.reducer;
 
-export const { editConfig, editCameraTubeDiameter, editBeamstopDiameter, editBeamstopPosition, editCameraTubePosition } = beamlineConfigSlice.actions;
+export const { editConfig, editBeamstopPosition, } = beamlineConfigSlice.actions;
 export const configSelector = (state: RootState) => state.config;
 
 // Unit selectors

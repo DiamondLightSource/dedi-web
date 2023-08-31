@@ -21,7 +21,6 @@ import {
 import { editUnits, unitSelector } from "./unitSlice";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
-import { Vector2 } from "three";
 import { ChangeEvent } from "react";
 
 export default function BeamStopDataEntry(): JSX.Element {
@@ -30,7 +29,7 @@ export default function BeamStopDataEntry(): JSX.Element {
     const dispatch = useDispatch();
     const config = useSelector(configSelector);
     const handlePositionX = (event: ChangeEvent<HTMLInputElement>) => {
-        dispatch(editBeamstopPosition(new Vector2(parseFloat(event.target.value), config.beamstop.centre.y)))
+        dispatch(editBeamstopPosition({x:parseFloat(event.target.value)}));
     }
 
     return (
