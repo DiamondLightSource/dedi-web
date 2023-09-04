@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material";
 import DataSideBar from "./data-entry/dataSideBar";
 import ResultsBar from "./results/resultsBar";
 import CentrePlot from "./plot/centrePlot";
-import LegendBar from "./legend/legendBar";
+import LegendBar from "./plot/legendBar";
 import BasicAppBar from "./basicAppBar";
 
 export default function App(): JSX.Element {

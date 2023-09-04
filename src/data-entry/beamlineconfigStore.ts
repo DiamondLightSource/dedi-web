@@ -22,7 +22,6 @@ export interface BeamlineConfigStore extends BeamlineConfig {
 }
 
 
-
 export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     preset: null,
     angle: null,
@@ -53,4 +52,3 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     },
     updateCameraLength: (length: number | null) => set({ cameraLength: length })
 }));
-
