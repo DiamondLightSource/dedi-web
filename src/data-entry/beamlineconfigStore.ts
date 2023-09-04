@@ -18,6 +18,7 @@ export interface BeamlineConfigStore extends BeamlineConfig {
     updateWavelength: (newWavelength: number | null) => void;
     updatePreset: (newPreset: string) => void;
     updateBeamlineConfig: (newConfig: BeamlineConfig) => void;
+    updateCameraLength: (cameraLength: number | null) => void;
 }
 
 
@@ -28,8 +29,8 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     cameraLength: 1,
     minWavelength: 1,
     maxWavelength: 2,
-    minCameraLength: 1,
-    maxCameraLength: 2,
+    minCameraLength: 10,
+    maxCameraLength: 100,
     energy: null,
     wavelength: null,
     beamEnergyUnits: EnergyUnits.kiloElectronVolts,
@@ -49,6 +50,7 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     },
     updatePreset: (preset: string) => {
         set({ preset: preset })
-    }
+    },
+    updateCameraLength: (length: number | null) => set({ cameraLength: length })
 }));
 

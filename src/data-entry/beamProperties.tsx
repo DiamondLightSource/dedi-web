@@ -11,10 +11,28 @@ import { AngleUnits, EnergyUnits, WavelengthUnits } from "../utils/units";
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 
 export default function BeampropertiesDataEntry() {
-    const minWavelength = useBeamlineConfigStore((state) => state.minWavelength);
-    const maxWavelength = useBeamlineConfigStore((state) => state.maxWavelength);
+    const minWavelength = useBeamlineConfigStore((state) => {
+        if (
+            state.wavelengthUnits === WavelengthUnits.angstroms
+        ) {
+            return state.maxWavelength * 10;
+        }
+        return state.maxWavelength;
+    });
+
+    const maxWavelength = useBeamlineConfigStore((state) => {
+        if (
+            state.wavelengthUnits === WavelengthUnits.angstroms
+        ) {
+            return state.maxWavelength * 10;
+        }
+        return state.maxWavelength;
+    });
 
     const cameraLength = useBeamlineConfigStore((state) => state.cameraLength);
+    const minCameraLength = useBeamlineConfigStore((state) => state.minCameraLength);
+    const maxCameraLength = useBeamlineConfigStore((state) => state.maxCameraLength);
+
 
     const energy = useBeamlineConfigStore((state) => {
         if (state.energy && state.beamEnergyUnits === EnergyUnits.electronVolts) {
@@ -81,6 +99,12 @@ export default function BeampropertiesDataEntry() {
         }
     };
 
+    const updateCameraLength = useBeamlineConfigStore((state) => state.updateCameraLength);
+    const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
+        updateCameraLength(parseFloat(event.target.value) ? parseFloat(event.target.value) : null);
+
+    };
+
     return (
         <Stack spacing={2}>
             <Typography variant="h6">Beam properties</Typography>
@@ -138,10 +162,21 @@ export default function BeampropertiesDataEntry() {
                     </Select>
                 </FormControl>
             </Stack>
-            <Typography>Minimum allowed wavelength: {minWavelength} </Typography>
-            <Typography>Maximum allowed wavelength: {maxWavelength}</Typography>
+            <Typography>Minimum allowed wavelength: {minWavelength} {wavelengthUnits} </Typography>
+            <Typography>Maximum allowed wavelength: {maxWavelength} {wavelengthUnits}</Typography>
             <Stack direction="row" spacing={2}>
-                <Typography>Camera Length: {cameraLength}</Typography>
+                <Typography>Camera Length: </Typography>
+                <TextField
+                    type="number"
+                    size="small"
+                    value={cameraLength ?? ""}
+                    InputProps={{
+                        inputProps: {
+                            max: maxCameraLength, min: minCameraLength
+                        }
+                    }}
+                    onChange={handleCameraLength}
+                />
                 <Typography>m</Typography>
             </Stack>
             <Stack direction="row" spacing={2}>

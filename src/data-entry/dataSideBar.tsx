@@ -89,7 +89,7 @@ export default function DataSideBar(): JSX.Element {
             }}
           />
           <Typography>
-            Resolution: {resolution.height} x {resolution.width}
+            Resolution (hxw): {resolution.height} x {resolution.width}
           </Typography>
           <Stack direction="row">
             <Typography flexGrow={2}>Pixel size: {pixelSize} </Typography>

@@ -68,7 +68,7 @@ export default function BeamStopDataEntry(): JSX.Element {
         </FormControl>
       </Stack>
       <Typography>Position:</Typography>
-      <Stack direction={"row"}>
+      <Stack direction={"row"} spacing={2}>
         <Typography flexGrow={2}>x: </Typography>
         <TextField
           type="number"
@@ -84,7 +84,7 @@ export default function BeamStopDataEntry(): JSX.Element {
           Centre detector
         </Button>
       </Stack>
-      <Stack direction={"row"}>
+      <Stack direction={"row"} spacing={2}>
         <Typography flexGrow={2}>y: </Typography>
         <TextField
           type="number"
