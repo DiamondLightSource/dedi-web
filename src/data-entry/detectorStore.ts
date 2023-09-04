@@ -1,7 +1,7 @@
 import { Detector } from "../utils/types";
 import { create } from "zustand";
 import { DistanceUnits } from "../utils/units";
-import { detectorList } from "../presets/presetManager";
+import { detectorList, presetList } from "../presets/presetManager";
 
 export interface DetectorStore {
   name: string;
@@ -14,7 +14,7 @@ export interface DetectorStore {
 
 export const useDetectorStore = create<DetectorStore>((set) => ({
   name: "test",
-  current: detectorList.test,
+  current: detectorList[presetList.test.detector],
   pixelUnits: DistanceUnits.millimetre,
   detectorList: detectorList,
   updateDetector: (newDetector: string) =>

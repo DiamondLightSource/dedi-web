@@ -13,6 +13,10 @@ export interface CircularDevice {
   diameter: number;
 }
 
+export interface Beamstop extends CircularDevice {
+  clearance: number | null
+}
+
 export interface BeamlineConfig {
   angle: number | null;
   cameraLength: number;

@@ -16,6 +16,10 @@ import BeamStopDataEntry from "./beamstop";
 import CameraTubeDataEntry from "./cameraTube";
 import { useDetectorStore } from "./detectorStore";
 import BeampropertiesDataEntry from "./beamProperties";
+import { presetList } from "../presets/presetManager";
+import { useBeamlineConfigStore } from "./beamlineconfigStore";
+import { useBeamstopStore } from "./beamstopStore";
+import { useCameraTubeStore } from "./cameraTubeStore";
 
 export default function DataSideBar(): JSX.Element {
   const name = useDetectorStore((state) => state.name);
@@ -31,6 +35,20 @@ export default function DataSideBar(): JSX.Element {
   const updateUnits = useDetectorStore((state) => state.updateUnits);
   const updateDetector = useDetectorStore((state) => state.updateDetector);
 
+  const preset = useBeamlineConfigStore((state) => state.preset);
+  const updateBeamstop = useBeamstopStore((state) => state.updateBeamstop)
+  const updateCameraTube = useCameraTubeStore((state) => state.updateCameraTube)
+  const updateBeamlineConfig = useBeamlineConfigStore((state) => state.updateBeamlineConfig)
+  const updatePreset = useBeamlineConfigStore((state) => state.updatePreset)
+  const handlePreset = (preset: string) => {
+    const { beamstop, cameraTube, detector, ...beamlineConfig } = presetList[preset];
+    updateDetector(detector);
+    updateBeamstop(beamstop);
+    updateCameraTube(cameraTube);
+    updateBeamlineConfig(beamlineConfig);
+    updatePreset(preset)
+  }
+
   return (
     <Card sx={{ height: 1 }}>
       <CardContent>
@@ -43,11 +61,15 @@ export default function DataSideBar(): JSX.Element {
               size="small"
               disablePortal
               id="combo-box-demo"
-              options={Object.keys(detectorList)}
+              options={Object.keys(presetList)}
+              value={preset}
               sx={{ width: 300 }}
               renderInput={(params) => (
                 <TextField {...params} label="choose beamline config" />
               )}
+              onChange={(_, value) => {
+                value ? handlePreset(value) : {};
+              }}
             />
           </Stack>
           <Divider />

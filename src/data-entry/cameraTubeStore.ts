@@ -6,6 +6,7 @@ export interface CameraTubeStore extends CircularDevice {
   diameterUnits: DistanceUnits;
   updateCentre: (centre: Partial<SerialisedVector2>) => void;
   updateUnits: (newUnits: DistanceUnits) => void;
+  updateCameraTube: (presetCameraTube: CircularDevice) => void;
 }
 
 export const useCameraTubeStore = create<CameraTubeStore>((set) => ({
@@ -18,4 +19,5 @@ export const useCameraTubeStore = create<CameraTubeStore>((set) => ({
   updateCentre: (newCentre: Partial<SerialisedVector2>) =>
     set((state) => ({ centre: { ...state.centre, ...newCentre } })),
   updateUnits: (newUnits: DistanceUnits) => set({ diameterUnits: newUnits }),
+  updateCameraTube: (presetCameraTube: CircularDevice) => set(presetCameraTube)
 }));

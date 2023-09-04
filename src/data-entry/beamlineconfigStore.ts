@@ -2,7 +2,9 @@ import { BeamlineConfig } from "../utils/types";
 import { create } from "zustand";
 import { AngleUnits, EnergyUnits, WavelengthUnits } from "../utils/units";
 
+
 export interface BeamlineConfigStore extends BeamlineConfig {
+    preset: string | null;
     beamEnergyUnits: EnergyUnits;
     angleUnits: AngleUnits;
     wavelengthUnits: WavelengthUnits;
@@ -14,15 +16,20 @@ export interface BeamlineConfigStore extends BeamlineConfig {
     updateEnergy: (newEnergy: number | null) => void;
     updateAngle: (newAngle: number | null) => void;
     updateWavelength: (newWavelength: number | null) => void;
+    updatePreset: (newPreset: string) => void;
+    updateBeamlineConfig: (newConfig: BeamlineConfig) => void;
 }
 
+
+
 export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
-    angle: 1,
+    preset: null,
+    angle: null,
     cameraLength: 1,
     minWavelength: 1,
-    maxWavelength: 1,
+    maxWavelength: 2,
     minCameraLength: 1,
-    maxCameraLength: 1,
+    maxCameraLength: 2,
     energy: null,
     wavelength: null,
     beamEnergyUnits: EnergyUnits.kiloElectronVolts,
@@ -37,4 +44,11 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     updateAngle: (newAngle: number | null) => set({ angle: newAngle }),
     updateWavelength: (newWavelength: number | null) =>
         set({ wavelength: newWavelength }),
+    updateBeamlineConfig: (presetBeamlineConfig: BeamlineConfig) => {
+        set(presetBeamlineConfig)
+    },
+    updatePreset: (preset: string) => {
+        set({ preset: preset })
+    }
 }));
+
