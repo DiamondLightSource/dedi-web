@@ -64,8 +64,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
         <TextField
           type="number"
           size="small"
-          defaultValue={""}
-          value={centre.x === null ? "" : centre.x}
+          value={centre.x ?? ""}
           onChange={handleX}
         />
         <Typography flexGrow={2} align="center">
@@ -78,8 +77,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
         <TextField
           type="number"
           size="small"
-          defaultValue={""}
-          value={centre.y === null ? "" : centre.y}
+          value={centre.y ?? ""}
           onChange={handleY}
         />
         <Typography flexGrow={2} align="center">

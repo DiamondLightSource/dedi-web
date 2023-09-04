@@ -47,15 +47,11 @@ export default function BeampropertiesDataEntry() {
     );
     const updateAngle = useBeamlineConfigStore((state) => state.updateAngle);
     const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (isNaN(Number(event.target.value)))
-
-
-            if (angleUnits === AngleUnits.degrees && event.target.value) {
-                updateAngle(parseFloat(event.target.value) / (180 / Math.PI));
-            } else {
-                updateAngle(parseFloat(event.target.value));
-            }
-        console.log(angle);
+        if (angleUnits === AngleUnits.degrees && event.target.value) {
+            updateAngle(parseFloat(event.target.value) / (180 / Math.PI));
+        } else {
+            updateAngle(parseFloat(event.target.value));
+        }
     };
 
     const wavelength = useBeamlineConfigStore((state) => {
@@ -93,7 +89,6 @@ export default function BeampropertiesDataEntry() {
                 <TextField
                     type="number"
                     size="small"
-                    defaultValue={""}
                     value={energy ?? ""}
                     onChange={handleEnergy}
                 />
@@ -121,7 +116,6 @@ export default function BeampropertiesDataEntry() {
                 <TextField
                     type="number"
                     size="small"
-                    defaultValue={""}
                     value={wavelength ?? ""}
                     onChange={handleWavelength}
                 />
@@ -152,7 +146,7 @@ export default function BeampropertiesDataEntry() {
             </Stack>
             <Stack direction="row" spacing={2}>
                 <Typography flexGrow={2}>Angle:</Typography>
-                <TextField size="small" value={angle ?? ""} onChange={handleAngle} />
+                <TextField type="number" size="small" defaultValue={""} value={angle ?? ""} onChange={handleAngle} />
                 <FormControl>
                     <InputLabel>units</InputLabel>
                     <Select

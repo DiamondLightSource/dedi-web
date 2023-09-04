@@ -73,7 +73,6 @@ export default function BeamStopDataEntry(): JSX.Element {
         <TextField
           type="number"
           size="small"
-          defaultValue={""}
           value={centre.x ?? ""}
           onChange={handleX}
         />
@@ -90,7 +89,6 @@ export default function BeamStopDataEntry(): JSX.Element {
         <TextField
           type="number"
           size="small"
-          defaultValue={""}
           value={centre.y ?? ""}
           onChange={handleY}
         />
@@ -108,8 +106,7 @@ export default function BeamStopDataEntry(): JSX.Element {
           <TextField
             type="number"
             size="small"
-            defaultValue={""}
-            value={clearance}
+            value={clearance ?? ""}
             onChange={handleClearance}
           />
         </Stack>
