@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from "react";
-import * as d3 from "d3";
+import { useEffect, useRef } from "react";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
@@ -12,11 +11,12 @@ export default function BeamlinePlot(): JSX.Element {
     const detector = useDetectorStore();
 
     const svgRef = useRef<SVGSVGElement>(null);
-    const circleRef = useRef<SVGCircleElement>(null);
     const xAxisRef = useRef<SVGGElement>(null);
     const yAxisRef = useRef<SVGGElement>(null);
 
-    useEffect(() => { }, [beamstop, cameraTube, detector])
+    useEffect(() => {
+        console.log("changes have happend")
+    }, [beamstop, cameraTube, detector])
 
     return (
         <div >
