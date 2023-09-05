@@ -5,14 +5,36 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Drawer } from "@mui/material";
+import { Autocomplete, Drawer, TextField } from "@mui/material";
 import SideMenu from "./sideMenu";
+import { useBeamlineConfigStore } from "./data-entry/beamlineconfigStore";
+import { presetList } from "./presets/presetManager";
+import { useBeamstopStore } from "./data-entry/beamstopStore";
+import { useCameraTubeStore } from "./data-entry/cameraTubeStore";
+import { useDetectorStore } from "./data-entry/detectorStore";
 
 export default function BasicAppBar(): JSX.Element {
   const [state, setState] = React.useState({ menuOpen: false });
   const toggleDrawer = (open: boolean) => () => {
     setState({ menuOpen: open });
   };
+
+  const preset = useBeamlineConfigStore((state) => state.preset);
+  const updateBeamstop = useBeamstopStore((state) => state.updateBeamstop);
+  const updateCameraTube = useCameraTubeStore((state) => state.updateCameraTube);
+  const updateBeamlineConfig = useBeamlineConfigStore((state) => state.updateBeamlineConfig);
+  const updatePreset = useBeamlineConfigStore((state) => state.updatePreset);
+  const updateDetector = useDetectorStore((state) => state.updateDetector);
+  const handlePreset = (preset: string) => {
+    const { beamstop, cameraTube, detector, ...beamlineConfig } = presetList[preset];
+    updateDetector(detector);
+    updateBeamstop(beamstop);
+    updateCameraTube(cameraTube);
+    updateBeamlineConfig(beamlineConfig);
+    updatePreset(preset)
+  };
+
+
   return (
     <Box sx={{ flexGrow: 2 }}>
       <AppBar position="static">
@@ -45,6 +67,20 @@ export default function BasicAppBar(): JSX.Element {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Dedi Web
           </Typography>
+          <Autocomplete
+            size="small"
+            disablePortal
+            id="combo-box-demo"
+            options={Object.keys(presetList)}
+            value={preset}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField {...params} label="choose beamline preset" />
+            )}
+            onChange={(_, value) => {
+              value ? handlePreset(value) : {};
+            }}
+          />
         </Toolbar>
       </AppBar>
     </Box>
