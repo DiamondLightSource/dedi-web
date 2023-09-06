@@ -44,15 +44,17 @@ export default function BeamStopDataEntry(): JSX.Element {
     );
   };
 
-
-  const detector = useDetectorStore((state) => state.current)
+  const detector = useDetectorStore((state) => state.current);
   const centreDetector = () => {
-    updateCentre({ x: detector.resolution.width / 2, y: detector.resolution.height / 2 })
-  }
+    updateCentre({
+      x: detector.resolution.width / 2,
+      y: detector.resolution.height / 2,
+    });
+  };
 
   const centreTopEdge = () => {
-    updateCentre({ x: detector.resolution.width / 2, y: 0 })
-  }
+    updateCentre({ x: detector.resolution.width / 2, y: 0 });
+  };
 
   return (
     <Stack spacing={2}>

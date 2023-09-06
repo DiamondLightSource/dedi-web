@@ -19,5 +19,5 @@ export const useCameraTubeStore = create<CameraTubeStore>((set) => ({
   updateCentre: (newCentre: Partial<SerialisedVector2>) =>
     set((state) => ({ centre: { ...state.centre, ...newCentre } })),
   updateUnits: (newUnits: DistanceUnits) => set({ diameterUnits: newUnits }),
-  updateCameraTube: (presetCameraTube: CircularDevice) => set(presetCameraTube)
+  updateCameraTube: (presetCameraTube: CircularDevice) => set(presetCameraTube),
 }));

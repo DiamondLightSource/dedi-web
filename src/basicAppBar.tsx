@@ -21,19 +21,23 @@ export default function BasicAppBar(): JSX.Element {
 
   const preset = useBeamlineConfigStore((state) => state.preset);
   const updateBeamstop = useBeamstopStore((state) => state.updateBeamstop);
-  const updateCameraTube = useCameraTubeStore((state) => state.updateCameraTube);
-  const updateBeamlineConfig = useBeamlineConfigStore((state) => state.updateBeamlineConfig);
+  const updateCameraTube = useCameraTubeStore(
+    (state) => state.updateCameraTube,
+  );
+  const updateBeamlineConfig = useBeamlineConfigStore(
+    (state) => state.updateBeamlineConfig,
+  );
   const updatePreset = useBeamlineConfigStore((state) => state.updatePreset);
   const updateDetector = useDetectorStore((state) => state.updateDetector);
   const handlePreset = (preset: string) => {
-    const { beamstop, cameraTube, detector, ...beamlineConfig } = presetList[preset];
+    const { beamstop, cameraTube, detector, ...beamlineConfig } =
+      presetList[preset];
     updateDetector(detector);
     updateBeamstop(beamstop);
     updateCameraTube(cameraTube);
     updateBeamlineConfig(beamlineConfig);
-    updatePreset(preset)
+    updatePreset(preset);
   };
-
 
   return (
     <Box sx={{ flexGrow: 2 }}>
@@ -73,9 +77,13 @@ export default function BasicAppBar(): JSX.Element {
             id="combo-box-demo"
             options={Object.keys(presetList)}
             value={preset}
-            sx={{ width: 300 }}
+            sx={{ width: 300, color: "white" }}
             renderInput={(params) => (
-              <TextField {...params} label="choose beamline preset" />
+              <TextField
+                {...params}
+                label="choose beamline preset"
+                sx={{ color: "white" }}
+              />
             )}
             onChange={(_, value) => {
               value ? handlePreset(value) : {};

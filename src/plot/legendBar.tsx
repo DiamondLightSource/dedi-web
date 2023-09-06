@@ -12,9 +12,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import {
-  PlotAxes, usePlotStore
-} from "./plotStore";
+import { PlotAxes, usePlotStore } from "./plotStore";
 
 export default function LegendBar(): JSX.Element {
   const plotConfig = usePlotStore();
@@ -26,12 +24,30 @@ export default function LegendBar(): JSX.Element {
           <Typography variant="h6"> Legend</Typography>
           <Typography>Add something to do with colors here</Typography>
           <FormGroup>
-            <FormControlLabel control={<Checkbox checked={plotConfig.detector.inPlot} />} label="Detector" />
-            <FormControlLabel control={<Checkbox checked={plotConfig.beamstop.inPlot} />} label="Beamstop" />
-            <FormControlLabel control={<Checkbox checked={plotConfig.cameraTube.inPlot} />} label="Camera tube" />
-            <FormControlLabel control={<Checkbox checked={plotConfig.qrange} />} label="Q range" />
-            <FormControlLabel control={<Checkbox checked={plotConfig.mask} />} label="Mask" />
-            <FormControlLabel control={<Checkbox checked={plotConfig.calibrantInPlot} />} label="Calibrant" />
+            <FormControlLabel
+              control={<Checkbox checked={plotConfig.detector.inPlot} />}
+              label="Detector"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={plotConfig.beamstop.inPlot} />}
+              label="Beamstop"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={plotConfig.cameraTube.inPlot} />}
+              label="Camera tube"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={plotConfig.qrange} />}
+              label="Q range"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={plotConfig.mask} />}
+              label="Mask"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={plotConfig.calibrantInPlot} />}
+              label="Calibrant"
+            />
           </FormGroup>
           <Divider />
           <Typography>Current calibrant: {5}</Typography>
@@ -42,15 +58,29 @@ export default function LegendBar(): JSX.Element {
               aria-labelledby="demo-radio-buttons-group-label"
               value={plotConfig.plotAxes}
               name="radio-buttons-group"
-              onChange={(event) => plotConfig.edit({ plotAxes: event.target.value as PlotAxes })}
+              onChange={(event) =>
+                plotConfig.edit({ plotAxes: event.target.value as PlotAxes })
+              }
             >
-              <FormControlLabel value={PlotAxes.milimeter} control={<Radio />} label="Axes in mm" />
-              <FormControlLabel value={PlotAxes.pixel} control={<Radio />} label="Axes in pixels" />
-              <FormControlLabel value={PlotAxes.reciprocal} control={<Radio />} label="Axes in q(nm^-1)" />
+              <FormControlLabel
+                value={PlotAxes.milimeter}
+                control={<Radio />}
+                label="Axes in mm"
+              />
+              <FormControlLabel
+                value={PlotAxes.pixel}
+                control={<Radio />}
+                label="Axes in pixels"
+              />
+              <FormControlLabel
+                value={PlotAxes.reciprocal}
+                control={<Radio />}
+                label="Axes in q(nm^-1)"
+              />
             </RadioGroup>
           </FormControl>
         </Stack>
       </CardContent>
-    </Card >
+    </Card>
   );
 }

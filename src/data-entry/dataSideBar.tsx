@@ -31,8 +31,6 @@ export default function DataSideBar(): JSX.Element {
   const updateUnits = useDetectorStore((state) => state.updateUnits);
   const updateDetector = useDetectorStore((state) => state.updateDetector);
 
-
-
   return (
     <Card sx={{ height: 1 }}>
       <CardContent>

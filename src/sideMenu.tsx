@@ -4,7 +4,6 @@ import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import { Stack, Typography } from "@mui/material";
 
-
 // Ad some config options here
 export default function SideMenu() {
   return (

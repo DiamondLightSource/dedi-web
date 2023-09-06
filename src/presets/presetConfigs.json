@@ -46,5 +46,29 @@
     "maxWavelength": 1,
     "minCameraLength": 1.9,
     "maxCameraLength": 100
+  },
+  "I22 SAXS Anisotropic": {
+    "detector": "Pilatus P3-2M",
+    "beamstop": {
+      "centre": {
+        "x": 738,
+        "y": 840
+      },
+      "diameter": 4,
+      "clearance": 10
+    },
+    "cameraTube": {
+      "centre": {
+        "x": 738,
+        "y": 840
+      },
+      "diameter": 310
+    },
+    "angle": 1.57,
+    "cameraLength": 1,
+    "minWavelength": 1,
+    "maxWavelength": 1,
+    "minCameraLength": 1.9,
+    "maxCameraLength": 100
   }
 }

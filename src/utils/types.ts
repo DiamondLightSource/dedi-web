@@ -14,7 +14,7 @@ export interface CircularDevice {
 }
 
 export interface Beamstop extends CircularDevice {
-  clearance: number | null
+  clearance: number | null;
 }
 
 export interface BeamlineConfig {
