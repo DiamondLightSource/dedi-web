@@ -23,28 +23,28 @@
     "minCameraLength": 10,
     "maxCameraLength": 100
   },
-  "second": {
+  "I22 SAXS Isotropic": {
     "detector": "Pilatus P3-2M",
     "beamstop": {
       "centre": {
-        "x": 2,
-        "y": 2
+        "x": 738,
+        "y": 100
       },
       "diameter": 4,
-      "clearance": 1
+      "clearance": 10
     },
     "cameraTube": {
       "centre": {
-        "x": 2,
-        "y": 2
+        "x": 738,
+        "y": 840
       },
-      "diameter": 2
+      "diameter": 310
     },
-    "angle": 1,
+    "angle": 1.57,
     "cameraLength": 1,
     "minWavelength": 1,
     "maxWavelength": 1,
-    "minCameraLength": 10,
+    "minCameraLength": 1.9,
     "maxCameraLength": 100
   }
 }

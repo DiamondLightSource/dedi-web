@@ -25,7 +25,7 @@ export interface PlotConfig {
 }
 
 export const usePlotStore = create<PlotConfig>((set) => ({
-    detector: { inPlot: true, colour: "red" },
+    detector: { inPlot: false, colour: "red" },
     beamstop: { inPlot: true, colour: "blue" },
     cameraTube: { inPlot: true, colour: "green" },
     clearnace: { inPlot: true, colour: "pink" },

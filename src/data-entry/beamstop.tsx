@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { DistanceUnits } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
+import { useDetectorStore } from "./detectorStore";
 
 export default function BeamStopDataEntry(): JSX.Element {
   const centre = useBeamstopStore((state) => state.centre);
@@ -42,6 +43,16 @@ export default function BeamStopDataEntry(): JSX.Element {
       parseFloat(event.target.value) ? parseFloat(event.target.value) : null,
     );
   };
+
+
+  const detector = useDetectorStore((state) => state.current)
+  const centreDetector = () => {
+    updateCentre({ x: detector.resolution.width / 2, y: detector.resolution.height / 2 })
+  }
+
+  const centreTopEdge = () => {
+    updateCentre({ x: detector.resolution.width / 2, y: 0 })
+  }
 
   return (
     <Stack spacing={2}>
@@ -80,7 +91,7 @@ export default function BeamStopDataEntry(): JSX.Element {
           {" "}
           px
         </Typography>
-        <Button size="small" variant="outlined">
+        <Button size="small" variant="outlined" onClick={centreDetector}>
           Centre detector
         </Button>
       </Stack>
@@ -96,7 +107,7 @@ export default function BeamStopDataEntry(): JSX.Element {
           {" "}
           px
         </Typography>
-        <Button size="small" variant="outlined">
+        <Button size="small" variant="outlined" onClick={centreTopEdge}>
           Centre top edge
         </Button>
       </Stack>

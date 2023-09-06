@@ -26,12 +26,12 @@ export default function LegendBar(): JSX.Element {
           <Typography variant="h6"> Legend</Typography>
           <Typography>Add something to do with colors here</Typography>
           <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="Detector" />
-            <FormControlLabel control={<Checkbox />} label="Beamstop" />
-            <FormControlLabel control={<Checkbox />} label="Camera tube" />
-            <FormControlLabel control={<Checkbox />} label="Q range" />
-            <FormControlLabel control={<Checkbox />} label="Mask" />
-            <FormControlLabel control={<Checkbox />} label="Calibrant" />
+            <FormControlLabel control={<Checkbox checked={plotConfig.detector.inPlot} />} label="Detector" />
+            <FormControlLabel control={<Checkbox checked={plotConfig.beamstop.inPlot} />} label="Beamstop" />
+            <FormControlLabel control={<Checkbox checked={plotConfig.cameraTube.inPlot} />} label="Camera tube" />
+            <FormControlLabel control={<Checkbox checked={plotConfig.qrange} />} label="Q range" />
+            <FormControlLabel control={<Checkbox checked={plotConfig.mask} />} label="Mask" />
+            <FormControlLabel control={<Checkbox checked={plotConfig.calibrantInPlot} />} label="Calibrant" />
           </FormGroup>
           <Divider />
           <Typography>Current calibrant: {5}</Typography>
