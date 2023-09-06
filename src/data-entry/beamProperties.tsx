@@ -136,7 +136,7 @@ export default function BeampropertiesDataEntry() {
                 </FormControl>
             </Stack>
             <Stack direction={"row"} spacing={2}>
-                <Typography flexGrow={1}>WaveLength: </Typography>
+                <Typography flexGrow={1}>Wavelength: </Typography>
                 <TextField
                     type="number"
                     size="small"

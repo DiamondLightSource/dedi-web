@@ -10,6 +10,7 @@ Start up
 
 ```bash
   cd dedi-web
+  npm install .
   npm run dev
 ```
 

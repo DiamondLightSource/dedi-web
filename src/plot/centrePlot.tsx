@@ -5,6 +5,8 @@ import {
   ResetZoomButton,
   SvgElement,
   VisCanvas,
+  SvgCircle,
+  SvgRect,
 } from "@h5web/lib"
 import { Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
@@ -24,27 +26,28 @@ export default function CentrePlot(): JSX.Element {
           <div style={{ display: "grid", height: "60vh", width: "50vw", border: "solid black" }}>
             <VisCanvas
               style={{ padding: "5px 5px 5px" }}
-              abscissaConfig={{ visDomain: [0, 10], showGrid: true, nice: true }}
-              ordinateConfig={{ visDomain: [0, 10], showGrid: true, nice: true }}
+              abscissaConfig={{ visDomain: [-10, 10], showGrid: true, nice: true }}
+              ordinateConfig={{ visDomain: [-10, 10], showGrid: true, nice: true }}
             >
               <DefaultInteractions />
               <ResetZoomButton />
               <DataToHtml
                 points={[
                   new Vector3(beamstop.centre.x ?? 0, beamstop.centre.y ?? 0),
-                  new Vector3(beamstop.diameter),
-                  new Vector3(beamstop.clearance ?? 0),
+                  new Vector3((beamstop.centre.x ?? 0) + beamstop.diameter / 2, beamstop.centre.y ?? 0),
+                  new Vector3((beamstop.centre.x ?? 0) + beamstop.diameter / 2 + (beamstop.clearance ?? 0), beamstop.centre.y ?? 0),
                   new Vector3(cameraTube.centre.x ?? 0, cameraTube.centre.y ?? 0),
-                  new Vector3(cameraTube.diameter),
-                  new Vector3(detector.current.resolution.height, detector.current.resolution.width),
+                  new Vector3((cameraTube.centre.x ?? 0) + cameraTube.diameter, cameraTube.centre.y ?? 0),
+                  new Vector3(0, 0),
+                  new Vector3(4, 4)
                 ]}
               >
-                {(beamstopCentre: Vector3, BeamstopDiameter: Vector3, clearnace: Vector3, cameraTubeCentre: Vector3, cameraTubeDiameter: Vector3, detectorResolution: Vector3) => (
+                {(beamstopCentre: Vector3, beamstopPerimeter: Vector3, clearance: Vector3, cameraTubeCentre: Vector3, cameraTubePerimeter: Vector3, detectorLower: Vector3, detectorUpper: Vector3) => (
                   <SvgElement>
-                    <rect x={4} y={4} width={detectorResolution.y} height={detectorResolution.x} fill="rgba(255, 0, 0, 0.5)" stroke="lightseagreen" />
-                    <circle cx={beamstopCentre.x} cy={beamstopCentre.y} r={BeamstopDiameter.x + clearnace.x} fill="rgba(255,0, 255, 0.5)" stroke="lightseagreen" />
-                    <circle cx={beamstopCentre.x} cy={beamstopCentre.y} r={BeamstopDiameter.x} fill="black" stroke="lightseagreen" />
-                    <circle cx={cameraTubeCentre.x} cy={cameraTubeCentre.y} r={cameraTubeDiameter.x} fill="rgba(255,255,0, 0.5)" stroke="lightseagreen" />
+                    <SvgCircle coords={[cameraTubeCentre, cameraTubePerimeter]} fill="rgba(255, 0, 0, 0.5)" id="camera tube" />
+                    <SvgCircle coords={[beamstopCentre, clearance]} fill="rgba(255, 255, 0, 0.5)" id="clearance" />
+                    <SvgCircle coords={[beamstopCentre, beamstopPerimeter]} fill="black" id="beamstop" />
+                    <SvgRect coords={[detectorLower, detectorUpper]} fill="rgba(255, 0, 0, 0.5)" id="detector" stroke="black" strokePosition="outside" strokeWidth={0} />
                   </SvgElement>
                 )}
               </DataToHtml>

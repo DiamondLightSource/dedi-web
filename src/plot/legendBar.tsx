@@ -13,10 +13,12 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  PlotAxes
+  PlotAxes, usePlotStore
 } from "./plotStore";
 
 export default function LegendBar(): JSX.Element {
+  const plotConfig = usePlotStore();
+
   return (
     <Card sx={{ height: 1, width: 1 }}>
       <CardContent>
@@ -32,14 +34,15 @@ export default function LegendBar(): JSX.Element {
             <FormControlLabel control={<Checkbox />} label="Calibrant" />
           </FormGroup>
           <Divider />
-          <Typography>Calibrant: {5}</Typography>
+          <Typography>Current calibrant: {5}</Typography>
           <Divider />
           <FormControl>
             <FormLabel id="demo-radio-buttons-group-label">Axes:</FormLabel>
             <RadioGroup
               aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="female"
+              value={plotConfig.plotAxes}
               name="radio-buttons-group"
+              onChange={(event) => plotConfig.edit({ plotAxes: event.target.value as PlotAxes })}
             >
               <FormControlLabel value={PlotAxes.milimeter} control={<Radio />} label="Axes in mm" />
               <FormControlLabel value={PlotAxes.pixel} control={<Radio />} label="Axes in pixels" />
@@ -48,6 +51,6 @@ export default function LegendBar(): JSX.Element {
           </FormControl>
         </Stack>
       </CardContent>
-    </Card>
+    </Card >
   );
 }

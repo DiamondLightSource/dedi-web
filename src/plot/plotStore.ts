@@ -1,9 +1,9 @@
 import { create } from "zustand";
 
 export enum PlotAxes {
-    milimeter,
-    pixel,
-    reciprocal,
+    milimeter = "milimeter",
+    pixel = "pixel",
+    reciprocal = "reciprocal",
 }
 
 interface PlotItem {
