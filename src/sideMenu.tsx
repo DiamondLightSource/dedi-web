@@ -10,7 +10,17 @@ export default function SideMenu() {
       <List>
         <ListItem>
           <Stack direction="row">
-            <Typography flexGrow={3}>Settings</Typography>
+            <Typography flexGrow={3}>Add New detector</Typography>
+          </Stack>
+        </ListItem>
+        <ListItem>
+          <Stack direction="row">
+            <Typography flexGrow={3}>Add New detector</Typography>
+          </Stack>
+        </ListItem>
+        <ListItem>
+          <Stack direction="row">
+            <Typography flexGrow={3}>Save current config as preset</Typography>
           </Stack>
         </ListItem>
       </List>
