@@ -1,8 +1,9 @@
 import { CircularDevice, Detector } from "../utils/types";
 import NumericRange from "../calculations/numericRange";
 
-const offset = 10;
+const offset = 100;
 
+// Questionable is this how you would do this think about it a little more
 export const getDomains = (
   detector: Detector,
   cameraTube: CircularDevice,

@@ -64,11 +64,8 @@ export default function CentrePlot(): JSX.Element {
     };
   });
 
-  //const cameraTube = useCameraTubeStore();
-  const domains = getDomains(detector, {
-    centre: cameraTube.centre,
-    diameter: cameraTube.diameter,
-  });
+  //unit miss alignment
+  const domains = getDomains(detector, cameraTube);
 
   return (
     <Box>
@@ -85,13 +82,9 @@ export default function CentrePlot(): JSX.Element {
             <VisCanvas
               abscissaConfig={{
                 visDomain: [domains.xAxis.min, domains.xAxis.max],
-                showGrid: true,
-                nice: true,
               }}
               ordinateConfig={{
                 visDomain: [domains.yAxis.max, domains.yAxis.min],
-                showGrid: true,
-                nice: true,
               }}
             >
               <DefaultInteractions />
@@ -140,7 +133,7 @@ export default function CentrePlot(): JSX.Element {
                         fill="rgba(0, 255, 0, 0.2)"
                         id="camera tube"
                       />}
-                    {plotConfig.clearnace &&
+                    {plotConfig.beamstop &&
                       <SvgCircle
                         coords={[beamstopCentre, clearance]}
                         fill="rgba(0, 0, 255, 0.2)"
