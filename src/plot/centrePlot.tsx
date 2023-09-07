@@ -134,29 +134,33 @@ export default function CentrePlot(): JSX.Element {
                   detectorUpper: Vector3,
                 ) => (
                   <SvgElement>
-                    <SvgCircle
-                      coords={[cameraTubeCentre, cameraTubePerimeter]}
-                      fill="rgba(0, 255, 0, 0.5)"
-                      id="camera tube"
-                    />
-                    <SvgCircle
-                      coords={[beamstopCentre, clearance]}
-                      fill="rgba(0, 0, 255, 0.5)"
-                      id="clearance"
-                    />
-                    <SvgCircle
-                      coords={[beamstopCentre, beamstopPerimeter]}
-                      fill="black"
-                      id="beamstop"
-                    />
-                    <SvgRect
-                      coords={[detectorLower, detectorUpper]}
-                      fill="rgba(255, 0, 0, 0.5)"
-                      id="detector"
-                      stroke="black"
-                      strokePosition="outside"
-                      strokeWidth={0}
-                    />
+                    {plotConfig.cameraTube &&
+                      <SvgCircle
+                        coords={[cameraTubeCentre, cameraTubePerimeter]}
+                        fill="rgba(0, 255, 0, 0.2)"
+                        id="camera tube"
+                      />}
+                    {plotConfig.clearnace &&
+                      <SvgCircle
+                        coords={[beamstopCentre, clearance]}
+                        fill="rgba(0, 0, 255, 0.2)"
+                        id="clearance"
+                      />}
+                    {plotConfig.beamstop &&
+                      <SvgCircle
+                        coords={[beamstopCentre, beamstopPerimeter]}
+                        fill="black"
+                        id="beamstop"
+                      />}
+                    {plotConfig.detector &&
+                      <SvgRect
+                        coords={[detectorLower, detectorUpper]}
+                        fill="rgba(255, 0, 0, 0.2)"
+                        id="detector"
+                        stroke="black"
+                        strokePosition="outside"
+                        strokeWidth={0}
+                      />}
                   </SvgElement>
                 )}
               </DataToHtml>

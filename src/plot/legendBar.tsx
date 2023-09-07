@@ -25,27 +25,27 @@ export default function LegendBar(): JSX.Element {
           <Typography>Add something to do with colors here</Typography>
           <FormGroup>
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.detector.inPlot} />}
+              control={<Checkbox checked={plotConfig.detector} onChange={(_, checked) => plotConfig.edit({ detector: checked })} />}
               label="Detector"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.beamstop.inPlot} />}
+              control={<Checkbox checked={plotConfig.beamstop} onChange={(_, checked) => plotConfig.edit({ beamstop: checked })} />}
               label="Beamstop"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.cameraTube.inPlot} />}
+              control={<Checkbox checked={plotConfig.cameraTube} onChange={(_, checked) => plotConfig.edit({ cameraTube: checked })} />}
               label="Camera tube"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.qrange} />}
+              control={<Checkbox checked={plotConfig.qrange} onChange={(_, checked) => plotConfig.edit({ qrange: checked })} />}
               label="Q range"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.mask} />}
+              control={<Checkbox checked={plotConfig.mask} onChange={(_, checked) => plotConfig.edit({ mask: checked })} />}
               label="Mask"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.calibrantInPlot} />}
+              control={<Checkbox checked={plotConfig.calibrantInPlot} onChange={(_, checked) => plotConfig.edit({ calibrantInPlot: checked })} />}
               label="Calibrant"
             />
           </FormGroup>

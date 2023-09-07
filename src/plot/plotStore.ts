@@ -6,16 +6,11 @@ export enum PlotAxes {
   reciprocal = "reciprocal",
 }
 
-interface PlotItem {
-  inPlot: boolean;
-  colour: string;
-}
-
 export interface PlotConfig {
-  detector: PlotItem;
-  beamstop: PlotItem;
-  cameraTube: PlotItem;
-  clearnace: PlotItem;
+  detector: boolean;
+  beamstop: boolean;
+  cameraTube: boolean;
+  clearnace: boolean;
   qrange: boolean;
   mask: boolean;
   calibrantInPlot: boolean;
@@ -25,10 +20,10 @@ export interface PlotConfig {
 }
 
 export const usePlotStore = create<PlotConfig>((set) => ({
-  detector: { inPlot: false, colour: "red" },
-  beamstop: { inPlot: true, colour: "blue" },
-  cameraTube: { inPlot: true, colour: "green" },
-  clearnace: { inPlot: true, colour: "pink" },
+  detector: true,
+  beamstop: true,
+  cameraTube: true,
+  clearnace: true,
   qrange: true,
   mask: false,
   calibrantInPlot: false,

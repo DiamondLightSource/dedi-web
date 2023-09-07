@@ -6,6 +6,13 @@
     },
     "pixelSize": 0.172
   },
+  "long boy": {
+    "resolution": {
+      "width": 1475,
+      "height": 679
+    },
+    "pixelSize": 0.172
+  },
   "test": {
     "resolution": {
       "width": 1,
