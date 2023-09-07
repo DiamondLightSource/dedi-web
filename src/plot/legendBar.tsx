@@ -25,27 +25,67 @@ export default function LegendBar(): JSX.Element {
           <Typography>Add something to do with colors here</Typography>
           <FormGroup>
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.detector} onChange={(_, checked) => plotConfig.edit({ detector: checked })} />}
+              control={
+                <Checkbox
+                  checked={plotConfig.detector}
+                  onChange={(_, checked) =>
+                    plotConfig.update({ detector: checked })
+                  }
+                />
+              }
               label="Detector"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.beamstop} onChange={(_, checked) => plotConfig.edit({ beamstop: checked })} />}
+              control={
+                <Checkbox
+                  checked={plotConfig.beamstop}
+                  onChange={(_, checked) =>
+                    plotConfig.update({ beamstop: checked })
+                  }
+                />
+              }
               label="Beamstop"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.cameraTube} onChange={(_, checked) => plotConfig.edit({ cameraTube: checked })} />}
+              control={
+                <Checkbox
+                  checked={plotConfig.cameraTube}
+                  onChange={(_, checked) =>
+                    plotConfig.update({ cameraTube: checked })
+                  }
+                />
+              }
               label="Camera tube"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.qrange} onChange={(_, checked) => plotConfig.edit({ qrange: checked })} />}
+              control={
+                <Checkbox
+                  checked={plotConfig.qrange}
+                  onChange={(_, checked) =>
+                    plotConfig.update({ qrange: checked })
+                  }
+                />
+              }
               label="Q range"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.mask} onChange={(_, checked) => plotConfig.edit({ mask: checked })} />}
+              control={
+                <Checkbox
+                  checked={plotConfig.mask}
+                  onChange={(_, checked) => plotConfig.update({ mask: checked })}
+                />
+              }
               label="Mask"
             />
             <FormControlLabel
-              control={<Checkbox checked={plotConfig.calibrantInPlot} onChange={(_, checked) => plotConfig.edit({ calibrantInPlot: checked })} />}
+              control={
+                <Checkbox
+                  checked={plotConfig.calibrantInPlot}
+                  onChange={(_, checked) =>
+                    plotConfig.update({ calibrantInPlot: checked })
+                  }
+                />
+              }
               label="Calibrant"
             />
           </FormGroup>
@@ -59,7 +99,7 @@ export default function LegendBar(): JSX.Element {
               value={plotConfig.plotAxes}
               name="radio-buttons-group"
               onChange={(event) =>
-                plotConfig.edit({ plotAxes: event.target.value as PlotAxes })
+                plotConfig.update({ plotAxes: event.target.value as PlotAxes })
               }
             >
               <FormControlLabel

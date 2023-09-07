@@ -9,15 +9,7 @@ export interface BeamlineConfigStore extends BeamlineConfig {
   wavelengthUnits: WavelengthUnits;
   energy: number | null;
   wavelength: number | null;
-  updateEnergyUnits: (newUnits: EnergyUnits) => void;
-  updateAngleUnits: (newUnits: AngleUnits) => void;
-  updateWavelengthUnits: (newUnits: WavelengthUnits) => void;
-  updateEnergy: (newEnergy: number | null) => void;
-  updateAngle: (newAngle: number | null) => void;
-  updateWavelength: (newWavelength: number | null) => void;
-  updatePreset: (newPreset: string) => void;
-  updateBeamlineConfig: (newConfig: BeamlineConfig) => void;
-  updateCameraLength: (cameraLength: number | null) => void;
+  update: (storeConfig: Partial<BeamlineConfigStore>) => void;
 }
 
 export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
@@ -33,20 +25,5 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   beamEnergyUnits: EnergyUnits.kiloElectronVolts,
   angleUnits: AngleUnits.radians,
   wavelengthUnits: WavelengthUnits.nanmometres,
-  updateEnergyUnits: (newUnits: EnergyUnits) =>
-    set({ beamEnergyUnits: newUnits }),
-  updateAngleUnits: (newUnits: AngleUnits) => set({ angleUnits: newUnits }),
-  updateWavelengthUnits: (newUnits: WavelengthUnits) =>
-    set({ wavelengthUnits: newUnits }),
-  updateEnergy: (newEnergy: number | null) => set({ energy: newEnergy }),
-  updateAngle: (newAngle: number | null) => set({ angle: newAngle }),
-  updateWavelength: (newWavelength: number | null) =>
-    set({ wavelength: newWavelength }),
-  updateBeamlineConfig: (presetBeamlineConfig: BeamlineConfig) => {
-    set(presetBeamlineConfig);
-  },
-  updatePreset: (preset: string) => {
-    set({ preset: preset });
-  },
-  updateCameraLength: (length: number | null) => set({ cameraLength: length }),
+  update: (storeConfig: Partial<BeamlineConfigStore>) => set({ ...storeConfig }),
 }));

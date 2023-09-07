@@ -16,7 +16,7 @@ export interface PlotConfig {
   calibrantInPlot: boolean;
   calibrant: string;
   plotAxes: PlotAxes;
-  edit: (newConfig: Partial<PlotConfig>) => void;
+  update: (newConfig: Partial<PlotConfig>) => void;
 }
 
 export const usePlotStore = create<PlotConfig>((set) => ({
@@ -29,7 +29,7 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   calibrantInPlot: false,
   calibrant: "something",
   plotAxes: PlotAxes.milimeter,
-  edit: (newConfig) => {
+  update: (newConfig) => {
     set({ ...newConfig });
   },
 }));

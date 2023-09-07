@@ -25,9 +25,8 @@ export default function BasicAppBar(): JSX.Element {
     (state) => state.updateCameraTube,
   );
   const updateBeamlineConfig = useBeamlineConfigStore(
-    (state) => state.updateBeamlineConfig,
+    (state) => state.update,
   );
-  const updatePreset = useBeamlineConfigStore((state) => state.updatePreset);
   const updateDetector = useDetectorStore((state) => state.updateDetector);
   const handlePreset = (preset: string) => {
     const { beamstop, cameraTube, detector, ...beamlineConfig } =
@@ -36,7 +35,7 @@ export default function BasicAppBar(): JSX.Element {
     updateBeamstop(beamstop);
     updateCameraTube(cameraTube);
     updateBeamlineConfig(beamlineConfig);
-    updatePreset(preset);
+    updateBeamlineConfig({ preset: preset });
   };
 
   return (

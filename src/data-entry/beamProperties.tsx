@@ -40,15 +40,15 @@ export default function BeampropertiesDataEntry() {
     return state.energy;
   });
   const energyUnits = useBeamlineConfigStore((state) => state.beamEnergyUnits);
-  const updateEnergyUnits = useBeamlineConfigStore(
-    (state) => state.updateEnergyUnits,
+
+  const updateConfig = useBeamlineConfigStore(
+    (state) => state.update,
   );
-  const updateEnergy = useBeamlineConfigStore((state) => state.updateEnergy);
   const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (energyUnits === EnergyUnits.electronVolts && event.target.value) {
-      updateEnergy(parseFloat(event.target.value) / 1000);
+      updateConfig({ energy: parseFloat(event.target.value) / 1000 });
     } else {
-      updateEnergy(parseFloat(event.target.value));
+      updateConfig({ energy: parseFloat(event.target.value) });
     }
   };
 
@@ -59,15 +59,11 @@ export default function BeampropertiesDataEntry() {
     return state.angle;
   });
   const angleUnits = useBeamlineConfigStore((state) => state.angleUnits);
-  const updateAngleUnits = useBeamlineConfigStore(
-    (state) => state.updateAngleUnits,
-  );
-  const updateAngle = useBeamlineConfigStore((state) => state.updateAngle);
   const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (angleUnits === AngleUnits.degrees && event.target.value) {
-      updateAngle(parseFloat(event.target.value) / (180 / Math.PI));
+      updateConfig({ angle: parseFloat(event.target.value) / (180 / Math.PI) });
     } else {
-      updateAngle(parseFloat(event.target.value));
+      updateConfig({ angle: parseFloat(event.target.value) });
     }
   };
 
@@ -84,27 +80,19 @@ export default function BeampropertiesDataEntry() {
   const wavelengthUnits = useBeamlineConfigStore(
     (state) => state.wavelengthUnits,
   );
-  const updateWavelengthUnits = useBeamlineConfigStore(
-    (state) => state.updateWavelengthUnits,
-  );
-  const updateWavelength = useBeamlineConfigStore(
-    (state) => state.updateWavelength,
-  );
   const handleWavelength = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (wavelengthUnits === WavelengthUnits.angstroms && event.target.value) {
-      updateWavelength(parseFloat(event.target.value) / 10);
+      updateConfig({ wavelength: parseFloat(event.target.value) / 10 });
     } else {
-      updateWavelength(parseFloat(event.target.value));
+      updateConfig({ wavelength: parseFloat(event.target.value) });
     }
   };
 
-  const updateCameraLength = useBeamlineConfigStore(
-    (state) => state.updateCameraLength,
-  );
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateCameraLength(
-      parseFloat(event.target.value) ? parseFloat(event.target.value) : null,
-    );
+    updateConfig({
+      cameraLength:
+        parseFloat(event.target.value) ? parseFloat(event.target.value) : null,
+    });
   };
 
   return (
@@ -125,7 +113,7 @@ export default function BeampropertiesDataEntry() {
             label="units"
             value={energyUnits}
             onChange={(event) =>
-              updateEnergyUnits(event.target.value as EnergyUnits)
+              updateConfig({ beamEnergyUnits: event.target.value as EnergyUnits })
             }
           >
             <MenuItem value={EnergyUnits.electronVolts}>
@@ -152,7 +140,7 @@ export default function BeampropertiesDataEntry() {
             label="units"
             value={wavelengthUnits}
             onChange={(event) =>
-              updateWavelengthUnits(event.target.value as WavelengthUnits)
+              updateConfig({ wavelengthUnits: event.target.value as WavelengthUnits })
             }
           >
             <MenuItem value={WavelengthUnits.nanmometres}>
@@ -202,7 +190,7 @@ export default function BeampropertiesDataEntry() {
             label="units"
             value={angleUnits}
             onChange={(event) =>
-              updateAngleUnits(event.target.value as AngleUnits)
+              updateConfig({ angleUnits: event.target.value as AngleUnits })
             }
           >
             <MenuItem value={AngleUnits.radians}>{AngleUnits.radians}</MenuItem>

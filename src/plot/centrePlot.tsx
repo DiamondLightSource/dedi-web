@@ -7,6 +7,7 @@ import {
   VisCanvas,
   SvgCircle,
   SvgRect,
+  SvgLine,
 } from "@h5web/lib";
 import { Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
@@ -115,6 +116,7 @@ export default function CentrePlot(): JSX.Element {
                     detector.resolution.width,
                     detector.resolution.height,
                   ),
+                  new Vector3(detector.resolution.width / 2, 0),
                 ]}
               >
                 {(
@@ -125,27 +127,38 @@ export default function CentrePlot(): JSX.Element {
                   cameraTubePerimeter: Vector3,
                   detectorLower: Vector3,
                   detectorUpper: Vector3,
+                  qrangeEnd: Vector3,
                 ) => (
                   <SvgElement>
-                    {plotConfig.cameraTube &&
+                    {plotConfig.cameraTube && (
                       <SvgCircle
                         coords={[cameraTubeCentre, cameraTubePerimeter]}
                         fill="rgba(0, 255, 0, 0.2)"
                         id="camera tube"
-                      />}
-                    {plotConfig.beamstop &&
+                      />
+                    )}
+                    {plotConfig.qrange && (
+                      <SvgLine
+                        coords={[beamstopCentre, qrangeEnd]}
+                        stroke="blue"
+                        strokeWidth={2}
+                      />
+                    )}
+                    {plotConfig.beamstop && (
                       <SvgCircle
                         coords={[beamstopCentre, clearance]}
                         fill="rgba(0, 0, 255, 0.2)"
                         id="clearance"
-                      />}
-                    {plotConfig.beamstop &&
+                      />
+                    )}
+                    {plotConfig.beamstop && (
                       <SvgCircle
                         coords={[beamstopCentre, beamstopPerimeter]}
                         fill="black"
                         id="beamstop"
-                      />}
-                    {plotConfig.detector &&
+                      />
+                    )}
+                    {plotConfig.detector && (
                       <SvgRect
                         coords={[detectorLower, detectorUpper]}
                         fill="rgba(255, 0, 0, 0.2)"
@@ -153,7 +166,8 @@ export default function CentrePlot(): JSX.Element {
                         stroke="black"
                         strokePosition="outside"
                         strokeWidth={0}
-                      />}
+                      />
+                    )}
                   </SvgElement>
                 )}
               </DataToHtml>
