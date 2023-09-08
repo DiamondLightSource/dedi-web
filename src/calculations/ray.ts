@@ -13,11 +13,6 @@ export class Ray {
     this.initial_point = initial_point;
   }
 
-  /**
-   * Returns a point in the ray
-   * @param scalar
-   * @returns
-   */
   getPoint(scalar: number): Vector2 {
     const result = new Vector2(this.direction.x, this.direction.y);
     result.multiplyScalar(scalar);
@@ -56,8 +51,8 @@ export class Ray {
     const b =
       2 * coeffOfx2 * this.direction.x * this.initial_point.x +
       coeffOfxy *
-        (this.direction.x * this.initial_point.y +
-          this.direction.y * this.initial_point.x) +
+      (this.direction.x * this.initial_point.y +
+        this.direction.y * this.initial_point.x) +
       2 * coeffOfy2 * this.direction.y * this.initial_point.y +
       coeffOfx * this.direction.x +
       coeffOfy * this.direction.y;

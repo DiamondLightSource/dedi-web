@@ -31,6 +31,7 @@ export default function CentrePlot(): JSX.Element {
     }
     return state.current;
   });
+
   const beamstop = useBeamstopStore((state): Beamstop => {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
@@ -65,7 +66,6 @@ export default function CentrePlot(): JSX.Element {
     };
   });
 
-  //unit miss alignment
   const domains = getDomains(detector, cameraTube);
 
   return (
