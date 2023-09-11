@@ -39,8 +39,10 @@ export default function LegendBar(): JSX.Element {
               control={
                 <Checkbox
                   checked={plotConfig.beamstop}
-                  onChange={(_, checked) =>
+                  onChange={(_, checked) => {
                     plotConfig.update({ beamstop: checked })
+                    plotConfig.update({ qrange: checked })
+                  }
                   }
                 />
               }

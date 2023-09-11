@@ -43,7 +43,7 @@ export default function ResultsBar(): JSX.Element {
       <Card sx={{ height: 1 }}>
         <CardContent>
           <Stack spacing={2}>
-            <Typography variant="h6"> Results bottom bar </Typography>
+            <Typography variant="h6"> Results</Typography>
             <Divider />
             <Stack direction={"row"} spacing={3}>
               <Typography>Scattering quantity: </Typography>
@@ -81,11 +81,16 @@ export default function ResultsBar(): JSX.Element {
                   <MenuItem value={AngleUnits.degrees}>deg</MenuItem>
                 </Select>
               </FormControl>
+              <Stack>
+                <Typography>Min {quantity} value: </Typography>
+                <Typography>Max {quantity} value: </Typography>
+              </Stack>
+              <Box />
+              <Stack>
+                <Typography>Requested min {quantity} value: </Typography>
+                <Typography>Requested max {quantity} value: </Typography>
+              </Stack>
             </Stack>
-            <Typography>Min {quantity} value: </Typography>
-            <Typography>Max {quantity} value: </Typography>
-            <Typography>Requested min {quantity} value: </Typography>
-            <Typography>Requested max {quantity} value: </Typography>
           </Stack>
         </CardContent>
       </Card>

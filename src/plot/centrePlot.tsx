@@ -66,6 +66,7 @@ export default function CentrePlot(): JSX.Element {
     };
   });
 
+  // issue here needs working on
   const domains = getDomains(detector, cameraTube);
 
   const getQRange = (detectorHeight: number, cameraTube: CircularDevice, beamstop: Beamstop): { visableRange: number, nonVisableRange: number } => {
@@ -87,8 +88,8 @@ export default function CentrePlot(): JSX.Element {
           <div
             style={{
               display: "grid",
-              height: "80vh",
-              width: "80vh",
+              height: "50vh",
+              width: "50vh",
               border: "solid black",
             }}
           >
@@ -151,13 +152,13 @@ export default function CentrePlot(): JSX.Element {
                         id="camera tube"
                       />
                     )}
-                    {plotConfig.qrange && (
+                    {(plotConfig.qrange && plotConfig.beamstop) && (
                       <SvgLine
                         coords={[beamstopCentre, nonVisableRange]}
                         stroke="red"
                         strokeWidth={2}
                       />)}
-                    {plotConfig.qrange && (
+                    {(plotConfig.qrange && plotConfig.beamstop) && (
                       <SvgLine
                         coords={[nonVisableRange, visableRange]}
                         stroke="blue"
