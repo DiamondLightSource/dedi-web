@@ -29,3 +29,6 @@ export interface UnitConfig {
   wavelengthUnits: WavelengthUnits;
   angleUnits: AngleUnits;
 }
+
+export const CSPEED = 299792458;
+export const PLANCK = 6.62607015e-34;

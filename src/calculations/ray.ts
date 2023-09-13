@@ -1,10 +1,10 @@
-import { Vector2 } from "three";
+import { Vector3 } from "three";
 import NumericRange from "./numericRange";
 
 export class Ray {
-  direction: Vector2;
-  initial_point: Vector2;
-  constructor(direction: Vector2, initial_point: Vector2) {
+  direction: Vector3;
+  initial_point: Vector3;
+  constructor(direction: Vector3, initial_point: Vector3) {
     if (direction.length() == 0)
       throw TypeError(
         "The direction vector of a ray cannot be the zero vector.",
@@ -13,14 +13,14 @@ export class Ray {
     this.initial_point = initial_point;
   }
 
-  getPoint(scalar: number): Vector2 {
-    const result = new Vector2(this.direction.x, this.direction.y);
+  getPoint(scalar: number): Vector3 {
+    const result = new Vector3(this.direction.x, this.direction.y);
     result.multiplyScalar(scalar);
     result.add(this.initial_point);
     return result;
   }
 
-  getPointAtDistance(distance: number): Vector2 {
+  getPointAtDistance(distance: number): Vector3 {
     return this.getPoint(distance / this.direction.length());
   }
 
@@ -81,7 +81,7 @@ export class Ray {
   private getEllipseIntersectionParameterRange(
     a: number,
     b: number,
-    centre: Vector2,
+    centre: Vector3,
   ) {
     const coeffOfx2 = 1 / Math.pow(a, 2);
     const coeffOfy2 = 1 / Math.pow(b, 2);
@@ -102,12 +102,12 @@ export class Ray {
     );
   }
 
-  public getCircleIntersectionParameterRange(radius: number, centre: Vector2) {
+  public getCircleIntersectionParameterRange(radius: number, centre: Vector3) {
     return this.getEllipseIntersectionParameterRange(radius, radius, centre);
   }
 
   public getRectangleIntersectionParameterRange(
-    topLeftCorner: Vector2,
+    topLeftCorner: Vector3,
     width: number,
     height: number,
   ): NumericRange | null {

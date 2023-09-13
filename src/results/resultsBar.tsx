@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { AngleUnits } from "../utils/units";
 import React from "react";
+
 const theta = "\u03B8";
 
 enum ScatteringQuantity {
