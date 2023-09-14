@@ -7,8 +7,6 @@ export interface BeamlineConfigStore extends BeamlineConfig {
   beamEnergyUnits: EnergyUnits;
   angleUnits: AngleUnits;
   wavelengthUnits: WavelengthUnits;
-  energy: number | null;
-  wavelength: number | null;
   update: (storeConfig: Partial<BeamlineConfigStore>) => void;
 }
 

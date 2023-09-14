@@ -10,14 +10,11 @@ interface ScatteringQuantity {
 }
 
 export interface ResultStore {
-    selected: |
+    selected: string,
     q: ScatteringQuantity,
     qUnits: WavelengthUnits,
     twoTheta: ScatteringQuantity
     thetaUnits: AngleUnits
 }
 
-export const useDetectorStore = create<ResultStore>((set) => ({
-
-}));
 

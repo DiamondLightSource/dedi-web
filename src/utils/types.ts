@@ -24,4 +24,6 @@ export interface BeamlineConfig {
   maxWavelength: number;
   minCameraLength: number;
   maxCameraLength: number;
+  energy: number | null;
+  wavelength: number | null;
 }

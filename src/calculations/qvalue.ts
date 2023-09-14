@@ -1,6 +1,6 @@
 import { Beamstop } from "../utils/types";
 import { Ray } from "./ray";
-import { Vector2 } from "three";
+import { Vector3 } from "three";
 
 export const calculateQValue = (distance: number, cameraLength: number, wavelength: number): number | null => {
     if (cameraLength === 0 || wavelength == 0) {
@@ -24,7 +24,7 @@ export const calculateDistanceFromQValue = (qValue: number, cameraLength: number
     return Math.tan(2 * Math.asin(temp)) * cameraLength;
 };
 
-export const getPointForQ = (qValue: number, angle: number, cameralength: number, wavelength: number, beamstop: Beamstop): Vector2 => {
-    const ray = new Ray(new Vector2(Math.cos(angle), Math.sin(angle)), new Vector2(beamstop.centre.x ?? 0, beamstop.centre.y ?? 0));
+export const getPointForQ = (qValue: number, angle: number, cameralength: number, wavelength: number, beamstop: Beamstop): Vector3 => {
+    const ray = new Ray(new Vector3(Math.cos(angle), Math.sin(angle)), new Vector3(beamstop.centre.x ?? 0, beamstop.centre.y ?? 0));
     return ray.getPointAtDistance(1.0e3 * (calculateDistanceFromQValue(qValue, cameralength, wavelength) ?? 0));
 };

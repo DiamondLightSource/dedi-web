@@ -24,7 +24,10 @@ export default class NumericRange {
     return `(min:${this.min}, max:${this.max})`;
   }
 
-  intersect(other: NumericRange): NumericRange | null {
+  intersect(other: NumericRange | null): NumericRange | null {
+    if (other === null) {
+      return null
+    }
     if (other.min > this.max || this.min > other.max) return null;
 
     return new NumericRange(
