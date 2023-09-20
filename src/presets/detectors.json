@@ -4,14 +4,20 @@
       "width": 1,
       "height": 1
     },
-    "pixelSize": 1
+    "pixelSize": {
+      "width": 1,
+      "height": 1
+    }
   },
   "Pilatus P3-2M": {
     "resolution": {
       "width": 1475,
       "height": 1679
     },
-    "pixelSize": 0.172
+    "pixelSize": {
+      "width": 0.172,
+      "height": 0.172
+    }
   },
   "long boy": {
     "resolution": {

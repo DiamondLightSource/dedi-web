@@ -1,15 +1,15 @@
 export interface Detector {
   resolution: { height: number; width: number };
-  pixelSize: number;
+  pixelSize: { height: number; width: number };
 }
 
-export interface SerialisedVector2 {
+export interface SimpleVector2 {
   x?: number | null;
   y?: number | null;
 }
 
 export interface CircularDevice {
-  centre: SerialisedVector2;
+  centre: SimpleVector2;
   diameter: number;
 }
 
