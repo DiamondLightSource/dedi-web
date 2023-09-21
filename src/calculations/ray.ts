@@ -140,7 +140,6 @@ export class Ray {
         (ymax - this.initial_point.y) / this.direction.y,
       ),
     );
-
-    return this.getParameterRange(result!.min, result!.max);
+    return this.getParameterRange(result!.min, result!.max)
   }
 }

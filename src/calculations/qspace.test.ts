@@ -25,6 +25,5 @@ test("Test getting q from pixel position ", () => {
     const qspace = new QSpace(detProps, diffCrystEnv, 1)
     const result = qspace.qFromPixelPosition(1, 1)
     expect(result).toBeInstanceOf(Vector3)
-    console.log(result)
     // do better testing when you understand it better
 });

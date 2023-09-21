@@ -14,7 +14,7 @@ export function computeQrange(detector: Detector, beamstop: Beamstop, cameraTube
     if (t1 != null && cameraTube != null && cameraTube.diameter != 0) {
         t1 = t1.intersect(ray.getCircleIntersectionParameterRange((cameraTube.diameter ?? 0) / 2, new Vector3(cameraTube.centre.x ?? 0, cameraTube.centre.y ?? 0)));
     }
-
+    console.log(t1)
     if (t1 === null || beamProperties.wavelength == null || beamProperties.cameraLength == null) {
         return null
     }
@@ -39,7 +39,6 @@ export function computeQrange(detector: Detector, beamstop: Beamstop, cameraTube
     // get visible range
     const visibleQmin = qspace.qFromPixelPosition(ptMin.x / detector.pixelSize.width, ptMin.y / detector.pixelSize.height)
     const visibleQmax = qspace.qFromPixelPosition(ptMax.x / detector.pixelSize.width, ptMax.y / detector.pixelSize.height)
-
 
     detProps.origin.z = beamProperties.minCameraLength * 1e3
     qspace.setDiffractionCrystalEnviroment({ ...diffCrystEnv, wavelength: beamProperties.minCameraLength * 1e10 })
