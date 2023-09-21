@@ -1,30 +1,10 @@
-import { AngleUnits, WavelengthUnits } from "../utils/units";
 import QSpace, { DetectorProperties, DiffractionCrystalEnvironment } from "../calculations/qspace";
-import NumericRange from "../calculations/numericRange";
 import { BeamlineConfig, Beamstop, CircularDevice, Detector } from "../utils/types";
 import { Vector3, Vector4 } from "three";
 import { Ray } from "../calculations/ray";
 
-interface ScatteringQuantity {
-    name: string,
-    minValue: number,
-    maxValue: number,
-    RequestedMin: number,
-    RequestedMax: number,
-}
 
-export interface ResultStore {
-    selected: string,
-    q: ScatteringQuantity,
-    qUnits: WavelengthUnits,
-    qspace: QSpace
-    twoTheta: ScatteringQuantity
-    thetaUnits: AngleUnits
-    visableQRange: NumericRange
-    fullQRange: NumericRange
-}
-
-function computeQrange(detector: Detector, beamstop: Beamstop, cameraTube: CircularDevice, beamProperties: BeamlineConfig) {
+export function computeQrange(detector: Detector, beamstop: Beamstop, cameraTube: CircularDevice, beamProperties: BeamlineConfig) {
     const initialPosition = new Vector3(beamstop.clearance ?? 0 * Math.cos(beamProperties.angle ?? 0) + (beamstop.centre.y ?? 0),
         beamstop.clearance ?? 0 * Math.sin(beamProperties.angle ?? 0) + (beamstop.centre.y ?? 0))
 
@@ -69,9 +49,6 @@ function computeQrange(detector: Detector, beamstop: Beamstop, cameraTube: Circu
     qspace.setDiffractionCrystalEnviroment({ ...diffCrystEnv, wavelength: beamProperties.maxCameraLength * 1e10 })
     const fullQMax = qspace.qFromPixelPosition(ptMax.x / detector.pixelSize.width, ptMax.y / detector.pixelSize.height)
 
-    return { visibleQmin: visibleQmin, visibleQmax: visibleQmax, fullQMax, fullQMin }
+    return { visibleQmin: visibleQmin, visibleQmax: visibleQmax, fullQMax: fullQMax, fullQMin: fullQMin }
 
 }
-
-
-
