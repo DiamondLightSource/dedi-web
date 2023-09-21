@@ -32,3 +32,12 @@ export interface UnitConfig {
 
 export const CSPEED = 299792458;
 export const PLANCK = 6.62607015e-34;
+
+// unit converters to keep logic in one place
+export const energy2WavelengthConverter = (energy: number): number => {
+  return PLANCK * energy
+}
+
+export const wavelength2EnergyConverter = (wavelength: number): number => {
+  return PLANCK / wavelength
+}

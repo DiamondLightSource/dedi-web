@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { test } from "vitest";
 import { computeQrange } from "./qrange";
 import { BeamlineConfig, Beamstop, CircularDevice, Detector } from "../utils/types";
 
