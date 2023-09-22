@@ -30,7 +30,6 @@ test("Test getting q from pixel position ", () => {
     maxWavelength: 0.335,
     minCameraLength: 0,
     maxCameraLength: 4,
-    energy: 60,
     wavelength: 2e-2,
   };
   const cameraTube: CircularDevice = {
