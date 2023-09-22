@@ -24,8 +24,8 @@ export default function DataSideBar(): JSX.Element {
     if (state.pixelUnits === DistanceUnits.micrometre) {
       return {
         height: millimetre2Micrometre(state.current.pixelSize.height),
-      width: millimetre2Micrometre(state.current.pixelSize.width)
-    };
+        width: millimetre2Micrometre(state.current.pixelSize.width),
+      };
     }
     return state.current.pixelSize;
   });
@@ -57,7 +57,9 @@ export default function DataSideBar(): JSX.Element {
             Resolution (hxw): {resolution.height} x {resolution.width}
           </Typography>
           <Stack direction="row">
-            <Typography flexGrow={2}>Pixel size: {pixelSize.height}x{pixelSize.width} </Typography>
+            <Typography flexGrow={2}>
+              Pixel size: {pixelSize.height}x{pixelSize.width}{" "}
+            </Typography>
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select

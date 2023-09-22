@@ -23,7 +23,8 @@ export default function CentrePlot(): JSX.Element {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
         resolution: {
-          height: state.current.resolution.height * state.current.pixelSize.height,
+          height:
+            state.current.resolution.height * state.current.pixelSize.height,
           width: state.current.resolution.width * state.current.pixelSize.width,
         },
         pixelSize: state.current.pixelSize,

@@ -38,9 +38,7 @@ export default function BeamStopDataEntry(): JSX.Element {
   );
   const updateUnits = useBeamstopStore((state) => state.updateUnits);
 
-  const clearance = useBeamstopStore(
-    (state: BeamstopStore) => state.clearance,
-  );
+  const clearance = useBeamstopStore((state: BeamstopStore) => state.clearance);
   const updateClearance = useBeamstopStore((state) => state.updateClearance);
   const handleClearance = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateClearance(

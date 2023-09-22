@@ -33,35 +33,45 @@ export interface UnitConfig {
 export const CSPEED = 299792458;
 export const PLANCK = 6.62607015e-34;
 
-// unit converters to keep logic in one place
+/**
+ * Converts energy in kilo elctronvolts to wavelength in nm
+ * @param energy energy in keV
+ * @returns wave length in nm
+ */
 export const energy2WavelengthConverter = (energy: number): number => {
-  return (PLANCK *CSPEED)/energy;
+  return ((PLANCK * CSPEED) / (energy * 1e9)) * 6.242e15;
 };
 
+/**
+ * Converts wavelength in nm to energy in kilo elctronvolts
+ * @param wavelength
+ * @returns
+ */
 export const wavelength2EnergyConverter = (wavelength: number): number => {
-  return (PLANCK *CSPEED)/ wavelength;
+  //wavelength in nm
+  return ((PLANCK * CSPEED) / (wavelength * 1e9)) * 6.242e15;
 };
 
-export const millimetre2Micrometre = (input: number):number =>{
-  return 1000*input
-}
+export const millimetre2Micrometre = (input: number): number => {
+  return 1000 * input;
+};
 
-export const micrometre2Milimetre = (input: number):number => {
-  return input/1000
-}
+export const micrometre2Milimetre = (input: number): number => {
+  return input / 1000;
+};
 
-export const nanometres2Angstroms = (input: number):number => {
-  return input*10
-}
+export const nanometres2Angstroms = (input: number): number => {
+  return input * 10;
+};
 
-export const angstroms2Nanometres = (input:number): number=>{
-  return input/10
-}
+export const angstroms2Nanometres = (input: number): number => {
+  return input / 10;
+};
 
-export const kiloElectronVolts2ElectronVots = (input: number): number =>{
-  return input*1000
-}
+export const kiloElectronVolts2ElectronVots = (input: number): number => {
+  return input * 1000;
+};
 
-export const electronVots2KiloElectronVolts = (input: number): number =>{
-  return input/1000
-}
+export const electronVots2KiloElectronVolts = (input: number): number => {
+  return input / 1000;
+};

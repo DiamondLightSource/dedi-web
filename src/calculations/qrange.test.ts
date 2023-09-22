@@ -40,5 +40,5 @@ test("Test getting q from pixel position ", () => {
 
   const result = computeQrange(detector, beamstop, cameraTube, beamConfig);
   console.log(result);
-  expect(result).toBeTruthy()
+  expect(result).toBeTruthy();
 });

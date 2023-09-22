@@ -7,7 +7,17 @@ import {
   MenuItem,
   InputLabel,
 } from "@mui/material";
-import { AngleUnits, EnergyUnits, WavelengthUnits, angstroms2Nanometres,nanometres2Angstroms, kiloElectronVolts2ElectronVots, electronVots2KiloElectronVolts} from "../utils/units";
+import {
+  AngleUnits,
+  EnergyUnits,
+  WavelengthUnits,
+  angstroms2Nanometres,
+  nanometres2Angstroms,
+  kiloElectronVolts2ElectronVots,
+  electronVots2KiloElectronVolts,
+  wavelength2EnergyConverter,
+  energy2WavelengthConverter,
+} from "../utils/units";
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { MathUtils } from "three/src/Three.js";
 
@@ -35,19 +45,31 @@ export default function BeampropertiesDataEntry() {
   );
 
   const energy = useBeamlineConfigStore((state) => {
-    if (state.energy && state.beamEnergyUnits === EnergyUnits.electronVolts) {
-      return kiloElectronVolts2ElectronVots(state.energy);
+    if (!state.wavelength) {
+      return null;
     }
-    return state.energy;
+
+    if (state.beamEnergyUnits === EnergyUnits.electronVolts) {
+      return kiloElectronVolts2ElectronVots(
+        wavelength2EnergyConverter(state.wavelength),
+      );
+    }
+    return wavelength2EnergyConverter(state.wavelength);
   });
   const energyUnits = useBeamlineConfigStore((state) => state.beamEnergyUnits);
 
   const updateConfig = useBeamlineConfigStore((state) => state.update);
   const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (energyUnits === EnergyUnits.electronVolts && event.target.value) {
-      updateConfig({ energy: electronVots2KiloElectronVolts(parseFloat(event.target.value)) });
+      updateConfig({
+        wavelength: energy2WavelengthConverter(
+          electronVots2KiloElectronVolts(parseFloat(event.target.value)),
+        ),
+      });
     } else {
-      updateConfig({ energy: parseFloat(event.target.value) });
+      updateConfig({
+        wavelength: energy2WavelengthConverter(parseFloat(event.target.value)),
+      });
     }
   };
 
@@ -60,7 +82,9 @@ export default function BeampropertiesDataEntry() {
   const angleUnits = useBeamlineConfigStore((state) => state.angleUnits);
   const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (angleUnits === AngleUnits.degrees && event.target.value) {
-      updateConfig({ angle: MathUtils.degToRad(parseFloat(event.target.value))});
+      updateConfig({
+        angle: MathUtils.degToRad(parseFloat(event.target.value)),
+      });
     } else {
       updateConfig({ angle: parseFloat(event.target.value) });
     }
@@ -81,7 +105,9 @@ export default function BeampropertiesDataEntry() {
   );
   const handleWavelength = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (wavelengthUnits === WavelengthUnits.angstroms && event.target.value) {
-      updateConfig({ wavelength: angstroms2Nanometres(parseFloat(event.target.value)) });
+      updateConfig({
+        wavelength: angstroms2Nanometres(parseFloat(event.target.value)),
+      });
     } else {
       updateConfig({ wavelength: parseFloat(event.target.value) });
     }
