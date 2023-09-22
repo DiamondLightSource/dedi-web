@@ -1,4 +1,4 @@
-import { test } from "vitest";
+import { expect, test } from "vitest";
 import { computeQrange } from "./qrange";
 import {
   BeamlineConfig,
@@ -40,4 +40,5 @@ test("Test getting q from pixel position ", () => {
 
   const result = computeQrange(detector, beamstop, cameraTube, beamConfig);
   console.log(result);
+  expect(result).toBeTruthy()
 });

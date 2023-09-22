@@ -23,8 +23,8 @@ export default function CentrePlot(): JSX.Element {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
         resolution: {
-          height: state.current.resolution.height * state.current.pixelSize,
-          width: state.current.resolution.width * state.current.pixelSize,
+          height: state.current.resolution.height * state.current.pixelSize.height,
+          width: state.current.resolution.width * state.current.pixelSize.width,
         },
         pixelSize: state.current.pixelSize,
       };
@@ -40,12 +40,12 @@ export default function CentrePlot(): JSX.Element {
           y: (state.centre.y ?? 0) * detector.pixelSize.height,
         },
         diameter: state.diameter,
-        clearance: (state.clearance ?? 0) * detector.pixelSize,
+        clearance: (state.clearance ?? 0) * detector.pixelSize.height,
       };
     }
     return {
       centre: state.centre,
-      diameter: state.diameter / detector.pixelSize,
+      diameter: state.diameter / detector.pixelSize.height,
       clearance: state.clearance,
     };
   });
@@ -62,7 +62,7 @@ export default function CentrePlot(): JSX.Element {
     }
     return {
       centre: state.centre,
-      diameter: state.diameter / detector.pixelSize,
+      diameter: state.diameter / detector.pixelSize.height,
     };
   });
 
