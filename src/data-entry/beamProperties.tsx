@@ -41,9 +41,7 @@ export default function BeampropertiesDataEntry() {
   });
   const energyUnits = useBeamlineConfigStore((state) => state.beamEnergyUnits);
 
-  const updateConfig = useBeamlineConfigStore(
-    (state) => state.update,
-  );
+  const updateConfig = useBeamlineConfigStore((state) => state.update);
   const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (energyUnits === EnergyUnits.electronVolts && event.target.value) {
       updateConfig({ energy: parseFloat(event.target.value) / 1000 });
@@ -90,8 +88,9 @@ export default function BeampropertiesDataEntry() {
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateConfig({
-      cameraLength:
-        parseFloat(event.target.value) ? parseFloat(event.target.value) : null,
+      cameraLength: parseFloat(event.target.value)
+        ? parseFloat(event.target.value)
+        : null,
     });
   };
 
@@ -113,7 +112,9 @@ export default function BeampropertiesDataEntry() {
             label="units"
             value={energyUnits}
             onChange={(event) =>
-              updateConfig({ beamEnergyUnits: event.target.value as EnergyUnits })
+              updateConfig({
+                beamEnergyUnits: event.target.value as EnergyUnits,
+              })
             }
           >
             <MenuItem value={EnergyUnits.electronVolts}>
@@ -140,7 +141,9 @@ export default function BeampropertiesDataEntry() {
             label="units"
             value={wavelengthUnits}
             onChange={(event) =>
-              updateConfig({ wavelengthUnits: event.target.value as WavelengthUnits })
+              updateConfig({
+                wavelengthUnits: event.target.value as WavelengthUnits,
+              })
             }
           >
             <MenuItem value={WavelengthUnits.nanmometres}>

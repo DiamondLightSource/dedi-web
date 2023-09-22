@@ -9,7 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 import { DistanceUnits } from "../utils/units";
-import { useBeamstopStore } from "./beamstopStore";
+import { BeamstopStore, useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 
 export default function BeamStopDataEntry(): JSX.Element {
@@ -26,17 +26,21 @@ export default function BeamStopDataEntry(): JSX.Element {
     });
   };
 
-  const diameter = useBeamstopStore((state) => {
+  const diameter = useBeamstopStore<number>((state) => {
     if (state.diameterUnits === DistanceUnits.micrometre) {
       return 1000 * state.diameter;
     }
     return state.diameter;
   });
 
-  const diameterUnits = useBeamstopStore((state) => state.diameterUnits);
+  const diameterUnits = useBeamstopStore(
+    (state: BeamstopStore) => state.diameterUnits,
+  );
   const updateUnits = useBeamstopStore((state) => state.updateUnits);
 
-  const clearance = useBeamstopStore((state) => state.clearance);
+  const clearance = useBeamstopStore(
+    (state: BeamstopStore) => state.clearance,
+  );
   const updateClearance = useBeamstopStore((state) => state.updateClearance);
   const handleClearance = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateClearance(

@@ -23,5 +23,6 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   beamEnergyUnits: EnergyUnits.kiloElectronVolts,
   angleUnits: AngleUnits.radians,
   wavelengthUnits: WavelengthUnits.nanmometres,
-  update: (storeConfig: Partial<BeamlineConfigStore>) => set({ ...storeConfig }),
+  update: (storeConfig: Partial<BeamlineConfigStore>) =>
+    set({ ...storeConfig }),
 }));

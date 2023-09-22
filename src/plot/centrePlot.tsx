@@ -69,14 +69,28 @@ export default function CentrePlot(): JSX.Element {
   // issue here needs working on
   const domains = getDomains(detector, cameraTube);
 
-  const getQRange = (detectorHeight: number, cameraTube: CircularDevice, beamstop: Beamstop): { visableRange: number, nonVisableRange: number } => {
-    const cameraTubeBottom = Math.sqrt((Math.pow(cameraTube.diameter / 2, 2) - Math.pow((beamstop.centre.x ?? 0) - (cameraTube.centre.x ?? 0), 2))) + (cameraTube.centre.y ?? 0);
+  const getQRange = (
+    detectorHeight: number,
+    cameraTube: CircularDevice,
+    beamstop: Beamstop,
+  ): { visableRange: number; nonVisableRange: number } => {
+    const cameraTubeBottom =
+      Math.sqrt(
+        Math.pow(cameraTube.diameter / 2, 2) -
+          Math.pow((beamstop.centre.x ?? 0) - (cameraTube.centre.x ?? 0), 2),
+      ) + (cameraTube.centre.y ?? 0);
     const shorterEdge = Math.min(detectorHeight, cameraTubeBottom);
-    const clearance = (beamstop.centre.y ?? 0) + (beamstop.clearance ?? 0) + (beamstop.diameter / 2)
+    const clearance =
+      (beamstop.centre.y ?? 0) +
+      (beamstop.clearance ?? 0) +
+      beamstop.diameter / 2;
     if (clearance > shorterEdge) {
-      return { visableRange: beamstop.centre.y ?? 0, nonVisableRange: beamstop.centre.y ?? 0 }
+      return {
+        visableRange: beamstop.centre.y ?? 0,
+        nonVisableRange: beamstop.centre.y ?? 0,
+      };
     }
-    return { visableRange: shorterEdge, nonVisableRange: clearance }
+    return { visableRange: shorterEdge, nonVisableRange: clearance };
   };
 
   const qrange = getQRange(detector.resolution.height, cameraTube, beamstop);
@@ -111,17 +125,17 @@ export default function CentrePlot(): JSX.Element {
                     beamstop.centre.y ?? 0,
                   ),
                   new Vector3(
-                    (beamstop.centre.x ?? 0),
+                    beamstop.centre.x ?? 0,
                     (beamstop.centre.y ?? 0) +
-                    (beamstop.diameter / 2) +
-                    (beamstop.clearance ?? 0)
+                      beamstop.diameter / 2 +
+                      (beamstop.clearance ?? 0),
                   ),
                   new Vector3(
                     cameraTube.centre.x ?? 0,
                     cameraTube.centre.y ?? 0,
                   ),
                   new Vector3(
-                    (cameraTube.centre.x ?? 0),
+                    cameraTube.centre.x ?? 0,
                     (cameraTube.centre.y ?? 0) + cameraTube.diameter / 2,
                   ),
                   new Vector3(0, 0),
@@ -152,13 +166,14 @@ export default function CentrePlot(): JSX.Element {
                         id="camera tube"
                       />
                     )}
-                    {(plotConfig.qrange && plotConfig.beamstop) && (
+                    {plotConfig.qrange && plotConfig.beamstop && (
                       <SvgLine
                         coords={[beamstopCentre, nonVisableRange]}
                         stroke="red"
                         strokeWidth={2}
-                      />)}
-                    {(plotConfig.qrange && plotConfig.beamstop) && (
+                      />
+                    )}
+                    {plotConfig.qrange && plotConfig.beamstop && (
                       <SvgLine
                         coords={[nonVisableRange, visableRange]}
                         stroke="blue"

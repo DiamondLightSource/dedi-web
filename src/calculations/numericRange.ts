@@ -26,7 +26,7 @@ export default class NumericRange {
 
   intersect(other: NumericRange | null): NumericRange | null {
     if (other === null) {
-      return null
+      return null;
     }
     if (other.min > this.max || this.min > other.max) return null;
 

@@ -1,10 +1,10 @@
-import { CircularDevice, SerialisedVector2 } from "../utils/types";
+import { CircularDevice, SimpleVector2 } from "../utils/types";
 import { create } from "zustand";
 import { DistanceUnits } from "../utils/units";
 
 export interface CameraTubeStore extends CircularDevice {
   diameterUnits: DistanceUnits;
-  updateCentre: (centre: Partial<SerialisedVector2>) => void;
+  updateCentre: (centre: Partial<SimpleVector2>) => void;
   updateUnits: (newUnits: DistanceUnits) => void;
   updateCameraTube: (presetCameraTube: CircularDevice) => void;
 }
@@ -16,7 +16,7 @@ export const useCameraTubeStore = create<CameraTubeStore>((set) => ({
   },
   diameter: 1,
   diameterUnits: DistanceUnits.millimetre,
-  updateCentre: (newCentre: Partial<SerialisedVector2>) =>
+  updateCentre: (newCentre: Partial<SimpleVector2>) =>
     set((state) => ({ centre: { ...state.centre, ...newCentre } })),
   updateUnits: (newUnits: DistanceUnits) => set({ diameterUnits: newUnits }),
   updateCameraTube: (presetCameraTube: CircularDevice) => set(presetCameraTube),
