@@ -48,6 +48,7 @@ export class Ray {
       coeffOfx2 * Math.pow(this.direction.x, 2) +
       coeffOfxy * this.direction.x * this.direction.y +
       coeffOfy2 * Math.pow(this.direction.y, 2);
+    
     const b =
       2 * coeffOfx2 * this.direction.x * this.initial_point.x +
       coeffOfxy *
@@ -56,6 +57,7 @@ export class Ray {
       2 * coeffOfy2 * this.direction.y * this.initial_point.y +
       coeffOfx * this.direction.x +
       coeffOfy * this.direction.y;
+
     const c =
       coeffOfx2 * Math.pow(this.initial_point.x, 2) +
       coeffOfxy * this.initial_point.x * this.initial_point.y +
@@ -63,8 +65,10 @@ export class Ray {
       coeffOfx * this.initial_point.x +
       coeffOfy * this.initial_point.y +
       constant;
-
+    
+    console.log("stuff")
     const discriminant = Math.pow(b, 2) - 4 * a * c;
+    console.log(discriminant)
     if (discriminant < 0) return null;
     if (a == 0) {
       if (b == 0)

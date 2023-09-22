@@ -10,7 +10,14 @@ import {
 } from "../utils/types";
 import { Vector3, Vector4 } from "three";
 import { Ray } from "../calculations/ray";
-
+/**
+ * Compute the viable and full qranges 
+ * @param detector 
+ * @param beamstop 
+ * @param cameraTube 
+ * @param beamProperties 
+ * @returns 
+ */
 export function computeQrange(
   detector: Detector,
   beamstop: Beamstop,
@@ -36,6 +43,8 @@ export function computeQrange(
     detector.resolution.width,
     detector.resolution.height,
   );
+
+  console.log(t1)
 
   if (t1 != null && cameraTube != null && cameraTube.diameter != 0) {
     t1 = t1.intersect(

@@ -48,7 +48,6 @@ export const energy2WavelengthConverter = (energy: number): number => {
  * @returns
  */
 export const wavelength2EnergyConverter = (wavelength: number): number => {
-  //wavelength in nm
   return ((PLANCK * CSPEED) / (wavelength * 1e9)) * 6.242e15;
 };
 
