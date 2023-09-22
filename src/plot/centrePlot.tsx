@@ -36,8 +36,8 @@ export default function CentrePlot(): JSX.Element {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
         centre: {
-          x: (state.centre.x ?? 0) * detector.pixelSize,
-          y: (state.centre.y ?? 0) * detector.pixelSize,
+          x: (state.centre.x ?? 0) * detector.pixelSize.width,
+          y: (state.centre.y ?? 0) * detector.pixelSize.height,
         },
         diameter: state.diameter,
         clearance: (state.clearance ?? 0) * detector.pixelSize,
@@ -54,8 +54,8 @@ export default function CentrePlot(): JSX.Element {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
         centre: {
-          x: (state.centre.x ?? 0) * detector.pixelSize,
-          y: (state.centre.y ?? 0) * detector.pixelSize,
+          x: (state.centre.x ?? 0) * detector.pixelSize.height,
+          y: (state.centre.y ?? 0) * detector.pixelSize.width,
         },
         diameter: state.diameter,
       };
