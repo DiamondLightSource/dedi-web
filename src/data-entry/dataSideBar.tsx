@@ -11,7 +11,7 @@ import {
   MenuItem,
   InputLabel,
 } from "@mui/material";
-import { DistanceUnits } from "../utils/units";
+import { DistanceUnits, millimetre2Micrometre } from "../utils/units";
 import BeamStopDataEntry from "./beamstop";
 import CameraTubeDataEntry from "./cameraTube";
 import { useDetectorStore } from "./detectorStore";
@@ -22,7 +22,10 @@ export default function DataSideBar(): JSX.Element {
   const resolution = useDetectorStore((state) => state.current.resolution);
   const pixelSize = useDetectorStore((state) => {
     if (state.pixelUnits === DistanceUnits.micrometre) {
-      return 1000 * state.current.pixelSize;
+      return {
+        height: millimetre2Micrometre(state.current.pixelSize.height),
+      width: millimetre2Micrometre(state.current.pixelSize.width)
+    };
     }
     return state.current.pixelSize;
   });
@@ -54,7 +57,7 @@ export default function DataSideBar(): JSX.Element {
             Resolution (hxw): {resolution.height} x {resolution.width}
           </Typography>
           <Stack direction="row">
-            <Typography flexGrow={2}>Pixel size: {pixelSize} </Typography>
+            <Typography flexGrow={2}>Pixel size: {pixelSize.height}x{pixelSize.width} </Typography>
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select

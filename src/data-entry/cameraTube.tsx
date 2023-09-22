@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useCameraTubeStore } from "./cameraTubeStore";
-import { DistanceUnits } from "../utils/units";
+import { DistanceUnits, millimetre2Micrometre } from "../utils/units";
 
 export default function CameraTubeDataEntry(): JSX.Element {
   const centre = useCameraTubeStore((state) => state.centre);
@@ -26,7 +26,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
 
   const diameter = useCameraTubeStore((state) => {
     if (state.diameterUnits === DistanceUnits.micrometre) {
-      return 1000 * state.diameter;
+      return millimetre2Micrometre(state.diameter);
     }
     return state.diameter;
   });

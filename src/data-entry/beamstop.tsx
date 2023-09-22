@@ -8,7 +8,7 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { DistanceUnits } from "../utils/units";
+import { DistanceUnits, millimetre2Micrometre } from "../utils/units";
 import { BeamstopStore, useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 
@@ -28,7 +28,7 @@ export default function BeamStopDataEntry(): JSX.Element {
 
   const diameter = useBeamstopStore<number>((state) => {
     if (state.diameterUnits === DistanceUnits.micrometre) {
-      return 1000 * state.diameter;
+      return millimetre2Micrometre(state.diameter);
     }
     return state.diameter;
   });
@@ -126,6 +126,7 @@ export default function BeamStopDataEntry(): JSX.Element {
             value={clearance ?? ""}
             onChange={handleClearance}
           />
+          <Typography>px</Typography>
         </Stack>
       </Stack>
     </Stack>

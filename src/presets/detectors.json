@@ -24,6 +24,9 @@
       "width": 1475,
       "height": 679
     },
-    "pixelSize": 0.2
+    "pixelSize": {
+      "width": 0.2,
+      "height": 0.2
+    }
   }
 }

@@ -41,3 +41,27 @@ export const energy2WavelengthConverter = (energy: number): number => {
 export const wavelength2EnergyConverter = (wavelength: number): number => {
   return (PLANCK *CSPEED)/ wavelength;
 };
+
+export const millimetre2Micrometre = (input: number):number =>{
+  return 1000*input
+}
+
+export const micrometre2Milimetre = (input: number):number => {
+  return input/1000
+}
+
+export const nanometres2Angstroms = (input: number):number => {
+  return input*10
+}
+
+export const angstroms2Nanometres = (input:number): number=>{
+  return input/10
+}
+
+export const kiloElectronVolts2ElectronVots = (input: number): number =>{
+  return input*1000
+}
+
+export const electronVots2KiloElectronVolts = (input: number): number =>{
+  return input/1000
+}
