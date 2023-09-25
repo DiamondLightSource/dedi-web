@@ -9,16 +9,19 @@ import {
   SvgRect,
   SvgLine,
 } from "@h5web/lib";
-import { Vector3 } from "three";
+import { Vector2, Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 import { getDomains } from "./plotUtils";
 import { PlotAxes, usePlotStore } from "./plotStore";
 import { Beamstop, CircularDevice, Detector } from "../utils/types";
+import { computeQrange } from "../calculations/qrange";
+import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
+  const bealineConfig = useBeamlineConfigStore();
   const detector = useDetectorStore((state): Detector => {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
@@ -70,32 +73,12 @@ export default function CentrePlot(): JSX.Element {
   // issue here needs working on
   const domains = getDomains(detector, cameraTube);
 
-  const getQRange = (
-    detectorHeight: number,
-    cameraTube: CircularDevice,
-    beamstop: Beamstop,
-  ): { visableRange: number; nonVisableRange: number } => {
-    const cameraTubeBottom =
-      Math.sqrt(
-        Math.pow(cameraTube.diameter / 2, 2) -
-          Math.pow((beamstop.centre.x ?? 0) - (cameraTube.centre.x ?? 0), 2),
-      ) + (cameraTube.centre.y ?? 0);
-    const shorterEdge = Math.min(detectorHeight, cameraTubeBottom);
-    const clearance =
-      (beamstop.centre.y ?? 0) +
-      (beamstop.clearance ?? 0) +
-      beamstop.diameter / 2;
-    if (clearance > shorterEdge) {
-      return {
-        visableRange: beamstop.centre.y ?? 0,
-        nonVisableRange: beamstop.centre.y ?? 0,
-      };
-    }
-    return { visableRange: shorterEdge, nonVisableRange: clearance };
-  };
-
-  const qrange = getQRange(detector.resolution.height, cameraTube, beamstop);
-
+  const { ptMax, ptMin } = computeQrange(
+    detector,
+    beamstop,
+    cameraTube,
+    bealineConfig,
+  ) ?? { ptMax: new Vector2(0, 0), ptMin: new Vector2(0, 0) };
   return (
     <Box>
       <Card>
@@ -144,8 +127,8 @@ export default function CentrePlot(): JSX.Element {
                     detector.resolution.width,
                     detector.resolution.height,
                   ),
-                  new Vector3(beamstop.centre.x ?? 0, qrange.visableRange),
-                  new Vector3(beamstop.centre.x ?? 0, qrange.nonVisableRange),
+                  new Vector3(ptMin.x, ptMin.y),
+                  new Vector3(ptMax.x, ptMax.y),
                 ]}
               >
                 {(

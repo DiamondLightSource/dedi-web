@@ -7,7 +7,7 @@ import {
   Detector,
 } from "../utils/types";
 
-test("Test getting q from pixel position ", () => {
+test("Test computing q ranges", () => {
   const detector: Detector = {
     resolution: {
       height: 1679,
@@ -19,7 +19,7 @@ test("Test getting q from pixel position ", () => {
     },
   };
   const beamstop: Beamstop = {
-    centre: { x: 738, y: 100 },
+    centre: { x: 738, y: 840 },
     diameter: 4,
     clearance: 10,
   };
@@ -30,7 +30,7 @@ test("Test getting q from pixel position ", () => {
     maxWavelength: 0.335,
     minCameraLength: 0,
     maxCameraLength: 4,
-    wavelength: 2e-2,
+    wavelength: 9e-2,
   };
   const cameraTube: CircularDevice = {
     centre: { x: 738, y: 840 },
