@@ -73,12 +73,13 @@ export default function CentrePlot(): JSX.Element {
   // issue here needs working on
   const domains = getDomains(detector, cameraTube);
 
-  const { ptMax, ptMin } = computeQrange(
+  const { ptMin, ptMax, ...stuff } = computeQrange(
     detector,
     beamstop,
     cameraTube,
     bealineConfig,
   ) ?? { ptMax: new Vector2(0, 0), ptMin: new Vector2(0, 0) };
+  console.log(ptMax, ptMin)
   return (
     <Box>
       <Card>
@@ -111,8 +112,8 @@ export default function CentrePlot(): JSX.Element {
                   new Vector3(
                     beamstop.centre.x ?? 0,
                     (beamstop.centre.y ?? 0) +
-                      beamstop.diameter / 2 +
-                      (beamstop.clearance ?? 0),
+                    beamstop.diameter / 2 +
+                    (beamstop.clearance ?? 0),
                   ),
                   new Vector3(
                     cameraTube.centre.x ?? 0,
@@ -139,8 +140,8 @@ export default function CentrePlot(): JSX.Element {
                   cameraTubePerimeter: Vector3,
                   detectorLower: Vector3,
                   detectorUpper: Vector3,
-                  visableRange: Vector3,
-                  nonVisableRange: Vector3,
+                  minQRange: Vector3,
+                  maxQRange: Vector3,
                 ) => (
                   <SvgElement>
                     {plotConfig.cameraTube && (
@@ -152,15 +153,8 @@ export default function CentrePlot(): JSX.Element {
                     )}
                     {plotConfig.qrange && plotConfig.beamstop && (
                       <SvgLine
-                        coords={[beamstopCentre, nonVisableRange]}
+                        coords={[minQRange, maxQRange]}
                         stroke="red"
-                        strokeWidth={2}
-                      />
-                    )}
-                    {plotConfig.qrange && plotConfig.beamstop && (
-                      <SvgLine
-                        coords={[nonVisableRange, visableRange]}
-                        stroke="blue"
                         strokeWidth={2}
                       />
                     )}
