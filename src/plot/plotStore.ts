@@ -1,9 +1,20 @@
 import { create } from "zustand";
+import { AngleUnits, DistanceUnits, WavelengthUnits } from "../utils/units";
 
 export enum PlotAxes {
   milimeter = "milimeter",
   pixel = "pixel",
   reciprocal = "reciprocal",
+}
+
+export interface ScatteringQuantity {
+  name: string;
+  minValue: number;
+  maxValue: number;
+  RequestedMin: number;
+  RequestedMax: number;
+  units: DistanceUnits | WavelengthUnits | AngleUnits;
+  generate: (qvalue: number) => number;
 }
 
 export interface PlotConfig {
@@ -33,3 +44,4 @@ export const usePlotStore = create<PlotConfig>((set) => ({
     set({ ...newConfig });
   },
 }));
+
