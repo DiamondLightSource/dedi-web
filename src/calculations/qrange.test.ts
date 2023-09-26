@@ -1,4 +1,4 @@
-import { test } from "vitest";
+import { assert, expect, test } from "vitest";
 import { computeQrange } from "./qrange";
 import {
   BeamlineConfig,
@@ -11,7 +11,7 @@ test("Test computing q ranges", () => {
   const detector: Detector = {
     resolution: {
       height: 1679,
-      width: 1465,
+      width: 1475,
     },
     pixelSize: {
       height: 0.172,
@@ -28,9 +28,9 @@ test("Test computing q ranges", () => {
     cameraLength: 1.9,
     minWavelength: 6.2e-2,
     maxWavelength: 0.335,
-    minCameraLength: 0,
-    maxCameraLength: 4,
-    wavelength: 9e-2,
+    minCameraLength: 1.9,
+    maxCameraLength: 9.9,
+    wavelength: 0.09,
   };
   const cameraTube: CircularDevice = {
     centre: { x: 738, y: 840 },
@@ -38,5 +38,5 @@ test("Test computing q ranges", () => {
   };
 
   const result = computeQrange(detector, beamstop, cameraTube, beamConfig);
-  console.log(result);
+  expect(result).toBeTruthy()
 });

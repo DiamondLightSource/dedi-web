@@ -1,10 +1,8 @@
-import { Vector3, Vector4 } from "three";
+import { Vector3, Vector2 } from "three";
 import { Detector } from "../utils/types";
 
 export interface DiffractionCrystalEnvironment {
   wavelength: number;
-  referenceNormal: Vector3;
-  strokesVector: Vector4;
 }
 
 export interface DetectorProperties extends Detector {
@@ -15,8 +13,6 @@ export interface DetectorProperties extends Detector {
 export default class QSpace {
   detProps: DetectorProperties;
   kmod: number;
-  reference: Vector3;
-  strokes: Vector4;
   qScale: number;
   mki: Vector3;
 
@@ -28,10 +24,13 @@ export default class QSpace {
     this.detProps = detProps;
     detProps.beamVector.normalize();
     this.qScale = qScale;
-    this.mki = new Vector3().copy(detProps.beamVector).negate();
+
+
+    this.mki = detProps.beamVector.clone().negate();
     this.kmod = this.qScale / diffexp.wavelength;
-    this.reference = diffexp.referenceNormal;
-    this.strokes = diffexp.strokesVector;
+    const ki = this.detProps.beamVector.clone()
+    ki.multiplyScalar(this.kmod)
+    this.mki = ki.negate()
   }
 
   convertToQ(q: Vector3) {
@@ -42,23 +41,24 @@ export default class QSpace {
     } else {
       q.add(this.mki);
     }
+    return q
   }
 
-  qFromPixelPosition(x: number, y: number) {
+  qFromPixelPosition(vector: Vector2) {
     const q = new Vector3();
     q.set(
-      -this.detProps.pixelSize.height * x,
-      -this.detProps.pixelSize.width * y,
+      -vector.x,
+      -vector.y,
       0,
     );
     q.add(this.detProps.origin);
-    this.convertToQ(q);
-    return q;
+    return this.convertToQ(q);
   }
 
   setDiffractionCrystalEnviroment(diffexp: DiffractionCrystalEnvironment) {
     this.kmod = this.qScale / diffexp.wavelength;
-    this.reference = diffexp.referenceNormal;
-    this.strokes = diffexp.strokesVector;
+    const ki = this.detProps.beamVector.clone()
+    ki.multiplyScalar(this.kmod)
+    this.mki = ki.negate()
   }
 }

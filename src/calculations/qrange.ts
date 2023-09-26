@@ -31,9 +31,9 @@ export function computeQrange(
     fullQRange: NumericRange;
 } | null {
     // convert pixel values to mm
-    const clearanceWidthMM = (beamstop.clearance ?? 0) * detector.pixelSize.width;
+    const clearanceWidthMM = (beamstop.clearance ?? 0) * detector.pixelSize.width + (beamstop.diameter / 2)
     const clearaceHeightMM =
-        (beamstop.clearance ?? 0) * detector.pixelSize.height;
+        (beamstop.clearance ?? 0) * detector.pixelSize.height + (beamstop.diameter / 2);
 
     const beamcentreXMM = (beamstop.centre.x ?? 0) * detector.pixelSize.width;
     const beamcentreYMM = (beamstop.centre.y ?? 0) * detector.pixelSize.height;
@@ -85,58 +85,54 @@ export function computeQrange(
     const ptMin = ray.getPoint(t1.min);
     const ptMax = ray.getPoint(t1.max);
 
+    // works as intended up to here
+
     const detProps: DetectorProperties = {
         ...detector,
         origin: new Vector3(
             beamcentreXMM,
             beamcentreYMM,
-            beamProperties.cameraLength * 1e-3,
+            beamProperties.cameraLength * 1e3,
         ),
         beamVector: new Vector3(0, 0, 1),
     };
 
     const diffCrystEnv: DiffractionCrystalEnvironment = {
         wavelength: beamProperties.wavelength * 1e10,
-        referenceNormal: new Vector3(0, 1, 0),
-        strokesVector: new Vector4(1, 1, 0, 0),
     };
 
     const qspace = new QSpace(detProps, diffCrystEnv, 2 * Math.PI);
 
+
     // get visible range
     const visibleQMin = qspace.qFromPixelPosition(
-        ptMin.x / detector.pixelSize.width,
-        ptMin.y / detector.pixelSize.height,
+        ptMin,
     );
     const visibleQMax = qspace.qFromPixelPosition(
-        ptMax.x / detector.pixelSize.width,
-        ptMax.y / detector.pixelSize.height,
+        ptMax
     );
 
     detProps.origin.z = beamProperties.minCameraLength * 1e3;
     qspace.setDiffractionCrystalEnviroment({
         ...diffCrystEnv,
-        wavelength: beamProperties.minCameraLength * 1e10,
+        wavelength: beamProperties.minWavelength * 1e10,
     });
     const fullQMin = qspace.qFromPixelPosition(
-        ptMin.x / detector.pixelSize.width,
-        ptMin.y / detector.pixelSize.height,
+        ptMax
     );
 
     detProps.origin.z = beamProperties.maxCameraLength * 1e3;
     qspace.setDiffractionCrystalEnviroment({
         ...diffCrystEnv,
-        wavelength: beamProperties.maxCameraLength * 1e10,
+        wavelength: beamProperties.maxWavelength * 1e10,
     });
     const fullQMax = qspace.qFromPixelPosition(
-        ptMax.x / detector.pixelSize.width,
-        ptMax.y / detector.pixelSize.height,
+        ptMin
     );
-
     return {
         ptMin: ptMin,
         ptMax: ptMax,
-        visibleQRange: new NumericRange(visibleQMin.x, visibleQMax.x),
-        fullQRange: new NumericRange(fullQMin.x, fullQMax.x),
+        visibleQRange: new NumericRange(visibleQMin.length() * 1e10, visibleQMax.length() * 1e10),
+        fullQRange: new NumericRange(fullQMin.length() * 1e10, fullQMax.length() * 1e10),
     };
 }
