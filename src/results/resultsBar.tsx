@@ -9,6 +9,7 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import { AngleUnits } from "../utils/units";
@@ -16,7 +17,9 @@ import React from "react";
 import { ScatteringQuantity } from "./resultsStore";
 import NumericRange from "../calculations/numericRange";
 
-export default function ResultsBar(props: { visableQRange: NumericRange }): JSX.Element {
+export default function ResultsBar(props: {
+  visableQRange: NumericRange;
+}): JSX.Element {
   const [angleUnits, setAngleUnits] = React.useState<AngleUnits>(
     AngleUnits.radians,
   );
@@ -31,8 +34,6 @@ export default function ResultsBar(props: { visableQRange: NumericRange }): JSX.
   const handleQuantity = (event: SelectChangeEvent) => {
     setQuantity(event.target.value as ScatteringQuantity);
   };
-
-
 
   return (
     <Box sx={{ flexGrow: 2 }}>
@@ -77,14 +78,22 @@ export default function ResultsBar(props: { visableQRange: NumericRange }): JSX.
                   <MenuItem value={AngleUnits.degrees}>deg</MenuItem>
                 </Select>
               </FormControl>
-              <Stack>
-                <Typography>Min {quantity} value: {props.visableQRange.min.toFixed(4)} </Typography>
-                <Typography>Max {quantity} value: {props.visableQRange.max.toFixed(4)}</Typography>
+              <Stack spacing={2}>
+                <Typography>
+                  Min {quantity} value: {props.visableQRange.min.toFixed(4)}{" "}
+                </Typography>
+                <Typography>
+                  Max {quantity} value: {props.visableQRange.max.toFixed(4)}
+                </Typography>
               </Stack>
               <Box />
-              <Stack>
+              <Stack spacing={2}>
                 <Typography>Requested min {quantity} value: </Typography>
                 <Typography>Requested max {quantity} value: </Typography>
+              </Stack>
+              <Stack spacing={2}>
+                <TextField type="number" size="small" />
+                <TextField type="number" size="small" />
               </Stack>
             </Stack>
           </Stack>

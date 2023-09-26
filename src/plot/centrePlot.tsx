@@ -18,8 +18,6 @@ import { PlotAxes, usePlotStore } from "./plotStore";
 import { Beamstop, CircularDevice, Detector } from "../utils/types";
 import { computeQrange } from "../calculations/qrange";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
-import { useResultStore } from "../results/resultsStore";
-import React from "react";
 import LegendBar from "./legendBar";
 import ResultsBar from "../results/resultsBar";
 import NumericRange from "../calculations/numericRange";
@@ -27,29 +25,32 @@ import NumericRange from "../calculations/numericRange";
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
   const bealineConfig = useBeamlineConfigStore();
-  const detector = useDetectorStore((state) => state.current)
+  const detector = useDetectorStore((state) => state.current);
   const beamstop = useBeamstopStore((state): Beamstop => {
-    return { centre: state.centre, diameter: state.diameter, clearance: state.clearance }
-  })
+    return {
+      centre: state.centre,
+      diameter: state.diameter,
+      clearance: state.clearance,
+    };
+  });
   const cameraTube = useCameraTubeStore((state): CircularDevice => {
-    return { centre: state.centre, diameter: state.diameter }
-  })
+    return { centre: state.centre, diameter: state.diameter };
+  });
 
   const qrangeResult = computeQrange(
     detector,
     beamstop,
     cameraTube,
     bealineConfig,
-  )
+  );
 
-  const { ptMin, ptMax, visibleQRange } = qrangeResult
+  const { ptMin, ptMax, visibleQRange } = qrangeResult;
 
   const adjustUnitsDetector = (detector: Detector): Detector => {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
         resolution: {
-          height:
-            detector.resolution.height * detector.pixelSize.height,
+          height: detector.resolution.height * detector.pixelSize.height,
           width: detector.resolution.width * detector.pixelSize.width,
         },
         pixelSize: detector.pixelSize,
@@ -58,7 +59,10 @@ export default function CentrePlot(): JSX.Element {
     return detector;
   };
 
-  const adjustUnitsBeamstop = (beamstop: Beamstop, detector: Detector): Beamstop => {
+  const adjustUnitsBeamstop = (
+    beamstop: Beamstop,
+    detector: Detector,
+  ): Beamstop => {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
         centre: {
@@ -76,7 +80,10 @@ export default function CentrePlot(): JSX.Element {
     };
   };
 
-  const adjustUnitsCameraTube = (cameraTube: CircularDevice, detector: Detector): CircularDevice => {
+  const adjustUnitsCameraTube = (
+    cameraTube: CircularDevice,
+    detector: Detector,
+  ): CircularDevice => {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
         centre: {
@@ -92,19 +99,29 @@ export default function CentrePlot(): JSX.Element {
     };
   };
 
-  const adjustRange = (ptMin: Vector2, ptMax: Vector2, detector: Detector): { ptMin: Vector2, ptMax: Vector2 } => {
-    const pixelVector = new Vector2(detector.pixelSize.width, detector.pixelSize.height)
+  const adjustRange = (
+    ptMin: Vector2,
+    ptMax: Vector2,
+    detector: Detector,
+  ): { ptMin: Vector2; ptMax: Vector2 } => {
+    const pixelVector = new Vector2(
+      detector.pixelSize.width,
+      detector.pixelSize.height,
+    );
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
-      return { ptMin: ptMin, ptMax: ptMax }
+      return { ptMin: ptMin, ptMax: ptMax };
     }
-    return { ptMin: ptMin.divide(pixelVector), ptMax: ptMax.divide(pixelVector) }
-  }
+    return {
+      ptMin: ptMin.divide(pixelVector),
+      ptMax: ptMax.divide(pixelVector),
+    };
+  };
 
-  const ajustedBeamstop = adjustUnitsBeamstop(beamstop, detector)
-  const ajustedDetector = adjustUnitsDetector(detector)
-  const ajustedCameraTube = adjustUnitsCameraTube(cameraTube, detector)
+  const ajustedBeamstop = adjustUnitsBeamstop(beamstop, detector);
+  const ajustedDetector = adjustUnitsDetector(detector);
+  const ajustedCameraTube = adjustUnitsCameraTube(cameraTube, detector);
 
-  const ajustedPoints = adjustRange(ptMin, ptMax, detector)
+  const ajustedPoints = adjustRange(ptMin, ptMax, detector);
 
   const domains = getDomains(ajustedDetector, ajustedCameraTube);
 
@@ -134,16 +151,20 @@ export default function CentrePlot(): JSX.Element {
                   <ResetZoomButton />
                   <DataToHtml
                     points={[
-                      new Vector3(ajustedBeamstop.centre.x ?? 0, ajustedBeamstop.centre.y ?? 0),
                       new Vector3(
-                        (ajustedBeamstop.centre.x ?? 0) + ajustedBeamstop.diameter / 2,
+                        ajustedBeamstop.centre.x ?? 0,
+                        ajustedBeamstop.centre.y ?? 0,
+                      ),
+                      new Vector3(
+                        (ajustedBeamstop.centre.x ?? 0) +
+                          ajustedBeamstop.diameter / 2,
                         ajustedBeamstop.centre.y ?? 0,
                       ),
                       new Vector3(
                         ajustedBeamstop.centre.x ?? 0,
                         (ajustedBeamstop.centre.y ?? 0) +
-                        ajustedBeamstop.diameter / 2 +
-                        (ajustedBeamstop.clearance ?? 0),
+                          ajustedBeamstop.diameter / 2 +
+                          (ajustedBeamstop.clearance ?? 0),
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
@@ -151,7 +172,8 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
-                        (ajustedCameraTube.centre.y ?? 0) + ajustedCameraTube.diameter / 2,
+                        (ajustedCameraTube.centre.y ?? 0) +
+                          ajustedCameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(
@@ -232,6 +254,6 @@ export default function CentrePlot(): JSX.Element {
         </Stack>
         <ResultsBar visableQRange={visibleQRange ?? new NumericRange(0, 1)} />
       </Stack>
-    </Box >
+    </Box>
   );
 }

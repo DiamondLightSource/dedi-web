@@ -25,12 +25,11 @@ export default class QSpace {
     detProps.beamVector.normalize();
     this.qScale = qScale;
 
-
     this.mki = detProps.beamVector.clone().negate();
     this.kmod = this.qScale / diffexp.wavelength;
-    const ki = this.detProps.beamVector.clone()
-    ki.multiplyScalar(this.kmod)
-    this.mki = ki.negate()
+    const ki = this.detProps.beamVector.clone();
+    ki.multiplyScalar(this.kmod);
+    this.mki = ki.negate();
   }
 
   convertToQ(q: Vector3) {
@@ -41,24 +40,20 @@ export default class QSpace {
     } else {
       q.add(this.mki);
     }
-    return q
+    return q;
   }
 
   qFromPixelPosition(vector: Vector2) {
     const q = new Vector3();
-    q.set(
-      -vector.x,
-      -vector.y,
-      0,
-    );
+    q.set(-vector.x, -vector.y, 0);
     q.add(this.detProps.origin);
     return this.convertToQ(q);
   }
 
   setDiffractionCrystalEnviroment(diffexp: DiffractionCrystalEnvironment) {
     this.kmod = this.qScale / diffexp.wavelength;
-    const ki = this.detProps.beamVector.clone()
-    ki.multiplyScalar(this.kmod)
-    this.mki = ki.negate()
+    const ki = this.detProps.beamVector.clone();
+    ki.multiplyScalar(this.kmod);
+    this.mki = ki.negate();
   }
 }

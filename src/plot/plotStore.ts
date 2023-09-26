@@ -44,4 +44,3 @@ export const usePlotStore = create<PlotConfig>((set) => ({
     set({ ...newConfig });
   },
 }));
-
