@@ -172,6 +172,13 @@ export default function CentrePlot(): JSX.Element {
                         strokeWidth={2}
                       />
                     )}
+                    {plotConfig.qrange && plotConfig.beamstop && (
+                      <SvgLine
+                        coords={[beamstopCentre, minQRange]}
+                        stroke="orange"
+                        strokeWidth={2}
+                      />
+                    )}
                     {plotConfig.beamstop && (
                       <SvgCircle
                         coords={[beamstopCentre, clearance]}
