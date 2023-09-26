@@ -13,17 +13,10 @@ import {
 } from "@mui/material";
 import { AngleUnits } from "../utils/units";
 import React from "react";
+import { ScatteringQuantity } from "./resultsStore";
+import NumericRange from "../calculations/numericRange";
 
-const theta = "\u03B8";
-
-enum ScatteringQuantity {
-  q = "q",
-  d = "d",
-  s = "s",
-  twoTheta = "2" + theta,
-}
-
-export default function ResultsBar(): JSX.Element {
+export default function ResultsBar(props: { visableQRange: NumericRange }): JSX.Element {
   const [angleUnits, setAngleUnits] = React.useState<AngleUnits>(
     AngleUnits.radians,
   );
@@ -38,6 +31,8 @@ export default function ResultsBar(): JSX.Element {
   const handleQuantity = (event: SelectChangeEvent) => {
     setQuantity(event.target.value as ScatteringQuantity);
   };
+
+
 
   return (
     <Box sx={{ flexGrow: 2 }}>
@@ -83,8 +78,8 @@ export default function ResultsBar(): JSX.Element {
                 </Select>
               </FormControl>
               <Stack>
-                <Typography>Min {quantity} value: </Typography>
-                <Typography>Max {quantity} value: </Typography>
+                <Typography>Min {quantity} value: {props.visableQRange.min.toFixed(4)} </Typography>
+                <Typography>Max {quantity} value: {props.visableQRange.max.toFixed(4)}</Typography>
               </Stack>
               <Box />
               <Stack>

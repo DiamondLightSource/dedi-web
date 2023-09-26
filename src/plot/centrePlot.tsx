@@ -1,4 +1,4 @@
-import { Box, Card, CardContent } from "@mui/material";
+import { Box, Card, CardContent, Stack } from "@mui/material";
 import {
   DataToHtml,
   DefaultInteractions,
@@ -18,6 +18,11 @@ import { PlotAxes, usePlotStore } from "./plotStore";
 import { Beamstop, CircularDevice, Detector } from "../utils/types";
 import { computeQrange } from "../calculations/qrange";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
+import { useResultStore } from "../results/resultsStore";
+import React from "react";
+import LegendBar from "./legendBar";
+import ResultsBar from "../results/resultsBar";
+import NumericRange from "../calculations/numericRange";
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
@@ -30,14 +35,14 @@ export default function CentrePlot(): JSX.Element {
     return { centre: state.centre, diameter: state.diameter }
   })
 
-  const { ptMin, ptMax } = computeQrange(
+  const qrangeResult = computeQrange(
     detector,
     beamstop,
     cameraTube,
     bealineConfig,
-  ) ?? { ptMax: new Vector2(0, 0), ptMin: new Vector2(0, 0) };
-  console.log(ptMax, ptMin)
+  )
 
+  const { ptMin, ptMax, visibleQRange } = qrangeResult
 
   const adjustUnitsDetector = (detector: Detector): Detector => {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
@@ -100,126 +105,133 @@ export default function CentrePlot(): JSX.Element {
   const ajustedCameraTube = adjustUnitsCameraTube(cameraTube, detector)
 
   const ajustedPoints = adjustRange(ptMin, ptMax, detector)
-  // issue here needs working on
+
   const domains = getDomains(ajustedDetector, ajustedCameraTube);
 
-  console.log(ajustedPoints)
   return (
     <Box>
-      <Card>
-        <CardContent>
-          <div
-            style={{
-              display: "grid",
-              height: "50vh",
-              width: "50vh",
-              border: "solid black",
-            }}
-          >
-            <VisCanvas
-              abscissaConfig={{
-                visDomain: [domains.xAxis.min, domains.xAxis.max],
-              }}
-              ordinateConfig={{
-                visDomain: [domains.yAxis.max, domains.yAxis.min],
-              }}
-            >
-              <DefaultInteractions />
-              <ResetZoomButton />
-              <DataToHtml
-                points={[
-                  new Vector3(ajustedBeamstop.centre.x ?? 0, ajustedBeamstop.centre.y ?? 0),
-                  new Vector3(
-                    (ajustedBeamstop.centre.x ?? 0) + ajustedBeamstop.diameter / 2,
-                    ajustedBeamstop.centre.y ?? 0,
-                  ),
-                  new Vector3(
-                    ajustedBeamstop.centre.x ?? 0,
-                    (ajustedBeamstop.centre.y ?? 0) +
-                    ajustedBeamstop.diameter / 2 +
-                    (ajustedBeamstop.clearance ?? 0),
-                  ),
-                  new Vector3(
-                    ajustedCameraTube.centre.x ?? 0,
-                    ajustedCameraTube.centre.y ?? 0,
-                  ),
-                  new Vector3(
-                    ajustedCameraTube.centre.x ?? 0,
-                    (ajustedCameraTube.centre.y ?? 0) + ajustedCameraTube.diameter / 2,
-                  ),
-                  new Vector3(0, 0),
-                  new Vector3(
-                    ajustedDetector.resolution.width,
-                    ajustedDetector.resolution.height,
-                  ),
-                  new Vector3(ajustedPoints.ptMin.x, ajustedPoints.ptMin.y),
-                  new Vector3(ajustedPoints.ptMax.x, ajustedPoints.ptMax.y),
-                ]}
+      <Stack direction="column" spacing={2}>
+        <Stack direction="row" spacing={2}>
+          <Card>
+            <CardContent>
+              <div
+                style={{
+                  display: "grid",
+                  height: "50vh",
+                  width: "50vh",
+                  border: "solid black",
+                }}
               >
-                {(
-                  beamstopCentre: Vector3,
-                  beamstopPerimeter: Vector3,
-                  clearance: Vector3,
-                  cameraTubeCentre: Vector3,
-                  cameraTubePerimeter: Vector3,
-                  detectorLower: Vector3,
-                  detectorUpper: Vector3,
-                  minQRange: Vector3,
-                  maxQRange: Vector3,
-                ) => (
-                  <SvgElement>
-                    {plotConfig.cameraTube && (
-                      <SvgCircle
-                        coords={[cameraTubeCentre, cameraTubePerimeter]}
-                        fill="rgba(0, 255, 0, 0.2)"
-                        id="camera tube"
-                      />
+                <VisCanvas
+                  abscissaConfig={{
+                    visDomain: [domains.xAxis.min, domains.xAxis.max],
+                  }}
+                  ordinateConfig={{
+                    visDomain: [domains.yAxis.max, domains.yAxis.min],
+                  }}
+                >
+                  <DefaultInteractions />
+                  <ResetZoomButton />
+                  <DataToHtml
+                    points={[
+                      new Vector3(ajustedBeamstop.centre.x ?? 0, ajustedBeamstop.centre.y ?? 0),
+                      new Vector3(
+                        (ajustedBeamstop.centre.x ?? 0) + ajustedBeamstop.diameter / 2,
+                        ajustedBeamstop.centre.y ?? 0,
+                      ),
+                      new Vector3(
+                        ajustedBeamstop.centre.x ?? 0,
+                        (ajustedBeamstop.centre.y ?? 0) +
+                        ajustedBeamstop.diameter / 2 +
+                        (ajustedBeamstop.clearance ?? 0),
+                      ),
+                      new Vector3(
+                        ajustedCameraTube.centre.x ?? 0,
+                        ajustedCameraTube.centre.y ?? 0,
+                      ),
+                      new Vector3(
+                        ajustedCameraTube.centre.x ?? 0,
+                        (ajustedCameraTube.centre.y ?? 0) + ajustedCameraTube.diameter / 2,
+                      ),
+                      new Vector3(0, 0),
+                      new Vector3(
+                        ajustedDetector.resolution.width,
+                        ajustedDetector.resolution.height,
+                      ),
+                      new Vector3(ajustedPoints.ptMin.x, ajustedPoints.ptMin.y),
+                      new Vector3(ajustedPoints.ptMax.x, ajustedPoints.ptMax.y),
+                    ]}
+                  >
+                    {(
+                      beamstopCentre: Vector3,
+                      beamstopPerimeter: Vector3,
+                      clearance: Vector3,
+                      cameraTubeCentre: Vector3,
+                      cameraTubePerimeter: Vector3,
+                      detectorLower: Vector3,
+                      detectorUpper: Vector3,
+                      minQRange: Vector3,
+                      maxQRange: Vector3,
+                    ) => (
+                      <SvgElement>
+                        {plotConfig.cameraTube && (
+                          <SvgCircle
+                            coords={[cameraTubeCentre, cameraTubePerimeter]}
+                            fill="rgba(0, 255, 0, 0.2)"
+                            id="camera tube"
+                          />
+                        )}
+                        {plotConfig.qrange && plotConfig.beamstop && (
+                          <SvgLine
+                            coords={[minQRange, maxQRange]}
+                            stroke="red"
+                            strokeWidth={2}
+                          />
+                        )}
+                        {plotConfig.qrange && plotConfig.beamstop && (
+                          <SvgLine
+                            coords={[beamstopCentre, minQRange]}
+                            stroke="orange"
+                            strokeWidth={2}
+                          />
+                        )}
+                        {plotConfig.beamstop && (
+                          <SvgCircle
+                            coords={[beamstopCentre, clearance]}
+                            fill="rgba(0, 0, 255, 0.2)"
+                            id="clearance"
+                          />
+                        )}
+                        {plotConfig.beamstop && (
+                          <SvgCircle
+                            coords={[beamstopCentre, beamstopPerimeter]}
+                            fill="black"
+                            id="beamstop"
+                          />
+                        )}
+                        {plotConfig.detector && (
+                          <SvgRect
+                            coords={[detectorLower, detectorUpper]}
+                            fill="rgba(255, 0, 0, 0.2)"
+                            id="detector"
+                            stroke="black"
+                            strokePosition="outside"
+                            strokeWidth={0}
+                          />
+                        )}
+                      </SvgElement>
                     )}
-                    {plotConfig.qrange && plotConfig.beamstop && (
-                      <SvgLine
-                        coords={[minQRange, maxQRange]}
-                        stroke="red"
-                        strokeWidth={2}
-                      />
-                    )}
-                    {plotConfig.qrange && plotConfig.beamstop && (
-                      <SvgLine
-                        coords={[beamstopCentre, minQRange]}
-                        stroke="orange"
-                        strokeWidth={2}
-                      />
-                    )}
-                    {plotConfig.beamstop && (
-                      <SvgCircle
-                        coords={[beamstopCentre, clearance]}
-                        fill="rgba(0, 0, 255, 0.2)"
-                        id="clearance"
-                      />
-                    )}
-                    {plotConfig.beamstop && (
-                      <SvgCircle
-                        coords={[beamstopCentre, beamstopPerimeter]}
-                        fill="black"
-                        id="beamstop"
-                      />
-                    )}
-                    {plotConfig.detector && (
-                      <SvgRect
-                        coords={[detectorLower, detectorUpper]}
-                        fill="rgba(255, 0, 0, 0.2)"
-                        id="detector"
-                        stroke="black"
-                        strokePosition="outside"
-                        strokeWidth={0}
-                      />
-                    )}
-                  </SvgElement>
-                )}
-              </DataToHtml>
-            </VisCanvas>
-          </div>
-        </CardContent>
-      </Card>
-    </Box>
+                  </DataToHtml>
+                </VisCanvas>
+              </div>
+            </CardContent>
+          </Card>
+          <Box flexGrow={1}>
+            <LegendBar />
+          </Box>
+        </Stack>
+        <ResultsBar visableQRange={visibleQRange ?? new NumericRange(0, 1)} />
+      </Stack>
+    </Box >
   );
 }

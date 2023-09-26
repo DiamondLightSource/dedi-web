@@ -8,7 +8,7 @@ import {
     CircularDevice,
     Detector,
 } from "../utils/types";
-import { Vector2, Vector3, Vector4 } from "three";
+import { Vector2, Vector3 } from "three";
 import { Ray } from "../calculations/ray";
 import NumericRange from "./numericRange";
 /**
@@ -27,10 +27,17 @@ export function computeQrange(
 ): {
     ptMin: Vector2;
     ptMax: Vector2;
-    visibleQRange: NumericRange;
-    fullQRange: NumericRange;
-} | null {
+    visibleQRange: NumericRange | null;
+    fullQRange: NumericRange | null;
+} {
     // convert pixel values to mm
+
+    const defaultReturn = {
+        ptMin: new Vector2(0, 0),
+        ptMax: new Vector2(0, 0),
+        visibleQRange: null,
+        fullQRange: null
+    }
     const clearanceWidthMM = (beamstop.clearance ?? 0) * detector.pixelSize.width + (beamstop.diameter / 2)
     const clearaceHeightMM =
         (beamstop.clearance ?? 0) * detector.pixelSize.height + (beamstop.diameter / 2);
@@ -79,7 +86,7 @@ export function computeQrange(
         beamProperties.wavelength == null ||
         beamProperties.cameraLength == null
     ) {
-        return null;
+        return defaultReturn;
     }
 
     const ptMin = ray.getPoint(t1.min);
