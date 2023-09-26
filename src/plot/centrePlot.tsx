@@ -87,13 +87,23 @@ export default function CentrePlot(): JSX.Element {
     };
   };
 
+  const adjustRange = (ptMin: Vector2, ptMax: Vector2, detector: Detector): { ptMin: Vector2, ptMax: Vector2 } => {
+    const pixelVector = new Vector2(detector.pixelSize.width, detector.pixelSize.height)
+    if (plotConfig.plotAxes === PlotAxes.milimeter) {
+      return { ptMin: ptMin, ptMax: ptMax }
+    }
+    return { ptMin: ptMin.divide(pixelVector), ptMax: ptMax.divide(pixelVector) }
+  }
+
   const ajustedBeamstop = adjustUnitsBeamstop(beamstop, detector)
   const ajustedDetector = adjustUnitsDetector(detector)
   const ajustedCameraTube = adjustUnitsCameraTube(cameraTube, detector)
+
+  const ajustedPoints = adjustRange(ptMin, ptMax, detector)
   // issue here needs working on
   const domains = getDomains(ajustedDetector, ajustedCameraTube);
 
-
+  console.log(ajustedPoints)
   return (
     <Box>
       <Card>
@@ -142,8 +152,8 @@ export default function CentrePlot(): JSX.Element {
                     ajustedDetector.resolution.width,
                     ajustedDetector.resolution.height,
                   ),
-                  new Vector3(ptMin.x, ptMin.y),
-                  new Vector3(ptMax.x, ptMax.y),
+                  new Vector3(ajustedPoints.ptMin.x, ajustedPoints.ptMin.y),
+                  new Vector3(ajustedPoints.ptMax.x, ajustedPoints.ptMax.y),
                 ]}
               >
                 {(
