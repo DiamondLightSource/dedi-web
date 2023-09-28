@@ -24,9 +24,9 @@ import { MathUtils } from "three/src/Three.js";
 export default function BeampropertiesDataEntry() {
   const minWavelength = useBeamlineConfigStore((state) => {
     if (state.wavelengthUnits === WavelengthUnits.angstroms) {
-      return nanometres2Angstroms(state.maxWavelength);
+      return nanometres2Angstroms(state.minWavelength);
     }
-    return state.maxWavelength;
+    return state.minWavelength;
   });
 
   const maxWavelength = useBeamlineConfigStore((state) => {

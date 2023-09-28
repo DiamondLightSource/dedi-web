@@ -14,11 +14,13 @@ import {
 } from "@mui/material";
 import { AngleUnits } from "../utils/units";
 import React from "react";
-import { ScatteringQuantity } from "./resultsStore";
+import { ScatteringQuantity, useResultStore } from "./resultsStore";
 import NumericRange from "../calculations/numericRange";
+import RangeDiagram from "./rangeDiagram";
 
 export default function ResultsBar(props: {
   visableQRange: NumericRange;
+  fullQrange: NumericRange;
 }): JSX.Element {
   const [angleUnits, setAngleUnits] = React.useState<AngleUnits>(
     AngleUnits.radians,
@@ -35,6 +37,7 @@ export default function ResultsBar(props: {
     setQuantity(event.target.value as ScatteringQuantity);
   };
 
+  const resultStore = useResultStore();
   return (
     <Box sx={{ flexGrow: 2 }}>
       <Card sx={{ height: 1 }}>
@@ -92,10 +95,38 @@ export default function ResultsBar(props: {
                 <Typography>Requested max {quantity} value: </Typography>
               </Stack>
               <Stack spacing={2}>
-                <TextField type="number" size="small" />
-                <TextField type="number" size="small" />
+                <TextField
+                  type="number"
+                  size="small"
+                  value={resultStore.requestedRange.min}
+                  onChange={(event) => {
+                    resultStore.update({
+                      requestedRange: new NumericRange(
+                        parseFloat(event.target.value) ?? 0,
+                        resultStore.requestedRange.max,
+                      ),
+                    });
+                  }}
+                />
+                <TextField
+                  type="number"
+                  size="small"
+                  value={resultStore.requestedRange.max}
+                  onChange={(event) => {
+                    resultStore.update({
+                      requestedRange: new NumericRange(
+                        resultStore.requestedRange.min,
+                        parseFloat(event.target.value) ?? 0,
+                      ),
+                    });
+                  }}
+                />
               </Stack>
             </Stack>
+            <RangeDiagram
+              visibleQRange={props.visableQRange}
+              fullQRange={props.fullQrange}
+            />
           </Stack>
         </CardContent>
       </Card>

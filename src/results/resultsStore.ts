@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import NumericRange from "../calculations/numericRange";
 
 const theta = "\u03B8";
 
@@ -11,15 +12,13 @@ export enum ScatteringQuantity {
 
 export interface ResultStore {
   selected: ScatteringQuantity;
-  requestedMinQ: number;
-  requestedMaxQ: number;
+  requestedRange: NumericRange;
   update: (results: Partial<ResultStore>) => void;
 }
 
 export const useResultStore = create<ResultStore>((set) => ({
   selected: ScatteringQuantity.q,
-  requestedMinQ: 1,
-  requestedMaxQ: 0,
+  requestedRange: new NumericRange(0, 1),
   update: (results: Partial<ResultStore>) => {
     set({ ...results });
   },

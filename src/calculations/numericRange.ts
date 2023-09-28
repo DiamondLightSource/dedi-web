@@ -17,7 +17,7 @@ export default class NumericRange {
   }
 
   containsRange(other: NumericRange) {
-    return other.min >= this.min && other.max <= this.min;
+    return other.min >= this.min && other.max <= this.max;
   }
 
   toString(): string {

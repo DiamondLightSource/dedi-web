@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { Vector4, Vector3 } from "three";
+import { Vector2, Vector4, Vector3 } from "three";
 import QSpace, { DetectorProperties } from "./qspace";
 
 test("Test getting q from pixel position ", () => {
@@ -23,7 +23,7 @@ test("Test getting q from pixel position ", () => {
   };
 
   const qspace = new QSpace(detProps, diffCrystEnv, 1);
-  const result = qspace.qFromPixelPosition(1, 1);
+  const result = qspace.qFromPixelPosition(new Vector2(1, 1));
   expect(result).toBeInstanceOf(Vector3);
   // do better testing when you understand it better
 });

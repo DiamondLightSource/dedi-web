@@ -9,6 +9,7 @@ import {
   SvgRect,
   SvgLine,
 } from "@h5web/lib";
+// Need to find those damn types
 import { Vector2, Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
@@ -21,6 +22,8 @@ import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import LegendBar from "./legendBar";
 import ResultsBar from "../results/resultsBar";
 import NumericRange from "../calculations/numericRange";
+import { useResultStore } from "../results/resultsStore";
+import { getPointForQ } from "../calculations/qvalue";
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
@@ -44,8 +47,7 @@ export default function CentrePlot(): JSX.Element {
     bealineConfig,
   );
 
-  const { ptMin, ptMax, visibleQRange } = qrangeResult;
-
+  const { ptMin, ptMax, visibleQRange, fullQRange } = qrangeResult;
   const adjustUnitsDetector = (detector: Detector): Detector => {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {
@@ -125,6 +127,24 @@ export default function CentrePlot(): JSX.Element {
 
   const domains = getDomains(ajustedDetector, ajustedCameraTube);
 
+  // requested range on diagram
+  const resultStore = useResultStore();
+  const requestedMax = getPointForQ(
+    resultStore.requestedRange.max * 1e9,
+    bealineConfig.angle ?? 0,
+    (bealineConfig.cameraLength ?? 0),
+    (bealineConfig.wavelength ?? 0) * 1e-9,
+    ajustedBeamstop,
+  );
+  const requestedMin = getPointForQ(
+    resultStore.requestedRange.min * 1e9,
+    bealineConfig.angle ?? 0,
+    (bealineConfig.cameraLength ?? 0),
+    (bealineConfig.wavelength ?? 0) * 1e-9,
+    ajustedBeamstop,
+  );
+
+
   return (
     <Box>
       <Stack direction="column" spacing={2}>
@@ -157,14 +177,14 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(
                         (ajustedBeamstop.centre.x ?? 0) +
-                          ajustedBeamstop.diameter / 2,
+                        ajustedBeamstop.diameter / 2,
                         ajustedBeamstop.centre.y ?? 0,
                       ),
                       new Vector3(
                         ajustedBeamstop.centre.x ?? 0,
                         (ajustedBeamstop.centre.y ?? 0) +
-                          ajustedBeamstop.diameter / 2 +
-                          (ajustedBeamstop.clearance ?? 0),
+                        ajustedBeamstop.diameter / 2 +
+                        (ajustedBeamstop.clearance ?? 0),
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
@@ -173,7 +193,7 @@ export default function CentrePlot(): JSX.Element {
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
                         (ajustedCameraTube.centre.y ?? 0) +
-                          ajustedCameraTube.diameter / 2,
+                        ajustedCameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(
@@ -182,6 +202,8 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(ajustedPoints.ptMin.x, ajustedPoints.ptMin.y),
                       new Vector3(ajustedPoints.ptMax.x, ajustedPoints.ptMax.y),
+                      requestedMin,
+                      requestedMax,
                     ]}
                   >
                     {(
@@ -194,6 +216,8 @@ export default function CentrePlot(): JSX.Element {
                       detectorUpper: Vector3,
                       minQRange: Vector3,
                       maxQRange: Vector3,
+                      requestedMin: Vector2,
+                      requestedMax: Vector2,
                     ) => (
                       <SvgElement>
                         {plotConfig.cameraTube && (
@@ -207,6 +231,13 @@ export default function CentrePlot(): JSX.Element {
                           <SvgLine
                             coords={[minQRange, maxQRange]}
                             stroke="red"
+                            strokeWidth={2}
+                          />
+                        )}
+                        {resultStore.requestedRange.min && (
+                          <SvgLine
+                            coords={[requestedMin, requestedMax]}
+                            stroke="green"
                             strokeWidth={2}
                           />
                         )}
@@ -252,7 +283,10 @@ export default function CentrePlot(): JSX.Element {
             <LegendBar />
           </Box>
         </Stack>
-        <ResultsBar visableQRange={visibleQRange ?? new NumericRange(0, 1)} />
+        <ResultsBar
+          visableQRange={visibleQRange ?? new NumericRange(0, 1)}
+          fullQrange={fullQRange ?? new NumericRange(0, 1)}
+        />
       </Stack>
     </Box>
   );
