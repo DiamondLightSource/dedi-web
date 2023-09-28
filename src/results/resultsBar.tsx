@@ -14,9 +14,10 @@ import {
 } from "@mui/material";
 import { AngleUnits } from "../utils/units";
 import React from "react";
-import { ScatteringQuantity, useResultStore } from "./resultsStore";
+import { useResultStore } from "./resultsStore";
 import NumericRange from "../calculations/numericRange";
 import RangeDiagram from "./rangeDiagram";
+import { ScatteringQuantity } from "./scatteringQuantities";
 
 export default function ResultsBar(props: {
   visableQRange: NumericRange;

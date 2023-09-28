@@ -16,6 +16,11 @@ export enum WavelengthUnits {
   angstroms = angstrum,
 }
 
+export enum ReciprocalWavelengthUnits {
+  nanmometres = "1/nm",
+  angstroms = `1/${angstrum}`,
+}
+
 export enum AngleUnits {
   radians = "rad",
   degrees = "deg",
