@@ -9,7 +9,7 @@ import {
   SvgRect,
   SvgLine,
 } from "@h5web/lib";
-// Need to find those damn types
+// Need to find those damn h5lib types
 import { Vector2, Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
@@ -132,18 +132,17 @@ export default function CentrePlot(): JSX.Element {
   const requestedMax = getPointForQ(
     resultStore.requestedRange.max * 1e9,
     bealineConfig.angle ?? 0,
-    (bealineConfig.cameraLength ?? 0),
+    bealineConfig.cameraLength ?? 0,
     (bealineConfig.wavelength ?? 0) * 1e-9,
     ajustedBeamstop,
   );
   const requestedMin = getPointForQ(
     resultStore.requestedRange.min * 1e9,
     bealineConfig.angle ?? 0,
-    (bealineConfig.cameraLength ?? 0),
+    bealineConfig.cameraLength ?? 0,
     (bealineConfig.wavelength ?? 0) * 1e-9,
     ajustedBeamstop,
   );
-
 
   return (
     <Box>
@@ -177,14 +176,14 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(
                         (ajustedBeamstop.centre.x ?? 0) +
-                        ajustedBeamstop.diameter / 2,
+                          ajustedBeamstop.diameter / 2,
                         ajustedBeamstop.centre.y ?? 0,
                       ),
                       new Vector3(
                         ajustedBeamstop.centre.x ?? 0,
                         (ajustedBeamstop.centre.y ?? 0) +
-                        ajustedBeamstop.diameter / 2 +
-                        (ajustedBeamstop.clearance ?? 0),
+                          ajustedBeamstop.diameter / 2 +
+                          (ajustedBeamstop.clearance ?? 0),
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
@@ -193,7 +192,7 @@ export default function CentrePlot(): JSX.Element {
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
                         (ajustedCameraTube.centre.y ?? 0) +
-                        ajustedCameraTube.diameter / 2,
+                          ajustedCameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(
