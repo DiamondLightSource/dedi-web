@@ -27,4 +27,3 @@ export interface BeamlineConfig {
   wavelength: number | null;
 }
 
-export type Enum = { [s: number]: string };

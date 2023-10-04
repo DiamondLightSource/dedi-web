@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import NumericRange from "../calculations/numericRange";
 
 export enum PlotAxes {
   milimeter = "milimeter",
@@ -23,9 +22,6 @@ export interface PlotConfig {
   calibrantInPlot: boolean;
   calibrant: string;
   plotAxes: PlotAxes;
-  requestedRange: NumericRange;
-  selected: ScatteringOptions;
-  units: string;
   update: (newConfig: Partial<PlotConfig>) => void;
 }
 
@@ -39,9 +35,6 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   calibrantInPlot: false,
   calibrant: "something",
   plotAxes: PlotAxes.milimeter,
-  requestedRange: new NumericRange(0, 1),
-  selected: ScatteringOptions.q,
-  units: "r-nanometres",
   update: (newConfig) => {
     set({ ...newConfig });
   },
