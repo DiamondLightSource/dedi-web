@@ -26,3 +26,5 @@ export interface BeamlineConfig {
   maxCameraLength: number;
   wavelength: number | null;
 }
+
+export type Enum = { [s: number]: string };

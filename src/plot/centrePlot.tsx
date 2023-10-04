@@ -22,7 +22,6 @@ import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import LegendBar from "./legendBar";
 import ResultsBar from "../results/resultsBar";
 import NumericRange from "../calculations/numericRange";
-import { useResultStore } from "../results/resultsStore";
 import { getPointForQ } from "../calculations/qvalue";
 
 export default function CentrePlot(): JSX.Element {
@@ -128,16 +127,15 @@ export default function CentrePlot(): JSX.Element {
   const domains = getDomains(ajustedDetector, ajustedCameraTube);
 
   // requested range on diagram
-  const resultStore = useResultStore();
   const requestedMax = getPointForQ(
-    resultStore.requestedRange.max * 1e9,
+    plotConfig.requestedRange.max * 1e9,
     bealineConfig.angle ?? 0,
     bealineConfig.cameraLength ?? 0,
     (bealineConfig.wavelength ?? 0) * 1e-9,
     ajustedBeamstop,
   );
   const requestedMin = getPointForQ(
-    resultStore.requestedRange.min * 1e9,
+    plotConfig.requestedRange.min * 1e9,
     bealineConfig.angle ?? 0,
     bealineConfig.cameraLength ?? 0,
     (bealineConfig.wavelength ?? 0) * 1e-9,
@@ -233,7 +231,7 @@ export default function CentrePlot(): JSX.Element {
                             strokeWidth={2}
                           />
                         )}
-                        {resultStore.requestedRange.min && (
+                        {plotConfig.requestedRange.min && plotConfig.requestedRange.max && (
                           <SvgLine
                             coords={[requestedMin, requestedMax]}
                             stroke="green"

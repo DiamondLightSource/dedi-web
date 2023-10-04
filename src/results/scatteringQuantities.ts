@@ -1,80 +1,108 @@
-import { AngleUnits, ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
 
-const theta = "\u03B8";
+const angstrum = "\u212B";
 
-export type ScatteringUnits = WavelengthUnits | AngleUnits | ReciprocalWavelengthUnits;
+// export type WavelengthUnits = "nanometres" | "angstroms";
+// export const WavelengthUnitsOptions = [
+//     { value: "nanometres", label: "nm" },
+//     { value: "angstroms", label: angstrum },
+// ];
 
-export interface ScatteringQuantity {
-    name: string,
-    units: ScatteringUnits,
-    fromQ: (quantity: number, units: ScatteringUnits) => number,
-    tooQ: (quantity: number, units: ScatteringUnits) => number,
-};
+// export type ReciprocalWavelengthUnits = "r-nanometres" | "r-angstroms"
+// export const ReciprocalWavelengthUnitsOptions = [
+//     { value: "r-nanometres", label: "1/nm" },
+//     { value: "r-angstroms", label: `1/${angstrum}` }];
 
-export const quantityQ = {
-    name: "q",
-    units: ReciprocalWavelengthUnits.nanmometres,
-    fromQ: (quantity: number, units: ScatteringUnits) => {
-        if (units === ReciprocalWavelengthUnits.angstroms) {
+// export type AngleUnits = "radians" | "degrees";
+// export const AngleUnitsOptions = [
+//     { value: "radians", label: "rad" },
+//     { value: "degrees", label: "deg" },
+// ];
+
+math.unit
+
+
+export class Q implements ScatteringQuantity {
+    units: ReciprocalWavelengthUnits;
+    unitOptions: Array<{ value: string, label: string }>;
+    constructor(units: ReciprocalWavelengthUnits, unitOptions: Array<{ value: string, label: string }>) {
+        this.units = units
+        this.unitOptions = unitOptions
+    }
+    fromQ(quantity: number): number {
+        if (this.units == "r-angstroms") {
             return quantity / 10;
         }
         return quantity
-    },
-    tooQ: (quantity: number, units: ScatteringUnits) => {
-        if (units === ReciprocalWavelengthUnits.angstroms) {
+    }
+    tooQ(quantity: number): number {
+        if (this.units === "r-angstroms") {
             return quantity * 10;
         }
         return quantity
-    },
+    }
 }
 
-export const quantityS = {
-    name: "s",
-    units: ReciprocalWavelengthUnits.nanmometres,
-    fromQ: (quantity: number, units: ScatteringUnits) => {
-        if (units === ReciprocalWavelengthUnits.angstroms) {
-            return quantity / 10;
+export class S implements ScatteringQuantity {
+    units: ReciprocalWavelengthUnits;
+    unitOptions: Array<{ value: string, label: string }>;
+    constructor(units: ReciprocalWavelengthUnits, unitOptions: Array<{ value: string, label: string }>) {
+        this.units = units
+        this.unitOptions = unitOptions
+    }
+    fromQ(quantity: number): number {
+        if (this.units === "r-angstroms") {
+            return (1 / quantity) * 10;
         }
         return quantity
-    },
-    tooQ: (quantity: number, units: ScatteringUnits) => {
-        if (units === ReciprocalWavelengthUnits.angstroms) {
-            return quantity * 10;
+    }
+    tooQ(quantity: number): number {
+        if (this.units === "r-angstroms") {
+            return 1 / (quantity / 10);
         }
         return quantity
-    },
+    }
 }
 
-export const quantityD = {
-    name: "d",
-    units: ReciprocalWavelengthUnits.nanmometres,
-    fromQ: (quantity: number, units: ScatteringUnits) => {
-        if (units === ReciprocalWavelengthUnits.angstroms) {
-            return quantity / 10;
+export class D implements ScatteringQuantity {
+    units: WavelengthUnits;
+    unitOptions: Array<{ value: string, label: string }>;
+    constructor(units: WavelengthUnits, unitOptions: Array<{ value: string, label: string }>) {
+        this.units = units;
+        this.unitOptions = unitOptions
+    }
+    fromQ(quantity: number): number {
+        if (this.units === "angstroms") {
+            return 2 * Math.PI / (quantity) * 10;
         }
-        return quantity
-    },
-    tooQ: (quantity: number, units: ScatteringUnits) => {
-        if (units === ReciprocalWavelengthUnits.angstroms) {
-            return quantity * 10;
+        return 2 * Math.PI / (quantity)
+    }
+    tooQ(quantity: number): number {
+        if (this.units === "angstroms") {
+            return 2 * Math.PI / (quantity / 10);
         }
-        return quantity
-    },
+        return 2 * Math.PI / (quantity)
+    }
 }
 
-export const quantity2Theta = {
-    name: `2${theta}`,
-    units: AngleUnits.radians,
-    fromQ: (quantity: number, units: ScatteringUnits) => {
-        if (units === WavelengthUnits.angstroms) {
-            return quantity / 10;
+export class TwoTheta implements ScatteringQuantity {
+    units: AngleUnits;
+    wavelength: number;
+    unitOptions: Array<{ value: string, label: string }>;
+    constructor(units: AngleUnits, wavelength: number, unitOptions: Array<{ value: string, label: string }>) {
+        this.units = units
+        this.wavelength = wavelength
+        this.unitOptions = unitOptions
+    }
+    fromQ(quantity: number): number {
+        if (this.units === "degrees") {
+            return (2 * Math.asin((quantity * this.wavelength) / (4 * Math.PI)));
         }
         return quantity
-    },
-    tooQ: (quantity: number, units: ScatteringUnits) => {
-        if (units === WavelengthUnits.angstroms) {
-            return quantity * 10;
+    }
+    tooQ(quantity: number): number {
+        if (this.units === "degrees") {
+            return quantity;
         }
-        return quantity
-    },
+        return 4 * Math.PI * Math.sin(quantity) / this.wavelength
+    }
 }

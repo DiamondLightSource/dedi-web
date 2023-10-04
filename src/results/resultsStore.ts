@@ -1,18 +1,28 @@
 import { create } from "zustand";
 import NumericRange from "../calculations/numericRange";
-import { quantityQ, ScatteringQuantity } from "./scatteringQuantities";
+import { AngleUnits, WavelengthUnits, ReciprocalWavelengthUnits } from "../utils/units";
+import { Q, ReciprocalWavelengthUnitsOptions } from "./scatteringQuantities";
+
+export interface ScatteringQuantity {
+    units: WavelengthUnits | AngleUnits | ReciprocalWavelengthUnits,
+    unitOptions: { value: string, label: string }[],
+    fromQ: (quantity: number) => number,
+    tooQ: (quantity: number) => number,
+};
 
 export interface ResultStore {
-    selected: ScatteringQuantity;
+    quantity: ScatteringQuantity;
+    units: String;
     requestedRange: NumericRange;
-    update: (results: Partial<ResultStore>) => void;
+    update: (newConfig: Partial<ResultStore>) => void;
 }
 
 export const useResultStore = create<ResultStore>((set) => ({
-    selected: quantityQ,
     requestedRange: new NumericRange(0, 1),
-    update: (results: Partial<ResultStore>) => {
-        set({ ...results });
+    quantity: new Q("r-nanometres", ReciprocalWavelengthUnitsOptions);
+    units: "r-nanometres",
+    update: (newConfig) => {
+        set({ ...newConfig });
     },
-
 }));
+
