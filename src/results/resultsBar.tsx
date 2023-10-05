@@ -97,7 +97,7 @@ export default function ResultsBar(props: {
                       <TableRow
                         key={"q"}
                       >
-                        <TableCell component="th" scope="row">q</TableCell>
+                        <TableCell component="th" scope="row">{ScatteringOptions.q}</TableCell>
                         <TableCell align="right">{qRange.min.toFixed(4)}</TableCell>
                         <TableCell align="right">{qRange.max.toFixed(4)}</TableCell>
                         <TableCell align="right">
@@ -121,7 +121,7 @@ export default function ResultsBar(props: {
                       <TableRow
                         key={"things"}
                       >
-                        <TableCell component="th" scope="row">s</TableCell>
+                        <TableCell component="th" scope="row">{ScatteringOptions.s}</TableCell>
                         <TableCell align="right">{sRange.min.toFixed(4)}</TableCell>
                         <TableCell align="right">{sRange.max.toFixed(4)}</TableCell>
                         <TableCell align="right">
@@ -145,7 +145,7 @@ export default function ResultsBar(props: {
                       <TableRow
                         key={"things"}
                       >
-                        <TableCell component="th" scope="row">d</TableCell>
+                        <TableCell component="th" scope="row">{ScatteringOptions.d}</TableCell>
                         <TableCell align="right">{dRange.min.toFixed(4)}</TableCell>
                         <TableCell align="right">{dRange.max.toFixed(4)}</TableCell>
                         <TableCell align="right">
@@ -169,7 +169,7 @@ export default function ResultsBar(props: {
                       <TableRow
                         key={"things"}
                       >
-                        <TableCell component="th" scope="row">two theta</TableCell>
+                        <TableCell component="th" scope="row">{ScatteringOptions.twoTheta}</TableCell>
                         <TableCell align="right">{thetaRange.min.toFixed(4)}</TableCell>
                         <TableCell align="right">{thetaRange.max.toFixed(4)}</TableCell>
                         <TableCell align="right">

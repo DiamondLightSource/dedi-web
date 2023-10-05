@@ -87,12 +87,15 @@ export class TwoTheta implements ScatteringQuantity {
     }
 }
 
+export const theta = '\u03B8'
+
 export enum ScatteringOptions {
     q = "q",
     s = "s",
     d = "d",
-    twoTheta = `2${'\u03B8'}`
+    twoTheta = `2${theta}`
 }
+
 
 
 export interface ResultStore {
