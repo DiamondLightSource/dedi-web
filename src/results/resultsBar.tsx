@@ -73,6 +73,41 @@ export default function ResultsBar(props: {
       break;
   }
 
+  const handleRequestedMax = (event: React.ChangeEvent<HTMLInputElement>) => {
+    switch (resultStore.requested) {
+      case ScatteringOptions.s:
+        resultStore.updateRequestedRange(new NumericRange(resultStore.requestedRange.min, resultStore.s.tooQ(parseFloat(event.target.value) ?? 1)));
+        break;
+      case ScatteringOptions.d:
+        resultStore.updateRequestedRange(new NumericRange(resultStore.requestedRange.min, resultStore.d.tooQ(parseFloat(event.target.value) ?? 1)));
+        break;
+      case ScatteringOptions.twoTheta:
+        resultStore.updateRequestedRange(new NumericRange(resultStore.requestedRange.min, resultStore.twoTheta.tooQ(parseFloat(event.target.value) ?? 1)));
+        break;
+      default:
+        resultStore.updateRequestedRange(new NumericRange(resultStore.requestedRange.min, resultStore.q.tooQ(parseFloat(event.target.value) ?? 1)));
+        break;
+    }
+  }
+
+  const handleRequestedMin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    switch (resultStore.requested) {
+      case ScatteringOptions.s:
+        resultStore.updateRequestedRange(new NumericRange(resultStore.s.tooQ(parseFloat(event.target.value) ?? 0), resultStore.requestedRange.max));
+        break;
+      case ScatteringOptions.d:
+        resultStore.updateRequestedRange(new NumericRange(resultStore.d.tooQ(parseFloat(event.target.value) ?? 0), resultStore.requestedRange.max));
+        break;
+      case ScatteringOptions.twoTheta:
+        resultStore.updateRequestedRange(new NumericRange(resultStore.twoTheta.tooQ(parseFloat(event.target.value) ?? 0), resultStore.requestedRange.max));
+        break;
+      default:
+        resultStore.updateRequestedRange(new NumericRange(resultStore.q.tooQ(parseFloat(event.target.value) ?? 0), resultStore.requestedRange.max));
+        break;
+    }
+  }
+
+
 
   return (
     <Box sx={{ flexGrow: 2 }}>
@@ -207,18 +242,14 @@ export default function ResultsBar(props: {
                       <TextField
                         type="number"
                         size="small"
-                        value={resultStore.requestedRange.min}
-                        onChange={(event) => {
-                          resultStore.updateRequestedRange(new NumericRange(parseFloat(event.target.value) ?? 0, resultStore.requestedRange.max))
-                        }}
+                        value={ajustedRequestedRange.min}
+                        onChange={handleRequestedMin}
                       />
                       <TextField
                         type="number"
                         size="small"
-                        value={resultStore.requestedRange.max}
-                        onChange={(event) => {
-                          resultStore.updateRequestedRange(new NumericRange(resultStore.requestedRange.min, parseFloat(event.target.value) ?? 1))
-                        }}
+                        value={ajustedRequestedRange.max}
+                        onChange={handleRequestedMax}
                       />
                     </Stack>
                     <FormControl>
