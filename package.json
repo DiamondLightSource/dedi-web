@@ -1,5 +1,7 @@
 {
   "name": "dedi-web",
+  "author": "Tizayi Zirereza <tizayi.zirereza@diamond.ac.uk>",
+  "description": "A client only Q-Range calculator",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -23,7 +25,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "three": "^0.155.0",
-    "ts-enum-util": "^4.0.2",
     "zustand": "^4.4.1"
   },
   "devDependencies": {

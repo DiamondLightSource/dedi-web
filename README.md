@@ -2,7 +2,7 @@
 
 [![dedi-web code CI](https://github.com/tizayi/dedi-web/actions/workflows/code.yml/badge.svg)](https://github.com/tizayi/dedi-web/actions/workflows/code.yml)
 
-A browser tool. Like dedi within dawn science. Built using react, typescript, mui, zustand, three.js, and h5web/lib.
+A client only Q-Range calculator. Based on dedi within dawn science. Built using react, typescript, mui, zustand, three.js, and h5web/lib.
 
 ## Start dev server
 
