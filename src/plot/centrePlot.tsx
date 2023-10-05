@@ -1,4 +1,5 @@
 import { Box, Card, CardContent, Stack } from "@mui/material";
+// @ts-ignore
 import {
   DataToHtml,
   DefaultInteractions,
@@ -9,7 +10,6 @@ import {
   SvgRect,
   SvgLine,
 } from "@h5web/lib";
-// Need to find those damn h5lib types
 import { Vector2, Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
@@ -233,7 +233,7 @@ export default function CentrePlot(): JSX.Element {
                             strokeWidth={2}
                           />
                         )}
-                        {requestedRange.min && requestedRange.max && (
+                        {requestedRange.min && requestedRange.max && plotConfig.qrange && (
                           <SvgLine
                             coords={[requestedMin, requestedMax]}
                             stroke="green"
