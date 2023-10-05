@@ -5,12 +5,6 @@ export enum PlotAxes {
   pixel = "pixel",
   reciprocal = "reciprocal",
 }
-export enum ScatteringOptions {
-  q = "q",
-  s = "s",
-  d = "d",
-  twoTheta = `2${'\u03B8'}`
-}
 
 export interface PlotConfig {
   detector: boolean;

@@ -87,14 +87,23 @@ export class TwoTheta implements ScatteringQuantity {
     }
 }
 
+export enum ScatteringOptions {
+    q = "q",
+    s = "s",
+    d = "d",
+    twoTheta = `2${'\u03B8'}`
+}
+
 
 export interface ResultStore {
+    requested: ScatteringOptions;
     q: ScatteringQuantity;
     s: ScatteringQuantity;
     d: ScatteringQuantity;
     twoTheta: ScatteringQuantity;
     requestedRange: NumericRange;
-    updateRequested: (newRange: NumericRange) => void;
+    updateRequested: (quantity: ScatteringOptions) => void;
+    updateRequestedRange: (newRange: NumericRange) => void;
     updateQUnits: (newunits: ReciprocalWavelengthUnits) => void;
     updateSUnits: (newunits: ReciprocalWavelengthUnits) => void;
     updateDUnits: (newunits: WavelengthUnits) => void;
@@ -102,15 +111,17 @@ export interface ResultStore {
 }
 
 export const useResultStore = create<ResultStore>((set) => ({
+    requested: ScatteringOptions.q,
     q: new Q(ReciprocalWavelengthUnits.nanmometres),
     s: new S(ReciprocalWavelengthUnits.nanmometres),
     d: new D(WavelengthUnits.nanmometres),
     twoTheta: new TwoTheta(AngleUnits.radians, 0),
     requestedRange: new NumericRange(0, 1),
-    updateRequested: (newRange: NumericRange) => { set({ requestedRange: newRange }) },
+    updateRequested: (quantity: ScatteringOptions) => { set({ requested: quantity }) },
+    updateRequestedRange: (newRange: NumericRange) => { set({ requestedRange: newRange }) },
     updateQUnits: (newunits: ReciprocalWavelengthUnits) => set({ q: new Q(newunits) }),
-    updateSUnits: (newunits: ReciprocalWavelengthUnits) => set({ q: new S(newunits) }),
-    updateDUnits: (newunits: WavelengthUnits) => set({ q: new D(newunits) }),
-    updateThetaUnits: (newunits: AngleUnits, wavelength: number) => set({ q: new TwoTheta(newunits, wavelength) })
+    updateSUnits: (newunits: ReciprocalWavelengthUnits) => set({ s: new S(newunits) }),
+    updateDUnits: (newunits: WavelengthUnits) => set({ d: new D(newunits) }),
+    updateThetaUnits: (newunits: AngleUnits, wavelength: number) => set({ twoTheta: new TwoTheta(newunits, wavelength) })
 }));
 
