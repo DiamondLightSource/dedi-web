@@ -1,5 +1,4 @@
 import { Box, Card, CardContent, Stack } from "@mui/material";
-// @ts-ignore
 import {
   DataToHtml,
   DefaultInteractions,

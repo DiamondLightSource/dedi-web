@@ -166,13 +166,13 @@ export default function ResultsBar(props: {
                               size="small"
                               label="units"
                               value={resultStore.s.units}
-                              onChange={(event) => updateSUnits(event.target.value as ReciprocalWavelengthUnits)}
+                              onChange={(event) => updateSUnits(event.target.value as WavelengthUnits)}
                             >
-                              <MenuItem value={ReciprocalWavelengthUnits.nanmometres}>
-                                {ReciprocalWavelengthUnits.nanmometres}
+                              <MenuItem value={WavelengthUnits.nanmometres}>
+                                {WavelengthUnits.nanmometres}
                               </MenuItem>
-                              <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
-                                {ReciprocalWavelengthUnits.angstroms}
+                              <MenuItem value={WavelengthUnits.angstroms}>
+                                {WavelengthUnits.angstroms}
                               </MenuItem>
                             </Select>
                           </FormControl></TableCell>
@@ -205,8 +205,8 @@ export default function ResultsBar(props: {
                         key={"things"}
                       >
                         <TableCell component="th" scope="row">{ScatteringOptions.twoTheta}</TableCell>
-                        <TableCell align="right">{thetaRange.min.toFixed(4)}</TableCell>
-                        <TableCell align="right">{thetaRange.max.toFixed(4)}</TableCell>
+                        <TableCell align="right">{thetaRange.min.toFixed(5)}</TableCell>
+                        <TableCell align="right">{thetaRange.max.toFixed(5)}</TableCell>
                         <TableCell align="right">
                           <FormControl>
                             <InputLabel>theta</InputLabel>
