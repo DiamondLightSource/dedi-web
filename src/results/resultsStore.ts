@@ -3,6 +3,7 @@ import NumericRange from "../calculations/numericRange";
 import { AngleUnits, WavelengthUnits, ReciprocalWavelengthUnits } from "../utils/units";
 import { D, Q, S, ScatteringQuantity, TwoTheta } from "./scatteringQuantities";
 
+
 export const theta = '\u03B8'
 
 export enum ScatteringOptions {

@@ -11,22 +11,7 @@ export default function SideMenu() {
       <List>
         <ListItem>
           <Stack direction="row">
-            <Typography flexGrow={3}>Dark Mode</Typography>
-          </Stack>
-        </ListItem>
-        <ListItem>
-          <Stack direction="row">
-            <Typography flexGrow={3}>Add New detector</Typography>
-          </Stack>
-        </ListItem>
-        <ListItem>
-          <Stack direction="row">
-            <Typography flexGrow={3}>View all detectors</Typography>
-          </Stack>
-        </ListItem>
-        <ListItem>
-          <Stack direction="row">
-            <Typography flexGrow={3}>Save current config as preset</Typography>
+            <Typography flexGrow={3}>{"Nothing to see here (0_0)"}</Typography>
           </Stack>
         </ListItem>
       </List>

@@ -59,6 +59,7 @@ export default function BeampropertiesDataEntry() {
   const energyUnits = useBeamlineConfigStore((state) => state.beamEnergyUnits);
 
   const updateConfig = useBeamlineConfigStore((state) => state.update);
+
   const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (energyUnits === EnergyUnits.electronVolts && event.target.value) {
       updateConfig({

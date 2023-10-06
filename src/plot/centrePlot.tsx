@@ -143,6 +143,7 @@ export default function CentrePlot(): JSX.Element {
     ajustedBeamstop,
   );
 
+
   return (
     <Box>
       <Stack direction="column" spacing={2}>
