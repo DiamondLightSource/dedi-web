@@ -1,10 +1,6 @@
 import { Vector3, Vector2 } from "three";
 import { Detector } from "../utils/types";
 
-export interface DiffractionCrystalEnvironment {
-  wavelength: number;
-}
-
 export interface DetectorProperties extends Detector {
   origin: Vector3;
   beamVector: Vector3;
@@ -18,7 +14,7 @@ export default class QSpace {
 
   constructor(
     detProps: DetectorProperties,
-    diffexp: DiffractionCrystalEnvironment,
+    wavelength: number,
     qScale: number,
   ) {
     this.detProps = detProps;
@@ -26,7 +22,7 @@ export default class QSpace {
     this.qScale = qScale;
 
     this.mki = detProps.beamVector.clone().negate();
-    this.kmod = this.qScale / diffexp.wavelength;
+    this.kmod = this.qScale / wavelength;
     const ki = this.detProps.beamVector.clone();
     ki.multiplyScalar(this.kmod);
     this.mki = ki.negate();
@@ -50,8 +46,8 @@ export default class QSpace {
     return this.convertToQ(q);
   }
 
-  setDiffractionCrystalEnviroment(diffexp: DiffractionCrystalEnvironment) {
-    this.kmod = this.qScale / diffexp.wavelength;
+  setDiffractionCrystalEnviroment(wavelength: number) {
+    this.kmod = this.qScale / wavelength;
     const ki = this.detProps.beamVector.clone();
     ki.multiplyScalar(this.kmod);
     this.mki = ki.negate();

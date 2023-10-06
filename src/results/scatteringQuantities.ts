@@ -35,7 +35,6 @@ export class S implements ScatteringQuantity {
     }
     fromQ(quantity: number): number {
         if (this.units === WavelengthUnits.angstroms) {
-
             return nanometres2Angstroms(1 / quantity);
         }
         return 1 / quantity

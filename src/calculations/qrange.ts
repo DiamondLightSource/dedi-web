@@ -1,6 +1,5 @@
 import QSpace, {
   DetectorProperties,
-  DiffractionCrystalEnvironment,
 } from "../calculations/qspace";
 import {
   BeamlineConfig,
@@ -11,6 +10,7 @@ import {
 import { Vector2, Vector3 } from "three";
 import { Ray } from "../calculations/ray";
 import NumericRange from "./numericRange";
+
 /**
  * Compute the viable and full qranges
  * @param detector
@@ -107,28 +107,19 @@ export function computeQrange(
     beamVector: new Vector3(0, 0, 1),
   };
 
-  const diffCrystEnv: DiffractionCrystalEnvironment = {
-    wavelength: beamProperties.wavelength * 1e10,
-  };
 
-  const qspace = new QSpace(detProps, diffCrystEnv, 2 * Math.PI);
+  const qspace = new QSpace(detProps, beamProperties.wavelength * 1e10, 2 * Math.PI);
 
   // get visible range
   const visibleQMin = qspace.qFromPixelPosition(ptMin);
   const visibleQMax = qspace.qFromPixelPosition(ptMax);
 
   detProps.origin.z = beamProperties.minCameraLength * 1e3;
-  qspace.setDiffractionCrystalEnviroment({
-    ...diffCrystEnv,
-    wavelength: beamProperties.minWavelength * 1e10,
-  });
+  qspace.setDiffractionCrystalEnviroment(beamProperties.minWavelength * 1e10,);
   const fullQMin = qspace.qFromPixelPosition(ptMax);
 
   detProps.origin.z = beamProperties.maxCameraLength * 1e3;
-  qspace.setDiffractionCrystalEnviroment({
-    ...diffCrystEnv,
-    wavelength: beamProperties.maxWavelength * 1e10,
-  });
+  qspace.setDiffractionCrystalEnviroment(beamProperties.maxWavelength * 1e10);
   const fullQMax = qspace.qFromPixelPosition(ptMin);
   return {
     ptMin: ptMin,
