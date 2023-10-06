@@ -6,6 +6,9 @@ export interface DetectorProperties extends Detector {
   beamVector: Vector3;
 }
 
+/**
+ * Collection of useful methods for finding the q range.
+ */
 export default class QSpace {
   detProps: DetectorProperties;
   kmod: number;
@@ -28,7 +31,7 @@ export default class QSpace {
     this.mki = ki.negate();
   }
 
-  convertToQ(q: Vector3) {
+  convertToQ(q: Vector3): Vector3 {
     const qLength = q.length();
     if (qLength > 0) {
       q.multiplyScalar(this.kmod / qLength);
@@ -39,14 +42,14 @@ export default class QSpace {
     return q;
   }
 
-  qFromPixelPosition(vector: Vector2) {
+  qFromPixelPosition(vector: Vector2): Vector3 {
     const q = new Vector3();
     q.set(-vector.x, -vector.y, 0);
     q.add(this.detProps.origin);
     return this.convertToQ(q);
   }
 
-  setDiffractionCrystalEnviroment(wavelength: number) {
+  setDiffractionCrystalEnviroment(wavelength: number): void {
     this.kmod = this.qScale / wavelength;
     const ki = this.detProps.beamVector.clone();
     ki.multiplyScalar(this.kmod);
