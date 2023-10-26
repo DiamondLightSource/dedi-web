@@ -38,7 +38,5 @@ test("Test computing q ranges", () => {
   };
 
   const result = computeQrange(detector, beamstop, cameraTube, beamConfig);
-  // better tests are needed here
-  console.log(result);
   expect(result).toBeTruthy();
 });

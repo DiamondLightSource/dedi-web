@@ -153,8 +153,8 @@ export default function CentrePlot(): JSX.Element {
               <div
                 style={{
                   display: "grid",
-                  height: "50vh",
-                  width: "50vh",
+                  height: "60vh",
+                  width: "60vh",
                   border: "solid black",
                 }}
               >
@@ -233,7 +233,7 @@ export default function CentrePlot(): JSX.Element {
                             strokeWidth={2}
                           />
                         )}
-                        {requestedRange.min && requestedRange.max && plotConfig.qrange && (
+                        {requestedRange.min && requestedRange.max && (
                           <SvgLine
                             coords={[requestedMin, requestedMax]}
                             stroke="green"

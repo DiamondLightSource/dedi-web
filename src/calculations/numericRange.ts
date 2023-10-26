@@ -1,5 +1,5 @@
 /**
- * An object that stores a numeric ranges min and max value
+ * An object that stores a numeric range
  */
 export default class NumericRange {
   min: number;
