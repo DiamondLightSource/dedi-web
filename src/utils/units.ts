@@ -53,7 +53,7 @@ export const energy2WavelengthConverter = (energy: number): number => {
  * @returns energy in keV
  */
 export const wavelength2EnergyConverter = (wavelength: number): number => {
-  return ((PLANCK * CSPEED) / (wavelength * 1e-9)) / 1.602e-19;
+  return ((PLANCK * CSPEED) / (wavelength * 1e-9)) / 1.602e-16;
 };
 
 export const millimetre2Micrometre = (input: number): number => {
