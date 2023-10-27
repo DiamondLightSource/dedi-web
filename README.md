@@ -5,6 +5,8 @@
 
 A client only Q-Range calculator. Based on dedi within dawn science. Built using react, typescript, mui, zustand, three.js, and h5web/lib.
 
+https://tizayi.github.io/dedi-web/
+
 ## Start dev server
 
 Start up
