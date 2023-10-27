@@ -110,7 +110,7 @@ export default function ResultsBar(props: {
 
 
   return (
-    <Box sx={{ flexGrow: 2 }}>
+    <Box sx={{ flexGrow: 1 }}>
       <Card sx={{ height: 1 }}>
         <CardContent>
           <Stack spacing={1}>
