@@ -1,7 +1,7 @@
 import { Beamstop, SimpleVector2 } from "../utils/types";
 import { create } from "zustand";
 import { DistanceUnits } from "../utils/units";
-import { presetList } from "../presets/presetManager";
+import { defaultConfig } from "../presets/presetManager";
 
 export interface BeamstopStore extends Beamstop {
   diameterUnits: DistanceUnits;
@@ -11,9 +11,11 @@ export interface BeamstopStore extends Beamstop {
   updateBeamstop: (presetBeamstop: Beamstop) => void;
 }
 
+
+
 export const useBeamstopStore = create<BeamstopStore>((set) => ({
-  ...presetList.test.beamstop,
-  clearance: presetList.test.beamstop.clearance,
+  ...defaultConfig.beamstop,
+  clearance: defaultConfig.beamstop.clearance,
   diameterUnits: DistanceUnits.millimetre,
   updateCentre: (newCentre: Partial<SimpleVector2>) =>
     set((state) => ({ centre: { ...state.centre, ...newCentre } })),

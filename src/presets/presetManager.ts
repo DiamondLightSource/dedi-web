@@ -15,3 +15,4 @@ interface AppDataFormat extends BeamlineConfig {
 
 export const detectorList = detectorData as Record<string, Detector>;
 export const presetList = presetData as Record<string, AppDataFormat>;
+export const defaultConfig = presetList[Object.keys(presetList)[0]];

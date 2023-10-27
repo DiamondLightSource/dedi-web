@@ -45,16 +45,16 @@ export default function BeampropertiesDataEntry() {
   );
 
   const energy = useBeamlineConfigStore((state) => {
-    if (!state.wavelength) {
+    if (!state.energy) {
       return null;
     }
 
     if (state.beamEnergyUnits === EnergyUnits.electronVolts) {
       return kiloElectronVolts2ElectronVots(
-        wavelength2EnergyConverter(state.wavelength),
+        state.energy,
       );
     }
-    return wavelength2EnergyConverter(state.wavelength);
+    return state.energy;
   });
   const energyUnits = useBeamlineConfigStore((state) => state.beamEnergyUnits);
 
@@ -63,12 +63,14 @@ export default function BeampropertiesDataEntry() {
   const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (energyUnits === EnergyUnits.electronVolts && event.target.value) {
       updateConfig({
+        energy: electronVots2KiloElectronVolts(parseFloat(event.target.value)),
         wavelength: energy2WavelengthConverter(
           electronVots2KiloElectronVolts(parseFloat(event.target.value)),
         ),
       });
     } else {
       updateConfig({
+        energy: parseFloat(event.target.value),
         wavelength: energy2WavelengthConverter(parseFloat(event.target.value)),
       });
     }
@@ -107,10 +109,13 @@ export default function BeampropertiesDataEntry() {
   const handleWavelength = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (wavelengthUnits === WavelengthUnits.angstroms && event.target.value) {
       updateConfig({
+        energy: wavelength2EnergyConverter(angstroms2Nanometres(parseFloat(event.target.value))),
         wavelength: angstroms2Nanometres(parseFloat(event.target.value)),
       });
     } else {
-      updateConfig({ wavelength: parseFloat(event.target.value) });
+      updateConfig({ 
+        energy: wavelength2EnergyConverter(parseFloat(event.target.value)),
+        wavelength: parseFloat(event.target.value) });
     }
   };
 

@@ -1,14 +1,4 @@
 {
-  "test": {
-    "resolution": {
-      "width": 1,
-      "height": 1
-    },
-    "pixelSize": {
-      "width": 1,
-      "height": 1
-    }
-  },
   "Pilatus P3-2M": {
     "resolution": {
       "width": 1475,

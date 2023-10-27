@@ -44,16 +44,16 @@ export const PLANCK = 6.62607015e-34;
  * @returns wave length in nm
  */
 export const energy2WavelengthConverter = (energy: number): number => {
-  return ((PLANCK * CSPEED) / (energy * 1e9)) * 6.242e15;
+  return ((PLANCK * CSPEED) / (energy * 1.602e-16)) * 1e9;
 };
 
 /**
  * Converts wavelength in nm to energy in kilo elctronvolts
- * @param wavelength
- * @returns
+ * @param wavelength in nm
+ * @returns energy in keV
  */
 export const wavelength2EnergyConverter = (wavelength: number): number => {
-  return ((PLANCK * CSPEED) / (wavelength * 1e9)) * 6.242e15;
+  return ((PLANCK * CSPEED) / (wavelength * 1e-9)) / 1.602e-19;
 };
 
 export const millimetre2Micrometre = (input: number): number => {

@@ -1,29 +1,4 @@
 {
-  "test": {
-    "detector": "test",
-    "beamstop": {
-      "centre": {
-        "x": 1,
-        "y": 1
-      },
-      "diameter": 1,
-      "clearance": 1
-    },
-    "cameraTube": {
-      "centre": {
-        "x": 1,
-        "y": 1
-      },
-      "diameter": 1
-    },
-    "angle": 1,
-    "wavelength": null,
-    "cameraLength": 1,
-    "minWavelength": 1,
-    "maxWavelength": 3,
-    "minCameraLength": 10,
-    "maxCameraLength": 100
-  },
   "I22 SAXS Isotropic": {
     "detector": "Pilatus P3-2M",
     "beamstop": {
