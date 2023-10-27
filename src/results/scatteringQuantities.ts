@@ -1,8 +1,7 @@
-import { AngleUnits, WavelengthUnits, ReciprocalWavelengthUnits, nanometres2Angstroms, angstroms2Nanometres } from "../utils/units";
-import { MathUtils } from "three/src/Three.js";
+import { WavelengthUnits, ReciprocalWavelengthUnits, nanometres2Angstroms, angstroms2Nanometres } from "../utils/units";
 
 export interface ScatteringQuantity {
-    units: WavelengthUnits | AngleUnits | ReciprocalWavelengthUnits,
+    units: WavelengthUnits | ReciprocalWavelengthUnits,
     fromQ: (quantity: number) => number,
     tooQ: (quantity: number) => number,
 }
@@ -63,26 +62,5 @@ export class D implements ScatteringQuantity {
             return 2 * Math.PI / angstroms2Nanometres(quantity);
         }
         return 2 * Math.PI / (quantity)
-    }
-}
-
-export class TwoTheta implements ScatteringQuantity {
-    units: AngleUnits;
-    wavelength: number;
-    constructor(units: AngleUnits, wavelength: number) {
-        this.units = units
-        this.wavelength = wavelength
-    }
-    fromQ(quantity: number): number {
-        if (this.units === AngleUnits.degrees) {
-            return 2 * MathUtils.radToDeg(Math.asin((quantity * this.wavelength) / (4 * Math.PI)));
-        }
-        return 2 * Math.asin((quantity * this.wavelength) / (4 * Math.PI))
-    }
-    tooQ(quantity: number): number {
-        if (this.units === AngleUnits.degrees) {
-            return ((4 * Math.PI) / this.wavelength) * Math.sin(MathUtils.degToRad(quantity / 2));
-        }
-        return ((4 * Math.PI) / this.wavelength) * Math.sin(quantity / 2)
     }
 }
