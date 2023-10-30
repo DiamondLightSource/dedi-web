@@ -47,6 +47,6 @@ export const getPointForQ = (
   );
   return ray.getPointAtDistance(
     1.0e3 *
-      (calculateDistanceFromQValue(qValue, cameralength, wavelength) ?? 0),
+    (calculateDistanceFromQValue(qValue, cameralength, wavelength) ?? 0),
   );
 };

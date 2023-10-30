@@ -3,15 +3,12 @@ name: github-pages-deploy
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     concurrency: ci-${{github.ref}}
-
     steps:
       - name: Checkout Source
         uses: actions/checkout@v3
