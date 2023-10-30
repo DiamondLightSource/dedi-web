@@ -18,7 +18,6 @@ import {
   wavelength2EnergyConverter,
   energy2WavelengthConverter,
   parseNumericInput,
-  enforceRangeLimits,
 } from "../utils/units";
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { MathUtils } from "three/src/Three.js";
