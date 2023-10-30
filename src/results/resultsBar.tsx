@@ -209,7 +209,7 @@ export default function ResultsBar(props: {
                           </FormControl>
                         </TableCell>
                       </TableRow>
-                      <TableRow key={"things"}>
+                      <TableRow key={"s"}>
                         <TableCell component="th" scope="row">
                           {ScatteringOptions.s}
                         </TableCell>
@@ -242,7 +242,7 @@ export default function ResultsBar(props: {
                           </FormControl>
                         </TableCell>
                       </TableRow>
-                      <TableRow key={"things"}>
+                      <TableRow key={"d"}>
                         <TableCell component="th" scope="row">
                           {ScatteringOptions.d}
                         </TableCell>

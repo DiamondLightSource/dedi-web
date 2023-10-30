@@ -53,8 +53,8 @@ export class Ray {
     const b =
       2 * coeffOfx2 * this.direction.x * this.initial_point.x +
       coeffOfxy *
-        (this.direction.x * this.initial_point.y +
-          this.direction.y * this.initial_point.x) +
+      (this.direction.x * this.initial_point.y +
+        this.direction.y * this.initial_point.x) +
       2 * coeffOfy2 * this.direction.y * this.initial_point.y +
       coeffOfx * this.direction.x +
       coeffOfy * this.direction.y;

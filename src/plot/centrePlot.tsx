@@ -175,14 +175,14 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(
                         (ajustedBeamstop.centre.x ?? 0) +
-                          ajustedBeamstop.diameter / 2,
+                        ajustedBeamstop.diameter / 2,
                         ajustedBeamstop.centre.y ?? 0,
                       ),
                       new Vector3(
                         ajustedBeamstop.centre.x ?? 0,
                         (ajustedBeamstop.centre.y ?? 0) +
-                          ajustedBeamstop.diameter / 2 +
-                          (ajustedBeamstop.clearance ?? 0),
+                        ajustedBeamstop.diameter / 2 +
+                        (ajustedBeamstop.clearance ?? 0),
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
@@ -191,7 +191,7 @@ export default function CentrePlot(): JSX.Element {
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
                         (ajustedCameraTube.centre.y ?? 0) +
-                          ajustedCameraTube.diameter / 2,
+                        ajustedCameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(
@@ -200,8 +200,8 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(ajustedPoints.ptMin.x, ajustedPoints.ptMin.y),
                       new Vector3(ajustedPoints.ptMax.x, ajustedPoints.ptMax.y),
-                      requestedMin,
-                      requestedMax,
+                      new Vector3(requestedMin.x, requestedMin.y),
+                      new Vector3(requestedMax.x, requestedMax.y)
                     ]}
                   >
                     {(
@@ -214,8 +214,8 @@ export default function CentrePlot(): JSX.Element {
                       detectorUpper: Vector3,
                       minQRange: Vector3,
                       maxQRange: Vector3,
-                      requestedMin: Vector2,
-                      requestedMax: Vector2,
+                      requestedMin: Vector3,
+                      requestedMax: Vector3,
                     ) => (
                       <SvgElement>
                         {plotConfig.cameraTube && (
