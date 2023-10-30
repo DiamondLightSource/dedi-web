@@ -17,11 +17,13 @@ import {
   electronVots2KiloElectronVolts,
   wavelength2EnergyConverter,
   energy2WavelengthConverter,
+  parseNumericInput,
 } from "../utils/units";
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { MathUtils } from "three/src/Three.js";
 
 export default function BeampropertiesDataEntry() {
+
   const minWavelength = useBeamlineConfigStore((state) => {
     if (state.wavelengthUnits === WavelengthUnits.angstroms) {
       return nanometres2Angstroms(state.minWavelength);
@@ -61,15 +63,13 @@ export default function BeampropertiesDataEntry() {
   const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (energyUnits === EnergyUnits.electronVolts && event.target.value) {
       updateConfig({
-        energy: electronVots2KiloElectronVolts(parseFloat(event.target.value)),
-        wavelength: energy2WavelengthConverter(
-          electronVots2KiloElectronVolts(parseFloat(event.target.value)),
-        ),
+        energy: parseNumericInput(event.target.value, electronVots2KiloElectronVolts),
+        wavelength: parseNumericInput(event.target.value, electronVots2KiloElectronVolts, energy2WavelengthConverter)
       });
     } else {
       updateConfig({
-        energy: parseFloat(event.target.value),
-        wavelength: energy2WavelengthConverter(parseFloat(event.target.value)),
+        energy: parseNumericInput(event.target.value),
+        wavelength: parseNumericInput(event.target.value, energy2WavelengthConverter)
       });
     }
   };
@@ -81,13 +81,14 @@ export default function BeampropertiesDataEntry() {
     return state.angle;
   });
   const angleUnits = useBeamlineConfigStore((state) => state.angleUnits);
+
   const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (angleUnits === AngleUnits.degrees && event.target.value) {
       updateConfig({
-        angle: MathUtils.degToRad(parseFloat(event.target.value)),
+        angle: parseNumericInput(event.target.value, MathUtils.degToRad),
       });
     } else {
-      updateConfig({ angle: parseFloat(event.target.value) });
+      updateConfig({ angle: parseNumericInput(event.target.value) });
     }
   };
 
@@ -100,31 +101,27 @@ export default function BeampropertiesDataEntry() {
     }
     return state.wavelength;
   });
-
   const wavelengthUnits = useBeamlineConfigStore(
     (state) => state.wavelengthUnits,
   );
+
   const handleWavelength = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (wavelengthUnits === WavelengthUnits.angstroms && event.target.value) {
       updateConfig({
-        energy: wavelength2EnergyConverter(
-          angstroms2Nanometres(parseFloat(event.target.value)),
-        ),
-        wavelength: angstroms2Nanometres(parseFloat(event.target.value)),
+        energy: parseNumericInput(event.target.value, angstroms2Nanometres, wavelength2EnergyConverter),
+        wavelength: parseNumericInput(event.target.value, angstroms2Nanometres),
       });
     } else {
       updateConfig({
-        energy: wavelength2EnergyConverter(parseFloat(event.target.value)),
-        wavelength: parseFloat(event.target.value),
+        energy: parseNumericInput(event.target.value, wavelength2EnergyConverter),
+        wavelength: parseNumericInput(event.target.value),
       });
     }
   };
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateConfig({
-      cameraLength: parseFloat(event.target.value)
-        ? parseFloat(event.target.value)
-        : null,
+      cameraLength: parseNumericInput(event.target.value),
     });
   };
 
@@ -136,7 +133,7 @@ export default function BeampropertiesDataEntry() {
         <TextField
           type="number"
           size="small"
-          value={energy ?? ""}
+          value={energy}
           onChange={handleEnergy}
         />
         <FormControl>
@@ -165,7 +162,7 @@ export default function BeampropertiesDataEntry() {
         <TextField
           type="number"
           size="small"
-          value={wavelength ?? ""}
+          value={wavelength}
           onChange={handleWavelength}
         />
         <FormControl>
@@ -200,7 +197,7 @@ export default function BeampropertiesDataEntry() {
         <TextField
           type="number"
           size="small"
-          value={cameraLength ?? ""}
+          value={cameraLength}
           InputProps={{
             inputProps: {
               max: maxCameraLength,

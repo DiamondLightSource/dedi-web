@@ -7,7 +7,7 @@ import {
   Beamstop,
 } from "../utils/types";
 
-interface AppDataFormat extends BeamlineConfig {
+export interface AppDataFormat extends BeamlineConfig {
   detector: string;
   beamstop: Beamstop;
   cameraTube: CircularDevice;

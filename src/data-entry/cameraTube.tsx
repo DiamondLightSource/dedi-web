@@ -8,19 +8,19 @@ import {
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useCameraTubeStore } from "./cameraTubeStore";
-import { DistanceUnits, millimetre2Micrometre } from "../utils/units";
+import { DistanceUnits, millimetre2Micrometre, parseNumericInput } from "../utils/units";
 
 export default function CameraTubeDataEntry(): JSX.Element {
   const centre = useCameraTubeStore((state) => state.centre);
   const updateCentre = useCameraTubeStore((state) => state.updateCentre);
   const handleX = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateCentre({
-      x: parseFloat(event.target.value) ? parseFloat(event.target.value) : null,
+      x: parseNumericInput(event.target.value),
     });
   };
   const handleY = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateCentre({
-      y: parseFloat(event.target.value) ? parseFloat(event.target.value) : null,
+      y: parseNumericInput(event.target.value),
     });
   };
 
@@ -64,7 +64,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
         <TextField
           type="number"
           size="small"
-          value={centre.x ?? ""}
+          value={centre.x}
           onChange={handleX}
         />
         <Typography flexGrow={2} align="center">
@@ -77,7 +77,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
         <TextField
           type="number"
           size="small"
-          value={centre.y ?? ""}
+          value={centre.y}
           onChange={handleY}
         />
         <Typography flexGrow={2} align="center">

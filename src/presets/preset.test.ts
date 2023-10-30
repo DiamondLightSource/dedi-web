@@ -1,16 +1,5 @@
 import { expect, test } from "vitest";
-import detectorData from "../presets/detectors.json";
-import presetData from "../presets/presetConfigs.json";
-import { Detector } from "../utils/types";
-import { AppDataFormat } from "./presetManager";
-
-const detectorList = detectorData as Record<string, Detector>;
-const presetList = presetData as Record<string, AppDataFormat>;
-const defaultConfig = presetList[Object.keys(presetList)[0]];
-
-
-// Also add some tests for input types
-
+import { defaultConfig, detectorList, presetList } from "./presetManager";
 
 
 test("Test detectors exist and are valid", () => {

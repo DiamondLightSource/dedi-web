@@ -150,3 +150,45 @@ export const kiloElectronVolts2ElectronVots = (input: number): number => {
 export const electronVots2KiloElectronVolts = (input: number): number => {
   return input / 1000;
 };
+
+
+/**
+ * A function to process numeric texbox inputs in a consistant way.
+ * @param input input string from the texbox
+ * @param callback1 first optional callback to call on the value
+ * @param callback2 second optional callback yo call on the value
+ * @returns a valid float or null 
+ */
+export const parseNumericInput = (input: string, callback1?: (input: number) => number, callback2?: (input: number) => number): number | null => {
+  let output = parseFloat(input.trim());
+
+  if (!output && output != 0) {
+    return null
+  }
+
+  if (callback1) {
+    output = callback1(output);
+  }
+
+  if (callback2) {
+    output = callback2(output);
+  }
+
+  return output;
+}
+
+/**
+ * Enforces given range limits
+ * @param value input values
+ * @param min min value of the range 
+ * @param max max value for the range
+ * @returns 
+ */
+export const enforceRangeLimits = (value: number, min: number, max: number): number => {
+  if (value > max) {
+    return max;
+  }
+  if (value < min)
+    return min;
+  return value
+}

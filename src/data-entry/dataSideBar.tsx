@@ -17,7 +17,12 @@ import CameraTubeDataEntry from "./cameraTube";
 import { useDetectorStore } from "./detectorStore";
 import BeampropertiesDataEntry from "./beamProperties";
 
+/**
+ * React component which represents the side bar for data entry
+ * @returns 
+ */
 export default function DataSideBar(): JSX.Element {
+
   const name = useDetectorStore((state) => state.name);
   const resolution = useDetectorStore((state) => state.current.resolution);
   const pixelSize = useDetectorStore((state) => {
@@ -29,8 +34,10 @@ export default function DataSideBar(): JSX.Element {
     }
     return state.current.pixelSize;
   });
+
   const detectorList = useDetectorStore((state) => state.detectorList);
   const pixelUnits = useDetectorStore((state) => state.pixelUnits);
+
   const updateUnits = useDetectorStore((state) => state.updateUnits);
   const updateDetector = useDetectorStore((state) => state.updateDetector);
 
