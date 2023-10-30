@@ -26,7 +26,7 @@ export default class NumericRange {
 
   /**
    * Returns true if another range falls inside the numeric range
-   * @param other another range 
+   * @param other another range
    * @returns
    */
   containsRange(other: NumericRange): boolean {
@@ -35,7 +35,7 @@ export default class NumericRange {
 
   /**
    * Returns string represtaion of the numeric range
-   * @returns 
+   * @returns
    */
   toString(): string {
     return `(min:${this.min}, max:${this.max})`;
@@ -61,7 +61,7 @@ export default class NumericRange {
   /**
    * Returns true if the neumeric ranges are equal
    * @param other another numeric range
-   * @returns 
+   * @returns
    */
   equals(other: NumericRange): boolean {
     return this.min === other.min && this.max === other.max;

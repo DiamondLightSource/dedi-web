@@ -26,14 +26,13 @@ test("test numeric range interset", () => {
 });
 
 test("numeric range swap", () => {
-  const range1 = new NumericRange(100, 4)
-  expect(range1.min).toEqual(4)
-  expect(range1.max).toEqual(100)
-})
+  const range1 = new NumericRange(100, 4);
+  expect(range1.min).toEqual(4);
+  expect(range1.max).toEqual(100);
+});
 
 test("test numeric range equality", () => {
   const range1 = new NumericRange(2, 3);
   const range2 = new NumericRange(2, 3);
   expect(range1.equals(range2));
 });
-

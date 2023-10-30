@@ -127,7 +127,7 @@ export default function CentrePlot(): JSX.Element {
   const domains = getDomains(ajustedDetector, ajustedCameraTube);
 
   // requested range on diagram
-  const requestedRange = useResultStore((state) => state.requestedRange)
+  const requestedRange = useResultStore((state) => state.requestedRange);
   const requestedMax = getPointForQ(
     requestedRange.max * 1e9,
     bealineConfig.angle ?? 0,
@@ -142,7 +142,6 @@ export default function CentrePlot(): JSX.Element {
     (bealineConfig.wavelength ?? 0) * 1e-9,
     ajustedBeamstop,
   );
-
 
   return (
     <Box>
@@ -176,14 +175,14 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(
                         (ajustedBeamstop.centre.x ?? 0) +
-                        ajustedBeamstop.diameter / 2,
+                          ajustedBeamstop.diameter / 2,
                         ajustedBeamstop.centre.y ?? 0,
                       ),
                       new Vector3(
                         ajustedBeamstop.centre.x ?? 0,
                         (ajustedBeamstop.centre.y ?? 0) +
-                        ajustedBeamstop.diameter / 2 +
-                        (ajustedBeamstop.clearance ?? 0),
+                          ajustedBeamstop.diameter / 2 +
+                          (ajustedBeamstop.clearance ?? 0),
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
@@ -192,7 +191,7 @@ export default function CentrePlot(): JSX.Element {
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
                         (ajustedCameraTube.centre.y ?? 0) +
-                        ajustedCameraTube.diameter / 2,
+                          ajustedCameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(

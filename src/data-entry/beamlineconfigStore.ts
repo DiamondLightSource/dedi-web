@@ -1,7 +1,7 @@
 import { BeamlineConfig } from "../utils/types";
 import { create } from "zustand";
 import { AngleUnits, EnergyUnits, WavelengthUnits } from "../utils/units";
-import { presetList,defaultConfig } from "../presets/presetManager"; 
+import { presetList, defaultConfig } from "../presets/presetManager";
 
 export interface BeamlineConfigStore extends BeamlineConfig {
   preset: string | null;

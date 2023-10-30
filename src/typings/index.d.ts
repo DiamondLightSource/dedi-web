@@ -4,4 +4,4 @@
     The issue has already been fixed on github so  I am waiting for the next release
     to remove this type declartion file
 */
-declare module "@h5web/lib"
+declare module "@h5web/lib";

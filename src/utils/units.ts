@@ -47,7 +47,7 @@ export const PLANCK = 6.62607015e-34;
  * @returns - wavelength in nm
  */
 export const energy2WavelengthConverter = (energy: number): number => {
-  return metres2nanometres((PLANCK * CSPEED) / (kiloElectronVolt2Joule(energy)));
+  return metres2nanometres((PLANCK * CSPEED) / kiloElectronVolt2Joule(energy));
 };
 
 /**
@@ -56,7 +56,9 @@ export const energy2WavelengthConverter = (energy: number): number => {
  * @returns energy in keV
  */
 export const wavelength2EnergyConverter = (wavelength: number): number => {
-  return joule2KiloElectronVolt((PLANCK * CSPEED) / (nanometres2metres(wavelength))) ;
+  return joule2KiloElectronVolt(
+    (PLANCK * CSPEED) / nanometres2metres(wavelength),
+  );
 };
 
 /**
@@ -65,8 +67,8 @@ export const wavelength2EnergyConverter = (wavelength: number): number => {
  * @returns output in keV
  */
 export const joule2KiloElectronVolt = (input: number): number => {
-  return input/ 1.602e-16
-}
+  return input / 1.602e-16;
+};
 
 /**
  * Converts keV to joules
@@ -74,17 +76,17 @@ export const joule2KiloElectronVolt = (input: number): number => {
  * @returns output in joules
  */
 export const kiloElectronVolt2Joule = (input: number): number => {
-  return input* 1.602e-16
-}
+  return input * 1.602e-16;
+};
 
 /**
- * Converts meters into nanometeres 
+ * Converts meters into nanometeres
  * @param input value in metres
  * @returns output in nanometeres
  */
 const metres2nanometres = (input: number): number => {
-  return input *1e9;
-}
+  return input * 1e9;
+};
 
 /**
  * Converts nanometres to metres
@@ -92,8 +94,8 @@ const metres2nanometres = (input: number): number => {
  * @returns output in metres
  */
 const nanometres2metres = (input: number): number => {
-  return input *1e-9;
-}
+  return input * 1e-9;
+};
 
 /**
  * Converts millimetres to micrometres

@@ -1,6 +1,4 @@
-import QSpace, {
-  DetectorProperties,
-} from "../calculations/qspace";
+import QSpace, { DetectorProperties } from "../calculations/qspace";
 import {
   BeamlineConfig,
   Beamstop,
@@ -107,15 +105,18 @@ export function computeQrange(
     beamVector: new Vector3(0, 0, 1),
   };
 
-
-  const qspace = new QSpace(detProps, beamProperties.wavelength * 1e10, 2 * Math.PI);
+  const qspace = new QSpace(
+    detProps,
+    beamProperties.wavelength * 1e10,
+    2 * Math.PI,
+  );
 
   // get visible range
   const visibleQMin = qspace.qFromPixelPosition(ptMin);
   const visibleQMax = qspace.qFromPixelPosition(ptMax);
 
   detProps.origin.z = beamProperties.minCameraLength * 1e3;
-  qspace.setDiffractionCrystalEnviroment(beamProperties.minWavelength * 1e10,);
+  qspace.setDiffractionCrystalEnviroment(beamProperties.minWavelength * 1e10);
   const fullQMin = qspace.qFromPixelPosition(ptMax);
 
   detProps.origin.z = beamProperties.maxCameraLength * 1e3;

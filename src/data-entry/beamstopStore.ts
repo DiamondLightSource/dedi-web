@@ -11,8 +11,6 @@ export interface BeamstopStore extends Beamstop {
   updateBeamstop: (presetBeamstop: Beamstop) => void;
 }
 
-
-
 export const useBeamstopStore = create<BeamstopStore>((set) => ({
   ...defaultConfig.beamstop,
   clearance: defaultConfig.beamstop.clearance,
