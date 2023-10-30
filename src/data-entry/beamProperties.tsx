@@ -18,6 +18,7 @@ import {
   wavelength2EnergyConverter,
   energy2WavelengthConverter,
   parseNumericInput,
+  enforceRangeLimits,
 } from "../utils/units";
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { MathUtils } from "three/src/Three.js";
@@ -121,7 +122,7 @@ export default function BeampropertiesDataEntry() {
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateConfig({
-      cameraLength: parseNumericInput(event.target.value),
+      cameraLength: parseNumericInput(event.target.value)
     });
   };
 

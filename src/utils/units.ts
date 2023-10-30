@@ -184,7 +184,7 @@ export const parseNumericInput = (input: string, callback1?: (input: number) => 
  * @param max max value for the range
  * @returns 
  */
-export const enforceRangeLimits = (value: number, min: number, max: number): number => {
+export const enforceRangeLimits = (min: number, max: number, value: number): number => {
   if (value > max) {
     return max;
   }
