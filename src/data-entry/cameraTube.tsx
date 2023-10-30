@@ -8,7 +8,11 @@ import {
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useCameraTubeStore } from "./cameraTubeStore";
-import { DistanceUnits, millimetre2Micrometre, parseNumericInput } from "../utils/units";
+import {
+  DistanceUnits,
+  millimetre2Micrometre,
+  parseNumericInput,
+} from "../utils/units";
 
 export default function CameraTubeDataEntry(): JSX.Element {
   const centre = useCameraTubeStore((state) => state.centre);

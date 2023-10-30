@@ -23,7 +23,6 @@ import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { MathUtils } from "three/src/Three.js";
 
 export default function BeampropertiesDataEntry() {
-
   const minWavelength = useBeamlineConfigStore((state) => {
     if (state.wavelengthUnits === WavelengthUnits.angstroms) {
       return nanometres2Angstroms(state.minWavelength);
@@ -63,13 +62,23 @@ export default function BeampropertiesDataEntry() {
   const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (energyUnits === EnergyUnits.electronVolts && event.target.value) {
       updateConfig({
-        energy: parseNumericInput(event.target.value, electronVots2KiloElectronVolts),
-        wavelength: parseNumericInput(event.target.value, electronVots2KiloElectronVolts, energy2WavelengthConverter)
+        energy: parseNumericInput(
+          event.target.value,
+          electronVots2KiloElectronVolts,
+        ),
+        wavelength: parseNumericInput(
+          event.target.value,
+          electronVots2KiloElectronVolts,
+          energy2WavelengthConverter,
+        ),
       });
     } else {
       updateConfig({
         energy: parseNumericInput(event.target.value),
-        wavelength: parseNumericInput(event.target.value, energy2WavelengthConverter)
+        wavelength: parseNumericInput(
+          event.target.value,
+          energy2WavelengthConverter,
+        ),
       });
     }
   };
@@ -108,12 +117,19 @@ export default function BeampropertiesDataEntry() {
   const handleWavelength = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (wavelengthUnits === WavelengthUnits.angstroms && event.target.value) {
       updateConfig({
-        energy: parseNumericInput(event.target.value, angstroms2Nanometres, wavelength2EnergyConverter),
+        energy: parseNumericInput(
+          event.target.value,
+          angstroms2Nanometres,
+          wavelength2EnergyConverter,
+        ),
         wavelength: parseNumericInput(event.target.value, angstroms2Nanometres),
       });
     } else {
       updateConfig({
-        energy: parseNumericInput(event.target.value, wavelength2EnergyConverter),
+        energy: parseNumericInput(
+          event.target.value,
+          wavelength2EnergyConverter,
+        ),
         wavelength: parseNumericInput(event.target.value),
       });
     }
@@ -121,7 +137,7 @@ export default function BeampropertiesDataEntry() {
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateConfig({
-      cameraLength: parseNumericInput(event.target.value)
+      cameraLength: parseNumericInput(event.target.value),
     });
   };
 

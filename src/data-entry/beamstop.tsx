@@ -8,24 +8,27 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { DistanceUnits, millimetre2Micrometre, parseNumericInput } from "../utils/units";
+import {
+  DistanceUnits,
+  millimetre2Micrometre,
+  parseNumericInput,
+} from "../utils/units";
 import { BeamstopStore, useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 
 export default function BeamStopDataEntry(): JSX.Element {
-
   const centre = useBeamstopStore((state) => state.centre);
   const updateCentre = useBeamstopStore((state) => state.updateCentre);
 
   const handleX = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateCentre({
-      x: parseNumericInput(event.target.value)
+      x: parseNumericInput(event.target.value),
     });
   };
 
   const handleY = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateCentre({
-      y: parseNumericInput(event.target.value)
+      y: parseNumericInput(event.target.value),
     });
   };
 
@@ -44,9 +47,7 @@ export default function BeamStopDataEntry(): JSX.Element {
   const clearance = useBeamstopStore((state: BeamstopStore) => state.clearance);
   const updateClearance = useBeamstopStore((state) => state.updateClearance);
   const handleClearance = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateClearance(
-      parseNumericInput(event.target.value),
-    );
+    updateClearance(parseNumericInput(event.target.value));
   };
 
   const detector = useDetectorStore((state) => state.current);

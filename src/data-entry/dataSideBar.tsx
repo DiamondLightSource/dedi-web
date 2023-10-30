@@ -19,10 +19,9 @@ import BeampropertiesDataEntry from "./beamProperties";
 
 /**
  * React component which represents the side bar for data entry
- * @returns 
+ * @returns
  */
 export default function DataSideBar(): JSX.Element {
-
   const name = useDetectorStore((state) => state.name);
   const resolution = useDetectorStore((state) => state.current.resolution);
   const pixelSize = useDetectorStore((state) => {
