@@ -7,27 +7,23 @@
     "context": "..",
     // Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
     "dockerfile": "../Dockerfile"
-  }
-
+  },
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
-
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [3000],
-
   // // Uncomment the next line to run commands after the container is created.
   // // "postCreateCommand": "cat /etc/os-release",
-
-  // "initializeCommand": "bash -c 'for i in $HOME/.inputrc; do [ -f $i ] || touch $i; done'",
-  // "runArgs": [
-  // 	"--net=host",
-  // 	"--security-opt=label=disable"
-  // ],
-  // "mounts": [
-  // 	"source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
-  // 	"source=${localEnv:HOME}/.inputrc,target=/root/.inputrc,type=bind"
-  // ],
-  // // make the workspace folder the same inside and outside of the container
-  // "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
-  // "workspaceFolder": "${localWorkspaceFolder}"
+  "initializeCommand": "bash -c 'for i in $HOME/.inputrc; do [ -f $i ] || touch $i; done'",
+  "runArgs": [
+    "--net=host",
+    "--security-opt=label=disable"
+  ],
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
+    "source=${localEnv:HOME}/.inputrc,target=/root/.inputrc,type=bind"
+  ],
+  // make the workspace folder the same inside and outside of the container
+  "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
+  "workspaceFolder": "${localWorkspaceFolder}"
 }

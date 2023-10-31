@@ -22,97 +22,94 @@ import {
 } from "@mui/material";
 import NumericRange from "../calculations/numericRange";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
-import { ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
-import RangeDiagram from "./rangeDiagram";
+import { ReciprocalWavelengthUnits, WavelengthUnits, parseNumericInput } from "../utils/units";
+import { RangeDiagram, MessageDiagram } from "./rangeDiagram";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 
 export default function ResultsBar(props: {
-  visableQRange: NumericRange;
-  fullQrange: NumericRange;
+  visableQRange: NumericRange | null;
+  fullQrange: NumericRange | null;
 }): JSX.Element {
+
   const resultStore = useResultStore();
   const updateQUnits = useResultStore((state) => state.updateQUnits);
   const updateSUnits = useResultStore((state) => state.updateSUnits);
   const updateDUnits = useResultStore((state) => state.updateDUnits);
 
-  const qRange = new NumericRange(
-    resultStore.q.fromQ(props.visableQRange.min),
-    resultStore.q.fromQ(props.visableQRange.max),
-  );
-  const sRange = new NumericRange(
-    resultStore.s.fromQ(props.visableQRange.min),
-    resultStore.s.fromQ(props.visableQRange.max),
-  );
-  const dRange = new NumericRange(
-    resultStore.d.fromQ(props.visableQRange.min),
-    resultStore.d.fromQ(props.visableQRange.max),
-  );
+  let ajustedVisibleRange: NumericRange | null = null
+  let ajustedFullRange: NumericRange | null = null;
+  let ajustedRequestedRange: NumericRange | null = null;
+  let qRange: NumericRange | null = null;
+  let sRange: NumericRange | null = null;
+  let dRange: NumericRange | null = null;
 
-  let ajustedVisibleRange: NumericRange;
-  let ajustedFullRange: NumericRange;
-  let ajustedRequestedRange: NumericRange;
+  if (props.fullQrange && props.visableQRange && resultStore.requestedMax && resultStore.requestedMin) {
+    qRange = new NumericRange(
+      resultStore.q.fromQ(props.visableQRange.min),
+      resultStore.q.fromQ(props.visableQRange.max),
+    );
+    sRange = new NumericRange(
+      resultStore.s.fromQ(props.visableQRange.min),
+      resultStore.s.fromQ(props.visableQRange.max),
+    );
+    dRange = new NumericRange(
+      resultStore.d.fromQ(props.visableQRange.min),
+      resultStore.d.fromQ(props.visableQRange.max),
+    );
 
-  switch (resultStore.requested) {
-    case ScatteringOptions.s:
-      ajustedVisibleRange = sRange;
-      ajustedFullRange = new NumericRange(
-        resultStore.s.fromQ(props.fullQrange.min),
-        resultStore.s.fromQ(props.fullQrange.max),
-      );
-      ajustedRequestedRange = new NumericRange(
-        resultStore.s.fromQ(resultStore.requestedRange.min),
-        resultStore.s.fromQ(resultStore.requestedRange.max),
-      );
-      break;
-    case ScatteringOptions.d:
-      ajustedVisibleRange = dRange;
-      ajustedFullRange = new NumericRange(
-        resultStore.d.fromQ(props.fullQrange.min),
-        resultStore.d.fromQ(props.fullQrange.max),
-      );
-      ajustedRequestedRange = new NumericRange(
-        resultStore.d.fromQ(resultStore.requestedRange.min),
-        resultStore.d.fromQ(resultStore.requestedRange.max),
-      );
-      break;
-    default:
-      ajustedVisibleRange = qRange;
-      ajustedFullRange = new NumericRange(
-        resultStore.q.fromQ(props.fullQrange.min),
-        resultStore.q.fromQ(props.fullQrange.max),
-      );
-      ajustedRequestedRange = new NumericRange(
-        resultStore.q.fromQ(resultStore.requestedRange.min),
-        resultStore.q.fromQ(resultStore.requestedRange.max),
-      );
-      break;
+    switch (resultStore.requested) {
+      case ScatteringOptions.s:
+        ajustedVisibleRange = sRange;
+        ajustedFullRange = new NumericRange(
+          resultStore.s.fromQ(props.fullQrange.min),
+          resultStore.s.fromQ(props.fullQrange.max),
+        );
+        ajustedRequestedRange = new NumericRange(
+          resultStore.s.fromQ(resultStore.requestedMin),
+          resultStore.s.fromQ(resultStore.requestedMin),
+        );
+        break;
+      case ScatteringOptions.d:
+        ajustedVisibleRange = dRange;
+        ajustedFullRange = new NumericRange(
+          resultStore.d.fromQ(props.fullQrange.min),
+          resultStore.d.fromQ(props.fullQrange.max),
+        );
+        ajustedRequestedRange = new NumericRange(
+          resultStore.d.fromQ(resultStore.requestedMin),
+          resultStore.d.fromQ(resultStore.requestedMax),
+        );
+        break;
+      default:
+        ajustedVisibleRange = qRange;
+        ajustedFullRange = new NumericRange(
+          resultStore.q.fromQ(props.fullQrange.min),
+          resultStore.q.fromQ(props.fullQrange.max),
+        );
+        ajustedRequestedRange = new NumericRange(
+          resultStore.q.fromQ(resultStore.requestedMin),
+          resultStore.q.fromQ(resultStore.requestedMax),
+        );
+        break;
+    }
   }
 
   const handleRequestedMax = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (resultStore.requested) {
       case ScatteringOptions.s:
         resultStore.updateRequestedRange(
-          new NumericRange(
-            resultStore.requestedRange.min,
-            resultStore.s.tooQ(parseFloat(event.target.value) ?? 1),
-          ),
+          { requestedMax: parseNumericInput(event.target.value, resultStore.s.tooQ) },
         );
         break;
       case ScatteringOptions.d:
         resultStore.updateRequestedRange(
-          new NumericRange(
-            resultStore.requestedRange.min,
-            resultStore.d.tooQ(parseFloat(event.target.value) ?? 1),
-          ),
+          { requestedMax: parseNumericInput(event.target.value, resultStore.d.tooQ) }
         );
         break;
       default:
         resultStore.updateRequestedRange(
-          new NumericRange(
-            resultStore.requestedRange.min,
-            resultStore.q.tooQ(parseFloat(event.target.value) ?? 1),
-          ),
+          { requestedMax: parseNumericInput(event.target.value) }
         );
         break;
     }
@@ -122,26 +119,17 @@ export default function ResultsBar(props: {
     switch (resultStore.requested) {
       case ScatteringOptions.s:
         resultStore.updateRequestedRange(
-          new NumericRange(
-            resultStore.s.tooQ(parseFloat(event.target.value) ?? 0),
-            resultStore.requestedRange.max,
-          ),
-        );
+          { requestedMin: parseNumericInput(event.target.value, resultStore.s.tooQ) },
+        )
         break;
       case ScatteringOptions.d:
         resultStore.updateRequestedRange(
-          new NumericRange(
-            resultStore.d.tooQ(parseFloat(event.target.value) ?? 0),
-            resultStore.requestedRange.max,
-          ),
+          { requestedMin: parseNumericInput(event.target.value, resultStore.d.tooQ) }
         );
         break;
       default:
         resultStore.updateRequestedRange(
-          new NumericRange(
-            resultStore.q.tooQ(parseFloat(event.target.value) ?? 0),
-            resultStore.requestedRange.max,
-          ),
+          { requestedMin: parseNumericInput(event.target.value) }
         );
         break;
     }
@@ -176,10 +164,10 @@ export default function ResultsBar(props: {
                           {ScatteringOptions.q}
                         </TableCell>
                         <TableCell align="right">
-                          {qRange.min.toFixed(4)}
+                          {qRange ? qRange.min.toFixed(4) : ""}
                         </TableCell>
                         <TableCell align="right">
-                          {qRange.max.toFixed(4)}
+                          {qRange ? qRange.max.toFixed(4) : ""}
                         </TableCell>
                         <TableCell align="right">
                           <FormControl>
@@ -214,10 +202,10 @@ export default function ResultsBar(props: {
                           {ScatteringOptions.s}
                         </TableCell>
                         <TableCell align="right">
-                          {sRange.min.toFixed(4)}
+                          {sRange ? sRange.min.toFixed(4) : ""}
                         </TableCell>
                         <TableCell align="right">
-                          {sRange.max.toFixed(4)}
+                          {sRange ? sRange.max.toFixed(4) : ""}
                         </TableCell>
                         <TableCell align="right">
                           <FormControl>
@@ -247,10 +235,10 @@ export default function ResultsBar(props: {
                           {ScatteringOptions.d}
                         </TableCell>
                         <TableCell align="right">
-                          {dRange.min.toFixed(4)}
+                          {dRange ? dRange.min.toFixed(4) : ""}
                         </TableCell>
                         <TableCell align="right">
-                          {dRange.max.toFixed(4)}
+                          {dRange ? dRange.max.toFixed(4) : ""}
                         </TableCell>
                         <TableCell align="right">
                           <FormControl>
@@ -281,7 +269,7 @@ export default function ResultsBar(props: {
               </Box>
               <Divider orientation="vertical" />
               <Stack flexGrow={2}>
-                <Stack spacing={2}>
+                <Stack spacing={4}>
                   <Stack direction={"row"} spacing={3}>
                     <Stack spacing={2}>
                       <Typography>
@@ -295,13 +283,13 @@ export default function ResultsBar(props: {
                       <TextField
                         type="number"
                         size="small"
-                        value={ajustedRequestedRange.min}
+                        value={ajustedRequestedRange ? ajustedRequestedRange.min : ""}
                         onChange={handleRequestedMin}
                       />
                       <TextField
                         type="number"
                         size="small"
-                        value={ajustedRequestedRange.max}
+                        value={ajustedRequestedRange ? ajustedRequestedRange.max : ""}
                         onChange={handleRequestedMax}
                       />
                     </Stack>
@@ -335,11 +323,18 @@ export default function ResultsBar(props: {
                     </FormControl>
                   </Stack>
                 </Stack>
-                <RangeDiagram
-                  visibleQRange={ajustedVisibleRange}
-                  fullQRange={ajustedFullRange}
-                  requestedRange={ajustedRequestedRange}
-                />
+                {((): JSX.Element => {
+                  if (ajustedFullRange && ajustedVisibleRange && ajustedRequestedRange && ajustedFullRange.containsRange(ajustedVisibleRange)) {
+                    return (
+                      <RangeDiagram
+                        visibleQRange={ajustedVisibleRange}
+                        fullQRange={ajustedFullRange}
+                        requestedRange={ajustedRequestedRange}
+                      />)
+                  } else {
+                    return (<MessageDiagram message="No solution" />)
+                  }
+                })()}
               </Stack>
             </Stack>
           </Stack>

@@ -37,6 +37,9 @@ test("Test computing q ranges", () => {
     diameter: 310,
   };
 
-  const result = computeQrange(detector, beamstop, cameraTube, beamConfig);
-  expect(result).toBeTruthy();
+  const { ptMin, ptMax, visibleQRange, fullQRange } = computeQrange(detector, beamstop, cameraTube, beamConfig);
+  expect(ptMin.y).toBeLessThan(ptMax.y);
+  expect(Math.abs(ptMin.x - ptMax.x)).toBeLessThan(1)
+  expect(fullQRange).toBeTruthy()
+  expect(visibleQRange).toBeTruthy()
 });

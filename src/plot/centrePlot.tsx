@@ -127,22 +127,28 @@ export default function CentrePlot(): JSX.Element {
   const domains = getDomains(ajustedDetector, ajustedCameraTube);
 
   // requested range on diagram
-  const requestedRange = useResultStore((state) => state.requestedRange);
-  const requestedMax = getPointForQ(
-    requestedRange.max * 1e9,
-    bealineConfig.angle ?? 0,
-    bealineConfig.cameraLength ?? 0,
-    (bealineConfig.wavelength ?? 0) * 1e-9,
-    ajustedBeamstop,
-  );
-  const requestedMin = getPointForQ(
-    requestedRange.min * 1e9,
-    bealineConfig.angle ?? 0,
-    bealineConfig.cameraLength ?? 0,
-    (bealineConfig.wavelength ?? 0) * 1e-9,
-    ajustedBeamstop,
-  );
+  const requestedMin = useResultStore((state) => state.requestedMin);
+  const requestedMax = useResultStore((state) => state.requestedMax);
 
+  let requestedDiagramMin = new Vector2(0, 0);
+  let requestedDiagramMax = new Vector2(0, 0);
+  if (requestedMin && requestedMax) {
+    const requestedRange = new NumericRange(requestedMin, requestedMax);
+    requestedDiagramMax = getPointForQ(
+      requestedRange.max * 1e9,
+      bealineConfig.angle ?? 0,
+      bealineConfig.cameraLength ?? 0,
+      (bealineConfig.wavelength ?? 0) * 1e-9,
+      ajustedBeamstop,
+    );
+    requestedDiagramMin = getPointForQ(
+      requestedRange.min * 1e9,
+      bealineConfig.angle ?? 0,
+      bealineConfig.cameraLength ?? 0,
+      (bealineConfig.wavelength ?? 0) * 1e-9,
+      ajustedBeamstop,
+    );
+  }
   return (
     <Box>
       <Stack direction="column" spacing={2}>
@@ -175,14 +181,14 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(
                         (ajustedBeamstop.centre.x ?? 0) +
-                          ajustedBeamstop.diameter / 2,
+                        ajustedBeamstop.diameter / 2,
                         ajustedBeamstop.centre.y ?? 0,
                       ),
                       new Vector3(
                         ajustedBeamstop.centre.x ?? 0,
                         (ajustedBeamstop.centre.y ?? 0) +
-                          ajustedBeamstop.diameter / 2 +
-                          (ajustedBeamstop.clearance ?? 0),
+                        ajustedBeamstop.diameter / 2 +
+                        (ajustedBeamstop.clearance ?? 0),
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
@@ -191,7 +197,7 @@ export default function CentrePlot(): JSX.Element {
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
                         (ajustedCameraTube.centre.y ?? 0) +
-                          ajustedCameraTube.diameter / 2,
+                        ajustedCameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(
@@ -200,8 +206,8 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(ajustedPoints.ptMin.x, ajustedPoints.ptMin.y),
                       new Vector3(ajustedPoints.ptMax.x, ajustedPoints.ptMax.y),
-                      new Vector3(requestedMin.x, requestedMin.y),
-                      new Vector3(requestedMax.x, requestedMax.y),
+                      new Vector3(requestedDiagramMin.x, requestedDiagramMin.y),
+                      new Vector3(requestedDiagramMax.x, requestedDiagramMax.y),
                     ]}
                   >
                     {(
@@ -232,7 +238,7 @@ export default function CentrePlot(): JSX.Element {
                             strokeWidth={2}
                           />
                         )}
-                        {requestedRange.min && requestedRange.max && (
+                        {requestedMin && requestedMax && (
                           <SvgLine
                             coords={[requestedMin, requestedMax]}
                             stroke="green"
@@ -282,8 +288,8 @@ export default function CentrePlot(): JSX.Element {
           </Box>
         </Stack>
         <ResultsBar
-          visableQRange={visibleQRange ?? new NumericRange(0, 1)}
-          fullQrange={fullQRange ?? new NumericRange(0, 1)}
+          visableQRange={visibleQRange}
+          fullQrange={fullQRange}
         />
       </Stack>
     </Box>

@@ -16,7 +16,7 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   preset: Object.keys(presetList)[0],
   angle: defaultConfig.angle,
   cameraLength: defaultConfig.cameraLength,
-  minWavelength: defaultConfig.maxWavelength,
+  minWavelength: defaultConfig.minWavelength,
   maxWavelength: defaultConfig.maxWavelength,
   minCameraLength: defaultConfig.minCameraLength,
   maxCameraLength: defaultConfig.maxCameraLength,

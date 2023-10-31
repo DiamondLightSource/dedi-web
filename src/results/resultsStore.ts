@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import NumericRange from "../calculations/numericRange";
 import { WavelengthUnits, ReciprocalWavelengthUnits } from "../utils/units";
 import { D, Q, S, ScatteringQuantity } from "./scatteringQuantities";
 
@@ -16,9 +15,10 @@ export interface ResultStore {
   q: ScatteringQuantity;
   s: ScatteringQuantity;
   d: ScatteringQuantity;
-  requestedRange: NumericRange;
+  requestedMin: number | null;
+  requestedMax: number | null;
   updateRequested: (quantity: ScatteringOptions) => void;
-  updateRequestedRange: (newRange: NumericRange) => void;
+  updateRequestedRange: (newRange: Partial<{ requestedMin: number | null, requestedMax: number | null }>) => void;
   updateQUnits: (newunits: ReciprocalWavelengthUnits) => void;
   updateSUnits: (newunits: WavelengthUnits) => void;
   updateDUnits: (newunits: WavelengthUnits) => void;
@@ -29,12 +29,13 @@ export const useResultStore = create<ResultStore>((set) => ({
   q: new Q(ReciprocalWavelengthUnits.nanmometres),
   s: new S(WavelengthUnits.nanmometres),
   d: new D(WavelengthUnits.nanmometres),
-  requestedRange: new NumericRange(0, 1),
+  requestedMin: null,
+  requestedMax: null,
   updateRequested: (quantity: ScatteringOptions) => {
     set({ requested: quantity });
   },
-  updateRequestedRange: (newRange: NumericRange) => {
-    set({ requestedRange: newRange });
+  updateRequestedRange: (newRange: Partial<{ requestedMin: number | null, requestedMax: number | null }>) => {
+    set({ ...newRange });
   },
   updateQUnits: (newunits: ReciprocalWavelengthUnits) =>
     set({ q: new Q(newunits) }),

@@ -1,10 +1,27 @@
 import NumericRange from "../calculations/numericRange";
 
-export default function RangeDiagram(props: {
+export function MessageDiagram(props: { message: string }): JSX.Element {
+  return <svg
+    style={{
+      display: "grid",
+      height: "50",
+      width: "90%",
+      border: "solid black",
+    }}
+  ><text x="40%" y="50%">
+      {props.message}
+    </text>
+  </svg>
+}
+
+
+
+export function RangeDiagram(props: {
   visibleQRange: NumericRange;
   fullQRange: NumericRange;
   requestedRange: NumericRange;
 }): JSX.Element {
+
   const svgRange = props.fullQRange.max - props.fullQRange.min;
   const visableStart = (props.visibleQRange.min / svgRange) * 100;
   const visbleWidth =
@@ -53,6 +70,6 @@ export default function RangeDiagram(props: {
       <text y="80%" x={`${requestedMax}%`}>
         Requested max
       </text>
-    </svg>
+    </svg >
   );
 }
