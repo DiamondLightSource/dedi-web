@@ -18,7 +18,12 @@ export interface ResultStore {
   requestedMin: number | null;
   requestedMax: number | null;
   updateRequested: (quantity: ScatteringOptions) => void;
-  updateRequestedRange: (newRange: Partial<{ requestedMin: number | null, requestedMax: number | null }>) => void;
+  updateRequestedRange: (
+    newRange: Partial<{
+      requestedMin: number | null;
+      requestedMax: number | null;
+    }>,
+  ) => void;
   updateQUnits: (newunits: ReciprocalWavelengthUnits) => void;
   updateSUnits: (newunits: WavelengthUnits) => void;
   updateDUnits: (newunits: WavelengthUnits) => void;
@@ -34,7 +39,12 @@ export const useResultStore = create<ResultStore>((set) => ({
   updateRequested: (quantity: ScatteringOptions) => {
     set({ requested: quantity });
   },
-  updateRequestedRange: (newRange: Partial<{ requestedMin: number | null, requestedMax: number | null }>) => {
+  updateRequestedRange: (
+    newRange: Partial<{
+      requestedMin: number | null;
+      requestedMax: number | null;
+    }>,
+  ) => {
     set({ ...newRange });
   },
   updateQUnits: (newunits: ReciprocalWavelengthUnits) =>

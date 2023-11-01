@@ -9,13 +9,13 @@ import {
   SvgRect,
   SvgLine,
 } from "@h5web/lib";
-import { Vector2, Vector3 } from "three";
+import { MathUtils, Vector2, Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 import { getDomains } from "./plotUtils";
 import { PlotAxes, usePlotStore } from "./plotStore";
-import { Beamstop, CircularDevice, Detector } from "../utils/types";
+import { BeamlineConfig, Beamstop, CircularDevice, Detector } from "../utils/types";
 import { computeQrange } from "../calculations/qrange";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import LegendBar from "./legendBar";
@@ -23,15 +23,37 @@ import ResultsBar from "../results/resultsBar";
 import NumericRange from "../calculations/numericRange";
 import { getPointForQ } from "../calculations/qvalue";
 import { useResultStore } from "../results/resultsStore";
+import { AngleUnits, WavelengthUnits, angstroms2Nanometres } from "../utils/units";
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
-  const bealineConfig = useBeamlineConfigStore();
+  const beamlineConfig = useBeamlineConfigStore<BeamlineConfig>((state) => {
+    let angle = state.angle;
+    let wavelength = state.wavelength;
+
+    if (wavelength && state.wavelengthUnits === WavelengthUnits.angstroms) {
+      wavelength = angstroms2Nanometres(wavelength);
+    }
+
+    if (angle && state.angleUnits === AngleUnits.degrees) {
+      angle = MathUtils.degToRad(angle);
+    };
+
+    return {
+      angle: angle,
+      cameraLength: state.cameraLength,
+      minWavelength: state.minWavelength,
+      maxWavelength: state.maxWavelength,
+      minCameraLength: state.minCameraLength,
+      maxCameraLength: state.maxCameraLength,
+      wavelength: wavelength
+    }
+  });
   const detector = useDetectorStore((state) => state.current);
   const beamstop = useBeamstopStore((state): Beamstop => {
     return {
       centre: state.centre,
-      diameter: state.diameter,
+      diameter: 1,
       clearance: state.clearance,
     };
   });
@@ -43,7 +65,7 @@ export default function CentrePlot(): JSX.Element {
     detector,
     beamstop,
     cameraTube,
-    bealineConfig,
+    beamlineConfig,
   );
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = qrangeResult;
@@ -136,16 +158,16 @@ export default function CentrePlot(): JSX.Element {
     const requestedRange = new NumericRange(requestedMin, requestedMax);
     requestedDiagramMax = getPointForQ(
       requestedRange.max * 1e9,
-      bealineConfig.angle ?? 0,
-      bealineConfig.cameraLength ?? 0,
-      (bealineConfig.wavelength ?? 0) * 1e-9,
+      beamlineConfig.angle ?? 0,
+      beamlineConfig.cameraLength ?? 0,
+      (beamlineConfig.wavelength ?? 0) * 1e-9,
       ajustedBeamstop,
     );
     requestedDiagramMin = getPointForQ(
       requestedRange.min * 1e9,
-      bealineConfig.angle ?? 0,
-      bealineConfig.cameraLength ?? 0,
-      (bealineConfig.wavelength ?? 0) * 1e-9,
+      beamlineConfig.angle ?? 0,
+      beamlineConfig.cameraLength ?? 0,
+      (beamlineConfig.wavelength ?? 0) * 1e-9,
       ajustedBeamstop,
     );
   }
@@ -158,8 +180,8 @@ export default function CentrePlot(): JSX.Element {
               <div
                 style={{
                   display: "grid",
-                  height: "60vh",
-                  width: "60vh",
+                  height: "50vh",
+                  width: "50vh",
                   border: "solid black",
                 }}
               >

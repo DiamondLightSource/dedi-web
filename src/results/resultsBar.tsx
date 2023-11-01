@@ -22,7 +22,11 @@ import {
 } from "@mui/material";
 import NumericRange from "../calculations/numericRange";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
-import { ReciprocalWavelengthUnits, WavelengthUnits, parseNumericInput } from "../utils/units";
+import {
+  ReciprocalWavelengthUnits,
+  WavelengthUnits,
+  parseNumericInput,
+} from "../utils/units";
 import { RangeDiagram, MessageDiagram } from "./rangeDiagram";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -31,20 +35,24 @@ export default function ResultsBar(props: {
   visableQRange: NumericRange | null;
   fullQrange: NumericRange | null;
 }): JSX.Element {
-
   const resultStore = useResultStore();
   const updateQUnits = useResultStore((state) => state.updateQUnits);
   const updateSUnits = useResultStore((state) => state.updateSUnits);
   const updateDUnits = useResultStore((state) => state.updateDUnits);
 
-  let ajustedVisibleRange: NumericRange | null = null
+  let ajustedVisibleRange: NumericRange | null = null;
   let ajustedFullRange: NumericRange | null = null;
   let ajustedRequestedRange: NumericRange | null = null;
   let qRange: NumericRange | null = null;
   let sRange: NumericRange | null = null;
   let dRange: NumericRange | null = null;
 
-  if (props.fullQrange && props.visableQRange && resultStore.requestedMax && resultStore.requestedMin) {
+  if (
+    props.fullQrange &&
+    props.visableQRange &&
+    resultStore.requestedMax &&
+    resultStore.requestedMin
+  ) {
     qRange = new NumericRange(
       resultStore.q.fromQ(props.visableQRange.min),
       resultStore.q.fromQ(props.visableQRange.max),
@@ -98,19 +106,25 @@ export default function ResultsBar(props: {
   const handleRequestedMax = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (resultStore.requested) {
       case ScatteringOptions.s:
-        resultStore.updateRequestedRange(
-          { requestedMax: parseNumericInput(event.target.value, resultStore.s.tooQ) },
-        );
+        resultStore.updateRequestedRange({
+          requestedMax: parseNumericInput(
+            event.target.value,
+            resultStore.s.tooQ,
+          ),
+        });
         break;
       case ScatteringOptions.d:
-        resultStore.updateRequestedRange(
-          { requestedMax: parseNumericInput(event.target.value, resultStore.d.tooQ) }
-        );
+        resultStore.updateRequestedRange({
+          requestedMax: parseNumericInput(
+            event.target.value,
+            resultStore.d.tooQ,
+          ),
+        });
         break;
       default:
-        resultStore.updateRequestedRange(
-          { requestedMax: parseNumericInput(event.target.value) }
-        );
+        resultStore.updateRequestedRange({
+          requestedMax: parseNumericInput(event.target.value),
+        });
         break;
     }
   };
@@ -118,19 +132,25 @@ export default function ResultsBar(props: {
   const handleRequestedMin = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (resultStore.requested) {
       case ScatteringOptions.s:
-        resultStore.updateRequestedRange(
-          { requestedMin: parseNumericInput(event.target.value, resultStore.s.tooQ) },
-        )
+        resultStore.updateRequestedRange({
+          requestedMin: parseNumericInput(
+            event.target.value,
+            resultStore.s.tooQ,
+          ),
+        });
         break;
       case ScatteringOptions.d:
-        resultStore.updateRequestedRange(
-          { requestedMin: parseNumericInput(event.target.value, resultStore.d.tooQ) }
-        );
+        resultStore.updateRequestedRange({
+          requestedMin: parseNumericInput(
+            event.target.value,
+            resultStore.d.tooQ,
+          ),
+        });
         break;
       default:
-        resultStore.updateRequestedRange(
-          { requestedMin: parseNumericInput(event.target.value) }
-        );
+        resultStore.updateRequestedRange({
+          requestedMin: parseNumericInput(event.target.value),
+        });
         break;
     }
   };
@@ -283,13 +303,17 @@ export default function ResultsBar(props: {
                       <TextField
                         type="number"
                         size="small"
-                        value={ajustedRequestedRange ? ajustedRequestedRange.min : ""}
+                        value={
+                          ajustedRequestedRange ? ajustedRequestedRange.min : ""
+                        }
                         onChange={handleRequestedMin}
                       />
                       <TextField
                         type="number"
                         size="small"
-                        value={ajustedRequestedRange ? ajustedRequestedRange.max : ""}
+                        value={
+                          ajustedRequestedRange ? ajustedRequestedRange.max : ""
+                        }
                         onChange={handleRequestedMax}
                       />
                     </Stack>
@@ -324,15 +348,21 @@ export default function ResultsBar(props: {
                   </Stack>
                 </Stack>
                 {((): JSX.Element => {
-                  if (ajustedFullRange && ajustedVisibleRange && ajustedRequestedRange && ajustedFullRange.containsRange(ajustedVisibleRange)) {
+                  if (
+                    ajustedFullRange &&
+                    ajustedVisibleRange &&
+                    ajustedRequestedRange &&
+                    ajustedFullRange.containsRange(ajustedVisibleRange)
+                  ) {
                     return (
                       <RangeDiagram
                         visibleQRange={ajustedVisibleRange}
                         fullQRange={ajustedFullRange}
                         requestedRange={ajustedRequestedRange}
-                      />)
+                      />
+                    );
                   } else {
-                    return (<MessageDiagram message="No solution" />)
+                    return <MessageDiagram message="No solution" />;
                   }
                 })()}
               </Stack>

@@ -44,9 +44,9 @@
     "angle": 1.57,
     "wavelength": 0.09,
     "cameraLength": 1.9,
-    "minWavelength": 6.20e-2,
+    "minWavelength": 6.2e-2,
     "maxWavelength": 0.335,
     "minCameraLength": 1.9,
-    "maxCameraLength": 9.90
+    "maxCameraLength": 9.9
   }
 }
