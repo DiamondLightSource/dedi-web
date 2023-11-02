@@ -39,7 +39,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
   const updateUnits = useCameraTubeStore((state) => state.updateUnits);
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={1}>
       <Typography variant="h6"> CameraTube </Typography>
       <Stack direction={"row"}>
         <Typography flexGrow={2}> Diameter: {diameter} </Typography>

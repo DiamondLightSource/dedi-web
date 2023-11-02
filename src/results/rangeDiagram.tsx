@@ -5,7 +5,7 @@ export function MessageDiagram(props: { message: string }): JSX.Element {
     <svg
       style={{
         display: "grid",
-        height: "50",
+        height: "40%",
         width: "90%",
         border: "solid black",
       }}
@@ -22,10 +22,10 @@ export function RangeDiagram(props: {
   fullQRange: NumericRange;
   requestedRange: NumericRange;
 }): JSX.Element {
-  const svgRange = props.fullQRange.max - props.fullQRange.min;
-  const visableStart = (props.visibleQRange.min / svgRange) * 100;
-  const visbleWidth =
-    ((props.visibleQRange.max - props.visibleQRange.min) / svgRange) * 100;
+  const svgRange = props.visibleQRange.max - props.visibleQRange.min;
+  // const visableStart = (props.visibleQRange.min / svgRange) * 100;
+  // const visbleWidth =
+  //   ((props.visibleQRange.max - props.visibleQRange.min) / svgRange) * 100;
 
   const requestedMax = (props.requestedRange.max / svgRange) * 100;
   const requestedMin = (props.requestedRange.min / svgRange) * 100;
@@ -37,15 +37,15 @@ export function RangeDiagram(props: {
     <svg
       style={{
         display: "grid",
-        height: "50",
+        height: "40%",
         width: "90%",
         border: "solid black",
       }}
     >
       <rect
         y="0"
-        x={`${visableStart}%`}
-        width={`${visbleWidth}%`}
+        x="0"
+        width={`100%`}
         height="50%"
         fill={rectColour}
       ></rect>

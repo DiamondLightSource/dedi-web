@@ -63,7 +63,7 @@ export default function BeamStopDataEntry(): JSX.Element {
   };
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={1}>
       <Typography variant="h6"> Beamstop </Typography>
       <Stack direction={"row"}>
         <Typography flexGrow={2}> Diameter: {diameter} </Typography>
@@ -103,7 +103,7 @@ export default function BeamStopDataEntry(): JSX.Element {
           Centre detector
         </Button>
       </Stack>
-      <Stack direction={"row"} spacing={2}>
+      <Stack direction={"row"} spacing={1}>
         <Typography flexGrow={2}>y: </Typography>
         <TextField
           type="number"
@@ -120,7 +120,7 @@ export default function BeamStopDataEntry(): JSX.Element {
         </Button>
       </Stack>
       <Stack direction="row">
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" spacing={1}>
           <Typography flexGrow={1}>Clearance: </Typography>
           <TextField
             type="number"

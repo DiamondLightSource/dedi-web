@@ -79,6 +79,9 @@ export default function ResultsBar(props: {
         }
     }
   }
+  console.log(diagramFull)
+  console.log(diagramVisible)
+  console.log(diagramRequested)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -91,9 +94,9 @@ export default function ResultsBar(props: {
               <RangeTable qRange={props.visableQRange} />
               <Divider orientation="vertical" />
               <Stack flexGrow={2}>
-                <Stack spacing={4}>
-                  <Stack direction={"row"} spacing={3}>
-                    <Stack spacing={2}>
+                <Stack spacing={1}>
+                  <Stack direction={"row"} spacing={1}>
+                    <Stack spacing={1}>
                       <Typography>
                         Requested min {resultStore.requested} value:{" "}
                       </Typography>
@@ -146,7 +149,7 @@ export default function ResultsBar(props: {
                     diagramVisible &&
                     diagramFull &&
                     diagramRequested &&
-                    diagramFull.containsRange(diagramVisible)
+                    {/*diagramFull.containsRange(diagramVisible)*/ }
                   ) {
                     return (
                       <RangeDiagram

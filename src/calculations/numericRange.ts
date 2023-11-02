@@ -68,12 +68,23 @@ export default class NumericRange {
   }
 
   /**
-   * Applys a callback to both parts of the numeric range
+   * Returns a 
    * @param func A function to apply to both the min and max of the range
    * @returns A new Numeric range with the call back applied
    */
   apply(func: (value: number) => number): NumericRange {
     return new NumericRange(func(this.min), func(this.max));
+  }
+
+  /**
+   * Applys a function to the range in place
+   * @param func 
+   * @returns 
+   */
+  inPlaceApply(func: (value: number) => number): NumericRange {
+    this.min = func(this.min);
+    this.max = func(this.max);
+    return this;
   }
 
   /**

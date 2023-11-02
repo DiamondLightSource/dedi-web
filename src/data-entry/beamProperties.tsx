@@ -201,7 +201,7 @@ export default function BeampropertiesDataEntry() {
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Beam properties</Typography>
-      <Stack direction={"row"} spacing={2}>
+      <Stack direction={"row"} spacing={1}>
         <Typography flexGrow={1}>Energy: </Typography>
         <TextField
           type="number"
@@ -226,7 +226,7 @@ export default function BeampropertiesDataEntry() {
           </Select>
         </FormControl>
       </Stack>
-      <Stack direction={"row"} spacing={2}>
+      <Stack direction={"row"} spacing={1}>
         <Typography flexGrow={1}>Wavelength: </Typography>
         <TextField
           type="number"
@@ -257,7 +257,7 @@ export default function BeampropertiesDataEntry() {
       <Typography>
         Maximum allowed wavelength: {maxWavelength} {wavelengthUnits}
       </Typography>
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" spacing={1}>
         <Typography>Camera Length: </Typography>
         <TextField
           type="number"
@@ -273,7 +273,7 @@ export default function BeampropertiesDataEntry() {
         />
         <Typography>m</Typography>
       </Stack>
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" spacing={1}>
         <Typography flexGrow={2}>Angle:</Typography>
         <TextField
           type="number"
