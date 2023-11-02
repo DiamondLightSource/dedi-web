@@ -6,6 +6,7 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  SelectChangeEvent,
 } from "@mui/material";
 import {
   AngleUnits,
@@ -45,94 +46,150 @@ export default function BeampropertiesDataEntry() {
     (state) => state.maxCameraLength,
   );
 
-  const energy = useBeamlineConfigStore((state) => {
-    if (!state.energy) {
-      return null;
-    }
-
-    if (state.beamEnergyUnits === EnergyUnits.electronVolts) {
-      return kiloElectronVolts2ElectronVots(state.energy);
-    }
-    return state.energy;
-  });
+  const energy = useBeamlineConfigStore((state) => state.energy);
   const energyUnits = useBeamlineConfigStore((state) => state.beamEnergyUnits);
 
   const updateConfig = useBeamlineConfigStore((state) => state.update);
 
-  const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (energyUnits === EnergyUnits.electronVolts && event.target.value) {
-      updateConfig({
-        energy: parseNumericInput(
-          event.target.value,
-          electronVots2KiloElectronVolts,
-        ),
-        wavelength: parseNumericInput(
-          event.target.value,
-          electronVots2KiloElectronVolts,
-          energy2WavelengthConverter,
-        ),
-      });
-    } else {
-      updateConfig({
-        energy: parseNumericInput(event.target.value),
-        wavelength: parseNumericInput(
-          event.target.value,
-          energy2WavelengthConverter,
-        ),
-      });
-    }
-  };
-
-  const angle = useBeamlineConfigStore((state) => {
-    if (state.angle && state.angleUnits === AngleUnits.degrees) {
-      return MathUtils.radToDeg(state.angle);
-    }
-    return state.angle;
-  });
+  const angle = useBeamlineConfigStore((state) => state.angle);
   const angleUnits = useBeamlineConfigStore((state) => state.angleUnits);
 
-  const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (angleUnits === AngleUnits.degrees && event.target.value) {
-      updateConfig({
-        angle: parseNumericInput(event.target.value, MathUtils.degToRad),
-      });
-    } else {
-      updateConfig({ angle: parseNumericInput(event.target.value) });
+  const handleAngleUnits = (event: SelectChangeEvent<AngleUnits>) => {
+    const newUnits = event.target.value as AngleUnits;
+    let newAngle = angle;
+
+    if (
+      newAngle !== null &&
+      newUnits === AngleUnits.degrees &&
+      angleUnits === AngleUnits.radians
+    ) {
+      newAngle = MathUtils.radToDeg(newAngle);
+    } else if (
+      newAngle !== null &&
+      newUnits === AngleUnits.radians &&
+      angleUnits === AngleUnits.degrees
+    ) {
+      newAngle = MathUtils.radToDeg(newAngle);
     }
+    updateConfig({
+      angle: newAngle,
+      angleUnits: newUnits,
+    });
   };
 
-  const wavelength = useBeamlineConfigStore((state) => {
-    if (
-      state.wavelength &&
-      state.wavelengthUnits === WavelengthUnits.angstroms
-    ) {
-      return nanometres2Angstroms(state.wavelength);
-    }
-    return state.wavelength;
-  });
+  const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateConfig({ angle: parseNumericInput(event.target.value) });
+  };
+
+  const wavelength = useBeamlineConfigStore((state) => state.wavelength);
   const wavelengthUnits = useBeamlineConfigStore(
     (state) => state.wavelengthUnits,
   );
 
   const handleWavelength = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (wavelengthUnits === WavelengthUnits.angstroms && event.target.value) {
+    const newWavelength = parseNumericInput(event.target.value);
+    let newEnergy: number | null = null;
+
+    if (newWavelength === null) {
       updateConfig({
-        energy: parseNumericInput(
-          event.target.value,
-          angstroms2Nanometres,
-          wavelength2EnergyConverter,
-        ),
-        wavelength: parseNumericInput(event.target.value, angstroms2Nanometres),
+        energy: newEnergy,
+        wavelength: newWavelength,
       });
-    } else {
-      updateConfig({
-        energy: parseNumericInput(
-          event.target.value,
-          wavelength2EnergyConverter,
-        ),
-        wavelength: parseNumericInput(event.target.value),
-      });
+      return;
     }
+
+    // account for wavelength units
+    if (wavelengthUnits === WavelengthUnits.angstroms) {
+      newEnergy = wavelength2EnergyConverter(
+        angstroms2Nanometres(newWavelength),
+      );
+    } else {
+      newEnergy = wavelength2EnergyConverter(newWavelength);
+    }
+
+    // account for energy units
+    if (energyUnits === EnergyUnits.electronVolts) {
+      newEnergy = electronVots2KiloElectronVolts(newEnergy);
+    }
+
+    updateConfig({
+      energy: newEnergy,
+      wavelength: newWavelength,
+    });
+  };
+
+  const handleWavelengthUnits = (event: SelectChangeEvent<WavelengthUnits>) => {
+    const newUnits = event.target.value as WavelengthUnits;
+    let newWavelength = wavelength;
+    if (
+      newWavelength !== null &&
+      newUnits === WavelengthUnits.angstroms &&
+      wavelengthUnits === WavelengthUnits.nanmometres
+    ) {
+      newWavelength = nanometres2Angstroms(newWavelength);
+    } else if (
+      newWavelength !== null &&
+      newUnits === WavelengthUnits.nanmometres &&
+      wavelengthUnits === WavelengthUnits.angstroms
+    ) {
+      newWavelength = angstroms2Nanometres(newWavelength);
+    }
+    updateConfig({
+      wavelength: newWavelength,
+      wavelengthUnits: newUnits,
+    });
+  };
+
+  const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newEnergy = parseNumericInput(event.target.value);
+    let newWavelength: number | null = null;
+
+    if (newEnergy === null) {
+      updateConfig({
+        energy: newEnergy,
+        wavelength: newWavelength,
+      });
+      return;
+    }
+
+    if (energyUnits === EnergyUnits.electronVolts) {
+      newWavelength = energy2WavelengthConverter(
+        electronVots2KiloElectronVolts(newEnergy),
+      );
+    } else {
+      newWavelength = energy2WavelengthConverter(newEnergy);
+    }
+
+    if (wavelengthUnits === WavelengthUnits.angstroms) {
+      newWavelength = angstroms2Nanometres(newWavelength);
+    }
+
+    updateConfig({
+      energy: newEnergy,
+      wavelength: newWavelength,
+    });
+  };
+
+  const handleEnergyUnits = (event: SelectChangeEvent<EnergyUnits>) => {
+    const newUnits = event.target.value as EnergyUnits;
+    let newEnergy = energy;
+    if (
+      newEnergy !== null &&
+      newUnits === EnergyUnits.electronVolts &&
+      energyUnits === EnergyUnits.kiloElectronVolts
+    ) {
+      newEnergy = kiloElectronVolts2ElectronVots(newEnergy);
+    } else if (
+      newEnergy != null &&
+      newUnits === EnergyUnits.kiloElectronVolts &&
+      energyUnits === EnergyUnits.electronVolts
+    ) {
+      newEnergy = electronVots2KiloElectronVolts(newEnergy);
+    }
+    updateConfig({
+      energy: newEnergy,
+      beamEnergyUnits: event.target.value as EnergyUnits,
+    });
   };
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,11 +215,7 @@ export default function BeampropertiesDataEntry() {
             size="small"
             label="units"
             value={energyUnits}
-            onChange={(event) =>
-              updateConfig({
-                beamEnergyUnits: event.target.value as EnergyUnits,
-              })
-            }
+            onChange={handleEnergyUnits}
           >
             <MenuItem value={EnergyUnits.electronVolts}>
               {EnergyUnits.electronVolts}
@@ -187,11 +240,7 @@ export default function BeampropertiesDataEntry() {
             size="small"
             label="units"
             value={wavelengthUnits}
-            onChange={(event) =>
-              updateConfig({
-                wavelengthUnits: event.target.value as WavelengthUnits,
-              })
-            }
+            onChange={handleWavelengthUnits}
           >
             <MenuItem value={WavelengthUnits.nanmometres}>
               {WavelengthUnits.nanmometres}
@@ -239,9 +288,7 @@ export default function BeampropertiesDataEntry() {
             size="small"
             label="units"
             value={angleUnits}
-            onChange={(event) =>
-              updateConfig({ angleUnits: event.target.value as AngleUnits })
-            }
+            onChange={handleAngleUnits}
           >
             <MenuItem value={AngleUnits.radians}>{AngleUnits.radians}</MenuItem>
             <MenuItem value={AngleUnits.degrees}>{AngleUnits.degrees}</MenuItem>

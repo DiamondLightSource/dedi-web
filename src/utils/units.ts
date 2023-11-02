@@ -162,19 +162,23 @@ export const parseNumericInput = (
   input: string,
   callback1?: (input: number) => number,
   callback2?: (input: number) => number,
+  callback3?: (input: number) => number,
 ): number | null => {
   let output = parseFloat(input.trim());
 
   if (!output && output != 0) {
     return null;
   }
-
+  // fun right
   if (callback1) {
     output = callback1(output);
   }
 
   if (callback2) {
     output = callback2(output);
+  }
+  if (callback3) {
+    output = callback3(output);
   }
 
   return output;

@@ -15,10 +15,7 @@
   // // Uncomment the next line to run commands after the container is created.
   // // "postCreateCommand": "cat /etc/os-release",
   "initializeCommand": "bash -c 'for i in $HOME/.inputrc; do [ -f $i ] || touch $i; done'",
-  "runArgs": [
-    "--net=host",
-    "--security-opt=label=disable"
-  ],
+  "runArgs": ["--net=host", "--security-opt=label=disable"],
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
     "source=${localEnv:HOME}/.inputrc,target=/root/.inputrc,type=bind"

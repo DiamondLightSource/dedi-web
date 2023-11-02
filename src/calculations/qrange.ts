@@ -55,7 +55,6 @@ export function computeQrange(
   const cemeraTubeCentreYMM =
     (cameraTube.centre.y ?? 0) * detector.pixelSize.height;
 
-  // intial position is wrong
   const initialPosition = new Vector2(
     clearanceWidthMM * Math.cos(beamProperties.angle ?? 0) + beamcentreXMM,
     clearaceHeightMM * Math.sin(beamProperties.angle ?? 0) + beamcentreYMM,

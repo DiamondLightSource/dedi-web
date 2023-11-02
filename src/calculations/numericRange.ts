@@ -66,4 +66,28 @@ export default class NumericRange {
   equals(other: NumericRange): boolean {
     return this.min === other.min && this.max === other.max;
   }
+
+  /**
+   * Applys a callback to both parts of the numeric range
+   * @param func A function to apply to both the min and max of the range
+   * @returns A new Numeric range with the call back applied
+   */
+  apply(func: (value: number) => number): NumericRange {
+    return new NumericRange(func(this.min), func(this.max));
+  }
+
+  /**
+   * Create a new numeric range from a num max and a funtion
+   * @param min
+   * @param max
+   * @param func
+   * @returns
+   */
+  static createWithFunc(
+    min: number,
+    max: number,
+    func: (value: number) => number,
+  ): NumericRange {
+    return new NumericRange(func(min), func(max));
+  }
 }
