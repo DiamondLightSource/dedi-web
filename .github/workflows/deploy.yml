@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: "21.0.0"
 
-      - name: Install test and build
+      - name: Install, test, and build
         run: |
           npm ci
           npm run lint

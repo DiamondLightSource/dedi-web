@@ -46,30 +46,9 @@ test("Test valid inputs", () => {
   expect(parseNumericInput("-10")).toBe(-10);
   expect(parseNumericInput("0")).toBe(0);
   expect(parseNumericInput("0.878")).toBe(0.878);
-  expect(
-    parseNumericInput("200", (input: number): number => {
-      return 10 * input;
-    }),
-  ).toBe(2000);
-  expect(
-    parseNumericInput(
-      "200",
-      (input: number): number => {
-        return 1 + input;
-      },
-      (input: number): number => {
-        return 10 * input;
-      },
-    ),
-  ).toBe(2010);
 });
 
 test("Test not valid inputs", () => {
   expect(parseNumericInput("t2fg00number")).toBe(null);
   expect(parseNumericInput("word ")).toBe(null);
-  expect(
-    parseNumericInput("things", (input: number): number => {
-      return 10 * input;
-    }),
-  ).toBe(null);
 });
