@@ -15,7 +15,12 @@ import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 import { getDomains } from "./plotUtils";
 import { PlotAxes, usePlotStore } from "./plotStore";
-import { BeamlineConfig, Beamstop, CircularDevice, Detector } from "../utils/types";
+import {
+  BeamlineConfig,
+  Beamstop,
+  CircularDevice,
+  Detector,
+} from "../utils/types";
 import { computeQrange } from "../calculations/qrange";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import LegendBar from "./legendBar";
@@ -23,7 +28,11 @@ import ResultsBar from "../results/resultsBar";
 import NumericRange from "../calculations/numericRange";
 import { getPointForQ } from "../calculations/qvalue";
 import { useResultStore } from "../results/resultsStore";
-import { AngleUnits, WavelengthUnits, angstroms2Nanometres } from "../utils/units";
+import {
+  AngleUnits,
+  WavelengthUnits,
+  angstroms2Nanometres,
+} from "../utils/units";
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
@@ -37,7 +46,7 @@ export default function CentrePlot(): JSX.Element {
 
     if (angle && state.angleUnits === AngleUnits.degrees) {
       angle = MathUtils.degToRad(angle);
-    };
+    }
 
     return {
       angle: angle,
@@ -46,14 +55,14 @@ export default function CentrePlot(): JSX.Element {
       maxWavelength: state.maxWavelength,
       minCameraLength: state.minCameraLength,
       maxCameraLength: state.maxCameraLength,
-      wavelength: wavelength
-    }
+      wavelength: wavelength,
+    };
   });
   const detector = useDetectorStore((state) => state.current);
   const beamstop = useBeamstopStore((state): Beamstop => {
     return {
       centre: state.centre,
-      diameter: 1,
+      diameter: state.diameter,
       clearance: state.clearance,
     };
   });
@@ -203,14 +212,14 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(
                         (ajustedBeamstop.centre.x ?? 0) +
-                        ajustedBeamstop.diameter / 2,
+                          ajustedBeamstop.diameter / 2,
                         ajustedBeamstop.centre.y ?? 0,
                       ),
                       new Vector3(
                         ajustedBeamstop.centre.x ?? 0,
                         (ajustedBeamstop.centre.y ?? 0) +
-                        ajustedBeamstop.diameter / 2 +
-                        (ajustedBeamstop.clearance ?? 0),
+                          ajustedBeamstop.diameter / 2 +
+                          (ajustedBeamstop.clearance ?? 0),
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
@@ -219,7 +228,7 @@ export default function CentrePlot(): JSX.Element {
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
                         (ajustedCameraTube.centre.y ?? 0) +
-                        ajustedCameraTube.diameter / 2,
+                          ajustedCameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(
@@ -309,10 +318,7 @@ export default function CentrePlot(): JSX.Element {
             <LegendBar />
           </Box>
         </Stack>
-        <ResultsBar
-          visableQRange={visibleQRange}
-          fullQrange={fullQRange}
-        />
+        <ResultsBar visableQRange={visibleQRange} fullQrange={fullQRange} />
       </Stack>
     </Box>
   );

@@ -6,17 +6,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -25,135 +15,70 @@ import { ScatteringOptions, useResultStore } from "./resultsStore";
 import {
   ReciprocalWavelengthUnits,
   WavelengthUnits,
+  angstroms2Nanometres,
+  nanometres2Angstroms,
   parseNumericInput,
 } from "../utils/units";
 import { RangeDiagram, MessageDiagram } from "./rangeDiagram";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
+import {
+  convertBetweenQAndD,
+  convertBetweenQAndS,
+} from "./scatteringQuantities";
+import RangeTable from "./rangeTable";
 
 export default function ResultsBar(props: {
   visableQRange: NumericRange | null;
   fullQrange: NumericRange | null;
 }): JSX.Element {
   const resultStore = useResultStore();
-  const updateQUnits = useResultStore((state) => state.updateQUnits);
-  const updateSUnits = useResultStore((state) => state.updateSUnits);
-  const updateDUnits = useResultStore((state) => state.updateDUnits);
+  const requestedRange = useResultStore<NumericRange | null>((state) => {
+    return state.requestedMax && state.requestedMin
+      ? new NumericRange(state.requestedMin, state.requestedMax)
+      : null;
+  });
 
-  let ajustedVisibleRange: NumericRange | null = null;
-  let ajustedFullRange: NumericRange | null = null;
-  let ajustedRequestedRange: NumericRange | null = null;
-  let qRange: NumericRange | null = null;
-  let sRange: NumericRange | null = null;
-  let dRange: NumericRange | null = null;
-
-  if (
-    props.fullQrange &&
-    props.visableQRange &&
-    resultStore.requestedMax &&
-    resultStore.requestedMin
-  ) {
-    qRange = new NumericRange(
-      resultStore.q.fromQ(props.visableQRange.min),
-      resultStore.q.fromQ(props.visableQRange.max),
-    );
-    sRange = new NumericRange(
-      resultStore.s.fromQ(props.visableQRange.min),
-      resultStore.s.fromQ(props.visableQRange.max),
-    );
-    dRange = new NumericRange(
-      resultStore.d.fromQ(props.visableQRange.min),
-      resultStore.d.fromQ(props.visableQRange.max),
-    );
-
-    switch (resultStore.requested) {
-      case ScatteringOptions.s:
-        ajustedVisibleRange = sRange;
-        ajustedFullRange = new NumericRange(
-          resultStore.s.fromQ(props.fullQrange.min),
-          resultStore.s.fromQ(props.fullQrange.max),
-        );
-        ajustedRequestedRange = new NumericRange(
-          resultStore.s.fromQ(resultStore.requestedMin),
-          resultStore.s.fromQ(resultStore.requestedMin),
-        );
-        break;
-      case ScatteringOptions.d:
-        ajustedVisibleRange = dRange;
-        ajustedFullRange = new NumericRange(
-          resultStore.d.fromQ(props.fullQrange.min),
-          resultStore.d.fromQ(props.fullQrange.max),
-        );
-        ajustedRequestedRange = new NumericRange(
-          resultStore.d.fromQ(resultStore.requestedMin),
-          resultStore.d.fromQ(resultStore.requestedMax),
-        );
-        break;
-      default:
-        ajustedVisibleRange = qRange;
-        ajustedFullRange = new NumericRange(
-          resultStore.q.fromQ(props.fullQrange.min),
-          resultStore.q.fromQ(props.fullQrange.max),
-        );
-        ajustedRequestedRange = new NumericRange(
-          resultStore.q.fromQ(resultStore.requestedMin),
-          resultStore.q.fromQ(resultStore.requestedMax),
-        );
-        break;
-    }
-  }
+  let diagramVisible: NumericRange | null = null;
+  let diagramFull: NumericRange | null = null;
+  let diagramRequested: NumericRange | null = requestedRange;
 
   const handleRequestedMax = (event: React.ChangeEvent<HTMLInputElement>) => {
-    switch (resultStore.requested) {
-      case ScatteringOptions.s:
-        resultStore.updateRequestedRange({
-          requestedMax: parseNumericInput(
-            event.target.value,
-            resultStore.s.tooQ,
-          ),
-        });
-        break;
-      case ScatteringOptions.d:
-        resultStore.updateRequestedRange({
-          requestedMax: parseNumericInput(
-            event.target.value,
-            resultStore.d.tooQ,
-          ),
-        });
-        break;
-      default:
-        resultStore.updateRequestedRange({
-          requestedMax: parseNumericInput(event.target.value),
-        });
-        break;
-    }
+    resultStore.updateRequestedRange({
+      requestedMax: parseNumericInput(event.target.value),
+    });
   };
 
   const handleRequestedMin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    resultStore.updateRequestedRange({
+      requestedMin: parseNumericInput(event.target.value),
+    });
+  };
+
+  if (props.visableQRange && props.fullQrange && requestedRange) {
     switch (resultStore.requested) {
-      case ScatteringOptions.s:
-        resultStore.updateRequestedRange({
-          requestedMin: parseNumericInput(
-            event.target.value,
-            resultStore.s.tooQ,
-          ),
-        });
-        break;
       case ScatteringOptions.d:
-        resultStore.updateRequestedRange({
-          requestedMin: parseNumericInput(
-            event.target.value,
-            resultStore.d.tooQ,
-          ),
-        });
+        diagramVisible = props.visableQRange.apply(convertBetweenQAndD);
+        diagramFull = props.fullQrange.apply(convertBetweenQAndD);
+        if (resultStore.dUnits === WavelengthUnits.angstroms) {
+          diagramRequested = requestedRange.apply(angstroms2Nanometres);
+        }
+        break;
+      case ScatteringOptions.s:
+        diagramVisible = props.visableQRange.apply(convertBetweenQAndS);
+        diagramFull = props.fullQrange.apply(convertBetweenQAndS);
+        if (resultStore.sUnits === WavelengthUnits.angstroms) {
+          diagramRequested = requestedRange.apply(angstroms2Nanometres);
+        }
         break;
       default:
-        resultStore.updateRequestedRange({
-          requestedMin: parseNumericInput(event.target.value),
-        });
-        break;
+        diagramVisible = props.visableQRange;
+        diagramFull = props.fullQrange;
+        if (resultStore.qUnits === ReciprocalWavelengthUnits.angstroms) {
+          diagramRequested = requestedRange.apply(nanometres2Angstroms);
+        }
     }
-  };
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -163,130 +88,7 @@ export default function ResultsBar(props: {
             <Typography variant="h6"> Results</Typography>
             <Divider />
             <Stack direction={"row"} spacing={3}>
-              <Box flexGrow={1}>
-                <TableContainer component={Paper}>
-                  <Table
-                    sx={{ minWidth: 50 }}
-                    aria-label="simple table"
-                    size="small"
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Values</TableCell>
-                        <TableCell align="right">Min</TableCell>
-                        <TableCell align="right">Max</TableCell>
-                        <TableCell align="right">Units</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow key={"q"}>
-                        <TableCell component="th" scope="row">
-                          {ScatteringOptions.q}
-                        </TableCell>
-                        <TableCell align="right">
-                          {qRange ? qRange.min.toFixed(4) : ""}
-                        </TableCell>
-                        <TableCell align="right">
-                          {qRange ? qRange.max.toFixed(4) : ""}
-                        </TableCell>
-                        <TableCell align="right">
-                          <FormControl>
-                            <InputLabel>q</InputLabel>
-                            <Select
-                              size="small"
-                              label="units"
-                              value={resultStore.q.units}
-                              onChange={(event) =>
-                                updateQUnits(
-                                  event.target
-                                    .value as ReciprocalWavelengthUnits,
-                                )
-                              }
-                            >
-                              <MenuItem
-                                value={ReciprocalWavelengthUnits.nanmometres}
-                              >
-                                {ReciprocalWavelengthUnits.nanmometres}
-                              </MenuItem>
-                              <MenuItem
-                                value={ReciprocalWavelengthUnits.angstroms}
-                              >
-                                {ReciprocalWavelengthUnits.angstroms}
-                              </MenuItem>
-                            </Select>
-                          </FormControl>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow key={"s"}>
-                        <TableCell component="th" scope="row">
-                          {ScatteringOptions.s}
-                        </TableCell>
-                        <TableCell align="right">
-                          {sRange ? sRange.min.toFixed(4) : ""}
-                        </TableCell>
-                        <TableCell align="right">
-                          {sRange ? sRange.max.toFixed(4) : ""}
-                        </TableCell>
-                        <TableCell align="right">
-                          <FormControl>
-                            <InputLabel>s</InputLabel>
-                            <Select
-                              size="small"
-                              label="units"
-                              value={resultStore.s.units}
-                              onChange={(event) =>
-                                updateSUnits(
-                                  event.target.value as WavelengthUnits,
-                                )
-                              }
-                            >
-                              <MenuItem value={WavelengthUnits.nanmometres}>
-                                {WavelengthUnits.nanmometres}
-                              </MenuItem>
-                              <MenuItem value={WavelengthUnits.angstroms}>
-                                {WavelengthUnits.angstroms}
-                              </MenuItem>
-                            </Select>
-                          </FormControl>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow key={"d"}>
-                        <TableCell component="th" scope="row">
-                          {ScatteringOptions.d}
-                        </TableCell>
-                        <TableCell align="right">
-                          {dRange ? dRange.min.toFixed(4) : ""}
-                        </TableCell>
-                        <TableCell align="right">
-                          {dRange ? dRange.max.toFixed(4) : ""}
-                        </TableCell>
-                        <TableCell align="right">
-                          <FormControl>
-                            <InputLabel>d</InputLabel>
-                            <Select
-                              size="small"
-                              label="units"
-                              value={resultStore.d.units}
-                              onChange={(event) =>
-                                updateDUnits(
-                                  event.target.value as WavelengthUnits,
-                                )
-                              }
-                            >
-                              <MenuItem value={WavelengthUnits.nanmometres}>
-                                {WavelengthUnits.nanmometres}
-                              </MenuItem>
-                              <MenuItem value={WavelengthUnits.angstroms}>
-                                {WavelengthUnits.angstroms}
-                              </MenuItem>
-                            </Select>
-                          </FormControl>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Box>
+              <RangeTable qRange={props.visableQRange} />
               <Divider orientation="vertical" />
               <Stack flexGrow={2}>
                 <Stack spacing={4}>
@@ -303,17 +105,13 @@ export default function ResultsBar(props: {
                       <TextField
                         type="number"
                         size="small"
-                        value={
-                          ajustedRequestedRange ? ajustedRequestedRange.min : ""
-                        }
+                        value={resultStore.requestedMin}
                         onChange={handleRequestedMin}
                       />
                       <TextField
                         type="number"
                         size="small"
-                        value={
-                          ajustedRequestedRange ? ajustedRequestedRange.max : ""
-                        }
+                        value={resultStore.requestedMax}
                         onChange={handleRequestedMax}
                       />
                     </Stack>
@@ -322,11 +120,7 @@ export default function ResultsBar(props: {
                       <RadioGroup
                         row
                         value={resultStore.requested}
-                        onChange={(event) =>
-                          resultStore.updateRequested(
-                            event.target.value as ScatteringOptions,
-                          )
-                        }
+                        onChange={(event) => resultStore.updateRequested(event.target.value as ScatteringOptions)}
                       >
                         <FormControlLabel
                           value={ScatteringOptions.q}
@@ -349,16 +143,16 @@ export default function ResultsBar(props: {
                 </Stack>
                 {((): JSX.Element => {
                   if (
-                    ajustedFullRange &&
-                    ajustedVisibleRange &&
-                    ajustedRequestedRange &&
-                    ajustedFullRange.containsRange(ajustedVisibleRange)
+                    diagramVisible &&
+                    diagramFull &&
+                    diagramRequested &&
+                    diagramFull.containsRange(diagramVisible)
                   ) {
                     return (
                       <RangeDiagram
-                        visibleQRange={ajustedVisibleRange}
-                        fullQRange={ajustedFullRange}
-                        requestedRange={ajustedRequestedRange}
+                        visibleQRange={diagramVisible}
+                        fullQRange={diagramFull}
+                        requestedRange={diagramRequested}
                       />
                     );
                   } else {
