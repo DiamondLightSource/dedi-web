@@ -69,7 +69,7 @@ export default function BeampropertiesDataEntry() {
       newUnits === AngleUnits.radians &&
       angleUnits === AngleUnits.degrees
     ) {
-      newAngle = MathUtils.radToDeg(newAngle);
+      newAngle = MathUtils.degToRad(newAngle);
     }
     updateConfig({
       angle: newAngle,
