@@ -17,6 +17,7 @@
       "diameter": 310
     },
     "angle": 1.57,
+    "wavelength": null,
     "cameraLength": 1.9,
     "minWavelength": 0.062,
     "maxWavelength": 0.335,
@@ -41,6 +42,7 @@
       "diameter": 310
     },
     "angle": 1.57,
+    "wavelength": null,
     "cameraLength": 1.9,
     "minWavelength": 6.2e-2,
     "maxWavelength": 0.335,

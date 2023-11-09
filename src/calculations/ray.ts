@@ -30,15 +30,17 @@ export class Ray {
     if (tMin < 0) tMin = 0;
     return new NumericRange(tMin, tMax);
   }
+
   /**
   * Find where the ray insects with a circle.  
   */
-  public getCircleIntersectionParameterRange(radius: number, centre: Vector2): NumericRange {
+  public getCircleIntersectionParameterRange(radius: number, centre: Vector2): NumericRange | null {
     const diff = this.initial_point.clone().add(centre.multiplyScalar(-1));
     const a = this.direction.dot(this.direction);
     const b = 2*diff.dot(this.direction);
     const c = (diff.dot(diff) - Math.pow(radius,2));
     const discriminant = Math.pow(b, 2) - 4 * a * c;
+    
     if (discriminant < 0) return null;
 
     let t1: number;
@@ -89,6 +91,11 @@ export class Ray {
         (ymax - this.initial_point.y) / this.direction.y,
       ),
     );
+
+    if(result ==null){
+      return null;
+    }    
+    
     return this.getParameterRange(result.min, result.max);
   }
 }
