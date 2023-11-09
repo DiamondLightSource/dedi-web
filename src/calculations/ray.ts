@@ -25,26 +25,23 @@ export class Ray {
   }
 
   getParameterRange(t1: number, t2: number): NumericRange {
-    // look at this again
     let tMin = Math.min(t1, t2);
     const tMax = Math.max(t1, t2);
-
     if (tMin < 0) tMin = 0;
-
     return new NumericRange(tMin, tMax);
   }
 
-  public getCircleIntersectionParameterRange(radius: number, centre: Vector2) {
-    const diff = this.initial_point.clone().add(centre.multiplyScalar(-1))
+  public getCircleIntersectionParameterRange(radius: number, centre: Vector2): NumericRange {
+    const diff = this.initial_point.clone().add(centre.multiplyScalar(-1));
     const a = this.direction.dot(this.direction);
     const b = 2*diff.dot(this.direction);
-    const c = (diff.dot(diff) - Math.pow(radius,2))
+    const c = (diff.dot(diff) - Math.pow(radius,2));
     const discriminant = Math.pow(b, 2) - 4 * a * c;
-    
+    if (discriminant < 0) return null;
 
     let t1: number;
     let t2: number;
-    if (discriminant < 0) return null;
+  
     if (a == 0) {
       if (b == 0)
         return c == 0 ? new NumericRange(0, Number.POSITIVE_INFINITY) : null;
@@ -83,13 +80,14 @@ export class Ray {
         return null;
       return this.getParameterRange(result.min, result.max);
     }
+    
     result = result.intersect(
       new NumericRange(
         (ymin - this.initial_point.y) / this.direction.y,
         (ymax - this.initial_point.y) / this.direction.y,
       ),
     );
-    return this.getParameterRange(result!.min, result!.max);
+    return this.getParameterRange(result.min, result.max);
   }
 }
 

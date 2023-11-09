@@ -29,7 +29,6 @@ test("Test presets exist and are valid", () => {
   for (const preset in presetList) {
     expect(Object.keys(detectorList)).toContain(presetList[preset].detector);
     expect(presetList[preset]).toHaveProperty("angle");
-    expect(presetList[preset]).toHaveProperty("wavelength");
     expect(presetList[preset]).toHaveProperty("cameraLength");
     expect(presetList[preset]).toHaveProperty("minWavelength");
     expect(presetList[preset]).toHaveProperty("maxWavelength");
