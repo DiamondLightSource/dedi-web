@@ -11,7 +11,6 @@ export interface AppDataFormat extends BeamlineConfig {
   detector: string;
   beamstop: Beamstop;
   cameraTube: CircularDevice;
-  addDetector: 
 }
 
 export const detectorList = detectorData as Record<string, Detector>;

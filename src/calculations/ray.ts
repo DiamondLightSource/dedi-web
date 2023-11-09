@@ -30,7 +30,9 @@ export class Ray {
     if (tMin < 0) tMin = 0;
     return new NumericRange(tMin, tMax);
   }
-
+  /**
+  * Find where the ray insects with a circle.  
+  */
   public getCircleIntersectionParameterRange(radius: number, centre: Vector2): NumericRange {
     const diff = this.initial_point.clone().add(centre.multiplyScalar(-1));
     const a = this.direction.dot(this.direction);
