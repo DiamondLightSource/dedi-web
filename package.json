@@ -18,7 +18,7 @@
     "@h5web/lib": "^9.0.0",
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.17",
-    "@react-three/fiber": "^8.13.7",
+    "@react-three/fiber": "^8.15.10",
     "d3-scale": "^4.0.2",
     "framer-motion": "^10.15.2",
     "lock": "^1.1.0",
