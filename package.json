@@ -7,7 +7,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
-    "build": "tsc && vite build",
+    "check-types": "tsc",
+    "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --port 3000",
     "test": "npx vitest"
@@ -15,7 +16,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@h5web/lib": "^9.0.0",
+    "@h5web/lib": "^10.0.0",
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.17",
     "@react-three/fiber": "^8.13.7",
