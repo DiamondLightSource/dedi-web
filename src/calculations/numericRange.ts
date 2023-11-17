@@ -16,7 +16,7 @@ export default class NumericRange {
     }
   }
   /**
-   * Returns true if a value falls inside the numeric range
+   * Returns true if the input value falls inside the numeric range
    * @param value a number
    * @returns
    */
@@ -68,7 +68,7 @@ export default class NumericRange {
   }
 
   /**
-   * Returns a 
+   * Returns a new numeric range with the function applied elementwise
    * @param func A function to apply to both the min and max of the range
    * @returns A new Numeric range with the call back applied
    */

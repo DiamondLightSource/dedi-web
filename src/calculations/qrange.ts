@@ -10,8 +10,8 @@ import { Ray } from "../calculations/ray";
 import NumericRange from "./numericRange";
 
 /**
- * Compute the viable and full qranges
- * @param detector
+ * Compute the viable and full qranges 
+ * @param detector Detector object with data on how the detector e
  * @param beamstop
  * @param cameraTube
  * @param beamProperties
@@ -91,8 +91,6 @@ export function computeQrange(
 
   const ptMin = ray.getPoint(t1.min);
   const ptMax = ray.getPoint(t1.max);
-
-  // works as intended up to here
 
   const detProps: DetectorProperties = {
     ...detector,
