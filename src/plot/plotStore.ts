@@ -40,7 +40,7 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   requestedRangeColor: { r: 65, g: 117, b: 5, a: 1 },
   clearnace: true,
   clearanceColor: { r: 0, g: 0, b: 0, a: 0.2 },
-  inaccessibleRange: true,
+  inaccessibleRange: false,
   inaccessibleRangeColor: { r: 245, g: 166, b: 35, a: 1 },
   plotAxes: PlotAxes.milimeter,
   update: (newConfig) => {
