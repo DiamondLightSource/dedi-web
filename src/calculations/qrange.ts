@@ -10,7 +10,7 @@ import { Ray } from "../calculations/ray";
 import NumericRange from "./numericRange";
 
 /**
- * Compute the viable and full qranges 
+ * Compute the viable and full qranges
  * @param detector Detector object with data on how the detector e
  * @param beamstop
  * @param cameraTube

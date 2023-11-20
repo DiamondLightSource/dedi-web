@@ -6,7 +6,6 @@ import { Stack, Typography } from "@mui/material";
 
 // Ad some config options here
 export default function SideMenu() {
-
   return (
     <Box>
       <List>

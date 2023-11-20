@@ -42,13 +42,7 @@ export function RangeDiagram(props: {
         border: "solid black",
       }}
     >
-      <rect
-        y="0"
-        x="0"
-        width={`100%`}
-        height="50%"
-        fill={rectColour}
-      ></rect>
+      <rect y="0" x="0" width={`100%`} height="50%" fill={rectColour}></rect>
       <line
         x1={`${requestedMin}%`}
         y1={0}

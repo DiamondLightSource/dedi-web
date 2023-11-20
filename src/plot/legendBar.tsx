@@ -13,20 +13,9 @@ import {
 } from "@mui/material";
 import { PlotAxes, usePlotStore } from "./plotStore";
 import ColourPickerPopover from "../utils/colourPicker";
-import { ColorResult } from "react-color";
-
 
 export default function LegendBar(): JSX.Element {
   const plotConfig = usePlotStore();
-
-
-  const handleDetectorColourChange = (color: ColorResult) => {
-    plotConfig.update({ detectorColour: color.rgb })
-  }
-
-  const handleCameraTubeColourChange = (color: ColorResult) => {
-    plotConfig.update({ cameraTubeColor: color.rgb })
-  }
 
   return (
     <Card sx={{ height: 1, width: 1 }}>
@@ -45,9 +34,15 @@ export default function LegendBar(): JSX.Element {
               }
               label={
                 <Stack direction={"row"}>
-                  <ColourPickerPopover color={plotConfig.detectorColour} onChangeComplete={handleDetectorColourChange} />
+                  <ColourPickerPopover
+                    color={plotConfig.detectorColour}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ detectorColour: color.rgb })
+                    }
+                  />
                   <Typography>Detector:</Typography>
-                </Stack>}
+                </Stack>
+              }
             />
             <FormControlLabel
               control={
@@ -60,9 +55,15 @@ export default function LegendBar(): JSX.Element {
               }
               label={
                 <Stack direction={"row"}>
-                  <ColourPickerPopover color={plotConfig.cameraTubeColor} onChangeComplete={handleCameraTubeColourChange} />
+                  <ColourPickerPopover
+                    color={plotConfig.cameraTubeColor}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ cameraTubeColor: color.rgb })
+                    }
+                  />
                   <Typography>Camera Tube:</Typography>
-                </Stack>}
+                </Stack>
+              }
             />
             <FormControlLabel
               control={
@@ -74,8 +75,17 @@ export default function LegendBar(): JSX.Element {
                   }}
                 />
               }
-              label="Beamstop"
-
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover
+                    color={plotConfig.beamstopColor}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ beamstopColor: color.rgb })
+                    }
+                  />
+                  <Typography>Beamstop</Typography>
+                </Stack>
+              }
             />
             <FormControlLabel
               control={

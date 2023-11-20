@@ -156,9 +156,7 @@ export const electronVots2KiloElectronVolts = (input: number): number => {
  * @param input input string from the texbox
  * @returns a valid float or null
  */
-export const parseNumericInput = (
-  input: string,
-): number | null => {
+export const parseNumericInput = (input: string): number | null => {
   const output = parseFloat(input.trim());
 
   if (!output && output != 0) {

@@ -35,9 +35,11 @@ import {
   angstroms2Nanometres,
   nanometres2Angstroms,
 } from "../utils/units";
-import { convertBetweenQAndD, convertBetweenQAndS } from "../results/scatteringQuantities";
+import {
+  convertBetweenQAndD,
+  convertBetweenQAndS,
+} from "../results/scatteringQuantities";
 import { color2String } from "./plotUtils";
-
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
@@ -60,10 +62,10 @@ export default function CentrePlot(): JSX.Element {
       maxWavelength: state.maxWavelength,
       minCameraLength: state.minCameraLength,
       maxCameraLength: state.maxCameraLength,
+      cameraLengthStep: state.cameraLengthStep,
       wavelength: wavelength,
     };
   });
-
 
   const detector = useDetectorStore((state) => state.current);
   const beamstop = useBeamstopStore((state): Beamstop => {
@@ -162,7 +164,11 @@ export default function CentrePlot(): JSX.Element {
 
   const ajustedPoints = adjustRange(ptMin, ptMax, detector);
 
-  const domains = getDomains(ajustedDetector, ajustedCameraTube);
+  const domains = getDomains(
+    ajustedDetector,
+    ajustedCameraTube,
+    plotConfig.plotAxes,
+  );
 
   //
   const requestedRange = useResultStore<NumericRange | null>((state) => {
@@ -178,7 +184,7 @@ export default function CentrePlot(): JSX.Element {
             if (state.dUnits === WavelengthUnits.angstroms) {
               value = angstroms2Nanometres(value);
             }
-            value = convertBetweenQAndD(value)
+            value = convertBetweenQAndD(value);
             break;
           case ScatteringOptions.s:
             if (state.sUnits === WavelengthUnits.angstroms) {
@@ -192,25 +198,31 @@ export default function CentrePlot(): JSX.Element {
             }
         }
         return value;
-      })
+      },
+    );
   });
 
   let requestedDiagramMin: Vector2 | null = new Vector2(0, 0);
   let requestedDiagramMax: Vector2 | null = new Vector2(0, 0);
 
-  if (requestedRange && beamlineConfig.angle && beamlineConfig.cameraLength && beamlineConfig.wavelength) {
+  if (
+    requestedRange &&
+    beamlineConfig.angle &&
+    beamlineConfig.cameraLength &&
+    beamlineConfig.wavelength
+  ) {
     requestedDiagramMax = getPointForQ(
       requestedRange.max * 1e9,
       beamlineConfig.angle,
       beamlineConfig.cameraLength,
-      (beamlineConfig.wavelength) * 1e-9,
+      beamlineConfig.wavelength * 1e-9,
       ajustedBeamstop,
     );
     requestedDiagramMin = getPointForQ(
       requestedRange.min * 1e9,
       beamlineConfig.angle,
       beamlineConfig.cameraLength,
-      (beamlineConfig.wavelength) * 1e-9,
+      beamlineConfig.wavelength * 1e-9,
       ajustedBeamstop,
     );
   }
@@ -231,10 +243,12 @@ export default function CentrePlot(): JSX.Element {
                 <VisCanvas
                   showGrid={true}
                   abscissaConfig={{
-                    visDomain: [domains.xAxis.min, domains.xAxis.max], showGrid: true
+                    visDomain: [domains.xAxis.min, domains.xAxis.max],
+                    showGrid: true,
                   }}
                   ordinateConfig={{
-                    visDomain: [domains.yAxis.max, domains.yAxis.min], showGrid: true
+                    visDomain: [domains.yAxis.max, domains.yAxis.min],
+                    showGrid: true,
                   }}
                 >
                   <DefaultInteractions />
@@ -247,14 +261,14 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(
                         (ajustedBeamstop.centre.x ?? 0) +
-                        ajustedBeamstop.diameter / 2,
+                          ajustedBeamstop.diameter / 2,
                         ajustedBeamstop.centre.y ?? 0,
                       ),
                       new Vector3(
                         ajustedBeamstop.centre.x ?? 0,
                         (ajustedBeamstop.centre.y ?? 0) +
-                        ajustedBeamstop.diameter / 2 +
-                        (ajustedBeamstop.clearance ?? 0),
+                          ajustedBeamstop.diameter / 2 +
+                          (ajustedBeamstop.clearance ?? 0),
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
@@ -263,7 +277,7 @@ export default function CentrePlot(): JSX.Element {
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
                         (ajustedCameraTube.centre.y ?? 0) +
-                        ajustedCameraTube.diameter / 2,
+                          ajustedCameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(
@@ -311,24 +325,30 @@ export default function CentrePlot(): JSX.Element {
                             strokeWidth={2}
                           />
                         )}
-                        {plotConfig.qrange && plotConfig.beamstop && requestedMin && requestedMax && (
-                          <SvgLine
-                            coords={[beamstopCentre, minQRange]}
-                            stroke="orange"
-                            strokeWidth={2}
-                          />
-                        )}
-                        {plotConfig.beamstop && plotConfig.qrange && requestedMin && requestedMax && (
-                          <SvgCircle
-                            coords={[beamstopCentre, clearance]}
-                            fill="rgba(0, 0, 255, 0.2)"
-                            id="clearance"
-                          />
-                        )}
+                        {plotConfig.qrange &&
+                          plotConfig.beamstop &&
+                          requestedMin &&
+                          requestedMax && (
+                            <SvgLine
+                              coords={[beamstopCentre, minQRange]}
+                              stroke="orange"
+                              strokeWidth={2}
+                            />
+                          )}
+                        {plotConfig.beamstop &&
+                          plotConfig.qrange &&
+                          requestedMin &&
+                          requestedMax && (
+                            <SvgCircle
+                              coords={[beamstopCentre, clearance]}
+                              fill="rgba(0, 0, 255, 0.2)"
+                              id="clearance"
+                            />
+                          )}
                         {plotConfig.beamstop && (
                           <SvgCircle
                             coords={[beamstopCentre, beamstopPerimeter]}
-                            fill="black"
+                            fill={color2String(plotConfig.beamstopColor)}
                             id="beamstop"
                           />
                         )}

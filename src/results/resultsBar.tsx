@@ -79,9 +79,6 @@ export default function ResultsBar(props: {
         }
     }
   }
-  console.log(diagramFull)
-  console.log(diagramVisible)
-  console.log(diagramRequested)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -123,7 +120,11 @@ export default function ResultsBar(props: {
                       <RadioGroup
                         row
                         value={resultStore.requested}
-                        onChange={(event) => resultStore.updateRequested(event.target.value as ScatteringOptions)}
+                        onChange={(event) =>
+                          resultStore.updateRequested(
+                            event.target.value as ScatteringOptions,
+                          )
+                        }
                       >
                         <FormControlLabel
                           value={ScatteringOptions.q}
@@ -149,7 +150,9 @@ export default function ResultsBar(props: {
                     diagramVisible &&
                     diagramFull &&
                     diagramRequested &&
-                    {/*diagramFull.containsRange(diagramVisible)*/ }
+                    {
+                      /*diagramFull.containsRange(diagramVisible)*/
+                    }
                   ) {
                     return (
                       <RangeDiagram

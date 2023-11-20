@@ -78,8 +78,8 @@ export default class NumericRange {
 
   /**
    * Applys a function to the range in place
-   * @param func 
-   * @returns 
+   * @param func
+   * @returns
    */
   inPlaceApply(func: (value: number) => number): NumericRange {
     this.min = func(this.min);

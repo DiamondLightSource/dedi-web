@@ -20,6 +20,7 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   maxWavelength: defaultConfig.maxWavelength,
   minCameraLength: defaultConfig.minCameraLength,
   maxCameraLength: defaultConfig.maxCameraLength,
+  cameraLengthStep: defaultConfig.cameraLengthStep,
   energy: null,
   wavelength: null,
   beamEnergyUnits: EnergyUnits.kiloElectronVolts,

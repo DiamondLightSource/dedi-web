@@ -24,6 +24,8 @@ import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { MathUtils } from "three/src/Three.js";
 
 export default function BeampropertiesDataEntry() {
+  const beamlineConfig = useBeamlineConfigStore();
+
   const minWavelength = useBeamlineConfigStore((state) => {
     if (state.wavelengthUnits === WavelengthUnits.angstroms) {
       return nanometres2Angstroms(state.minWavelength);
@@ -38,60 +40,39 @@ export default function BeampropertiesDataEntry() {
     return state.maxWavelength;
   });
 
-  const cameraLength = useBeamlineConfigStore((state) => state.cameraLength);
-  const minCameraLength = useBeamlineConfigStore(
-    (state) => state.minCameraLength,
-  );
-  const maxCameraLength = useBeamlineConfigStore(
-    (state) => state.maxCameraLength,
-  );
-
-  const energy = useBeamlineConfigStore((state) => state.energy);
-  const energyUnits = useBeamlineConfigStore((state) => state.beamEnergyUnits);
-
-  const updateConfig = useBeamlineConfigStore((state) => state.update);
-
-  const angle = useBeamlineConfigStore((state) => state.angle);
-  const angleUnits = useBeamlineConfigStore((state) => state.angleUnits);
-
   const handleAngleUnits = (event: SelectChangeEvent<AngleUnits>) => {
     const newUnits = event.target.value as AngleUnits;
-    let newAngle = angle;
+    let newAngle = beamlineConfig.angle;
 
     if (
       newAngle !== null &&
       newUnits === AngleUnits.degrees &&
-      angleUnits === AngleUnits.radians
+      beamlineConfig.angleUnits === AngleUnits.radians
     ) {
       newAngle = MathUtils.radToDeg(newAngle);
     } else if (
       newAngle !== null &&
       newUnits === AngleUnits.radians &&
-      angleUnits === AngleUnits.degrees
+      beamlineConfig.angleUnits === AngleUnits.degrees
     ) {
       newAngle = MathUtils.degToRad(newAngle);
     }
-    updateConfig({
+    beamlineConfig.update({
       angle: newAngle,
       angleUnits: newUnits,
     });
   };
 
   const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateConfig({ angle: parseNumericInput(event.target.value) });
+    beamlineConfig.update({ angle: parseNumericInput(event.target.value) });
   };
-
-  const wavelength = useBeamlineConfigStore((state) => state.wavelength);
-  const wavelengthUnits = useBeamlineConfigStore(
-    (state) => state.wavelengthUnits,
-  );
 
   const handleWavelength = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newWavelength = parseNumericInput(event.target.value);
     let newEnergy: number | null = null;
 
     if (newWavelength === null) {
-      updateConfig({
+      beamlineConfig.update({
         energy: newEnergy,
         wavelength: newWavelength,
       });
@@ -99,7 +80,7 @@ export default function BeampropertiesDataEntry() {
     }
 
     // account for wavelength units
-    if (wavelengthUnits === WavelengthUnits.angstroms) {
+    if (beamlineConfig.wavelengthUnits === WavelengthUnits.angstroms) {
       newEnergy = wavelength2EnergyConverter(
         angstroms2Nanometres(newWavelength),
       );
@@ -108,11 +89,11 @@ export default function BeampropertiesDataEntry() {
     }
 
     // account for energy units
-    if (energyUnits === EnergyUnits.electronVolts) {
+    if (beamlineConfig.beamEnergyUnits === EnergyUnits.electronVolts) {
       newEnergy = electronVots2KiloElectronVolts(newEnergy);
     }
 
-    updateConfig({
+    beamlineConfig.update({
       energy: newEnergy,
       wavelength: newWavelength,
     });
@@ -120,21 +101,21 @@ export default function BeampropertiesDataEntry() {
 
   const handleWavelengthUnits = (event: SelectChangeEvent<WavelengthUnits>) => {
     const newUnits = event.target.value as WavelengthUnits;
-    let newWavelength = wavelength;
+    let newWavelength = beamlineConfig.wavelength;
     if (
       newWavelength !== null &&
       newUnits === WavelengthUnits.angstroms &&
-      wavelengthUnits === WavelengthUnits.nanmometres
+      beamlineConfig.wavelengthUnits === WavelengthUnits.nanmometres
     ) {
       newWavelength = nanometres2Angstroms(newWavelength);
     } else if (
       newWavelength !== null &&
       newUnits === WavelengthUnits.nanmometres &&
-      wavelengthUnits === WavelengthUnits.angstroms
+      beamlineConfig.wavelengthUnits === WavelengthUnits.angstroms
     ) {
       newWavelength = angstroms2Nanometres(newWavelength);
     }
-    updateConfig({
+    beamlineConfig.update({
       wavelength: newWavelength,
       wavelengthUnits: newUnits,
     });
@@ -145,14 +126,14 @@ export default function BeampropertiesDataEntry() {
     let newWavelength: number | null = null;
 
     if (newEnergy === null) {
-      updateConfig({
+      beamlineConfig.update({
         energy: newEnergy,
         wavelength: newWavelength,
       });
       return;
     }
 
-    if (energyUnits === EnergyUnits.electronVolts) {
+    if (beamlineConfig.beamEnergyUnits === EnergyUnits.electronVolts) {
       newWavelength = energy2WavelengthConverter(
         electronVots2KiloElectronVolts(newEnergy),
       );
@@ -160,11 +141,11 @@ export default function BeampropertiesDataEntry() {
       newWavelength = energy2WavelengthConverter(newEnergy);
     }
 
-    if (wavelengthUnits === WavelengthUnits.angstroms) {
+    if (beamlineConfig.wavelengthUnits === WavelengthUnits.angstroms) {
       newWavelength = angstroms2Nanometres(newWavelength);
     }
 
-    updateConfig({
+    beamlineConfig.update({
       energy: newEnergy,
       wavelength: newWavelength,
     });
@@ -172,28 +153,28 @@ export default function BeampropertiesDataEntry() {
 
   const handleEnergyUnits = (event: SelectChangeEvent<EnergyUnits>) => {
     const newUnits = event.target.value as EnergyUnits;
-    let newEnergy = energy;
+    let newEnergy = beamlineConfig.energy;
     if (
       newEnergy !== null &&
       newUnits === EnergyUnits.electronVolts &&
-      energyUnits === EnergyUnits.kiloElectronVolts
+      beamlineConfig.beamEnergyUnits === EnergyUnits.kiloElectronVolts
     ) {
       newEnergy = kiloElectronVolts2ElectronVots(newEnergy);
     } else if (
       newEnergy != null &&
       newUnits === EnergyUnits.kiloElectronVolts &&
-      energyUnits === EnergyUnits.electronVolts
+      beamlineConfig.beamEnergyUnits === EnergyUnits.electronVolts
     ) {
       newEnergy = electronVots2KiloElectronVolts(newEnergy);
     }
-    updateConfig({
+    beamlineConfig.update({
       energy: newEnergy,
       beamEnergyUnits: event.target.value as EnergyUnits,
     });
   };
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateConfig({
+    beamlineConfig.update({
       cameraLength: parseNumericInput(event.target.value),
     });
   };
@@ -206,7 +187,7 @@ export default function BeampropertiesDataEntry() {
         <TextField
           type="number"
           size="small"
-          value={energy}
+          value={beamlineConfig.energy}
           onChange={handleEnergy}
         />
         <FormControl>
@@ -214,7 +195,7 @@ export default function BeampropertiesDataEntry() {
           <Select
             size="small"
             label="units"
-            value={energyUnits}
+            value={beamlineConfig.beamEnergyUnits}
             onChange={handleEnergyUnits}
           >
             <MenuItem value={EnergyUnits.electronVolts}>
@@ -231,7 +212,7 @@ export default function BeampropertiesDataEntry() {
         <TextField
           type="number"
           size="small"
-          value={wavelength}
+          value={beamlineConfig.wavelength}
           onChange={handleWavelength}
         />
         <FormControl>
@@ -239,7 +220,7 @@ export default function BeampropertiesDataEntry() {
           <Select
             size="small"
             label="units"
-            value={wavelengthUnits}
+            value={beamlineConfig.wavelengthUnits}
             onChange={handleWavelengthUnits}
           >
             <MenuItem value={WavelengthUnits.nanmometres}>
@@ -252,21 +233,24 @@ export default function BeampropertiesDataEntry() {
         </FormControl>
       </Stack>
       <Typography>
-        Minimum allowed wavelength: {minWavelength} {wavelengthUnits}{" "}
+        Minimum allowed wavelength: {minWavelength}{" "}
+        {beamlineConfig.wavelengthUnits}{" "}
       </Typography>
       <Typography>
-        Maximum allowed wavelength: {maxWavelength} {wavelengthUnits}
+        Maximum allowed wavelength: {maxWavelength}{" "}
+        {beamlineConfig.wavelengthUnits}
       </Typography>
       <Stack direction="row" spacing={1}>
         <Typography>Camera Length: </Typography>
         <TextField
           type="number"
           size="small"
-          value={cameraLength}
+          value={beamlineConfig.cameraLength}
           InputProps={{
             inputProps: {
-              max: maxCameraLength,
-              min: minCameraLength,
+              max: beamlineConfig.maxCameraLength,
+              min: beamlineConfig.minCameraLength,
+              step: beamlineConfig.cameraLengthStep,
             },
           }}
           onChange={handleCameraLength}
@@ -279,7 +263,7 @@ export default function BeampropertiesDataEntry() {
           type="number"
           size="small"
           defaultValue={""}
-          value={angle ?? ""}
+          value={beamlineConfig.angle ?? ""}
           onChange={handleAngle}
         />
         <FormControl>
@@ -287,7 +271,7 @@ export default function BeampropertiesDataEntry() {
           <Select
             size="small"
             label="units"
-            value={angleUnits}
+            value={beamlineConfig.angleUnits}
             onChange={handleAngleUnits}
           >
             <MenuItem value={AngleUnits.radians}>{AngleUnits.radians}</MenuItem>
