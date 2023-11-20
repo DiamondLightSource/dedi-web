@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   Checkbox,
-  Divider,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -13,16 +12,27 @@ import {
   Typography,
 } from "@mui/material";
 import { PlotAxes, usePlotStore } from "./plotStore";
+import ColourPickerPopover from "../utils/colourPicker";
+import { ColorResult } from "react-color";
+
 
 export default function LegendBar(): JSX.Element {
   const plotConfig = usePlotStore();
+
+
+  const handleDetectorColourChange = (color: ColorResult) => {
+    plotConfig.update({ detectorColour: color.rgb })
+  }
+
+  const handleCameraTubeColourChange = (color: ColorResult) => {
+    plotConfig.update({ cameraTubeColor: color.rgb })
+  }
 
   return (
     <Card sx={{ height: 1, width: 1 }}>
       <CardContent>
         <Stack spacing={1}>
           <Typography variant="h6"> Legend</Typography>
-          <Typography>Add something to do with colors here</Typography>
           <FormGroup>
             <FormControlLabel
               control={
@@ -33,7 +43,26 @@ export default function LegendBar(): JSX.Element {
                   }
                 />
               }
-              label="Detector"
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover color={plotConfig.detectorColour} onChangeComplete={handleDetectorColourChange} />
+                  <Typography>Detector:</Typography>
+                </Stack>}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={plotConfig.cameraTube}
+                  onChange={(_, checked) =>
+                    plotConfig.update({ cameraTube: checked })
+                  }
+                />
+              }
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover color={plotConfig.cameraTubeColor} onChangeComplete={handleCameraTubeColourChange} />
+                  <Typography>Camera Tube:</Typography>
+                </Stack>}
             />
             <FormControlLabel
               control={
@@ -46,17 +75,7 @@ export default function LegendBar(): JSX.Element {
                 />
               }
               label="Beamstop"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={plotConfig.cameraTube}
-                  onChange={(_, checked) =>
-                    plotConfig.update({ cameraTube: checked })
-                  }
-                />
-              }
-              label="Camera tube"
+
             />
             <FormControlLabel
               control={
@@ -92,9 +111,6 @@ export default function LegendBar(): JSX.Element {
               label="Calibrant"
             />
           </FormGroup>
-          <Divider />
-          <Typography>Current calibrant: {5}</Typography>
-          <Divider />
           <FormControl>
             <FormLabel id="demo-radio-buttons-group-label">Axes:</FormLabel>
             <RadioGroup

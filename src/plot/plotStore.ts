@@ -1,3 +1,4 @@
+import { RGBColor } from "react-color";
 import { create } from "zustand";
 
 export enum PlotAxes {
@@ -8,8 +9,10 @@ export enum PlotAxes {
 
 export interface PlotConfig {
   detector: boolean;
+  detectorColour: RGBColor;
   beamstop: boolean;
   cameraTube: boolean;
+  cameraTubeColor: RGBColor;
   clearnace: boolean;
   qrange: boolean;
   mask: boolean;
@@ -21,8 +24,10 @@ export interface PlotConfig {
 
 export const usePlotStore = create<PlotConfig>((set) => ({
   detector: true,
+  detectorColour: { r: 1, g: 2, b: 1, a: 0.2 },
   beamstop: true,
   cameraTube: true,
+  cameraTubeColor: { r: 1, g: 2, b: 1, a: 0.2 },
   clearnace: true,
   qrange: true,
   mask: false,

@@ -36,6 +36,8 @@ import {
   nanometres2Angstroms,
 } from "../utils/units";
 import { convertBetweenQAndD, convertBetweenQAndS } from "../results/scatteringQuantities";
+import { color2String } from "./plotUtils";
+
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
@@ -214,8 +216,8 @@ export default function CentrePlot(): JSX.Element {
   }
   return (
     <Box>
-      <Stack direction="column" spacing={2}>
-        <Stack direction="row" spacing={2}>
+      <Stack direction="column" spacing={1}>
+        <Stack direction="row" spacing={1}>
           <Card>
             <CardContent>
               <div
@@ -291,7 +293,7 @@ export default function CentrePlot(): JSX.Element {
                         {plotConfig.cameraTube && (
                           <SvgCircle
                             coords={[cameraTubeCentre, cameraTubePerimeter]}
-                            fill="rgba(0, 0, 255, 0.2)"
+                            fill={color2String(plotConfig.cameraTubeColor)}
                             id="camera tube"
                           />
                         )}
@@ -333,7 +335,7 @@ export default function CentrePlot(): JSX.Element {
                         {plotConfig.detector && (
                           <SvgRect
                             coords={[detectorLower, detectorUpper]}
-                            fill="rgba(255, 0, 0, 0.2)"
+                            fill={color2String(plotConfig.detectorColour)}
                             id="detector"
                             stroke="black"
                             strokePosition="outside"

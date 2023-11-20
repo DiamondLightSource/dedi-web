@@ -1,5 +1,6 @@
 import { CircularDevice, Detector } from "../utils/types";
 import NumericRange from "../calculations/numericRange";
+import { RGBColor } from "react-color";
 
 const offset = 100;
 
@@ -17,4 +18,8 @@ export const getDomains = (
     xAxis: new NumericRange(-offset, Math.round(maxLength + offset)),
     yAxis: new NumericRange(-offset, Math.round(maxLength + offset)),
   };
+};
+
+export const color2String = (color: RGBColor) => {
+  return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
 };
