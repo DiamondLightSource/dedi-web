@@ -7,6 +7,7 @@ export enum PlotAxes {
   reciprocal = "reciprocal",
 }
 
+
 export interface PlotConfig {
   detector: boolean;
   detectorColour: RGBColor;
@@ -14,11 +15,14 @@ export interface PlotConfig {
   beamstopColor: RGBColor;
   cameraTube: boolean;
   cameraTubeColor: RGBColor;
+  visibleRange: boolean;
+  visibleColor: RGBColor;
+  requestedRange: boolean;
+  requestedRangeColor: RGBColor;
+  inaccessibleRange: boolean;
+  inaccessibleRangeColor: RGBColor;
   clearnace: boolean;
-  qrange: boolean;
-  mask: boolean;
-  calibrantInPlot: boolean;
-  calibrant: string;
+  clearanceColor: RGBColor;
   plotAxes: PlotAxes;
   update: (newConfig: Partial<PlotConfig>) => void;
 }
@@ -30,11 +34,14 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   beamstopColor: { r: 0, g: 0, b: 0, a: 1 },
   cameraTube: true,
   cameraTubeColor: { r: 80, g: 227, b: 194, a: 0.4 },
+  visibleRange: true,
+  visibleColor: { r: 208, g: 2, b: 27, a: 1 },
+  requestedRange: true,
+  requestedRangeColor: { r: 65, g: 117, b: 5, a: 1 },
   clearnace: true,
-  qrange: true,
-  mask: false,
-  calibrantInPlot: false,
-  calibrant: "something",
+  clearanceColor: { r: 0, g: 0, b: 0, a: 0.2 },
+  inaccessibleRange: true,
+  inaccessibleRangeColor: { r: 245, g: 166, b: 35, a: 1 },
   plotAxes: PlotAxes.milimeter,
   update: (newConfig) => {
     set({ ...newConfig });

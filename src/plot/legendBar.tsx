@@ -71,7 +71,6 @@ export default function LegendBar(): JSX.Element {
                   checked={plotConfig.beamstop}
                   onChange={(_, checked) => {
                     plotConfig.update({ beamstop: checked });
-                    plotConfig.update({ qrange: checked });
                   }}
                 />
               }
@@ -90,35 +89,83 @@ export default function LegendBar(): JSX.Element {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={plotConfig.qrange}
+                  checked={plotConfig.clearnace}
+                  onChange={(_, checked) => {
+                    plotConfig.update({ clearnace: checked });
+                  }}
+                />
+              }
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover
+                    color={plotConfig.clearanceColor}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ clearanceColor: color.rgb })
+                    }
+                  />
+                  <Typography>Clearance</Typography>
+                </Stack>
+              } />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={plotConfig.visibleRange}
                   onChange={(_, checked) =>
-                    plotConfig.update({ qrange: checked })
+                    plotConfig.update({ visibleRange: checked })
                   }
                 />
               }
-              label="Q range"
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover
+                    color={plotConfig.visibleColor}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ visibleColor: color.rgb })
+                    }
+                  />
+                  <Typography>Visible Range</Typography>
+                </Stack>
+              }
             />
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={plotConfig.mask}
+                  checked={plotConfig.requestedRange}
                   onChange={(_, checked) =>
-                    plotConfig.update({ mask: checked })
+                    plotConfig.update({ requestedRange: checked })
                   }
                 />
               }
-              label="Mask"
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover
+                    color={plotConfig.requestedRangeColor}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ requestedRangeColor: color.rgb })
+                    }
+                  />
+                  <Typography>Requested Range</Typography>
+                </Stack>}
             />
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={plotConfig.calibrantInPlot}
+                  checked={plotConfig.inaccessibleRange}
                   onChange={(_, checked) =>
-                    plotConfig.update({ calibrantInPlot: checked })
+                    plotConfig.update({ inaccessibleRange: checked })
                   }
                 />
               }
-              label="Calibrant"
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover
+                    color={plotConfig.inaccessibleRangeColor}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ inaccessibleRangeColor: color.rgb })
+                    }
+                  />
+                  <Typography>inaccessible Range</Typography>
+                </Stack>}
             />
           </FormGroup>
           <FormControl>

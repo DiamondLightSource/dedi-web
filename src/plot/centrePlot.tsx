@@ -202,6 +202,8 @@ export default function CentrePlot(): JSX.Element {
     );
   });
 
+  // Make sure to devid by pixel vector here
+
   let requestedDiagramMin: Vector2 | null = new Vector2(0, 0);
   let requestedDiagramMax: Vector2 | null = new Vector2(0, 0);
 
@@ -261,14 +263,14 @@ export default function CentrePlot(): JSX.Element {
                       ),
                       new Vector3(
                         (ajustedBeamstop.centre.x ?? 0) +
-                          ajustedBeamstop.diameter / 2,
+                        ajustedBeamstop.diameter / 2,
                         ajustedBeamstop.centre.y ?? 0,
                       ),
                       new Vector3(
                         ajustedBeamstop.centre.x ?? 0,
                         (ajustedBeamstop.centre.y ?? 0) +
-                          ajustedBeamstop.diameter / 2 +
-                          (ajustedBeamstop.clearance ?? 0),
+                        ajustedBeamstop.diameter / 2 +
+                        (ajustedBeamstop.clearance ?? 0),
                       ),
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
@@ -277,7 +279,7 @@ export default function CentrePlot(): JSX.Element {
                       new Vector3(
                         ajustedCameraTube.centre.x ?? 0,
                         (ajustedCameraTube.centre.y ?? 0) +
-                          ajustedCameraTube.diameter / 2,
+                        ajustedCameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(
@@ -311,55 +313,51 @@ export default function CentrePlot(): JSX.Element {
                             id="camera tube"
                           />
                         )}
-                        {plotConfig.qrange && plotConfig.beamstop && (
-                          <SvgLine
-                            coords={[minQRange, maxQRange]}
-                            stroke="red"
-                            strokeWidth={2}
-                          />
-                        )}
-                        {requestedMin && requestedMax && plotConfig.qrange && (
-                          <SvgLine
-                            coords={[requestedMin, requestedMax]}
-                            stroke="green"
-                            strokeWidth={2}
-                          />
-                        )}
-                        {plotConfig.qrange &&
-                          plotConfig.beamstop &&
-                          requestedMin &&
-                          requestedMax && (
-                            <SvgLine
-                              coords={[beamstopCentre, minQRange]}
-                              stroke="orange"
-                              strokeWidth={2}
-                            />
-                          )}
-                        {plotConfig.beamstop &&
-                          plotConfig.qrange &&
-                          requestedMin &&
-                          requestedMax && (
-                            <SvgCircle
-                              coords={[beamstopCentre, clearance]}
-                              fill="rgba(0, 0, 255, 0.2)"
-                              id="clearance"
-                            />
-                          )}
-                        {plotConfig.beamstop && (
-                          <SvgCircle
-                            coords={[beamstopCentre, beamstopPerimeter]}
-                            fill={color2String(plotConfig.beamstopColor)}
-                            id="beamstop"
-                          />
-                        )}
                         {plotConfig.detector && (
                           <SvgRect
                             coords={[detectorLower, detectorUpper]}
                             fill={color2String(plotConfig.detectorColour)}
                             id="detector"
-                            stroke="black"
-                            strokePosition="outside"
-                            strokeWidth={0}
+                          />
+                        )}
+                        {plotConfig.inaccessibleRange && (
+                          <SvgLine
+                            coords={[beamstopCentre, minQRange]}
+                            stroke={color2String(plotConfig.inaccessibleRangeColor)}
+                            strokeWidth={3}
+                            id="inaccessible"
+                          />
+                        )}
+                        {plotConfig.clearnace &&
+                          requestedMin &&
+                          requestedMax && (
+                            <SvgCircle
+                              coords={[beamstopCentre, clearance]}
+                              fill={color2String(plotConfig.clearanceColor)}
+                              id="clearance"
+                            />
+                          )}
+                        {plotConfig.visibleRange && (
+                          <SvgLine
+                            coords={[minQRange, maxQRange]}
+                            stroke={color2String(plotConfig.visibleColor)}
+                            strokeWidth={3}
+                            id="visible"
+                          />
+                        )}
+                        {requestedMin && requestedMax && plotConfig.requestedRange && (
+                          <SvgLine
+                            coords={[requestedMin, requestedMax]}
+                            stroke={color2String(plotConfig.requestedRangeColor)}
+                            strokeWidth={3}
+                            id="requested"
+                          />
+                        )}
+                        {plotConfig.beamstop && (
+                          <SvgCircle
+                            coords={[beamstopCentre, beamstopPerimeter]}
+                            fill={color2String(plotConfig.beamstopColor)}
+                            id="beamstop"
                           />
                         )}
                       </SvgElement>
