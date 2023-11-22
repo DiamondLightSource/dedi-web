@@ -42,19 +42,18 @@ import {
 import { color2String } from "./plotUtils";
 
 export default function CentrePlot(): JSX.Element {
+
   const plotConfig = usePlotStore();
+
   const beamlineConfig = useBeamlineConfigStore<BeamlineConfig>((state) => {
     let angle = state.angle;
     let wavelength = state.wavelength;
-
     if (wavelength && state.wavelengthUnits === WavelengthUnits.angstroms) {
       wavelength = angstroms2Nanometres(wavelength);
     }
-
     if (angle && state.angleUnits === AngleUnits.degrees) {
       angle = MathUtils.degToRad(angle);
     }
-
     return {
       angle: angle,
       cameraLength: state.cameraLength,
@@ -87,6 +86,12 @@ export default function CentrePlot(): JSX.Element {
   );
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = qrangeResult;
+
+
+
+
+  // Best way to do this????????
+
   const adjustUnitsDetector = (detector: Detector): Detector => {
     if (plotConfig.plotAxes === PlotAxes.milimeter) {
       return {

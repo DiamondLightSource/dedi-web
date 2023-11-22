@@ -2,6 +2,7 @@ import {
   Card,
   CardContent,
   Checkbox,
+  Divider,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -22,6 +23,7 @@ export default function LegendBar(): JSX.Element {
       <CardContent>
         <Stack spacing={1}>
           <Typography variant="h6"> Legend</Typography>
+          <Divider />
           <FormGroup>
             <FormControlLabel
               control={

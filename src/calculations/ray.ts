@@ -32,7 +32,10 @@ export class Ray {
   }
 
   /**
-   * Find where the ray insects with a circle.
+   * Use quadratic formula to find the intersection of this ray and a circle in 2d.
+   * @param radius radius of the circle  
+   * @param centre centre of the circle
+   * @returns 
    */
   public getCircleIntersectionParameterRange(
     radius: number,
