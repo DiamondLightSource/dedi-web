@@ -66,8 +66,8 @@ export default function CentrePlot(): JSX.Element {
     };
   });
 
-  const detector = useDetectorStore((state) => state.current);
-  const beamstop = useBeamstopStore((state): Beamstop => {
+  let detector = useDetectorStore<Detector>((state) => state.current);
+  const beamstop = useBeamstopStore<Beamstop>((state) => {
     return {
       centre: state.centre,
       diameter: state.diameter,
@@ -88,93 +88,41 @@ export default function CentrePlot(): JSX.Element {
   const { ptMin, ptMax, visibleQRange, fullQRange } = qrangeResult;
 
 
-
-
-  // Best way to do this????????
-
-  const adjustUnitsDetector = (detector: Detector): Detector => {
-    if (plotConfig.plotAxes === PlotAxes.milimeter) {
-      return {
-        resolution: {
+  // Account for units 
+  switch (plotConfig.plotAxes) {
+    case PlotAxes.milimeter:
+      beamstop.centre = {
+        x: (beamstop.centre.x ?? 0) * detector.pixelSize.width,
+        y: (beamstop.centre.y ?? 0) * detector.pixelSize.height,
+      };
+      beamstop.clearance = (beamstop.clearance ?? 0) * detector.pixelSize.height
+      cameraTube.centre = {
+        x: (cameraTube.centre.x ?? 0) * detector.pixelSize.height,
+        y: (cameraTube.centre.y ?? 0) * detector.pixelSize.width,
+      }
+      detector = {
+        ...detector, resolution: {
           height: detector.resolution.height * detector.pixelSize.height,
           width: detector.resolution.width * detector.pixelSize.width,
-        },
-        pixelSize: detector.pixelSize,
-      };
-    }
-    return detector;
-  };
-
-  const adjustUnitsBeamstop = (
-    beamstop: Beamstop,
-    detector: Detector,
-  ): Beamstop => {
-    if (plotConfig.plotAxes === PlotAxes.milimeter) {
-      return {
-        centre: {
-          x: (beamstop.centre.x ?? 0) * detector.pixelSize.width,
-          y: (beamstop.centre.y ?? 0) * detector.pixelSize.height,
-        },
-        diameter: beamstop.diameter,
-        clearance: (beamstop.clearance ?? 0) * detector.pixelSize.height,
-      };
-    }
-    return {
-      centre: beamstop.centre,
-      diameter: beamstop.diameter / detector.pixelSize.height,
-      clearance: beamstop.clearance,
-    };
-  };
-
-  const adjustUnitsCameraTube = (
-    cameraTube: CircularDevice,
-    detector: Detector,
-  ): CircularDevice => {
-    if (plotConfig.plotAxes === PlotAxes.milimeter) {
-      return {
-        centre: {
-          x: (cameraTube.centre.x ?? 0) * detector.pixelSize.height,
-          y: (cameraTube.centre.y ?? 0) * detector.pixelSize.width,
-        },
-        diameter: cameraTube.diameter,
-      };
-    }
-    return {
-      centre: cameraTube.centre,
-      diameter: cameraTube.diameter / detector.pixelSize.height,
-    };
-  };
-
-  const adjustRange = (
-    ptMin: Vector2,
-    ptMax: Vector2,
-    detector: Detector,
-  ): { ptMin: Vector2; ptMax: Vector2 } => {
-    const pixelVector = new Vector2(
-      detector.pixelSize.width,
-      detector.pixelSize.height,
-    );
-    if (plotConfig.plotAxes === PlotAxes.milimeter) {
-      return { ptMin: ptMin, ptMax: ptMax };
-    }
-    return {
-      ptMin: ptMin.divide(pixelVector),
-      ptMax: ptMax.divide(pixelVector),
-    };
-  };
-
-  const ajustedBeamstop = adjustUnitsBeamstop(beamstop, detector);
-  const ajustedDetector = adjustUnitsDetector(detector);
-  const ajustedCameraTube = adjustUnitsCameraTube(cameraTube, detector);
-
-  const ajustedPoints = adjustRange(ptMin, ptMax, detector);
+        }
+      }
+      break;
+    default:
+      beamstop.diameter = beamstop.diameter / detector.pixelSize.height
+      cameraTube.diameter = cameraTube.diameter / detector.pixelSize.height
+      const pixelVector = new Vector2(
+        detector.pixelSize.width,
+        detector.pixelSize.height,
+      );
+      ptMin.divide(pixelVector);
+      ptMax.divide(pixelVector);
+  }
 
   const domains = getDomains(
-    ajustedDetector,
-    ajustedCameraTube,
+    detector,
+    cameraTube,
     plotConfig.plotAxes,
   );
-
   //
   const requestedRange = useResultStore<NumericRange | null>((state) => {
     if (!state.requestedMax || !state.requestedMin) {
@@ -223,14 +171,14 @@ export default function CentrePlot(): JSX.Element {
       beamlineConfig.angle,
       beamlineConfig.cameraLength,
       beamlineConfig.wavelength * 1e-9,
-      ajustedBeamstop,
+      beamstop,
     );
     requestedDiagramMin = getPointForQ(
       requestedRange.min * 1e9,
       beamlineConfig.angle,
       beamlineConfig.cameraLength,
       beamlineConfig.wavelength * 1e-9,
-      ajustedBeamstop,
+      beamstop,
     );
   }
   return (
@@ -263,36 +211,36 @@ export default function CentrePlot(): JSX.Element {
                   <DataToHtml
                     points={[
                       new Vector3(
-                        ajustedBeamstop.centre.x ?? 0,
-                        ajustedBeamstop.centre.y ?? 0,
+                        beamstop.centre.x ?? 0,
+                        beamstop.centre.y ?? 0,
                       ),
                       new Vector3(
-                        (ajustedBeamstop.centre.x ?? 0) +
-                        ajustedBeamstop.diameter / 2,
-                        ajustedBeamstop.centre.y ?? 0,
+                        (beamstop.centre.x ?? 0) +
+                        beamstop.diameter / 2,
+                        beamstop.centre.y ?? 0,
                       ),
                       new Vector3(
-                        ajustedBeamstop.centre.x ?? 0,
-                        (ajustedBeamstop.centre.y ?? 0) +
-                        ajustedBeamstop.diameter / 2 +
-                        (ajustedBeamstop.clearance ?? 0),
+                        beamstop.centre.x ?? 0,
+                        (beamstop.centre.y ?? 0) +
+                        beamstop.diameter / 2 +
+                        (beamstop.clearance ?? 0),
                       ),
                       new Vector3(
-                        ajustedCameraTube.centre.x ?? 0,
-                        ajustedCameraTube.centre.y ?? 0,
+                        cameraTube.centre.x ?? 0,
+                        cameraTube.centre.y ?? 0,
                       ),
                       new Vector3(
-                        ajustedCameraTube.centre.x ?? 0,
-                        (ajustedCameraTube.centre.y ?? 0) +
-                        ajustedCameraTube.diameter / 2,
+                        cameraTube.centre.x ?? 0,
+                        (cameraTube.centre.y ?? 0) +
+                        cameraTube.diameter / 2,
                       ),
                       new Vector3(0, 0),
                       new Vector3(
-                        ajustedDetector.resolution.width,
-                        ajustedDetector.resolution.height,
+                        detector.resolution.width,
+                        detector.resolution.height,
                       ),
-                      new Vector3(ajustedPoints.ptMin.x, ajustedPoints.ptMin.y),
-                      new Vector3(ajustedPoints.ptMax.x, ajustedPoints.ptMax.y),
+                      new Vector3(ptMin.x, ptMin.y),
+                      new Vector3(ptMax.x, ptMax.y),
                       new Vector3(requestedDiagramMin.x, requestedDiagramMin.y),
                       new Vector3(requestedDiagramMax.x, requestedDiagramMax.y),
                     ]}
@@ -333,15 +281,13 @@ export default function CentrePlot(): JSX.Element {
                             id="inaccessible"
                           />
                         )}
-                        {plotConfig.clearnace &&
-                          requestedMin &&
-                          requestedMax && (
-                            <SvgCircle
-                              coords={[beamstopCentre, clearance]}
-                              fill={color2String(plotConfig.clearanceColor)}
-                              id="clearance"
-                            />
-                          )}
+                        {plotConfig.clearnace && (
+                          <SvgCircle
+                            coords={[beamstopCentre, clearance]}
+                            fill={color2String(plotConfig.clearanceColor)}
+                            id="clearance"
+                          />
+                        )}
                         {plotConfig.visibleRange && (
                           <SvgLine
                             coords={[minQRange, maxQRange]}
