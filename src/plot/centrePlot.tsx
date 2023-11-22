@@ -74,6 +74,7 @@ export default function CentrePlot(): JSX.Element {
       clearance: state.clearance,
     };
   });
+
   const cameraTube = useCameraTubeStore((state): CircularDevice => {
     return { centre: state.centre, diameter: state.diameter };
   });
@@ -87,43 +88,6 @@ export default function CentrePlot(): JSX.Element {
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = qrangeResult;
 
-
-  // Account for units 
-  switch (plotConfig.plotAxes) {
-    case PlotAxes.milimeter:
-      beamstop.centre = {
-        x: (beamstop.centre.x ?? 0) * detector.pixelSize.width,
-        y: (beamstop.centre.y ?? 0) * detector.pixelSize.height,
-      };
-      beamstop.clearance = (beamstop.clearance ?? 0) * detector.pixelSize.height
-      cameraTube.centre = {
-        x: (cameraTube.centre.x ?? 0) * detector.pixelSize.height,
-        y: (cameraTube.centre.y ?? 0) * detector.pixelSize.width,
-      }
-      detector = {
-        ...detector, resolution: {
-          height: detector.resolution.height * detector.pixelSize.height,
-          width: detector.resolution.width * detector.pixelSize.width,
-        }
-      }
-      break;
-    default:
-      beamstop.diameter = beamstop.diameter / detector.pixelSize.height
-      cameraTube.diameter = cameraTube.diameter / detector.pixelSize.height
-      const pixelVector = new Vector2(
-        detector.pixelSize.width,
-        detector.pixelSize.height,
-      );
-      ptMin.divide(pixelVector);
-      ptMax.divide(pixelVector);
-  }
-
-  const domains = getDomains(
-    detector,
-    cameraTube,
-    plotConfig.plotAxes,
-  );
-  //
   const requestedRange = useResultStore<NumericRange | null>((state) => {
     if (!state.requestedMax || !state.requestedMin) {
       return null;
@@ -155,7 +119,46 @@ export default function CentrePlot(): JSX.Element {
     );
   });
 
-  // Make sure to devid by pixel vector here
+  const pixelVector = new Vector2(
+    detector.pixelSize.width,
+    detector.pixelSize.height,
+  );
+
+  switch (plotConfig.plotAxes) {
+    case PlotAxes.milimeter:
+      beamstop.centre = {
+        x: (beamstop.centre.x ?? 0) * detector.pixelSize.width,
+        y: (beamstop.centre.y ?? 0) * detector.pixelSize.height,
+      };
+      beamstop.clearance = (beamstop.clearance ?? 0) * detector.pixelSize.height
+      cameraTube.centre = {
+        x: (cameraTube.centre.x ?? 0) * detector.pixelSize.height,
+        y: (cameraTube.centre.y ?? 0) * detector.pixelSize.width,
+      }
+      detector = {
+        ...detector, resolution: {
+          height: detector.resolution.height * detector.pixelSize.height,
+          width: detector.resolution.width * detector.pixelSize.width,
+        }
+      }
+      break;
+    default:
+      beamstop.diameter = beamstop.diameter / detector.pixelSize.height
+      cameraTube.diameter = cameraTube.diameter / detector.pixelSize.height
+      ptMin.divide(pixelVector);
+      ptMax.divide(pixelVector);
+      if (requestedRange) {
+        requestedRange.inPlaceApply((item => item / detector.pixelSize.height))
+      }
+  }
+
+  const domains = getDomains(
+    detector,
+    cameraTube,
+    plotConfig.plotAxes,
+  );
+
+  // rethink this
 
   let requestedDiagramMin: Vector2 | null = new Vector2(0, 0);
   let requestedDiagramMax: Vector2 | null = new Vector2(0, 0);
