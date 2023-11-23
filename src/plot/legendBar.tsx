@@ -91,9 +91,9 @@ export default function LegendBar(): JSX.Element {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={plotConfig.clearnace}
+                  checked={plotConfig.clearance}
                   onChange={(_, checked) => {
-                    plotConfig.update({ clearnace: checked });
+                    plotConfig.update({ clearance: checked });
                   }}
                 />
               }
