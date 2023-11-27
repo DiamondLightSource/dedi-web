@@ -6,24 +6,19 @@ import { Vector3 } from "three";
 // Questionable is this how you would do this think about it a little more
 export const getDomains = (
   detector: PlotRectangle,
-  cameraTube: PlotEllipse,
   axes: PlotAxes,
 ): { xAxis: NumericRange; yAxis: NumericRange } => {
+
   let offset = 500;
   if (axes === PlotAxes.milimeter) {
     offset = 100;
   }
 
-  const minX = detector.lowerBound.x < cameraTube.endPointX.x ? detector.lowerBound.x : cameraTube.endPointX.x
-  const maxX = detector.upperBound.x > cameraTube.endPointX.x ? detector.upperBound.x : cameraTube.endPointX.x
-
-  const minY = detector.lowerBound.y < cameraTube.endPointX.y ? detector.lowerBound.y : cameraTube.endPointX.y
-  const maxY = detector.upperBound.y > cameraTube.endPointX.y ? detector.upperBound.y : cameraTube.endPointX.y
-
+  const maxAxis = detector.upperBound.x > detector.upperBound.y ? detector.upperBound.x : detector.upperBound.y;
 
   return {
-    xAxis: new NumericRange(Math.round(minX - offset), Math.round(maxX + offset)),
-    yAxis: new NumericRange(Math.round(minY - offset), Math.round(maxY + offset)),
+    xAxis: new NumericRange(Math.round(-offset), Math.round(maxAxis + offset)),
+    yAxis: new NumericRange(Math.round(-offset), Math.round(maxAxis + offset)),
   };
 };
 
@@ -42,7 +37,8 @@ export interface PlotEllipse {
 export const createPlotEllipse = (centre: { x?: number | null, y?: number | null }, diameter: number, pixelSize: { height: number, width: number }, plotAxes: PlotAxes): PlotEllipse => {
   let semiAxisX = (diameter / 2) / pixelSize.width
   let semiAxisY = (diameter / 2) / pixelSize.height
-  let centreVec = new Vector3(centre.x ?? 0, centre.y ?? 0,);
+  const centreVec = new Vector3(centre.x ?? 0, centre.y ?? 0,);
+
   if (plotAxes === PlotAxes.milimeter) {
     semiAxisX = diameter / 2;
     semiAxisY = diameter / 2;
@@ -102,7 +98,7 @@ export const createPlotRange = (startPoint: Vector3, endPoint: Vector3, pixelSiz
 export const createPlotClearance = (centre: { x?: number | null, y?: number | null }, diameter: number, pixelSize: { height: number, width: number }, plotAxes: PlotAxes, clearance: number) => {
   let semiAxisX = (diameter / 2) / pixelSize.width + clearance
   let semiAxisY = (diameter / 2) / pixelSize.height + clearance
-  let centreVec = new Vector3(centre.x ?? 0, centre.y ?? 0,);
+  const centreVec = new Vector3(centre.x ?? 0, centre.y ?? 0,);
 
   if (plotAxes === PlotAxes.milimeter) {
     semiAxisX = (diameter / 2) + (clearance * pixelSize.width);

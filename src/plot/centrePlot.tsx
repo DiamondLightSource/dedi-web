@@ -5,7 +5,6 @@ import {
   ResetZoomButton,
   SvgElement,
   VisCanvas,
-  SvgCircle,
   SvgRect,
   SvgLine,
 } from "@h5web/lib";
@@ -13,8 +12,8 @@ import { MathUtils, Vector2, Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
-import { PlotEllipse, createPlotClearance, createPlotEllipse, createPlotRange, createPlotRectangle, getDomains } from "./plotUtils";
-import { PlotAxes, usePlotStore } from "./plotStore";
+import { createPlotClearance, createPlotEllipse, createPlotRange, createPlotRectangle, getDomains } from "./plotUtils";
+import { usePlotStore } from "./plotStore";
 import {
   BeamlineConfig,
   Beamstop,
@@ -76,9 +75,6 @@ export default function CentrePlot(): JSX.Element {
     };
   });
 
-
-
-
   const cameraTube = useCameraTubeStore((state): CircularDevice => {
     return { centre: state.centre, diameter: state.diameter };
   });
@@ -91,6 +87,11 @@ export default function CentrePlot(): JSX.Element {
   );
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = qrangeResult;
+  const plotBeamstop = createPlotEllipse(beamstop.centre, beamstop.diameter, detector.pixelSize, plotConfig.plotAxes)
+  const plotClearance = createPlotClearance(beamstop.centre, beamstop.diameter, detector.pixelSize, plotConfig.plotAxes, beamstop.clearance ?? 0)
+  const plotCameraTube = createPlotEllipse(cameraTube.centre, cameraTube.diameter, detector.pixelSize, plotConfig.plotAxes)
+  const plotDetector = createPlotRectangle(new Vector3(0, 0), detector.resolution, detector.pixelSize, plotConfig.plotAxes)
+  const plotVisibleRange = createPlotRange(new Vector3(ptMin.x, ptMin.y), new Vector3(ptMax.x, ptMax.y), detector.pixelSize, plotConfig.plotAxes)
 
   const requestedRange = useResultStore<NumericRange | null>((state) => {
     if (!state.requestedMax || !state.requestedMin) {
@@ -123,11 +124,12 @@ export default function CentrePlot(): JSX.Element {
     );
   });
 
-  const plotBeamstop = createPlotEllipse(beamstop.centre, beamstop.diameter, detector.pixelSize, plotConfig.plotAxes)
-  const plotClearance = createPlotClearance(beamstop.centre, beamstop.diameter, detector.pixelSize, plotConfig.plotAxes, beamstop.clearance ?? 0)
-  const plotCameraTube = createPlotEllipse(cameraTube.centre, cameraTube.diameter, detector.pixelSize, plotConfig.plotAxes)
-  const plotDetector = createPlotRectangle(new Vector3(0, 0), detector.resolution, detector.pixelSize, plotConfig.plotAxes)
-  const plotVisibleRange = createPlotRange(new Vector3(ptMin.x, ptMin.y), new Vector3(ptMax.x, ptMax.y), detector.pixelSize, plotConfig.plotAxes)
+
+
+
+
+
+
 
   let requestedMinPt: Vector2 | null = new Vector2(0, 0);
   let requestedMaxPt: Vector2 | null = new Vector2(0, 0);
@@ -152,17 +154,14 @@ export default function CentrePlot(): JSX.Element {
       new Vector2(plotBeamstop.centre.x, plotBeamstop.centre.y),
     );
   }
-  console.log(requestedMaxPt)
 
 
-  const plotRequestedRange = createPlotRange(new Vector3(requestedMinPt.x, requestedMinPt.y), new Vector3(requestedMaxPt.x, requestedMaxPt.y), detector.pixelSize, plotConfig.plotAxes)
+  const plotRequestedRange = { start: new Vector3(requestedMinPt.x, requestedMinPt.y), end: new Vector3(requestedMaxPt.x, requestedMaxPt.y) }
   const domains = getDomains(
     plotDetector,
-    plotCameraTube,
     plotConfig.plotAxes,
   );
-  console.log(plotBeamstop)
-  console.log(plotRequestedRange)
+
   return (
     <Box>
       <Stack direction="column" spacing={1}>
@@ -178,7 +177,6 @@ export default function CentrePlot(): JSX.Element {
                 }}
               >
                 <VisCanvas
-                  showGrid={true}
                   abscissaConfig={{
                     visDomain: [domains.xAxis.min, domains.xAxis.max],
                     showGrid: true,

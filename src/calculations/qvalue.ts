@@ -1,4 +1,3 @@
-import { Beamstop } from "../utils/types";
 import { Ray } from "./ray";
 import { Vector2 } from "three";
 

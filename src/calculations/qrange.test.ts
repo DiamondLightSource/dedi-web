@@ -31,6 +31,7 @@ test("Test computing q ranges", () => {
     minCameraLength: 1.9,
     maxCameraLength: 9.9,
     wavelength: 0.09,
+    cameraLengthStep: 1,
   };
   const cameraTube: CircularDevice = {
     centre: { x: 738, y: 840 },
