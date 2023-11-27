@@ -107,7 +107,8 @@ export default function LegendBar(): JSX.Element {
                   />
                   <Typography>Clearance</Typography>
                 </Stack>
-              } />
+              }
+            />
             <FormControlLabel
               control={
                 <Checkbox
@@ -147,7 +148,8 @@ export default function LegendBar(): JSX.Element {
                     }
                   />
                   <Typography>Requested Range</Typography>
-                </Stack>}
+                </Stack>
+              }
             />
             <FormControlLabel
               control={
@@ -167,7 +169,8 @@ export default function LegendBar(): JSX.Element {
                     }
                   />
                   <Typography>inaccessible Range</Typography>
-                </Stack>}
+                </Stack>
+              }
             />
           </FormGroup>
           <FormControl>

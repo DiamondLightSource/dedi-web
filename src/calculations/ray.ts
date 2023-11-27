@@ -33,9 +33,9 @@ export class Ray {
 
   /**
    * Use quadratic formula to find the intersection of this ray and a circle in 2d.
-   * @param radius radius of the circle  
+   * @param radius radius of the circle
    * @param centre centre of the circle
-   * @returns 
+   * @returns
    */
   public getCircleIntersectionParameterRange(
     radius: number,

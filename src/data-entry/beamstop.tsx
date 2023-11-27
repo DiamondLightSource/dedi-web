@@ -10,78 +10,63 @@ import {
 } from "@mui/material";
 import {
   DistanceUnits,
-  millimetre2Micrometre,
-  parseNumericInput,
 } from "../utils/units";
-import { BeamstopStore, useBeamstopStore } from "./beamstopStore";
+import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 
 export default function BeamStopDataEntry(): JSX.Element {
-  const centre = useBeamstopStore((state) => state.centre);
-  const updateCentre = useBeamstopStore((state) => state.updateCentre);
+  const beamstop = useBeamstopStore();
 
   const handleX = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateCentre({
-      x: parseNumericInput(event.target.value),
+    beamstop.updateCentre({
+      x: parseFloat(event.target.value),
     });
   };
 
   const handleY = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateCentre({
-      y: parseNumericInput(event.target.value),
+    beamstop.updateCentre({
+      y: parseFloat(event.target.value),
     });
   };
 
-  const diameter = useBeamstopStore<number>((state) => {
-    if (state.diameterUnits === DistanceUnits.micrometre) {
-      return millimetre2Micrometre(state.diameter);
-    }
-    return state.diameter;
-  });
-
-  const diameterUnits = useBeamstopStore(
-    (state: BeamstopStore) => state.diameterUnits,
-  );
-  const updateUnits = useBeamstopStore((state) => state.updateUnits);
-
-  const clearance = useBeamstopStore((state: BeamstopStore) => state.clearance);
-  const updateClearance = useBeamstopStore((state) => state.updateClearance);
   const handleClearance = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateClearance(parseNumericInput(event.target.value));
+    beamstop.updateClearance(parseFloat(event.target.value));
   };
 
-  const detector = useDetectorStore((state) => state.current);
+  const detector = useDetectorStore();
+
   const centreDetector = () => {
-    updateCentre({
+    beamstop.updateCentre({
       x: detector.resolution.width / 2,
       y: detector.resolution.height / 2,
     });
   };
 
   const centreTopEdge = () => {
-    updateCentre({ x: detector.resolution.width / 2, y: 0 });
+    beamstop.updateCentre({ x: detector.resolution.width / 2, y: 0 });
   };
 
   return (
     <Stack spacing={1}>
       <Typography variant="h6"> Beamstop </Typography>
       <Stack direction={"row"}>
-        <Typography flexGrow={2}> Diameter: {diameter} </Typography>
+        <Typography flexGrow={2}>
+          {" "}
+          Diameter: {beamstop.diameter.toNumber()}{" "}
+        </Typography>
         <FormControl>
           <InputLabel>units </InputLabel>
           <Select
             size="small"
             label="units"
-            value={diameterUnits}
+            value={beamstop.diameter.formatUnits()}
             onChange={(event) =>
-              updateUnits(event.target.value as DistanceUnits)
+              beamstop.updateDiameterUnits(event.target.value as DistanceUnits)
             }
           >
-            <MenuItem value={DistanceUnits.millimetre}>
-              {DistanceUnits.millimetre}
-            </MenuItem>
+            <MenuItem value={DistanceUnits.millimetre}>{"mm"}</MenuItem>
             <MenuItem value={DistanceUnits.micrometre}>
-              {DistanceUnits.micrometre}
+              {"\u03bc" + "m"}
             </MenuItem>
           </Select>
         </FormControl>
@@ -92,7 +77,7 @@ export default function BeamStopDataEntry(): JSX.Element {
         <TextField
           type="number"
           size="small"
-          value={centre.x}
+          value={beamstop.centre.x}
           onChange={handleX}
         />
         <Typography flexGrow={2} align="center">
@@ -108,7 +93,7 @@ export default function BeamStopDataEntry(): JSX.Element {
         <TextField
           type="number"
           size="small"
-          value={centre.y}
+          value={beamstop.centre.y}
           onChange={handleY}
         />
         <Typography flexGrow={2} align="center">
@@ -125,7 +110,7 @@ export default function BeamStopDataEntry(): JSX.Element {
           <TextField
             type="number"
             size="small"
-            value={clearance}
+            value={beamstop.clearance}
             onChange={handleClearance}
           />
           <Typography>px</Typography>

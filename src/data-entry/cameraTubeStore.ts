@@ -4,21 +4,16 @@ import { DistanceUnits } from "../utils/units";
 import { defaultConfig } from "../presets/presetManager";
 
 export interface CameraTubeStore extends CircularDevice {
-  diameterUnits: DistanceUnits;
   updateCentre: (centre: Partial<SimpleVector2>) => void;
-  updateUnits: (newUnits: DistanceUnits) => void;
+  updateDiameterUnits: (newUnits: DistanceUnits) => void;
   updateCameraTube: (presetCameraTube: CircularDevice) => void;
 }
 
 export const useCameraTubeStore = create<CameraTubeStore>((set) => ({
-  centre: {
-    x: defaultConfig.cameraTube.centre.x,
-    y: defaultConfig.cameraTube.centre.y,
-  },
-  diameter: defaultConfig.cameraTube.diameter,
-  diameterUnits: DistanceUnits.millimetre,
+  ...defaultConfig.cameraTube,
   updateCentre: (newCentre: Partial<SimpleVector2>) =>
     set((state) => ({ centre: { ...state.centre, ...newCentre } })),
-  updateUnits: (newUnits: DistanceUnits) => set({ diameterUnits: newUnits }),
+  updateDiameterUnits: (newUnits: DistanceUnits) =>
+    set((state) => ({ diameter: state.diameter.to(newUnits) })),
   updateCameraTube: (presetCameraTube: CircularDevice) => set(presetCameraTube),
 }));

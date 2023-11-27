@@ -7,7 +7,6 @@ export enum PlotAxes {
   reciprocal = "reciprocal",
 }
 
-
 export interface PlotConfig {
   detector: boolean;
   detectorColour: RGBColor;

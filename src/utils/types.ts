@@ -1,6 +1,8 @@
+import { Unit } from "mathjs";
+
 export interface Detector {
-  resolution: { height: number; width: number };
-  pixelSize: { height: number; width: number };
+  readonly resolution: { height: number; width: number };
+  readonly pixelSize: { height: Unit; width: Unit };
 }
 
 export interface SimpleVector2 {
@@ -10,7 +12,7 @@ export interface SimpleVector2 {
 
 export interface CircularDevice {
   centre: SimpleVector2;
-  diameter: number;
+  diameter: Unit;
 }
 
 export interface Beamstop extends CircularDevice {
@@ -18,12 +20,12 @@ export interface Beamstop extends CircularDevice {
 }
 
 export interface BeamlineConfig {
-  angle: number | null;
-  cameraLength: number | null;
-  minWavelength: number;
-  maxWavelength: number;
-  minCameraLength: number;
-  maxCameraLength: number;
-  wavelength: number | null;
-  cameraLengthStep: number;
+  angle: Unit;
+  cameraLength: Unit;
+  readonly minWavelength: Unit;
+  readonly maxWavelength: Unit;
+  readonly minCameraLength: Unit;
+  readonly maxCameraLength: Unit;
+  wavelength: Unit;
+  readonly cameraLengthStep: Unit;
 }

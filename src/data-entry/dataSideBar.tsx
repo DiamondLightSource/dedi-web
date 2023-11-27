@@ -11,7 +11,7 @@ import {
   MenuItem,
   InputLabel,
 } from "@mui/material";
-import { DistanceUnits, millimetre2Micrometre } from "../utils/units";
+import { DistanceUnits } from "../utils/units";
 import BeamStopDataEntry from "./beamstop";
 import CameraTubeDataEntry from "./cameraTube";
 import { useDetectorStore } from "./detectorStore";
@@ -22,23 +22,8 @@ import BeampropertiesDataEntry from "./beamProperties";
  * @returns
  */
 export default function DataSideBar(): JSX.Element {
-  const name = useDetectorStore((state) => state.name);
-  const resolution = useDetectorStore((state) => state.current.resolution);
-  const pixelSize = useDetectorStore((state) => {
-    if (state.pixelUnits === DistanceUnits.micrometre) {
-      return {
-        height: millimetre2Micrometre(state.current.pixelSize.height),
-        width: millimetre2Micrometre(state.current.pixelSize.width),
-      };
-    }
-    return state.current.pixelSize;
-  });
-
+  const detector = useDetectorStore();
   const detectorList = useDetectorStore((state) => state.detectorList);
-  const pixelUnits = useDetectorStore((state) => state.pixelUnits);
-
-  const updateUnits = useDetectorStore((state) => state.updateUnits);
-  const updateDetector = useDetectorStore((state) => state.updateDetector);
 
   return (
     <Card sx={{ height: 1 }}>
@@ -54,26 +39,26 @@ export default function DataSideBar(): JSX.Element {
             renderInput={(params) => (
               <TextField {...params} label="choose detector type" />
             )}
-            value={name}
+            value={detector.name}
             onChange={(_, value) => {
-              value ? updateDetector(value) : {};
+              value ? detector.updateDetector(value) : {};
             }}
           />
           <Typography>
-            Resolution (hxw): {resolution.height} x {resolution.width}
+            Resolution (hxw): {detector.resolution.height} x {detector.resolution.width}
           </Typography>
           <Stack direction="row">
             <Typography flexGrow={2}>
-              Pixel size: {pixelSize.height} x {pixelSize.width}{" "}
+              Pixel size: {detector.pixelSize.height.toString()} x {detector.pixelSize.width.toString()}
             </Typography>
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
                 size="small"
                 label="units"
-                value={pixelUnits}
+                value={detector.pixelSize.height.formatUnits()}
                 onChange={(event) =>
-                  updateUnits(event.target.value as DistanceUnits)
+                  detector.updatePixelUnits(event.target.value as DistanceUnits)
                 }
               >
                 <MenuItem value={DistanceUnits.millimetre}>

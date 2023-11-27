@@ -12,7 +12,13 @@ import { MathUtils, Vector2, Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
-import { createPlotClearance, createPlotEllipse, createPlotRange, createPlotRectangle, getDomains } from "./plotUtils";
+import {
+  createPlotClearance,
+  createPlotEllipse,
+  createPlotRange,
+  createPlotRectangle,
+  getDomains,
+} from "./plotUtils";
 import { usePlotStore } from "./plotStore";
 import {
   BeamlineConfig,
@@ -42,7 +48,6 @@ import { color2String } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 
 export default function CentrePlot(): JSX.Element {
-
   const plotConfig = usePlotStore();
 
   const beamlineConfig = useBeamlineConfigStore<BeamlineConfig>((state) => {
@@ -87,11 +92,37 @@ export default function CentrePlot(): JSX.Element {
   );
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = qrangeResult;
-  const plotBeamstop = createPlotEllipse(beamstop.centre, beamstop.diameter, detector.pixelSize, plotConfig.plotAxes)
-  const plotClearance = createPlotClearance(beamstop.centre, beamstop.diameter, detector.pixelSize, plotConfig.plotAxes, beamstop.clearance ?? 0)
-  const plotCameraTube = createPlotEllipse(cameraTube.centre, cameraTube.diameter, detector.pixelSize, plotConfig.plotAxes)
-  const plotDetector = createPlotRectangle(new Vector3(0, 0), detector.resolution, detector.pixelSize, plotConfig.plotAxes)
-  const plotVisibleRange = createPlotRange(new Vector3(ptMin.x, ptMin.y), new Vector3(ptMax.x, ptMax.y), detector.pixelSize, plotConfig.plotAxes)
+  const plotBeamstop = createPlotEllipse(
+    beamstop.centre,
+    beamstop.diameter,
+    detector.pixelSize,
+    plotConfig.plotAxes,
+  );
+  const plotClearance = createPlotClearance(
+    beamstop.centre,
+    beamstop.diameter,
+    detector.pixelSize,
+    plotConfig.plotAxes,
+    beamstop.clearance ?? 0,
+  );
+  const plotCameraTube = createPlotEllipse(
+    cameraTube.centre,
+    cameraTube.diameter,
+    detector.pixelSize,
+    plotConfig.plotAxes,
+  );
+  const plotDetector = createPlotRectangle(
+    new Vector3(0, 0),
+    detector.resolution,
+    detector.pixelSize,
+    plotConfig.plotAxes,
+  );
+  const plotVisibleRange = createPlotRange(
+    new Vector3(ptMin.x, ptMin.y),
+    new Vector3(ptMax.x, ptMax.y),
+    detector.pixelSize,
+    plotConfig.plotAxes,
+  );
 
   const requestedRange = useResultStore<NumericRange | null>((state) => {
     if (!state.requestedMax || !state.requestedMin) {
@@ -124,13 +155,6 @@ export default function CentrePlot(): JSX.Element {
     );
   });
 
-
-
-
-
-
-
-
   let requestedMinPt: Vector2 | null = new Vector2(0, 0);
   let requestedMaxPt: Vector2 | null = new Vector2(0, 0);
   if (
@@ -155,12 +179,11 @@ export default function CentrePlot(): JSX.Element {
     );
   }
 
-
-  const plotRequestedRange = { start: new Vector3(requestedMinPt.x, requestedMinPt.y), end: new Vector3(requestedMaxPt.x, requestedMaxPt.y) }
-  const domains = getDomains(
-    plotDetector,
-    plotConfig.plotAxes,
-  );
+  const plotRequestedRange = {
+    start: new Vector3(requestedMinPt.x, requestedMinPt.y),
+    end: new Vector3(requestedMaxPt.x, requestedMaxPt.y),
+  };
+  const domains = getDomains(plotDetector, plotConfig.plotAxes);
 
   return (
     <Box>
@@ -227,7 +250,11 @@ export default function CentrePlot(): JSX.Element {
                       <SvgElement>
                         {plotConfig.cameraTube && (
                           <SvgAxisAlignedEllipse
-                            coords={[cameraTubeCentre, cameraTubeEndPointX, cameraTubeEndPointY]}
+                            coords={[
+                              cameraTubeCentre,
+                              cameraTubeEndPointX,
+                              cameraTubeEndPointY,
+                            ]}
                             fill={color2String(plotConfig.cameraTubeColor)}
                             id="camera tube"
                           />
@@ -242,14 +269,20 @@ export default function CentrePlot(): JSX.Element {
                         {plotConfig.inaccessibleRange && (
                           <SvgLine
                             coords={[beamstopCentre, visibleRangeStart]}
-                            stroke={color2String(plotConfig.inaccessibleRangeColor)}
+                            stroke={color2String(
+                              plotConfig.inaccessibleRangeColor,
+                            )}
                             strokeWidth={3}
                             id="inaccessible"
                           />
                         )}
                         {plotConfig.clearance && (
                           <SvgAxisAlignedEllipse
-                            coords={[clearanceCentre, clearnaceEndPointX, clearenaceEndPointY]}
+                            coords={[
+                              clearanceCentre,
+                              clearnaceEndPointX,
+                              clearenaceEndPointY,
+                            ]}
                             fill={color2String(plotConfig.clearanceColor)}
                             id="clearance"
                           />
@@ -265,14 +298,20 @@ export default function CentrePlot(): JSX.Element {
                         {plotConfig.requestedRange && (
                           <SvgLine
                             coords={[requestedRangeStart, requestedRangeEnd]}
-                            stroke={color2String(plotConfig.requestedRangeColor)}
+                            stroke={color2String(
+                              plotConfig.requestedRangeColor,
+                            )}
                             strokeWidth={3}
                             id="requested"
                           />
                         )}
                         {plotConfig.beamstop && (
                           <SvgAxisAlignedEllipse
-                            coords={[beamstopCentre, beamstopEndPointX, beamstopEndPointY]}
+                            coords={[
+                              beamstopCentre,
+                              beamstopEndPointX,
+                              beamstopEndPointY,
+                            ]}
                             fill={color2String(plotConfig.beamstopColor)}
                             id="beamstop"
                           />
