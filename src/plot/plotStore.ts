@@ -21,7 +21,7 @@ export interface PlotConfig {
   requestedRangeColor: RGBColor;
   inaccessibleRange: boolean;
   inaccessibleRangeColor: RGBColor;
-  clearnace: boolean;
+  clearance: boolean;
   clearanceColor: RGBColor;
   plotAxes: PlotAxes;
   update: (newConfig: Partial<PlotConfig>) => void;
@@ -38,7 +38,7 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   visibleColor: { r: 208, g: 2, b: 27, a: 1 },
   requestedRange: true,
   requestedRangeColor: { r: 65, g: 117, b: 5, a: 1 },
-  clearnace: true,
+  clearance: true,
   clearanceColor: { r: 0, g: 0, b: 0, a: 0.2 },
   inaccessibleRange: false,
   inaccessibleRangeColor: { r: 245, g: 166, b: 35, a: 1 },

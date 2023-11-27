@@ -14,7 +14,7 @@ export interface DetectorStore {
 
 export const useDetectorStore = create<DetectorStore>((set) => ({
   name: defaultConfig.detector,
-  current: detectorList[defaultConfig.detector],
+  current: { ...detectorList[defaultConfig.detector] },
   pixelUnits: DistanceUnits.millimetre,
   detectorList: detectorList,
   updateDetector: (newDetector: string) =>
