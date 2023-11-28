@@ -13,7 +13,6 @@ import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 import {
-  createPlotClearance,
   createPlotEllipse,
   createPlotRange,
   createPlotRectangle,
@@ -86,15 +85,15 @@ export default function CentrePlot(): JSX.Element {
 
   // I am about here
 
-  const beamstopCentre: { x: mathjs.Unit; y: mathjs.Unit } = {
+  const beamstopCentre: { x: mathjs.Unit, y: mathjs.Unit } = {
     x: mathjs.unit(beamstop.centre.x ?? NaN, "x_pixel"),
-    y: mathjs.unit(beamstop.centre.y ?? NaN, "y_pixel"),
-  };
+    y: mathjs.unit(beamstop.centre.y ?? NaN, "y_pixel")
+  }
 
-  const cameraTubeCentre: { x: mathjs.Unit; y: mathjs.Unit } = {
+  const cameraTubeCentre: { x: mathjs.Unit, y: mathjs.Unit } = {
     x: mathjs.unit(cameraTube.centre.x ?? NaN, "x_pixel"),
-    y: mathjs.unit(cameraTube.centre.y ?? NaN, "y_pixel"),
-  };
+    y: mathjs.unit(cameraTube.centre.y ?? NaN, "y_pixel")
+  }
 
   const plotBeamstop = createPlotEllipse(
     beamstopCentre,
@@ -109,8 +108,8 @@ export default function CentrePlot(): JSX.Element {
   );
 
   const plotClearance = createPlotEllipse(
-    beamstop.centre,
-    math.add(beamstop.diameter),
+    beamstopCentre,
+    mathjs.add(beamstop.diameter,),
     plotConfig.plotAxes,
   );
 
@@ -188,9 +187,8 @@ export default function CentrePlot(): JSX.Element {
   const domains = getDomains(plotDetector, plotConfig.plotAxes);
 
   // evil
-
-  delete mathjs.Unit.UNITS.xpixel;
-  delete mathjs.Unit.UNITS.ypixel;
+  delete mathjs.Unit.UNITS.xpixel
+  delete mathjs.Unit.UNITS.ypixel
 
   return (
     <Box>
