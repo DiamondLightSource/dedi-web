@@ -31,7 +31,7 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     .to("keV")
     .toNumber(),
   userWavelength: defaultConfig.wavelength.toNumber(),
-  userAngle: defaultConfig.wavelength.toNumber(),
+  userAngle: defaultConfig.angle.toNumber(),
   energy: wavelength2EnergyConverter(defaultConfig.wavelength).to("keV"),
   updateAngle: (newAngle: number | null, newUnits: string) =>
     set({

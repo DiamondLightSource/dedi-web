@@ -15,12 +15,7 @@ import {
 } from "@mui/material";
 import NumericRange from "../calculations/numericRange";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
-import {
-  ReciprocalWavelengthUnits,
-  WavelengthUnits,
-  angstroms2Nanometres,
-  nanometres2Angstroms,
-} from "../utils/units";
+import { ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
 import {
   convertBetweenQAndD,
   convertBetweenQAndS,

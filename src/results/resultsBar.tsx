@@ -15,8 +15,6 @@ import { ScatteringOptions, useResultStore } from "./resultsStore";
 import {
   ReciprocalWavelengthUnits,
   WavelengthUnits,
-  angstroms2Nanometres,
-  nanometres2Angstroms,
   parseNumericInput,
 } from "../utils/units";
 import { RangeDiagram, MessageDiagram } from "./rangeDiagram";

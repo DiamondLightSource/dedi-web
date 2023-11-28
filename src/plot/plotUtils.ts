@@ -2,6 +2,7 @@ import NumericRange from "../calculations/numericRange";
 import { RGBColor } from "react-color";
 import { PlotAxes } from "./plotStore";
 import { Vector3 } from "three";
+import * as mathjs from "mathjs";
 
 // Questionable is this how you would do this think about it a little more
 export const getDomains = (
@@ -35,25 +36,33 @@ export interface PlotEllipse {
 }
 
 export const createPlotEllipse = (
-  centre: { x?: number | null; y?: number | null },
-  diameter: number,
-  pixelSize: { height: number; width: number },
+  centre: { x: mathjs.Unit; y: mathjs.Unit },
+  diameter: mathjs.Unit,
   plotAxes: PlotAxes,
 ): PlotEllipse => {
-  let semiAxisX = diameter / 2 / pixelSize.width;
-  let semiAxisY = diameter / 2 / pixelSize.height;
-  const centreVec = new Vector3(centre.x ?? 0, centre.y ?? 0);
+  let xunit = plotAxes as string;
+  let yunit = plotAxes as string;
 
-  if (plotAxes === PlotAxes.milimeter) {
-    semiAxisX = diameter / 2;
-    semiAxisY = diameter / 2;
-    centreVec.multiply(new Vector3(pixelSize.width, pixelSize.height));
+  if (plotAxes === PlotAxes.pixel) {
+    xunit = "xpixel";
+    yunit = "ypixel";
   }
+
+  const centreVec = new Vector3(
+    centre.x.to(xunit).toNumber(),
+    centre.y.to(yunit).toNumber(),
+  );
 
   return {
     centre: centreVec,
-    endPointX: new Vector3(centreVec.x + semiAxisX, centreVec.y),
-    endPointY: new Vector3(centreVec.x, centreVec.y + semiAxisY),
+    endPointX: new Vector3(
+      centreVec.x + mathjs.divide(diameter, 2).to(xunit).toNumber(),
+      centreVec.y,
+    ),
+    endPointY: new Vector3(
+      centreVec.x,
+      centreVec.y + mathjs.divide(diameter, 2).to(yunit).toNumber(),
+    ),
   };
 };
 
@@ -104,29 +113,5 @@ export const createPlotRange = (
   return {
     start: startPoint,
     end: endPoint,
-  };
-};
-
-export const createPlotClearance = (
-  centre: { x?: number | null; y?: number | null },
-  diameter: number,
-  pixelSize: { height: number; width: number },
-  plotAxes: PlotAxes,
-  clearance: number,
-) => {
-  let semiAxisX = diameter / 2 / pixelSize.width + clearance;
-  let semiAxisY = diameter / 2 / pixelSize.height + clearance;
-  const centreVec = new Vector3(centre.x ?? 0, centre.y ?? 0);
-
-  if (plotAxes === PlotAxes.milimeter) {
-    semiAxisX = diameter / 2 + clearance * pixelSize.width;
-    semiAxisY = diameter / 2 + clearance * pixelSize.height;
-    centreVec.multiply(new Vector3(pixelSize.width, pixelSize.height));
-  }
-
-  return {
-    centre: centreVec,
-    endPointX: new Vector3(centreVec.x + semiAxisX, centreVec.y),
-    endPointY: new Vector3(centreVec.x, centreVec.y + semiAxisY),
   };
 };

@@ -2,7 +2,7 @@ import { RGBColor } from "react-color";
 import { create } from "zustand";
 
 export enum PlotAxes {
-  milimeter = "milimeter",
+  milimeter = "mm",
   pixel = "pixel",
   reciprocal = "reciprocal",
 }

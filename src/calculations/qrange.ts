@@ -8,15 +8,8 @@ import {
 import { Vector2, Vector3 } from "three";
 import { Ray } from "../calculations/ray";
 import NumericRange from "./numericRange";
+import * as mathjs from "mathjs";
 
-/**
- * Compute the viable and full qranges
- * @param detector Detector object with data on how the detector e
- * @param beamstop
- * @param cameraTube
- * @param beamProperties
- * @returns
- */
 export function computeQrange(
   detector: Detector,
   beamstop: Beamstop,
@@ -29,63 +22,77 @@ export function computeQrange(
   fullQRange: NumericRange | null;
 } {
   // convert pixel values to mm
-
   const defaultReturn = {
     ptMin: new Vector2(0, 0),
     ptMax: new Vector2(0, 0),
     visibleQRange: null,
     fullQRange: null,
   };
-  const clearanceWidthMM =
-    (beamstop.clearance ?? 0) * detector.pixelSize.width +
-    beamstop.diameter / 2;
-  const clearaceHeightMM =
-    (beamstop.clearance ?? 0) * detector.pixelSize.height +
-    beamstop.diameter / 2;
 
-  const beamcentreXMM = (beamstop.centre.x ?? 0) * detector.pixelSize.width;
-  const beamcentreYMM = (beamstop.centre.y ?? 0) * detector.pixelSize.height;
+  const cameraLength = mathjs.unit(beamProperties.cameraLength ?? NaN, "m");
+  const clearanceWidth = mathjs.add(
+    mathjs.unit(beamstop.clearance ?? NaN, "xpixel"),
+    mathjs.divide(beamstop.diameter, 2),
+  );
+  const clearanceHeight = mathjs.add(
+    mathjs.unit(beamstop.clearance ?? NaN, "ypixel"),
+    mathjs.divide(beamstop.diameter, 2),
+  );
 
-  const detectorHeightMM =
-    detector.resolution.height * detector.pixelSize.height;
-  const detectorWidthMM = detector.resolution.width * detector.pixelSize.width;
+  const beamcentreX = mathjs.unit(beamstop.centre.x ?? NaN, "xpixel");
+  const beamcentreY = mathjs.unit(beamstop.centre.y ?? NaN, "ypixel");
 
-  const cameraTubeCentreXMM =
-    (cameraTube.centre.x ?? 0) * detector.pixelSize.width;
-  const cemeraTubeCentreYMM =
-    (cameraTube.centre.y ?? 0) * detector.pixelSize.height;
+  const detectorHeight = mathjs.unit(detector.resolution.height, "ypixel");
+  const detectorWidth = mathjs.unit(detector.resolution.width, "xpixel");
+
+  const cameraTubeCentreX = mathjs.unit(cameraTube.centre.x ?? NaN, "xpixel");
+  const cemeraTubeCentreY = mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel");
+
+  const initialPositionX = mathjs.add(
+    mathjs.multiply(clearanceWidth, mathjs.cos(beamProperties.angle)),
+    beamcentreX,
+  );
+  const initialPositionY = mathjs.add(
+    mathjs.multiply(clearanceHeight, mathjs.sin(beamProperties.angle)),
+    beamcentreY,
+  );
 
   const initialPosition = new Vector2(
-    clearanceWidthMM * Math.cos(beamProperties.angle ?? 0) + beamcentreXMM,
-    clearaceHeightMM * Math.sin(beamProperties.angle ?? 0) + beamcentreYMM,
+    initialPositionX.toSI().toNumber(),
+    initialPositionY.toSI().toNumber(),
   );
+  // Should now be in SI units
 
   const ray = new Ray(
     new Vector2(
-      Math.cos(beamProperties.angle ?? 0),
-      Math.sin(beamProperties.angle ?? 0),
+      mathjs.cos(beamProperties.angle),
+      mathjs.sin(beamProperties.angle),
     ),
     initialPosition,
   );
+
   let t1 = ray.getRectangleIntersectionParameterRange(
-    new Vector2(0, detectorHeightMM),
-    detectorWidthMM,
-    detectorHeightMM,
+    new Vector2(0, detectorHeight.toSI().toNumber()),
+    detectorWidth.toSI().toNumber(),
+    detectorHeight.toSI().toNumber(),
   );
 
-  if (t1 != null && cameraTube != null && cameraTube.diameter != 0) {
+  if (
+    t1 != null &&
+    cameraTube != null &&
+    cameraTube.diameter.toSI().toNumber() != 0
+  ) {
     t1 = t1.intersect(
       ray.getCircleIntersectionParameterRange(
-        (cameraTube.diameter ?? 0) / 2,
-        new Vector2(cameraTubeCentreXMM, cemeraTubeCentreYMM),
+        mathjs.divide(cameraTube.diameter, 2).toSI().toNumber(),
+        new Vector2(
+          cameraTubeCentreX.toSI().toNumber(),
+          cemeraTubeCentreY.toSI().toNumber(),
+        ),
       ),
     );
   }
-  if (
-    t1 === null ||
-    beamProperties.wavelength == null ||
-    beamProperties.cameraLength == null
-  ) {
+  if (t1 === null) {
     return defaultReturn;
   }
 
@@ -95,16 +102,16 @@ export function computeQrange(
   const detProps: DetectorProperties = {
     ...detector,
     origin: new Vector3(
-      beamcentreXMM,
-      beamcentreYMM,
-      beamProperties.cameraLength * 1e3,
+      beamcentreX.toSI().toNumber(),
+      beamcentreY.toSI().toNumber(),
+      cameraLength.toSI().toNumber(),
     ),
     beamVector: new Vector3(0, 0, 1),
   };
 
   const qspace = new QSpace(
     detProps,
-    beamProperties.wavelength * 1e10,
+    beamProperties.wavelength.toSI().toNumber(),
     2 * Math.PI,
   );
 
@@ -112,23 +119,22 @@ export function computeQrange(
   const visibleQMin = qspace.qFromPixelPosition(ptMin);
   const visibleQMax = qspace.qFromPixelPosition(ptMax);
 
-  detProps.origin.z = beamProperties.minCameraLength * 1e3;
-  qspace.setDiffractionCrystalEnviroment(beamProperties.minWavelength * 1e10);
+  detProps.origin.z = beamProperties.minCameraLength.toSI().toNumber();
+  qspace.setDiffractionCrystalEnviroment(
+    beamProperties.minWavelength.toSI().toNumber(),
+  );
   const fullQMin = qspace.qFromPixelPosition(ptMax);
 
-  detProps.origin.z = beamProperties.maxCameraLength * 1e3;
-  qspace.setDiffractionCrystalEnviroment(beamProperties.maxWavelength * 1e10);
+  detProps.origin.z = beamProperties.maxCameraLength.toSI().toNumber();
+  qspace.setDiffractionCrystalEnviroment(
+    beamProperties.maxWavelength.toSI().toNumber(),
+  );
   const fullQMax = qspace.qFromPixelPosition(ptMin);
+
   return {
     ptMin: ptMin,
     ptMax: ptMax,
-    visibleQRange: new NumericRange(
-      visibleQMin.length() * 1e10,
-      visibleQMax.length() * 1e10,
-    ),
-    fullQRange: new NumericRange(
-      fullQMin.length() * 1e10,
-      fullQMax.length() * 1e10,
-    ),
+    visibleQRange: new NumericRange(visibleQMin.length(), visibleQMax.length()),
+    fullQRange: new NumericRange(fullQMin.length(), fullQMax.length()),
   };
 }

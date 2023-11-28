@@ -8,7 +8,7 @@ import {
   SvgRect,
   SvgLine,
 } from "@h5web/lib";
-import { MathUtils, Vector2, Vector3 } from "three";
+import { Vector2, Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
@@ -40,6 +40,7 @@ import {
 } from "../results/scatteringQuantities";
 import { color2String } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
+import * as mathjs from "mathjs";
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
@@ -73,38 +74,49 @@ export default function CentrePlot(): JSX.Element {
     return { centre: state.centre, diameter: state.diameter };
   });
 
-  // I am about here
-  const qrangeResult = computeQrange(
+  mathjs.createUnit("xpixel", detector.pixelSize.width.toString());
+  mathjs.createUnit("ypixel", detector.pixelSize.height.toString());
+
+  const { ptMin, ptMax, visibleQRange, fullQRange } = computeQrange(
     detector,
     beamstop,
     cameraTube,
     beamlineConfig,
   );
 
-  const { ptMin, ptMax, visibleQRange, fullQRange } = qrangeResult;
+  // I am about here
+
+  const beamstopCentre: { x: mathjs.Unit; y: mathjs.Unit } = {
+    x: mathjs.unit(beamstop.centre.x ?? NaN, "x_pixel"),
+    y: mathjs.unit(beamstop.centre.y ?? NaN, "y_pixel"),
+  };
+
+  const cameraTubeCentre: { x: mathjs.Unit; y: mathjs.Unit } = {
+    x: mathjs.unit(cameraTube.centre.x ?? NaN, "x_pixel"),
+    y: mathjs.unit(cameraTube.centre.y ?? NaN, "y_pixel"),
+  };
+
   const plotBeamstop = createPlotEllipse(
-    beamstop.centre,
+    beamstopCentre,
     beamstop.diameter,
-    detector.pixelSize,
     plotConfig.plotAxes,
   );
-  const plotClearance = createPlotClearance(
-    beamstop.centre,
-    beamstop.diameter,
-    detector.pixelSize,
-    plotConfig.plotAxes,
-    beamstop.clearance ?? 0,
-  );
+
   const plotCameraTube = createPlotEllipse(
-    cameraTube.centre,
+    cameraTubeCentre,
     cameraTube.diameter,
-    detector.pixelSize,
     plotConfig.plotAxes,
   );
+
+  const plotClearance = createPlotEllipse(
+    beamstop.centre,
+    math.add(beamstop.diameter),
+    plotConfig.plotAxes,
+  );
+
   const plotDetector = createPlotRectangle(
     new Vector3(0, 0),
     detector.resolution,
-    detector.pixelSize,
     plotConfig.plotAxes,
   );
   const plotVisibleRange = createPlotRange(
@@ -174,6 +186,11 @@ export default function CentrePlot(): JSX.Element {
     end: new Vector3(requestedMaxPt.x, requestedMaxPt.y),
   };
   const domains = getDomains(plotDetector, plotConfig.plotAxes);
+
+  // evil
+
+  delete mathjs.Unit.UNITS.xpixel;
+  delete mathjs.Unit.UNITS.ypixel;
 
   return (
     <Box>

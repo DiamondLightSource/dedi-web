@@ -7,7 +7,7 @@ import {
   Beamstop,
   SimpleVector2,
 } from "../utils/types";
-import { unit } from "mathjs";
+import * as mathjs from "mathjs";
 
 export interface AppDataFormat extends BeamlineConfig {
   detector: string;
@@ -53,8 +53,8 @@ export const detectorList: Record<string, Detector> = Object.fromEntries(
       {
         ...value,
         pixelSize: {
-          height: unit(value.pixelSize.height, "mm"),
-          width: unit(value.pixelSize.height, "mm"),
+          height: mathjs.unit(value.pixelSize.height, "mm"),
+          width: mathjs.unit(value.pixelSize.height, "mm"),
         },
       },
     ],
@@ -68,20 +68,20 @@ export const presetList: Record<string, AppDataFormat> = Object.fromEntries(
       ...value,
       beamstop: {
         ...value.beamstop,
-        diameter: unit(value.beamstop.diameter, "mm"),
+        diameter: mathjs.unit(value.beamstop.diameter, "mm"),
       },
       cameraTube: {
         ...value.cameraTube,
-        diameter: unit(value.cameraTube.diameter, "mm"),
+        diameter: mathjs.unit(value.cameraTube.diameter, "mm"),
       },
-      minWavelength: unit(value.minWavelength, "nm"),
-      maxWavelength: unit(value.maxWavelength, "nm"),
-      minCameraLength: unit(value.minCameraLength, "m"),
-      maxCameraLength: unit(value.maxCameraLength, "m"),
-      cameraLengthStep: unit(value.cameraLengthStep, "m"),
+      minWavelength: mathjs.unit(value.minWavelength, "nm"),
+      maxWavelength: mathjs.unit(value.maxWavelength, "nm"),
+      minCameraLength: mathjs.unit(value.minCameraLength, "m"),
+      maxCameraLength: mathjs.unit(value.maxCameraLength, "m"),
+      cameraLengthStep: mathjs.unit(value.cameraLengthStep, "m"),
 
-      wavelength: unit(value.wavelength ?? NaN, "nm"),
-      angle: unit(value.angle ?? NaN, "rad"),
+      wavelength: mathjs.unit(value.wavelength ?? NaN, "nm"),
+      angle: mathjs.unit(value.angle ?? NaN, "rad"),
     },
   ]),
 );
