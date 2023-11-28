@@ -1,9 +1,7 @@
 import * as math from "mathjs";
 
-
 export const CSPEED = math.unit(299792458, "m/s");
 export const PLANCK = math.unit(6.62607015e-34, "J s");
-
 
 const angstrum = "\u212B";
 
@@ -19,7 +17,7 @@ export enum EnergyUnits {
 
 export enum WavelengthUnits {
   nanmometres = "nm",
-  angstroms = "angstrum",
+  angstroms = "angstrom",
 }
 
 export enum ReciprocalWavelengthUnits {
@@ -50,28 +48,41 @@ export interface UnitConfig {
  * @returns - wavelength in nm
  */
 export const energy2WavelengthConverter = (energy: math.Unit): math.Unit => {
-  const result = math.divide(math.multiply(PLANCK, CSPEED), energy);
+  const result = math.divide(math.multiply(PLANCK, CSPEED), energy.toSI());
   if (typeof result == "number") {
-    throw "units for constants h and c are wrong"
+    throw "units for constants h and c are wrong";
   }
-  return result
+  return result;
 };
-
-
 
 /**
  * Converts wavelength in nm to energy in kilo elctronvolts
  * @param wavelength in nm
  * @returns energy in keV
  */
-export const wavelength2EnergyConverter = (wavelength: math.Unit): math.Unit => {
-  const result = math.divide(math.multiply(PLANCK, CSPEED), wavelength);
+export const wavelength2EnergyConverter = (
+  wavelength: math.Unit,
+): math.Unit => {
+  const result = math.divide(math.multiply(PLANCK, CSPEED), wavelength.toSI());
   if (typeof result == "number") {
-    throw "units for constants h and c are wrong"
+    throw "units for constants h and c are wrong";
   }
-  return result
+  return result;
 };
 
+/**
+ * A function to process numeric texbox inputs in a consistant way.
+ * @param input input string from the texbox
+ * @returns a valid float or null
+ */
+export const parseNumericInput = (input: string): number | null => {
+  const output = parseFloat(input.trim());
+
+  if (!output && output != 0) {
+    return null;
+  }
+  return output;
+};
 
 /**
  * Enforces given range limits

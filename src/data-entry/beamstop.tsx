@@ -8,9 +8,7 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import {
-  DistanceUnits,
-} from "../utils/units";
+import { DistanceUnits } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 

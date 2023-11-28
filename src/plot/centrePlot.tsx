@@ -33,13 +33,7 @@ import ResultsBar from "../results/resultsBar";
 import NumericRange from "../calculations/numericRange";
 import { getPointForQ } from "../calculations/qvalue";
 import { ScatteringOptions, useResultStore } from "../results/resultsStore";
-import {
-  AngleUnits,
-  ReciprocalWavelengthUnits,
-  WavelengthUnits,
-  angstroms2Nanometres,
-  nanometres2Angstroms,
-} from "../utils/units";
+import { ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
 import {
   convertBetweenQAndD,
   convertBetweenQAndS,
@@ -49,29 +43,24 @@ import SvgAxisAlignedEllipse from "./svgEllipse";
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
-
   const beamlineConfig = useBeamlineConfigStore<BeamlineConfig>((state) => {
-    let angle = state.angle;
-    let wavelength = state.wavelength;
-    if (wavelength && state.wavelengthUnits === WavelengthUnits.angstroms) {
-      wavelength = angstroms2Nanometres(wavelength);
-    }
-    if (angle && state.angleUnits === AngleUnits.degrees) {
-      angle = MathUtils.degToRad(angle);
-    }
     return {
-      angle: angle,
+      angle: state.angle,
       cameraLength: state.cameraLength,
       minWavelength: state.minWavelength,
       maxWavelength: state.maxWavelength,
       minCameraLength: state.minCameraLength,
       maxCameraLength: state.maxCameraLength,
       cameraLengthStep: state.cameraLengthStep,
-      wavelength: wavelength,
+      wavelength: state.wavelength,
     };
   });
-
-  const detector = useDetectorStore<Detector>((state) => state.current);
+  const detector = useDetectorStore<Detector>((state) => {
+    return {
+      resolution: state.resolution,
+      pixelSize: state.pixelSize,
+    };
+  });
   const beamstop = useBeamstopStore<Beamstop>((state) => {
     return {
       centre: state.centre,
@@ -80,10 +69,11 @@ export default function CentrePlot(): JSX.Element {
     };
   });
 
-  const cameraTube = useCameraTubeStore((state): CircularDevice => {
+  const cameraTube = useCameraTubeStore<CircularDevice>((state) => {
     return { centre: state.centre, diameter: state.diameter };
   });
 
+  // I am about here
   const qrangeResult = computeQrange(
     detector,
     beamstop,

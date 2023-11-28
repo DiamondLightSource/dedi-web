@@ -19,11 +19,11 @@ export const useDetectorStore = create<DetectorStore>((set) => ({
       current: state.detectorList[newDetector],
       name: newDetector,
     })),
-  updatePixelUnits: (newUnits: DistanceUnits) => set((state) =>
-  ({
-    pixelSize: {
-      height: state.pixelSize.height.to(newUnits as string),
-      width: state.pixelSize.width.to(newUnits as string)
-    }
-  }))
+  updatePixelUnits: (newUnits: DistanceUnits) =>
+    set((state) => ({
+      pixelSize: {
+        height: state.pixelSize.height.to(newUnits as string),
+        width: state.pixelSize.width.to(newUnits as string),
+      },
+    })),
 }));

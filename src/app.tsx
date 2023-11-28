@@ -12,7 +12,7 @@ export default function App(): JSX.Element {
           <DataSideBar />
         </Box>
         <Stack direction={"column"} spacing={1} flexGrow={1}>
-          <CentrePlot />
+          {/*<CentrePlot />*/}
         </Stack>
       </Stack>
     </Box>

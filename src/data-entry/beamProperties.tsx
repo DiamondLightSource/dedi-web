@@ -14,6 +14,7 @@ import {
   WavelengthUnits,
   wavelength2EnergyConverter,
   energy2WavelengthConverter,
+  parseNumericInput,
 } from "../utils/units";
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { unit } from "mathjs";
@@ -22,18 +23,28 @@ export default function BeampropertiesDataEntry() {
   const beamlineConfig = useBeamlineConfigStore();
 
   const handleAngleUnits = (event: SelectChangeEvent<AngleUnits>) => {
-    beamlineConfig.updateAngleUnits(event.target.value as AngleUnits)
+    beamlineConfig.updateAngleUnits(event.target.value as AngleUnits);
   };
   const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newAngle = unit(parseFloat(event.target.value), beamlineConfig.angle.formatUnits())
-    beamlineConfig.updateAngle(newAngle);
+    beamlineConfig.updateAngle(
+      parseNumericInput(event.target.value),
+      beamlineConfig.angle.formatUnits() as AngleUnits,
+    );
   };
 
   const handleWavelength = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newWavelength = unit(parseFloat(event.target.value), beamlineConfig.wavelength.formatUnits());
-    beamlineConfig.updateWavelength(newWavelength);
-    const newEnergy = wavelength2EnergyConverter(newWavelength);
-    beamlineConfig.updateEnergy(newEnergy.to(beamlineConfig.energy.formatUnits()));
+    const newWavelength = parseNumericInput(event.target.value);
+    beamlineConfig.updateWavelength(
+      newWavelength,
+      beamlineConfig.wavelength.formatUnits() as WavelengthUnits,
+    );
+    const newEnergy = wavelength2EnergyConverter(
+      unit(newWavelength ?? NaN, beamlineConfig.wavelength.formatUnits()),
+    );
+    beamlineConfig.updateEnergy(
+      newEnergy.to(beamlineConfig.energy.formatUnits()).toNumber(),
+      beamlineConfig.energy.formatUnits() as EnergyUnits,
+    );
   };
 
   const handleWavelengthUnits = (event: SelectChangeEvent<WavelengthUnits>) => {
@@ -41,10 +52,18 @@ export default function BeampropertiesDataEntry() {
   };
 
   const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newEnergy = unit(parseFloat(event.target.value), beamlineConfig.energy.formatUnits())
-    beamlineConfig.updateEnergy(newEnergy);
-    const newWavelength = energy2WavelengthConverter(newEnergy);
-    beamlineConfig.updateWavelength(newWavelength.to(beamlineConfig.wavelength.formatUnits()));
+    const newEnergy = parseNumericInput(event.target.value);
+    beamlineConfig.updateEnergy(
+      newEnergy,
+      beamlineConfig.energy.formatUnits() as EnergyUnits,
+    );
+    const newWavelength = energy2WavelengthConverter(
+      unit(newEnergy ?? NaN, beamlineConfig.energy.formatUnits()),
+    );
+    beamlineConfig.updateWavelength(
+      newWavelength.to(beamlineConfig.wavelength.formatUnits()).toNumber(),
+      beamlineConfig.wavelength.formatUnits() as WavelengthUnits,
+    );
   };
 
   const handleEnergyUnits = (event: SelectChangeEvent<EnergyUnits>) => {
@@ -52,7 +71,7 @@ export default function BeampropertiesDataEntry() {
   };
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
-    beamlineConfig.updateCameraLength(parseFloat(event.target.value));
+    beamlineConfig.updateCameraLength(parseNumericInput(event.target.value));
   };
 
   return (
@@ -63,7 +82,7 @@ export default function BeampropertiesDataEntry() {
         <TextField
           type="number"
           size="small"
-          value={beamlineConfig.energy}
+          value={beamlineConfig.userEnergy}
           onChange={handleEnergy}
         />
         <FormControl>
@@ -88,7 +107,7 @@ export default function BeampropertiesDataEntry() {
         <TextField
           type="number"
           size="small"
-          value={beamlineConfig.wavelength}
+          value={beamlineConfig.userWavelength}
           onChange={handleWavelength}
         />
         <FormControl>
@@ -102,9 +121,7 @@ export default function BeampropertiesDataEntry() {
             <MenuItem value={WavelengthUnits.nanmometres}>
               {WavelengthUnits.nanmometres}
             </MenuItem>
-            <MenuItem value={WavelengthUnits.angstroms}>
-              {"\u212B"}
-            </MenuItem>
+            <MenuItem value={WavelengthUnits.angstroms}>{"\u212B"}</MenuItem>
           </Select>
         </FormControl>
       </Stack>
@@ -119,7 +136,7 @@ export default function BeampropertiesDataEntry() {
         <TextField
           type="number"
           size="small"
-          value={beamlineConfig.cameraLength}
+          value={beamlineConfig.cameraLength ?? ""}
           InputProps={{
             inputProps: {
               max: beamlineConfig.maxCameraLength,
@@ -137,7 +154,7 @@ export default function BeampropertiesDataEntry() {
           type="number"
           size="small"
           defaultValue={""}
-          value={beamlineConfig.angle ?? ""}
+          value={beamlineConfig.userAngle ?? ""}
           onChange={handleAngle}
         />
         <FormControl>

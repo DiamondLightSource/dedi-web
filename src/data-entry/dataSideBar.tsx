@@ -45,11 +45,13 @@ export default function DataSideBar(): JSX.Element {
             }}
           />
           <Typography>
-            Resolution (hxw): {detector.resolution.height} x {detector.resolution.width}
+            Resolution (hxw): {detector.resolution.height} x{" "}
+            {detector.resolution.width}
           </Typography>
           <Stack direction="row">
             <Typography flexGrow={2}>
-              Pixel size: {detector.pixelSize.height.toString()} x {detector.pixelSize.width.toString()}
+              Pixel size: {detector.pixelSize.height.toString()} x{" "}
+              {detector.pixelSize.width.toString()}
             </Typography>
             <FormControl>
               <InputLabel>units</InputLabel>

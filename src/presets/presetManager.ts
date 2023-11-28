@@ -16,13 +16,13 @@ export interface AppDataFormat extends BeamlineConfig {
 }
 
 interface DetectorData {
-  resolution: { height: number; width: number };
-  pixelSize: { height: number; width: number };
+  readonly resolution: { height: number; width: number };
+  readonly pixelSize: { height: number; width: number };
 }
 
 interface CircularDeviceData {
-  centre: SimpleVector2,
-  diameter: number,
+  readonly centre: SimpleVector2;
+  readonly diameter: number;
 }
 
 export interface BeamlineData {
@@ -36,17 +36,15 @@ export interface BeamlineData {
   readonly cameraLengthStep: number;
 }
 
-
 interface BeamstopData extends CircularDeviceData {
-  clearance: number | null;
+  readonly clearance: number | null;
 }
 
 export interface AppData extends BeamlineData {
-  detector: string;
-  beamstop: BeamstopData;
-  cameraTube: CircularDeviceData;
+  readonly detector: string;
+  readonly beamstop: BeamstopData;
+  readonly cameraTube: CircularDeviceData;
 }
-
 
 export const detectorList: Record<string, Detector> = Object.fromEntries(
   Object.entries(detectorDataRecord as Record<string, DetectorData>).map(
@@ -63,9 +61,10 @@ export const detectorList: Record<string, Detector> = Object.fromEntries(
   ),
 );
 
-export const presetList: Record<string, AppDataFormat> = Object.fromEntries(Object.entries(presetData as Record<string, AppData>).map(
-  ([key, value]) => [
-    key, {
+export const presetList: Record<string, AppDataFormat> = Object.fromEntries(
+  Object.entries(presetData as Record<string, AppData>).map(([key, value]) => [
+    key,
+    {
       ...value,
       beamstop: {
         ...value.beamstop,
@@ -81,10 +80,9 @@ export const presetList: Record<string, AppDataFormat> = Object.fromEntries(Obje
       maxCameraLength: unit(value.maxCameraLength, "m"),
       cameraLengthStep: unit(value.cameraLengthStep, "m"),
 
-      cameraLength: unit(value.cameraLength ?? NaN, "mm"),
-      wavelength: unit(value.wavelength ?? NaN, "mm"),
-      angle: unit(value.angle ?? NaN, "mm"),
-    }
-  ]
-));
+      wavelength: unit(value.wavelength ?? NaN, "nm"),
+      angle: unit(value.angle ?? NaN, "rad"),
+    },
+  ]),
+);
 export const defaultConfig = presetList[Object.keys(presetList)[0]];

@@ -21,7 +21,7 @@ export interface Beamstop extends CircularDevice {
 
 export interface BeamlineConfig {
   angle: Unit;
-  cameraLength: Unit;
+  cameraLength: number | null;
   readonly minWavelength: Unit;
   readonly maxWavelength: Unit;
   readonly minCameraLength: Unit;
