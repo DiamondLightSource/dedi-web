@@ -1,15 +1,17 @@
-export const convertBetweenQAndS = (quantity: number): number => {
-  return 1 / quantity;
+import * as mathjs from "mathjs";
+
+export const convertBetweenQAndS = (quantity: mathjs.Unit): math.Unit => {
+  return mathjs.divide(1,quantity);
 };
 
-export const convertBetweenQAndD = (quantity: number): number => {
-  return (2 * Math.PI) / quantity;
+export const convertBetweenQAndD = (quantity: mathjs.Unit): mathjs.Unit => {
+  return mathjs.divide( (2 * Math.PI) , quantity);
 };
 
-export const convertFromDTooS = (quantity: number): number => {
-  return quantity / (2 * Math.PI);
+export const convertFromDTooS = (quantity: mathjs.Unit): mathjs.Unit => {
+  return mathjs.divide(quantity ,(2 * Math.PI));
 };
 
-export const convertFromStooD = (quantity: number): number => {
-  return quantity * (2 * Math.PI);
+export const convertFromStooD = (quantity: mathjs.Unit): mathjs.Unit => {
+  return mathjs.multiply(quantity ,(2 * Math.PI));
 };

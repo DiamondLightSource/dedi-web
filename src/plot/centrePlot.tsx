@@ -135,21 +135,13 @@ export default function CentrePlot(): JSX.Element {
       (value: number): number => {
         switch (state.requested) {
           case ScatteringOptions.d:
-            if (state.dUnits === WavelengthUnits.angstroms) {
-              value = angstroms2Nanometres(value);
-            }
-            value = convertBetweenQAndD(value);
+            value = convertBetweenQAndD(mathjs.unit(value,state.dUnits));
             break;
           case ScatteringOptions.s:
-            if (state.sUnits === WavelengthUnits.angstroms) {
-              value = angstroms2Nanometres(value);
-            }
-            value = convertBetweenQAndS(value);
+            value = convertBetweenQAndS(mathjs.unit(value,state.sUnits));
             break;
           default:
-            if (state.qUnits === ReciprocalWavelengthUnits.angstroms) {
-              value = nanometres2Angstroms(value);
-            }
+            value = unit(value,state.qUnits);
         }
         return value;
       },
