@@ -1,4 +1,4 @@
-import NumericRange from "../calculations/numericRange";
+import UnitRange from "../calculations/unitRange";
 
 export function MessageDiagram(props: { message: string }): JSX.Element {
   return (
@@ -18,18 +18,15 @@ export function MessageDiagram(props: { message: string }): JSX.Element {
 }
 
 export function RangeDiagram(props: {
-  visibleQRange: NumericRange;
-  fullQRange: NumericRange;
-  requestedRange: NumericRange;
+  visibleRange: UnitRange;
+  fullRange: UnitRange;
+  requestedRange: UnitRange;
 }): JSX.Element {
-  const svgRange = props.visibleQRange.max - props.visibleQRange.min;
-  // const visableStart = (props.visibleQRange.min / svgRange) * 100;
-  // const visbleWidth =
-  //   ((props.visibleQRange.max - props.visibleQRange.min) / svgRange) * 100;
-
-  const requestedMax = (props.requestedRange.max / svgRange) * 100;
-  const requestedMin = (props.requestedRange.min / svgRange) * 100;
-  const rectColour = props.visibleQRange.containsRange(props.requestedRange)
+  console.log(props.requestedRange.min.formatUnits())
+  const svgRange = props.visibleRange.max.toNumber() - props.visibleRange.min.toNumber();
+  const requestedMax = (props.requestedRange.max.toNumber() / svgRange) * 100;
+  const requestedMin = (props.requestedRange.min.toNumber() / svgRange) * 100;
+  const rectColour = props.visibleRange.containsRange(props.requestedRange)
     ? "green"
     : "red";
 

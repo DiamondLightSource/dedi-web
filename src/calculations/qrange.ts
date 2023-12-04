@@ -57,6 +57,12 @@ export function computeQrange(
     beamcentreY,
   );
 
+  if (typeof initialPositionX === "number" || !("units" in initialPositionX)) {
+    return defaultReturn;
+  }
+  if (typeof initialPositionY === "number" || !("units" in initialPositionY)) {
+    return defaultReturn;
+  }
   const initialPosition = new Vector2(
     initialPositionX.toSI().toNumber(),
     initialPositionY.toSI().toNumber(),

@@ -4,6 +4,9 @@ import { PlotAxes } from "./plotStore";
 import { Vector3 } from "three";
 import * as mathjs from "mathjs";
 
+
+
+
 // Questionable is this how you would do this think about it a little more
 export const getDomains = (
   detector: PlotRectangle,
@@ -35,9 +38,14 @@ export interface PlotEllipse {
   endPointY: Vector3;
 }
 
+export interface UnitVector {
+  x: math.Unit,
+  y: math.Unit
+}
+
 export const createPlotEllipse = (
-  centre: { x: mathjs.Unit; y: mathjs.Unit },
-  diameter: mathjs.Unit,
+  centre: UnitVector,
+  diameter: math.Unit,
   plotAxes: PlotAxes,
 ): PlotEllipse => {
   let xunit = plotAxes as string;
@@ -66,6 +74,39 @@ export const createPlotEllipse = (
   };
 };
 
+export const createPlotEllipseClearance = (
+  centre: UnitVector,
+  diameter: math.Unit,
+  clearance: number,
+  plotAxes: PlotAxes,
+): PlotEllipse => {
+  let xunit = plotAxes as string;
+  let yunit = plotAxes as string;
+
+  if (plotAxes === PlotAxes.pixel) {
+    xunit = "xpixel";
+    yunit = "ypixel";
+  }
+
+  const centreVec = new Vector3(
+    centre.x.to(xunit).toNumber(),
+    centre.y.to(yunit).toNumber(),
+  );
+
+  return {
+    centre: centreVec,
+    endPointX: new Vector3(
+      centreVec.x + mathjs.divide(diameter, 2).to(xunit).toNumber() + mathjs.unit(clearance, "xpixel").to(xunit).toNumber(),
+      centreVec.y,
+    ),
+    endPointY: new Vector3(
+      centreVec.x,
+      centreVec.y + mathjs.divide(diameter, 2).to(yunit).toNumber() + mathjs.unit(clearance, "ypixel").to(yunit).toNumber(),
+    ),
+  };
+};
+
+
 export interface PlotRectangle {
   upperBound: Vector3;
   lowerBound: Vector3;
@@ -74,19 +115,19 @@ export interface PlotRectangle {
 export const createPlotRectangle = (
   pinnedCorner: Vector3,
   resolution: { height: number; width: number },
-  pixelSize: { height: number; width: number },
   plotAxes: PlotAxes,
 ): PlotRectangle => {
-  let fullWidth = resolution.width;
-  let fullHeight = resolution.height;
-  switch (plotAxes) {
-    case PlotAxes.milimeter:
-      fullWidth *= pixelSize.width;
-      fullHeight *= pixelSize.height;
+  let xunit = plotAxes as string;
+  let yunit = plotAxes as string;
+  if (plotAxes === PlotAxes.pixel) {
+    xunit = "xpixel";
+    yunit = "ypixel";
   }
+
+
   return {
     lowerBound: pinnedCorner,
-    upperBound: new Vector3(fullWidth, fullHeight),
+    upperBound: new Vector3(mathjs.unit(resolution.width, "xpixel").to(xunit).toNumber(), mathjs.unit(resolution.height, "ypixel").to(yunit).toNumber()),
   };
 };
 
@@ -96,22 +137,19 @@ export interface PlotRange {
 }
 
 export const createPlotRange = (
-  startPoint: Vector3,
-  endPoint: Vector3,
-  pixelSize: { height: number; width: number },
+  startPoint: UnitVector,
+  endPoint: UnitVector,
   plotAxes: PlotAxes,
 ): PlotRange => {
-  const pixelVector = new Vector3(pixelSize.width, pixelSize.height);
-
+  let xunit = plotAxes as string;
+  let yunit = plotAxes as string;
   if (plotAxes === PlotAxes.pixel) {
-    return {
-      start: startPoint.clone().divide(pixelVector),
-      end: endPoint.clone().divide(pixelVector),
-    };
+    xunit = "xpixel";
+    yunit = "ypixel";
   }
 
   return {
-    start: startPoint,
-    end: endPoint,
+    start: new Vector3(startPoint.x.to(xunit).toNumber(), startPoint.y.to(yunit).toNumber()),
+    end: new Vector3(endPoint.x.to(xunit).toNumber(), endPoint.y.to(yunit).toNumber()),
   };
 };

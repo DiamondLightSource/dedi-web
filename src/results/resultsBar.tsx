@@ -13,8 +13,6 @@ import {
 import NumericRange from "../calculations/numericRange";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
 import {
-  ReciprocalWavelengthUnits,
-  WavelengthUnits,
   parseNumericInput,
 } from "../utils/units";
 import { RangeDiagram, MessageDiagram } from "./rangeDiagram";
@@ -25,10 +23,11 @@ import {
   convertBetweenQAndS,
 } from "./scatteringQuantities";
 import RangeTable from "./rangeTable";
+import UnitRange from "../calculations/unitRange";
 
 export default function ResultsBar(props: {
-  visableQRange: NumericRange | null;
-  fullQrange: NumericRange | null;
+  visableQRange: UnitRange;
+  fullQrange: UnitRange;
 }): JSX.Element {
   const resultStore = useResultStore();
   const requestedRange = useResultStore<NumericRange | null>((state) => {
@@ -37,9 +36,9 @@ export default function ResultsBar(props: {
       : null;
   });
 
-  let diagramVisible: NumericRange | null = null;
-  let diagramFull: NumericRange | null = null;
-  let diagramRequested: NumericRange | null = requestedRange;
+  let diagramVisible: UnitRange | null = null;
+  let diagramFull: UnitRange | null = null;
+  let diagramRequested: UnitRange | null = null;
 
   const handleRequestedMax = (event: React.ChangeEvent<HTMLInputElement>) => {
     resultStore.updateRequestedRange({
@@ -56,25 +55,19 @@ export default function ResultsBar(props: {
   if (props.visableQRange && props.fullQrange && requestedRange) {
     switch (resultStore.requested) {
       case ScatteringOptions.d:
-        diagramVisible = props.visableQRange.apply(convertBetweenQAndD);
-        diagramFull = props.fullQrange.apply(convertBetweenQAndD);
-        if (resultStore.dUnits === WavelengthUnits.angstroms) {
-          diagramRequested = requestedRange.apply(angstroms2Nanometres);
-        }
+        diagramVisible = props.visableQRange.apply(convertBetweenQAndD).to("nm");
+        diagramFull = props.fullQrange.apply(convertBetweenQAndD).to("nm");
+        diagramRequested = UnitRange.fromNumericRange(requestedRange, resultStore.dUnits as string).to("nm");
         break;
       case ScatteringOptions.s:
-        diagramVisible = props.visableQRange.apply(convertBetweenQAndS);
-        diagramFull = props.fullQrange.apply(convertBetweenQAndS);
-        if (resultStore.sUnits === WavelengthUnits.angstroms) {
-          diagramRequested = requestedRange.apply(angstroms2Nanometres);
-        }
+        diagramVisible = props.visableQRange.apply(convertBetweenQAndS).to("nm");
+        diagramFull = props.fullQrange.apply(convertBetweenQAndS).to("nm");
+        diagramRequested = UnitRange.fromNumericRange(requestedRange, resultStore.sUnits as string).to("nm");
         break;
       default:
-        diagramVisible = props.visableQRange;
-        diagramFull = props.fullQrange;
-        if (resultStore.qUnits === ReciprocalWavelengthUnits.angstroms) {
-          diagramRequested = requestedRange.apply(nanometres2Angstroms);
-        }
+        diagramVisible = props.visableQRange.to("nm^-1");
+        diagramFull = props.fullQrange.to("nm^-1");
+        diagramRequested = UnitRange.fromNumericRange(requestedRange, resultStore.qUnits as string).to("nm^-1");
     }
   }
 
@@ -148,14 +141,12 @@ export default function ResultsBar(props: {
                     diagramVisible &&
                     diagramFull &&
                     diagramRequested &&
-                    {
-                      /*diagramFull.containsRange(diagramVisible)*/
-                    }
+                    diagramFull.containsRange(diagramVisible)
                   ) {
                     return (
                       <RangeDiagram
-                        visibleQRange={diagramVisible}
-                        fullQRange={diagramFull}
+                        visibleRange={diagramVisible}
+                        fullRange={diagramFull}
                         requestedRange={diagramRequested}
                       />
                     );
