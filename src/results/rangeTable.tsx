@@ -13,16 +13,17 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import NumericRange from "../calculations/numericRange";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
 import { ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
 import {
   convertBetweenQAndD,
   convertBetweenQAndS,
 } from "./scatteringQuantities";
+import UnitRange from "../calculations/unitRange";
+
 
 export default function RangeTable(props: {
-  qRange: NumericRange | null;
+  qRange: UnitRange;
 }): JSX.Element {
   const resultsStore = useResultStore();
   const updateQUnits = useResultStore((state) => state.updateQUnits);
@@ -42,26 +43,11 @@ export default function RangeTable(props: {
   const handleDunits = (event: SelectChangeEvent<WavelengthUnits>) => {
     updateDUnits(event.target.value as WavelengthUnits);
   };
+  const qRange = props.qRange.to(resultsStore.qUnits as string)
+  const sRange = props.qRange.apply(convertBetweenQAndS).to(resultsStore.sUnits as string);
+  const dRange = props.qRange.apply(convertBetweenQAndD).to(resultsStore.dUnits as string);
 
-  let qRange = props.qRange;
-  let sRange: NumericRange | null = null;
-  let dRange: NumericRange | null = null;
 
-  if (props.qRange) {
-    sRange = props.qRange.apply(convertBetweenQAndS);
-    dRange = props.qRange.apply(convertBetweenQAndD);
-    if (resultsStore.qUnits === ReciprocalWavelengthUnits.angstroms) {
-      qRange = props.qRange.apply(angstroms2Nanometres);
-    }
-
-    if (resultsStore.sUnits === WavelengthUnits.angstroms) {
-      sRange = sRange.apply(nanometres2Angstroms);
-    }
-
-    if (resultsStore.dUnits === WavelengthUnits.angstroms) {
-      dRange = dRange.apply(nanometres2Angstroms);
-    }
-  }
   return (
     <Box flexGrow={1}>
       <TableContainer component={Paper}>
@@ -80,10 +66,10 @@ export default function RangeTable(props: {
                 {ScatteringOptions.q}
               </TableCell>
               <TableCell align="right">
-                {qRange ? qRange.min.toFixed(4) : ""}
+                {qRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
-                {qRange ? qRange.max.toFixed(4) : ""}
+                {qRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
                 <FormControl>
@@ -95,10 +81,10 @@ export default function RangeTable(props: {
                     onChange={handleQunits}
                   >
                     <MenuItem value={ReciprocalWavelengthUnits.nanmometres}>
-                      {ReciprocalWavelengthUnits.nanmometres}
+                      {"1 / nm"}
                     </MenuItem>
                     <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
-                      {ReciprocalWavelengthUnits.angstroms}
+                      {"1 / " + "\u212B"}
                     </MenuItem>
                   </Select>
                 </FormControl>
@@ -109,10 +95,10 @@ export default function RangeTable(props: {
                 {ScatteringOptions.s}
               </TableCell>
               <TableCell align="right">
-                {sRange ? sRange.min.toFixed(4) : ""}
+                {sRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
-                {sRange ? sRange.max.toFixed(4) : ""}
+                {sRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
                 <FormControl>
@@ -127,7 +113,7 @@ export default function RangeTable(props: {
                       {WavelengthUnits.nanmometres}
                     </MenuItem>
                     <MenuItem value={WavelengthUnits.angstroms}>
-                      {WavelengthUnits.angstroms}
+                      {"\u212B"}
                     </MenuItem>
                   </Select>
                 </FormControl>
@@ -138,10 +124,10 @@ export default function RangeTable(props: {
                 {ScatteringOptions.d}
               </TableCell>
               <TableCell align="right">
-                {dRange ? dRange.min.toFixed(4) : ""}
+                {dRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
-                {dRange ? dRange.max.toFixed(4) : ""}
+                {dRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
                 <FormControl>
@@ -156,7 +142,7 @@ export default function RangeTable(props: {
                       {WavelengthUnits.nanmometres}
                     </MenuItem>
                     <MenuItem value={WavelengthUnits.angstroms}>
-                      {WavelengthUnits.angstroms}
+                      {"\u212B"}
                     </MenuItem>
                   </Select>
                 </FormControl>

@@ -8,12 +8,14 @@ import {
   SvgRect,
   SvgLine,
 } from "@h5web/lib";
-import { Vector2, Vector3 } from "three";
+import { Vector3 } from "three";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 import {
+  UnitVector,
   createPlotEllipse,
+  createPlotEllipseClearance,
   createPlotRange,
   createPlotRectangle,
   getDomains,
@@ -29,10 +31,8 @@ import { computeQrange } from "../calculations/qrange";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import LegendBar from "./legendBar";
 import ResultsBar from "../results/resultsBar";
-import NumericRange from "../calculations/numericRange";
 import { getPointForQ } from "../calculations/qvalue";
 import { ScatteringOptions, useResultStore } from "../results/resultsStore";
-import { ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
 import {
   convertBetweenQAndD,
   convertBetweenQAndS,
@@ -40,6 +40,7 @@ import {
 import { color2String } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import * as mathjs from "mathjs";
+import UnitRange from "../calculations/unitRange";
 
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
@@ -73,6 +74,19 @@ export default function CentrePlot(): JSX.Element {
     return { centre: state.centre, diameter: state.diameter };
   });
 
+  // evil :( :( :( :()
+  /* eslint-disable */
+  if (mathjs.Unit.UNITS.xpixel) {
+    delete mathjs.Unit.UNITS.xpixel
+  }
+
+  if (mathjs.Unit.UNITS.ypixel) {
+    delete mathjs.Unit.UNITS.ypixel
+  }
+  /* eslint-enable */
+  // evil :( :( :( :()
+
+
   mathjs.createUnit("xpixel", detector.pixelSize.width.toString());
   mathjs.createUnit("ypixel", detector.pixelSize.height.toString());
 
@@ -84,15 +98,27 @@ export default function CentrePlot(): JSX.Element {
   );
 
   // I am about here
+  const visibleQRangeUnits = UnitRange.fromNumericRange(visibleQRange, "m^-1").to("nm^-1");
+  const fullQRangeUnits = UnitRange.fromNumericRange(fullQRange, "m^-1").to("nm^-1")
 
-  const beamstopCentre: { x: mathjs.Unit, y: mathjs.Unit } = {
-    x: mathjs.unit(beamstop.centre.x ?? NaN, "x_pixel"),
-    y: mathjs.unit(beamstop.centre.y ?? NaN, "y_pixel")
+  const minPoint: UnitVector = {
+    x: mathjs.unit(ptMin.x, "m"),
+    y: mathjs.unit(ptMin.y, "m")
   }
 
-  const cameraTubeCentre: { x: mathjs.Unit, y: mathjs.Unit } = {
-    x: mathjs.unit(cameraTube.centre.x ?? NaN, "x_pixel"),
-    y: mathjs.unit(cameraTube.centre.y ?? NaN, "y_pixel")
+  const maxPoint: UnitVector = {
+    x: mathjs.unit(ptMax.x, "m"),
+    y: mathjs.unit(ptMax.y, "m")
+  }
+
+  const beamstopCentre: UnitVector = {
+    x: mathjs.unit(beamstop.centre.x ?? NaN, "xpixel"),
+    y: mathjs.unit(beamstop.centre.y ?? NaN, "ypixel")
+  }
+
+  const cameraTubeCentre: UnitVector = {
+    x: mathjs.unit(cameraTube.centre.x ?? NaN, "xpixel"),
+    y: mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel")
   }
 
   const plotBeamstop = createPlotEllipse(
@@ -107,9 +133,10 @@ export default function CentrePlot(): JSX.Element {
     plotConfig.plotAxes,
   );
 
-  const plotClearance = createPlotEllipse(
+  const plotClearance = createPlotEllipseClearance(
     beamstopCentre,
-    mathjs.add(beamstop.diameter,),
+    beamstop.diameter,
+    beamstop.clearance ?? 0,
     plotConfig.plotAxes,
   );
 
@@ -118,69 +145,71 @@ export default function CentrePlot(): JSX.Element {
     detector.resolution,
     plotConfig.plotAxes,
   );
+
   const plotVisibleRange = createPlotRange(
-    new Vector3(ptMin.x, ptMin.y),
-    new Vector3(ptMax.x, ptMax.y),
-    detector.pixelSize,
+    minPoint,
+    maxPoint,
     plotConfig.plotAxes,
   );
 
-  const requestedRange = useResultStore<NumericRange | null>((state) => {
+  // I am up to here
+
+  const requestedRange = useResultStore<UnitRange | null>((state) => {
     if (!state.requestedMax || !state.requestedMin) {
       return null;
     }
-    return NumericRange.createWithFunc(
-      state.requestedMin,
-      state.requestedMax,
-      (value: number): number => {
-        switch (state.requested) {
-          case ScatteringOptions.d:
-            value = convertBetweenQAndD(mathjs.unit(value,state.dUnits));
-            break;
-          case ScatteringOptions.s:
-            value = convertBetweenQAndS(mathjs.unit(value,state.sUnits));
-            break;
-          default:
-            value = unit(value,state.qUnits);
-        }
-        return value;
-      },
-    );
+
+    const getUnit = (value: number): mathjs.Unit => {
+      let result: mathjs.Unit;
+      switch (state.requested) {
+        case ScatteringOptions.d:
+          result = convertBetweenQAndD(mathjs.unit(value, state.dUnits));
+          break;
+        case ScatteringOptions.s:
+          result = convertBetweenQAndS(mathjs.unit(value, state.sUnits));
+          break;
+        default:
+          result = mathjs.unit(value, state.qUnits);
+      }
+      return result;
+    }
+
+    return new UnitRange(
+      getUnit(state.requestedMin),
+      getUnit(state.requestedMax)
+    )
   });
 
-  let requestedMinPt: Vector2 | null = new Vector2(0, 0);
-  let requestedMaxPt: Vector2 | null = new Vector2(0, 0);
+  let plotRequestedRange = {
+    start: new Vector3(0, 0),
+    end: new Vector3(0, 0),
+  };
   if (
     requestedRange &&
-    beamlineConfig.angle &&
-    beamlineConfig.cameraLength &&
-    beamlineConfig.wavelength
+    beamlineConfig.cameraLength
   ) {
-    requestedMaxPt = getPointForQ(
-      requestedRange.max * 1e9,
+    const requestedMaxPt = getPointForQ(
+      requestedRange.max,
       beamlineConfig.angle,
-      beamlineConfig.cameraLength,
-      beamlineConfig.wavelength * 1e-9,
-      new Vector2(plotBeamstop.centre.x, plotBeamstop.centre.y),
+      mathjs.unit(beamlineConfig.cameraLength, "m"),
+      beamlineConfig.wavelength,
+      beamstopCentre,
     );
-    requestedMinPt = getPointForQ(
-      requestedRange.min * 1e9,
+    const requestedMinPt = getPointForQ(
+      requestedRange.min,
       beamlineConfig.angle,
-      beamlineConfig.cameraLength,
-      beamlineConfig.wavelength * 1e-9,
-      new Vector2(plotBeamstop.centre.x, plotBeamstop.centre.y),
+      mathjs.unit(beamlineConfig.cameraLength, "m"),
+      beamlineConfig.wavelength,
+      beamstopCentre,
+    );
+    plotRequestedRange = createPlotRange(
+      requestedMinPt,
+      requestedMaxPt,
+      plotConfig.plotAxes,
     );
   }
 
-  const plotRequestedRange = {
-    start: new Vector3(requestedMinPt.x, requestedMinPt.y),
-    end: new Vector3(requestedMaxPt.x, requestedMaxPt.y),
-  };
   const domains = getDomains(plotDetector, plotConfig.plotAxes);
-
-  // evil
-  delete mathjs.Unit.UNITS.xpixel
-  delete mathjs.Unit.UNITS.ypixel
 
   return (
     <Box>
@@ -324,7 +353,7 @@ export default function CentrePlot(): JSX.Element {
             <LegendBar />
           </Box>
         </Stack>
-        <ResultsBar visableQRange={visibleQRange} fullQrange={fullQRange} />
+        <ResultsBar visableQRange={visibleQRangeUnits} fullQrange={fullQRangeUnits} />
       </Stack>
     </Box>
   );

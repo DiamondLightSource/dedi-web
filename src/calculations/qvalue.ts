@@ -1,5 +1,7 @@
+import { UnitVector } from "../plot/plotUtils";
 import { Ray } from "./ray";
 import { Vector2 } from "three";
+import * as mathjs from "mathjs";
 
 export const calculateQValue = (
   distance: number,
@@ -34,18 +36,18 @@ export const calculateDistanceFromQValue = (
 };
 
 export const getPointForQ = (
-  qValue: number,
-  angle: number,
-  cameralength: number,
-  wavelength: number,
-  beamstopCentre: Vector2,
-): Vector2 => {
+  qValue: math.Unit,
+  angle: math.Unit,
+  cameralength: math.Unit,
+  wavelength: math.Unit,
+  beamstopCentre: UnitVector,
+): UnitVector => {
   const ray = new Ray(
-    new Vector2(Math.cos(angle), Math.sin(angle)),
-    beamstopCentre,
+    new Vector2(Math.cos(angle.toSI().toNumber()), Math.sin(angle.toSI().toNumber())),
+    new Vector2(beamstopCentre.x.toSI().toNumber(), beamstopCentre.y.toSI().toNumber()),
   );
-  return ray.getPointAtDistance(
-    1.0e3 *
-      (calculateDistanceFromQValue(qValue, cameralength, wavelength) ?? 0),
+  const result = ray.getPointAtDistance(
+    (calculateDistanceFromQValue(qValue.toSI().toNumber(), cameralength.toSI().toNumber(), wavelength.toSI().toNumber())) ?? 0,
   );
+  return { x: mathjs.unit(result.x, "m"), y: mathjs.unit(result.y, "m") }
 };

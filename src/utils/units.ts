@@ -3,7 +3,6 @@ import * as math from "mathjs";
 export const CSPEED = math.unit(299792458, "m/s");
 export const PLANCK = math.unit(6.62607015e-34, "J s");
 
-const angstrum = "\u212B";
 
 export enum DistanceUnits {
   millimetre = "mm",
@@ -21,8 +20,8 @@ export enum WavelengthUnits {
 }
 
 export enum ReciprocalWavelengthUnits {
-  nanmometres = "1/nm",
-  angstroms = `1/${angstrum}`,
+  nanmometres = "nm^-1",
+  angstroms = `angstrom^-1`,
 }
 
 export enum AngleUnits {
@@ -50,7 +49,7 @@ export interface UnitConfig {
 export const energy2WavelengthConverter = (energy: math.Unit): math.Unit => {
   const result = math.divide(math.multiply(PLANCK, CSPEED), energy.toSI());
   if (typeof result == "number") {
-    throw "units for constants h and c are wrong";
+    throw TypeError("units for constants h and c are wrong");
   }
   return result;
 };
@@ -65,7 +64,7 @@ export const wavelength2EnergyConverter = (
 ): math.Unit => {
   const result = math.divide(math.multiply(PLANCK, CSPEED), wavelength.toSI());
   if (typeof result == "number") {
-    throw "units for constants h and c are wrong";
+    throw TypeError("units for constants h and c are wrong");
   }
   return result;
 };
