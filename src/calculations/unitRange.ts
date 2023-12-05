@@ -21,14 +21,22 @@ export default class UnitRange {
   }
 
   containsValue(value: mathjs.Unit): boolean {
-    return mathjs.largerEq(value, this.min) && mathjs.largerEq(value, this.max);
+    const result = mathjs.largerEq(value, this.min) && mathjs.largerEq(value, this.max);
+    if (!(typeof result == "boolean")) {
+      throw TypeError("write this later")
+    }
+    return result
   }
 
   containsRange(other: UnitRange): boolean {
-    return (
+    const result = (
       mathjs.smallerEq(this.min, other.min) &&
       mathjs.largerEq(this.max, other.max)
     );
+    if (!(typeof result == "boolean")) {
+      throw TypeError("write this later")
+    }
+    return result
   }
 
   toString(): string {
@@ -49,9 +57,13 @@ export default class UnitRange {
   }
 
   equals(other: UnitRange): boolean {
-    return (
+    const result = (
       mathjs.equal(this.min, other.min) && mathjs.equal(this.max, other.max)
     );
+    if (!(typeof result == "boolean")) {
+      throw TypeError("write this later")
+    }
+    return result
   }
 
   apply(func: (value: mathjs.Unit) => mathjs.Unit): UnitRange {
