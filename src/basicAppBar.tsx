@@ -19,7 +19,8 @@ export default function BasicAppBar(): JSX.Element {
     setState({ menuOpen: open });
   };
 
-  const preset = useBeamlineConfigStore((state) => state.preset);
+  const beamlineConfig = useBeamlineConfigStore();
+
   const updateBeamstop = useBeamstopStore((state) => state.updateBeamstop);
   const updateCameraTube = useCameraTubeStore(
     (state) => state.updateCameraTube,
@@ -73,7 +74,7 @@ export default function BasicAppBar(): JSX.Element {
             disablePortal
             id="combo-box-demo"
             options={Object.keys(presetList)}
-            value={preset}
+            value={beamlineConfig.preset}
             sx={{ width: 300, color: "white" }}
             renderInput={(params) => (
               <TextField

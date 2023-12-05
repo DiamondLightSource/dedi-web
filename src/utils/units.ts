@@ -1,7 +1,7 @@
-import * as math from "mathjs";
+import * as mathjs from "mathjs";
 
-export const CSPEED = math.unit(299792458, "m/s");
-export const PLANCK = math.unit(6.62607015e-34, "J s");
+export const CSPEED = mathjs.unit(299792458, "m/s");
+export const PLANCK = mathjs.unit(6.62607015e-34, "J s");
 
 export enum DistanceUnits {
   millimetre = "mm",
@@ -46,7 +46,7 @@ export interface UnitConfig {
  * @returns - wavelength in nm
  */
 export const energy2WavelengthConverter = (energy: math.Unit): math.Unit => {
-  const result = math.divide(math.multiply(PLANCK, CSPEED), energy.toSI());
+  const result = mathjs.divide(mathjs.multiply(PLANCK, CSPEED), energy.toSI());
 
   if (typeof result == "number" || !("units" in result)) {
     throw TypeError("units for constants h and c are wrong");
@@ -62,7 +62,7 @@ export const energy2WavelengthConverter = (energy: math.Unit): math.Unit => {
 export const wavelength2EnergyConverter = (
   wavelength: math.Unit,
 ): math.Unit => {
-  const result = math.divide(math.multiply(PLANCK, CSPEED), wavelength.toSI());
+  const result = mathjs.divide(mathjs.multiply(PLANCK, CSPEED), wavelength.toSI());
   if (typeof result == "number" || !("units" in result)) {
     throw TypeError("units for constants h and c are wrong");
   }
@@ -95,9 +95,7 @@ export const enforceRangeLimits = (
   max: number,
   value: number,
 ): number => {
-  if (value > max) {
-    return max;
-  }
+  if (value > max) return max;
   if (value < min) return min;
   return value;
 };

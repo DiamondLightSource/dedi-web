@@ -21,7 +21,7 @@ export interface BeamlineConfigStore extends BeamlineConfig {
   updateWavelengthUnits: (newUnits: WavelengthUnits) => void;
   updateEnergy: (newEnergy: number | null, newUnits: EnergyUnits) => void;
   updateEnergyUnits: (newUnits: EnergyUnits) => void;
-  update: (newConfig: Partial<BeamlineConfig>) => void;
+  update: (newConfig: Partial<BeamlineConfigStore>) => void;
 }
 
 export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
@@ -69,5 +69,5 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
       energy: state.energy.to(newUnits),
       userEnergy: state.energy.to(newUnits).toNumber(),
     })),
-  update: (newConfig: Partial<BeamlineConfig>) => set({ ...newConfig }),
+  update: (newConfig: Partial<BeamlineConfigStore>) => set({ ...newConfig }),
 }));
