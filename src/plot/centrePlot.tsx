@@ -17,7 +17,7 @@ import {
   Plotter,
   getDomains,
 } from "./plotUtils";
-import { PlotAxes, usePlotStore } from "./plotStore";
+import { usePlotStore } from "./plotStore";
 import {
   BeamlineConfig,
   Beamstop,
@@ -77,7 +77,7 @@ export default function CentrePlot(): JSX.Element {
     beamlineConfig.cameraLength &&
     beamlineConfig.wavelength
   ) {
-    const scaleFactor = mathjs.divide(2e-12 * Math.PI, mathjs.multiply(mathjs.unit(beamlineConfig.cameraLength, "m"), beamlineConfig.wavelength));
+    // const scaleFactor = mathjs.divide(2e-12 * Math.PI, mathjs.multiply(mathjs.unit(beamlineConfig.cameraLength, "m"), beamlineConfig.wavelength));
   }
 
   // evil :( :( :( :()

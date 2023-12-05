@@ -92,7 +92,7 @@ export class Plotter {
         centreVec.y + mathjs.divide(diameter, 2).to(this.yunit).toNumber(),
       ),
     };
-  };
+  }
 
   createPlotEllipseClearance = (
     centre: UnitVector,
@@ -125,7 +125,7 @@ export class Plotter {
       lowerBound: new Vector3(0, 0),
       upperBound: new Vector3(mathjs.unit(resolution.width, "xpixel").to(this.xunit).toNumber(), mathjs.unit(resolution.height, "ypixel").to(this.yunit).toNumber()),
     };
-  };
+  }
 
   createPlotRange = (
     startPoint: UnitVector,
@@ -136,5 +136,5 @@ export class Plotter {
       end: new Vector3(endPoint.x.to(this.xunit).toNumber(), endPoint.y.to(this.yunit).toNumber()),
     };
   };
-};
+}
 
