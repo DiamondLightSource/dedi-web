@@ -4,7 +4,7 @@ import { create } from "zustand";
 export enum PlotAxes {
   milimeter = "mm",
   pixel = "pixel",
-  reciprocal = "reciprocal",
+  reciprocal = "mm^-1",
 }
 
 export interface PlotConfig {
@@ -34,13 +34,13 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   cameraTube: true,
   cameraTubeColor: { r: 80, g: 227, b: 194, a: 0.4 },
   visibleRange: true,
-  visibleColor: { r: 208, g: 2, b: 27, a: 1 },
+  visibleColor: { r: 245, g: 166, b: 35, a: 1 },
   requestedRange: true,
   requestedRangeColor: { r: 65, g: 117, b: 5, a: 1 },
   clearance: true,
   clearanceColor: { r: 0, g: 0, b: 0, a: 0.2 },
-  inaccessibleRange: false,
-  inaccessibleRangeColor: { r: 245, g: 166, b: 35, a: 1 },
+  inaccessibleRange: true,
+  inaccessibleRangeColor: { r: 208, g: 2, b: 27, a: 1 },
   plotAxes: PlotAxes.milimeter,
   update: (newConfig) => {
     set({ ...newConfig });

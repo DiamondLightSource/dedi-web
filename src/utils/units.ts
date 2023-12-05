@@ -48,7 +48,8 @@ export interface UnitConfig {
  */
 export const energy2WavelengthConverter = (energy: math.Unit): math.Unit => {
   const result = math.divide(math.multiply(PLANCK, CSPEED), energy.toSI());
-  if (typeof result == "number") {
+
+  if (typeof result == "number" || !("units" in result)) {
     throw TypeError("units for constants h and c are wrong");
   }
   return result;
@@ -63,7 +64,7 @@ export const wavelength2EnergyConverter = (
   wavelength: math.Unit,
 ): math.Unit => {
   const result = math.divide(math.multiply(PLANCK, CSPEED), wavelength.toSI());
-  if (typeof result == "number") {
+  if (typeof result == "number" || !("units" in result)) {
     throw TypeError("units for constants h and c are wrong");
   }
   return result;

@@ -43,113 +43,98 @@ export interface UnitVector {
   y: math.Unit
 }
 
-export const createPlotEllipse = (
-  centre: UnitVector,
-  diameter: math.Unit,
-  plotAxes: PlotAxes,
-): PlotEllipse => {
-  let xunit = plotAxes as string;
-  let yunit = plotAxes as string;
-
-  if (plotAxes === PlotAxes.pixel) {
-    xunit = "xpixel";
-    yunit = "ypixel";
-  }
-
-  const centreVec = new Vector3(
-    centre.x.to(xunit).toNumber(),
-    centre.y.to(yunit).toNumber(),
-  );
-
-  return {
-    centre: centreVec,
-    endPointX: new Vector3(
-      centreVec.x + mathjs.divide(diameter, 2).to(xunit).toNumber(),
-      centreVec.y,
-    ),
-    endPointY: new Vector3(
-      centreVec.x,
-      centreVec.y + mathjs.divide(diameter, 2).to(yunit).toNumber(),
-    ),
-  };
-};
-
-export const createPlotEllipseClearance = (
-  centre: UnitVector,
-  diameter: math.Unit,
-  clearance: number,
-  plotAxes: PlotAxes,
-): PlotEllipse => {
-  let xunit = plotAxes as string;
-  let yunit = plotAxes as string;
-
-  if (plotAxes === PlotAxes.pixel) {
-    xunit = "xpixel";
-    yunit = "ypixel";
-  }
-
-  const centreVec = new Vector3(
-    centre.x.to(xunit).toNumber(),
-    centre.y.to(yunit).toNumber(),
-  );
-
-  return {
-    centre: centreVec,
-    endPointX: new Vector3(
-      centreVec.x + mathjs.divide(diameter, 2).to(xunit).toNumber() + mathjs.unit(clearance, "xpixel").to(xunit).toNumber(),
-      centreVec.y,
-    ),
-    endPointY: new Vector3(
-      centreVec.x,
-      centreVec.y + mathjs.divide(diameter, 2).to(yunit).toNumber() + mathjs.unit(clearance, "ypixel").to(yunit).toNumber(),
-    ),
-  };
-};
-
 
 export interface PlotRectangle {
   upperBound: Vector3;
   lowerBound: Vector3;
 }
 
-export const createPlotRectangle = (
-  pinnedCorner: Vector3,
-  resolution: { height: number; width: number },
-  plotAxes: PlotAxes,
-): PlotRectangle => {
-  let xunit = plotAxes as string;
-  let yunit = plotAxes as string;
-  if (plotAxes === PlotAxes.pixel) {
-    xunit = "xpixel";
-    yunit = "ypixel";
-  }
 
-
-  return {
-    lowerBound: pinnedCorner,
-    upperBound: new Vector3(mathjs.unit(resolution.width, "xpixel").to(xunit).toNumber(), mathjs.unit(resolution.height, "ypixel").to(yunit).toNumber()),
-  };
-};
 
 export interface PlotRange {
   start: Vector3;
   end: Vector3;
 }
 
-export const createPlotRange = (
-  startPoint: UnitVector,
-  endPoint: UnitVector,
-  plotAxes: PlotAxes,
-): PlotRange => {
-  let xunit = plotAxes as string;
-  let yunit = plotAxes as string;
-  if (plotAxes === PlotAxes.pixel) {
-    xunit = "xpixel";
-    yunit = "ypixel";
+export class Plotter {
+  plotAxes: PlotAxes;
+  private xunit: string;
+  private yunit: string;
+  private scaleFactor: mathjs.Unit | null;
+  constructor(plotAxes: PlotAxes, scaleFactor: mathjs.Unit | null) {
+    this.xunit = plotAxes as string;
+    this.yunit = plotAxes as string;
+    this.plotAxes = plotAxes;
+    this.scaleFactor = scaleFactor;
+    if (plotAxes === PlotAxes.pixel) {
+      this.xunit = "xpixel";
+      this.yunit = "ypixel";
+    }
   }
 
-  return {
-    start: new Vector3(startPoint.x.to(xunit).toNumber(), startPoint.y.to(yunit).toNumber()),
-    end: new Vector3(endPoint.x.to(xunit).toNumber(), endPoint.y.to(yunit).toNumber()),
+  createPlotEllipse(
+    centre: UnitVector,
+    diameter: math.Unit,
+  ): PlotEllipse {
+    const centreVec = new Vector3(
+      centre.x.to(this.xunit).toNumber(),
+      centre.y.to(this.yunit).toNumber(),
+    );
+
+    return {
+      centre: centreVec,
+      endPointX: new Vector3(
+        centreVec.x + mathjs.divide(diameter, 2).to(this.xunit).toNumber(),
+        centreVec.y,
+      ),
+      endPointY: new Vector3(
+        centreVec.x,
+        centreVec.y + mathjs.divide(diameter, 2).to(this.yunit).toNumber(),
+      ),
+    };
+  };
+
+  createPlotEllipseClearance = (
+    centre: UnitVector,
+    diameter: math.Unit,
+    clearance: number,
+  ): PlotEllipse => {
+
+    const centreVec = new Vector3(
+      centre.x.to(this.xunit).toNumber(),
+      centre.y.to(this.yunit).toNumber(),
+    );
+
+    return {
+      centre: centreVec,
+      endPointX: new Vector3(
+        centreVec.x + mathjs.divide(diameter, 2).to(this.xunit).toNumber() + mathjs.unit(clearance, "xpixel").to(this.xunit).toNumber(),
+        centreVec.y,
+      ),
+      endPointY: new Vector3(
+        centreVec.x,
+        centreVec.y + mathjs.divide(diameter, 2).to(this.yunit).toNumber() + mathjs.unit(clearance, "ypixel").to(this.yunit).toNumber(),
+      ),
+    };
+  };
+
+  createPlotRectangle(
+    resolution: { height: number; width: number },
+  ): PlotRectangle {
+    return {
+      lowerBound: new Vector3(0, 0),
+      upperBound: new Vector3(mathjs.unit(resolution.width, "xpixel").to(this.xunit).toNumber(), mathjs.unit(resolution.height, "ypixel").to(this.yunit).toNumber()),
+    };
+  };
+
+  createPlotRange = (
+    startPoint: UnitVector,
+    endPoint: UnitVector,
+  ): PlotRange => {
+    return {
+      start: new Vector3(startPoint.x.to(this.xunit).toNumber(), startPoint.y.to(this.yunit).toNumber()),
+      end: new Vector3(endPoint.x.to(this.xunit).toNumber(), endPoint.y.to(this.yunit).toNumber()),
+    };
   };
 };
+

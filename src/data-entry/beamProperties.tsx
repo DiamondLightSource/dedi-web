@@ -139,9 +139,9 @@ export default function BeampropertiesDataEntry() {
           value={beamlineConfig.cameraLength ?? ""}
           InputProps={{
             inputProps: {
-              max: beamlineConfig.maxCameraLength,
-              min: beamlineConfig.minCameraLength,
-              step: beamlineConfig.cameraLengthStep,
+              max: beamlineConfig.maxCameraLength.toNumber(),
+              min: beamlineConfig.minCameraLength.toNumber(),
+              step: beamlineConfig.cameraLengthStep.toNumber(),
             },
           }}
           onChange={handleCameraLength}

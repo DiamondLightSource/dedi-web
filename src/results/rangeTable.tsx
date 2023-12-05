@@ -66,10 +66,10 @@ export default function RangeTable(props: {
                 {ScatteringOptions.q}
               </TableCell>
               <TableCell align="right">
-                {qRange.min.toNumber().toFixed(4)}
+                {isNaN(qRange.min.toNumber()) ? "" : qRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
-                {qRange.max.toNumber().toFixed(4)}
+                {isNaN(qRange.max.toNumber()) ? "" : qRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
                 <FormControl>
@@ -95,10 +95,10 @@ export default function RangeTable(props: {
                 {ScatteringOptions.s}
               </TableCell>
               <TableCell align="right">
-                {sRange.min.toNumber().toFixed(4)}
+                {isNaN(sRange.min.toNumber()) ? "" : sRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
-                {sRange.max.toNumber().toFixed(4)}
+                {isNaN(sRange.max.toNumber()) ? "" : sRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
                 <FormControl>
@@ -124,10 +124,10 @@ export default function RangeTable(props: {
                 {ScatteringOptions.d}
               </TableCell>
               <TableCell align="right">
-                {dRange.min.toNumber().toFixed(4)}
+                {isNaN(dRange.min.toNumber()) ? "" : dRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
-                {dRange.max.toNumber().toFixed(4)}
+                {isNaN(dRange.max.toNumber()) ? "" : dRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
                 <FormControl>

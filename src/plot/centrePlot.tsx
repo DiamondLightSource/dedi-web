@@ -14,13 +14,10 @@ import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 import {
   UnitVector,
-  createPlotEllipse,
-  createPlotEllipseClearance,
-  createPlotRange,
-  createPlotRectangle,
+  Plotter,
   getDomains,
 } from "./plotUtils";
-import { usePlotStore } from "./plotStore";
+import { PlotAxes, usePlotStore } from "./plotStore";
 import {
   BeamlineConfig,
   Beamstop,
@@ -74,6 +71,15 @@ export default function CentrePlot(): JSX.Element {
     return { centre: state.centre, diameter: state.diameter };
   });
 
+
+  const scaleFactor: mathjs.Unit | null = null;
+  if (
+    beamlineConfig.cameraLength &&
+    beamlineConfig.wavelength
+  ) {
+    const scaleFactor = mathjs.divide(2e-12 * Math.PI, mathjs.multiply(mathjs.unit(beamlineConfig.cameraLength, "m"), beamlineConfig.wavelength));
+  }
+
   // evil :( :( :( :()
   /* eslint-disable */
   if (mathjs.Unit.UNITS.xpixel) {
@@ -89,6 +95,7 @@ export default function CentrePlot(): JSX.Element {
 
   mathjs.createUnit("xpixel", detector.pixelSize.width.toString());
   mathjs.createUnit("ypixel", detector.pixelSize.height.toString());
+
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = computeQrange(
     detector,
@@ -121,35 +128,31 @@ export default function CentrePlot(): JSX.Element {
     y: mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel")
   }
 
-  const plotBeamstop = createPlotEllipse(
+  const plotter = new Plotter(plotConfig.plotAxes, scaleFactor)
+
+  const plotBeamstop = plotter.createPlotEllipse(
     beamstopCentre,
-    beamstop.diameter,
-    plotConfig.plotAxes,
+    beamstop.diameter
   );
 
-  const plotCameraTube = createPlotEllipse(
+  const plotCameraTube = plotter.createPlotEllipse(
     cameraTubeCentre,
-    cameraTube.diameter,
-    plotConfig.plotAxes,
+    cameraTube.diameter
   );
 
-  const plotClearance = createPlotEllipseClearance(
+  const plotClearance = plotter.createPlotEllipseClearance(
     beamstopCentre,
     beamstop.diameter,
-    beamstop.clearance ?? 0,
-    plotConfig.plotAxes,
+    beamstop.clearance ?? 0
   );
 
-  const plotDetector = createPlotRectangle(
-    new Vector3(0, 0),
+  const plotDetector = plotter.createPlotRectangle(
     detector.resolution,
-    plotConfig.plotAxes,
   );
 
-  const plotVisibleRange = createPlotRange(
+  const plotVisibleRange = plotter.createPlotRange(
     minPoint,
     maxPoint,
-    plotConfig.plotAxes,
   );
 
   // I am up to here
@@ -180,13 +183,15 @@ export default function CentrePlot(): JSX.Element {
     )
   });
 
+
   let plotRequestedRange = {
     start: new Vector3(0, 0),
     end: new Vector3(0, 0),
   };
   if (
     requestedRange &&
-    beamlineConfig.cameraLength
+    beamlineConfig.cameraLength &&
+    beamlineConfig.wavelength
   ) {
     const requestedMaxPt = getPointForQ(
       requestedRange.max,
@@ -202,12 +207,13 @@ export default function CentrePlot(): JSX.Element {
       beamlineConfig.wavelength,
       beamstopCentre,
     );
-    plotRequestedRange = createPlotRange(
+    plotRequestedRange = plotter.createPlotRange(
       requestedMinPt,
-      requestedMaxPt,
-      plotConfig.plotAxes,
+      requestedMaxPt
     );
   }
+
+
 
   const domains = getDomains(plotDetector, plotConfig.plotAxes);
 

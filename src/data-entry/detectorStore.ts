@@ -16,7 +16,7 @@ export const useDetectorStore = create<DetectorStore>((set) => ({
   detectorList: detectorList,
   updateDetector: (newDetector: string) =>
     set((state) => ({
-      current: state.detectorList[newDetector],
+      ...state.detectorList[newDetector],
       name: newDetector,
     })),
   updatePixelUnits: (newUnits: DistanceUnits) =>

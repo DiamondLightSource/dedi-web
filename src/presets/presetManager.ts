@@ -81,7 +81,7 @@ export const presetList: Record<string, AppDataFormat> = Object.fromEntries(
       cameraLengthStep: mathjs.unit(value.cameraLengthStep, "m"),
 
       wavelength: mathjs.unit(value.wavelength ?? NaN, "nm"),
-      angle: mathjs.unit(value.angle ?? NaN, "rad"),
+      angle: mathjs.unit(value.angle ?? NaN, "deg"),
     },
   ]),
 );

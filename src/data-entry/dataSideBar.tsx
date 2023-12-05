@@ -67,7 +67,7 @@ export default function DataSideBar(): JSX.Element {
                   {DistanceUnits.millimetre} x {DistanceUnits.millimetre}
                 </MenuItem>
                 <MenuItem value={DistanceUnits.micrometre}>
-                  {DistanceUnits.micrometre} x {DistanceUnits.micrometre}
+                  {"\u03BC" + "m"} x {"\u03BC" + "m"}
                 </MenuItem>
               </Select>
             </FormControl>
