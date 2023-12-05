@@ -3,7 +3,6 @@ import * as math from "mathjs";
 export const CSPEED = math.unit(299792458, "m/s");
 export const PLANCK = math.unit(6.62607015e-34, "J s");
 
-
 export enum DistanceUnits {
   millimetre = "mm",
   micrometre = "um",

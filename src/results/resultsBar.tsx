@@ -12,9 +12,7 @@ import {
 } from "@mui/material";
 import NumericRange from "../calculations/numericRange";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
-import {
-  parseNumericInput,
-} from "../utils/units";
+import { parseNumericInput } from "../utils/units";
 import { RangeDiagram, MessageDiagram } from "./rangeDiagram";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -55,19 +53,32 @@ export default function ResultsBar(props: {
   if (props.visableQRange && props.fullQrange && requestedRange) {
     switch (resultStore.requested) {
       case ScatteringOptions.d:
-        diagramVisible = props.visableQRange.apply(convertBetweenQAndD).to("nm");
+        diagramVisible = props.visableQRange
+          .apply(convertBetweenQAndD)
+          .to("nm");
         diagramFull = props.fullQrange.apply(convertBetweenQAndD).to("nm");
-        diagramRequested = UnitRange.fromNumericRange(requestedRange, resultStore.dUnits as string).to("nm");
+        diagramRequested = UnitRange.fromNumericRange(
+          requestedRange,
+          resultStore.dUnits as string,
+        ).to("nm");
         break;
       case ScatteringOptions.s:
-        diagramVisible = props.visableQRange.apply(convertBetweenQAndS).to("nm");
+        diagramVisible = props.visableQRange
+          .apply(convertBetweenQAndS)
+          .to("nm");
         diagramFull = props.fullQrange.apply(convertBetweenQAndS).to("nm");
-        diagramRequested = UnitRange.fromNumericRange(requestedRange, resultStore.sUnits as string).to("nm");
+        diagramRequested = UnitRange.fromNumericRange(
+          requestedRange,
+          resultStore.sUnits as string,
+        ).to("nm");
         break;
       default:
         diagramVisible = props.visableQRange.to("nm^-1");
         diagramFull = props.fullQrange.to("nm^-1");
-        diagramRequested = UnitRange.fromNumericRange(requestedRange, resultStore.qUnits as string).to("nm^-1");
+        diagramRequested = UnitRange.fromNumericRange(
+          requestedRange,
+          resultStore.qUnits as string,
+        ).to("nm^-1");
     }
   }
 

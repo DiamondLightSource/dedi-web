@@ -21,10 +21,7 @@ import {
 } from "./scatteringQuantities";
 import UnitRange from "../calculations/unitRange";
 
-
-export default function RangeTable(props: {
-  qRange: UnitRange;
-}): JSX.Element {
+export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
   const resultsStore = useResultStore();
   const updateQUnits = useResultStore((state) => state.updateQUnits);
   const updateSUnits = useResultStore((state) => state.updateSUnits);
@@ -43,10 +40,13 @@ export default function RangeTable(props: {
   const handleDunits = (event: SelectChangeEvent<WavelengthUnits>) => {
     updateDUnits(event.target.value as WavelengthUnits);
   };
-  const qRange = props.qRange.to(resultsStore.qUnits as string)
-  const sRange = props.qRange.apply(convertBetweenQAndS).to(resultsStore.sUnits as string);
-  const dRange = props.qRange.apply(convertBetweenQAndD).to(resultsStore.dUnits as string);
-
+  const qRange = props.qRange.to(resultsStore.qUnits as string);
+  const sRange = props.qRange
+    .apply(convertBetweenQAndS)
+    .to(resultsStore.sUnits as string);
+  const dRange = props.qRange
+    .apply(convertBetweenQAndD)
+    .to(resultsStore.dUnits as string);
 
   return (
     <Box flexGrow={1}>
@@ -66,10 +66,14 @@ export default function RangeTable(props: {
                 {ScatteringOptions.q}
               </TableCell>
               <TableCell align="right">
-                {isNaN(qRange.min.toNumber()) ? "" : qRange.min.toNumber().toFixed(4)}
+                {isNaN(qRange.min.toNumber())
+                  ? ""
+                  : qRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
-                {isNaN(qRange.max.toNumber()) ? "" : qRange.max.toNumber().toFixed(4)}
+                {isNaN(qRange.max.toNumber())
+                  ? ""
+                  : qRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
                 <FormControl>
@@ -95,10 +99,14 @@ export default function RangeTable(props: {
                 {ScatteringOptions.s}
               </TableCell>
               <TableCell align="right">
-                {isNaN(sRange.min.toNumber()) ? "" : sRange.min.toNumber().toFixed(4)}
+                {isNaN(sRange.min.toNumber())
+                  ? ""
+                  : sRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
-                {isNaN(sRange.max.toNumber()) ? "" : sRange.max.toNumber().toFixed(4)}
+                {isNaN(sRange.max.toNumber())
+                  ? ""
+                  : sRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
                 <FormControl>
@@ -124,10 +132,14 @@ export default function RangeTable(props: {
                 {ScatteringOptions.d}
               </TableCell>
               <TableCell align="right">
-                {isNaN(dRange.min.toNumber()) ? "" : dRange.min.toNumber().toFixed(4)}
+                {isNaN(dRange.min.toNumber())
+                  ? ""
+                  : dRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
-                {isNaN(dRange.max.toNumber()) ? "" : dRange.max.toNumber().toFixed(4)}
+                {isNaN(dRange.max.toNumber())
+                  ? ""
+                  : dRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="right">
                 <FormControl>

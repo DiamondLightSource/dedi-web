@@ -4,7 +4,7 @@ import { create } from "zustand";
 export enum PlotAxes {
   milimeter = "mm",
   pixel = "pixel",
-  reciprocal = "mm^-1",
+  reciprocal = "nm^-1",
 }
 
 export interface PlotConfig {

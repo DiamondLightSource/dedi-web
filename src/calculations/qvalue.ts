@@ -43,11 +43,21 @@ export const getPointForQ = (
   beamstopCentre: UnitVector,
 ): UnitVector => {
   const ray = new Ray(
-    new Vector2(Math.cos(angle.toSI().toNumber()), Math.sin(angle.toSI().toNumber())),
-    new Vector2(beamstopCentre.x.toSI().toNumber(), beamstopCentre.y.toSI().toNumber()),
+    new Vector2(
+      Math.cos(angle.toSI().toNumber()),
+      Math.sin(angle.toSI().toNumber()),
+    ),
+    new Vector2(
+      beamstopCentre.x.toSI().toNumber(),
+      beamstopCentre.y.toSI().toNumber(),
+    ),
   );
   const result = ray.getPointAtDistance(
-    (calculateDistanceFromQValue(qValue.toSI().toNumber(), cameralength.toSI().toNumber(), wavelength.toSI().toNumber())) ?? 0,
+    calculateDistanceFromQValue(
+      qValue.toSI().toNumber(),
+      cameralength.toSI().toNumber(),
+      wavelength.toSI().toNumber(),
+    ) ?? 0,
   );
-  return { x: mathjs.unit(result.x, "m"), y: mathjs.unit(result.y, "m") }
+  return { x: mathjs.unit(result.x, "m"), y: mathjs.unit(result.y, "m") };
 };

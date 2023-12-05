@@ -22,8 +22,8 @@ export function RangeDiagram(props: {
   fullRange: UnitRange;
   requestedRange: UnitRange;
 }): JSX.Element {
-  console.log(props.requestedRange.min.formatUnits())
-  const svgRange = props.visibleRange.max.toNumber() - props.visibleRange.min.toNumber();
+  const svgRange =
+    props.visibleRange.max.toNumber() - props.visibleRange.min.toNumber();
   const requestedMax = (props.requestedRange.max.toNumber() / svgRange) * 100;
   const requestedMin = (props.requestedRange.min.toNumber() / svgRange) * 100;
   const rectColour = props.visibleRange.containsRange(props.requestedRange)

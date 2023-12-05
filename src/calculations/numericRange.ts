@@ -21,7 +21,6 @@ export default class NumericRange {
     return other.min >= this.min && other.max <= this.max;
   }
 
-
   toString(): string {
     return `(min:${this.min}, max:${this.max})`;
   }
@@ -38,16 +37,13 @@ export default class NumericRange {
     );
   }
 
-
   equals(other: NumericRange): boolean {
     return this.min === other.min && this.max === other.max;
   }
 
-
   apply(func: (value: number) => number): NumericRange {
     return new NumericRange(func(this.min), func(this.max));
   }
-
 
   inPlaceApply(func: (value: number) => number): NumericRange {
     this.min = func(this.min);
