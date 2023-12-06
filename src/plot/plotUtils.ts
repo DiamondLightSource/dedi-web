@@ -4,19 +4,10 @@ import { PlotAxes } from "./plotStore";
 import { Vector3 } from "three";
 import * as mathjs from "mathjs";
 
-// Questionable is this how you would do this think about it a little more
+// Re think in future
 export const getDomains = (
   detector: PlotRectangle,
-  axes: PlotAxes,
 ): { xAxis: NumericRange; yAxis: NumericRange } => {
-  let offset = 500;
-  if (axes === PlotAxes.milimeter) {
-    offset = 100;
-  }
-
-  if (axes === PlotAxes.reciprocal) {
-    offset = 10;
-  }
 
   const maxAxis =
     detector.upperBound.x > detector.upperBound.y
@@ -24,9 +15,11 @@ export const getDomains = (
       : detector.upperBound.y;
 
   const minAxis =
-    detector.lowerBound.x > detector.lowerBound.y
+    detector.lowerBound.x < detector.lowerBound.y
       ? detector.lowerBound.x
       : detector.lowerBound.y;
+
+  const offset = 0.2 * (maxAxis - minAxis)
 
   return {
     xAxis: new NumericRange(Math.round(minAxis - offset), Math.round(maxAxis + offset)),

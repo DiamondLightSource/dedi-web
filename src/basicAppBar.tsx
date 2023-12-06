@@ -35,6 +35,7 @@ export default function BasicAppBar(): JSX.Element {
     updateCameraTube(cameraTube);
     updateBeamlineConfig(beamlineConfig);
     updateBeamlineConfig({ preset: preset });
+
   };
 
   return (

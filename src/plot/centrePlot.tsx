@@ -221,7 +221,7 @@ export default function CentrePlot(): JSX.Element {
 
   console.log(plotDetector);
 
-  const domains = getDomains(plotDetector, plotConfig.plotAxes);
+  const domains = getDomains(plotDetector);
 
   return (
     <Box>
