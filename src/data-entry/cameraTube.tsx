@@ -9,7 +9,6 @@ import {
 import { Stack } from "@mui/system";
 import { useCameraTubeStore } from "./cameraTubeStore";
 import { DistanceUnits } from "../utils/units";
-import CentredText from "../utils/elements";
 
 export default function CameraTubeDataEntry(): JSX.Element {
   const cameraTube = useCameraTubeStore();

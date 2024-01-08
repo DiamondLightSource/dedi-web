@@ -180,7 +180,7 @@ export default function LegendBar(): JSX.Element {
                       plotConfig.update({ inaccessibleRangeColor: color.rgb })
                     }
                   />
-                  <Typography>inaccessible Range</Typography>
+                  <Typography>Inaccessible Range</Typography>
                 </Stack>
               }
             />

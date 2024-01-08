@@ -6,13 +6,11 @@ import {
   MenuItem,
   InputLabel,
   Button,
-  TextField,
-  Grid,
+  TextField
 } from "@mui/material";
 import { DistanceUnits } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
-import CentredText from "../utils/elements";
 
 export default function BeamStopDataEntry(): JSX.Element {
   const beamstop = useBeamstopStore();
