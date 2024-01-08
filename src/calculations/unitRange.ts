@@ -13,7 +13,9 @@ export default class UnitRange {
     this.max = max;
 
     if (!min.equalBase(max)) {
-      throw new TypeError("min and max units must be same base length, mass, etc");
+      throw new TypeError(
+        "min and max units must be same base length, mass, etc",
+      );
     }
 
     if (mathjs.larger(min, max)) {
@@ -26,7 +28,7 @@ export default class UnitRange {
   /**
    * Creates a new UnitRange with the units converted to a specific unit name
    * @param units - Unit name to convert too, see mathsjs unitName
-   * @returns 
+   * @returns
    */
   to(units: string): UnitRange {
     return new UnitRange(this.min.to(units), this.max.to(units));
@@ -34,35 +36,35 @@ export default class UnitRange {
   /**
    * Checks if the range contains the input value with units
    * @param value - input Unit
-   * @returns 
+   * @returns
    */
   containsValue(value: mathjs.Unit): boolean {
-    const result = mathjs.largerEq(value, this.min) && mathjs.largerEq(value, this.max);
+    const result =
+      mathjs.largerEq(value, this.min) && mathjs.largerEq(value, this.max);
     if (!(typeof result == "boolean")) {
-      throw TypeError("Can only check one value at a time")
+      throw TypeError("Can only check one value at a time");
     }
-    return result
+    return result;
   }
   /**
    * Checks if the range contains the input NumericRange
-   * @param other - input another UnitRange 
-   * @returns 
+   * @param other - input another UnitRange
+   * @returns
    */
   containsRange(other: UnitRange): boolean {
-    const result = (
+    const result =
       mathjs.smallerEq(this.min, other.min) &&
-      mathjs.largerEq(this.max, other.max)
-    );
+      mathjs.largerEq(this.max, other.max);
     if (!(typeof result == "boolean")) {
-      throw TypeError("Can only check one value at a time")
+      throw TypeError("Can only check one value at a time");
     }
-    return result
+    return result;
   }
 
   /**
    * Finds the intersection of this range and another.
-   * @param other - The intersection UnitRange or null 
-   * @returns 
+   * @param other - The intersection UnitRange or null
+   * @returns
    */
   intersect(other: UnitRange): UnitRange | null {
     if (
@@ -79,7 +81,7 @@ export default class UnitRange {
 
   /**
    * Creates a new UnitRange by applying the function func to min and max
-   * @param func - A function to apply to the min and max value 
+   * @param func - A function to apply to the min and max value
    * @returns - The output range
    */
   apply(func: (value: mathjs.Unit) => mathjs.Unit): UnitRange {
@@ -88,8 +90,8 @@ export default class UnitRange {
 
   /**
    * Applies the function func to min and max members of UnitRange inplace
-   * @param func 
-   * @returns 
+   * @param func
+   * @returns
    */
   applyInPlace(func: (value: mathjs.Unit) => mathjs.Unit): UnitRange {
     this.min = func(this.min);
@@ -98,9 +100,9 @@ export default class UnitRange {
   }
   /**
    * Creates a UnitRange from a Numeric range
-   * @param range 
-   * @param units 
-   * @returns 
+   * @param range
+   * @param units
+   * @returns
    */
   static fromNumericRange(
     range: NumericRange | null,
@@ -117,12 +119,11 @@ export default class UnitRange {
   }
 
   equals(other: UnitRange): boolean {
-    const result = (
-      mathjs.equal(this.min, other.min) && mathjs.equal(this.max, other.max)
-    );
+    const result =
+      mathjs.equal(this.min, other.min) && mathjs.equal(this.max, other.max);
     if (!(typeof result == "boolean")) {
-      throw TypeError("write this later")
+      throw TypeError("write this later");
     }
-    return result
+    return result;
   }
 }

@@ -1,4 +1,3 @@
-
 /**
  * A class which represents a unitless numeric range by storing it's minimum and maximum numbers
  */
@@ -16,13 +15,12 @@ export default class NumericRange {
       this.max = min;
       this.min = temp;
     }
-
   }
 
   /**
    * Checks if the range contains the input value
    * @param value - input number
-   * @returns 
+   * @returns
    */
   containsValue(value: number): boolean {
     return value >= this.min && value <= this.max;
@@ -31,7 +29,7 @@ export default class NumericRange {
   /**
    * Checks if the range contains the input NumericRange
    * @param other - input NumericRange
-   * @returns 
+   * @returns
    */
   containsRange(other: NumericRange): boolean {
     return other.min >= this.min && other.max <= this.max;
@@ -39,8 +37,8 @@ export default class NumericRange {
 
   /**
    * Finds the intersection of this range and another.
-   * @param other 
-   * @returns The intersection NumericRange or null 
+   * @param other
+   * @returns The intersection NumericRange or null
    */
   intersect(other: NumericRange | null): NumericRange | null {
     if (other === null) {
@@ -56,7 +54,7 @@ export default class NumericRange {
 
   /**
    * Creates a new Numeric Range by applying the function func to min and max
-   * @param func - A function to apply to the min and max value 
+   * @param func - A function to apply to the min and max value
    * @returns - The output range
    */
   apply(func: (value: number) => number): NumericRange {
@@ -65,8 +63,8 @@ export default class NumericRange {
 
   /**
    * Applies the function func to min and max members of NumericRange inplace
-   * @param func 
-   * @returns 
+   * @param func
+   * @returns
    */
   applyInPlace(func: (value: number) => number): NumericRange {
     this.min = func(this.min);

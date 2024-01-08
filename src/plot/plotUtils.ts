@@ -8,7 +8,6 @@ import * as mathjs from "mathjs";
 export const getDomains = (
   detector: PlotRectangle,
 ): { xAxis: NumericRange; yAxis: NumericRange } => {
-
   const maxAxis =
     detector.upperBound.x > detector.upperBound.y
       ? detector.upperBound.x
@@ -19,11 +18,17 @@ export const getDomains = (
       ? detector.lowerBound.x
       : detector.lowerBound.y;
 
-  const offset = 0.2 * (maxAxis - minAxis)
+  const offset = 0.2 * (maxAxis - minAxis);
 
   return {
-    xAxis: new NumericRange(Math.round(minAxis - offset), Math.round(maxAxis + offset)),
-    yAxis: new NumericRange(Math.round(minAxis - offset), Math.round(maxAxis + offset)),
+    xAxis: new NumericRange(
+      Math.round(minAxis - offset),
+      Math.round(maxAxis + offset),
+    ),
+    yAxis: new NumericRange(
+      Math.round(minAxis - offset),
+      Math.round(maxAxis + offset),
+    ),
   };
 };
 
@@ -108,19 +113,19 @@ export class Plotter {
       centre: newcentreVec,
       endPointX: new Vector3(
         newcentreVec.x +
-        mathjs
-          .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
-          .to(this.xunit)
-          .toNumber(),
+          mathjs
+            .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
+            .to(this.xunit)
+            .toNumber(),
         newcentreVec.y,
       ),
       endPointY: new Vector3(
         newcentreVec.x,
         newcentreVec.y +
-        mathjs
-          .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
-          .to(this.yunit)
-          .toNumber(),
+          mathjs
+            .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
+            .to(this.yunit)
+            .toNumber(),
       ),
     };
   }
@@ -140,15 +145,15 @@ export class Plotter {
         centre: centreVec,
         endPointX: new Vector3(
           centreVec.x +
-          mathjs.divide(diameter, 2).to(this.xunit).toNumber() +
-          mathjs.unit(clearance, "xpixel").to(this.xunit).toNumber(),
+            mathjs.divide(diameter, 2).to(this.xunit).toNumber() +
+            mathjs.unit(clearance, "xpixel").to(this.xunit).toNumber(),
           centreVec.y,
         ),
         endPointY: new Vector3(
           centreVec.x,
           centreVec.y +
-          mathjs.divide(diameter, 2).to(this.yunit).toNumber() +
-          mathjs.unit(clearance, "ypixel").to(this.yunit).toNumber(),
+            mathjs.divide(diameter, 2).to(this.yunit).toNumber() +
+            mathjs.unit(clearance, "ypixel").to(this.yunit).toNumber(),
         ),
       };
     }
@@ -170,27 +175,27 @@ export class Plotter {
       centre: newcentreVec,
       endPointX: new Vector3(
         newcentreVec.x +
-        mathjs
-          .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
-          .to(this.xunit)
-          .toNumber() +
-        mathjs
-          .multiply(mathjs.unit(clearance, "xpixel"), this.scaleFactor)
-          .to(this.xunit)
-          .toNumber(),
+          mathjs
+            .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
+            .to(this.xunit)
+            .toNumber() +
+          mathjs
+            .multiply(mathjs.unit(clearance, "xpixel"), this.scaleFactor)
+            .to(this.xunit)
+            .toNumber(),
         newcentreVec.y,
       ),
       endPointY: new Vector3(
         newcentreVec.x,
         newcentreVec.y +
-        mathjs
-          .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
-          .to(this.yunit)
-          .toNumber() +
-        mathjs
-          .multiply(mathjs.unit(clearance, "ypixel"), this.scaleFactor)
-          .to(this.yunit)
-          .toNumber(),
+          mathjs
+            .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
+            .to(this.yunit)
+            .toNumber() +
+          mathjs
+            .multiply(mathjs.unit(clearance, "ypixel"), this.scaleFactor)
+            .to(this.yunit)
+            .toNumber(),
       ),
     };
   };
@@ -226,18 +231,18 @@ export class Plotter {
       ),
       upperBound: new Vector3(
         lowerBound.x.to(this.xunit).toNumber() +
-        mathjs
-          .multiply(mathjs.unit(resolution.width, "xpixel"), this.scaleFactor)
-          .to(this.xunit)
-          .toNumber(),
+          mathjs
+            .multiply(mathjs.unit(resolution.width, "xpixel"), this.scaleFactor)
+            .to(this.xunit)
+            .toNumber(),
         lowerBound.y.to(this.yunit).toNumber() +
-        mathjs
-          .multiply(
-            mathjs.unit(resolution.height, "ypixel"),
-            this.scaleFactor,
-          )
-          .to(this.yunit)
-          .toNumber(),
+          mathjs
+            .multiply(
+              mathjs.unit(resolution.height, "ypixel"),
+              this.scaleFactor,
+            )
+            .to(this.yunit)
+            .toNumber(),
       ),
     };
   }

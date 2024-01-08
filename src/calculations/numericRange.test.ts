@@ -27,7 +27,7 @@ test("test numeric range intersetion", () => {
 
   const range3 = new NumericRange(20, 28);
   expect(range3.intersect(range2)).toBe(null);
-})
+});
 
 test("test numeric range equality", () => {
   const range1 = new NumericRange(2, 3);
@@ -38,11 +38,19 @@ test("test numeric range equality", () => {
 test("test numeric range apply", () => {
   const range1 = new NumericRange(2, 3);
   const range2 = new NumericRange(4, 6);
-  const range3 = range1.apply((input: number) => { return 2 * input });
+  const range3 = range1.apply((input: number) => {
+    return 2 * input;
+  });
   expect(!range1.equals(range3));
   expect(range3.equals(range2));
 
   const range4 = new NumericRange(12, 18);
-  range1.applyInPlace((input: number) => { return 3 * input }).applyInPlace((input: number) => { return 2 * input });
+  range1
+    .applyInPlace((input: number) => {
+      return 3 * input;
+    })
+    .applyInPlace((input: number) => {
+      return 2 * input;
+    });
   expect(range4.equals(range1));
-})
+});
