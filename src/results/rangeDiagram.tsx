@@ -42,7 +42,7 @@ export function RangeDiagram(props: {
   const keepTextVisible = (requestedValue: number): number => {
     if (requestedValue < 50) {
       return requestedValue;
-    };
+    }
     return requestedValue - ESTIMATED_TEXT_LENGTH;
   }
 
