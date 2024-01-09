@@ -113,7 +113,7 @@ export default function ResultsBar(props: {
               <Stack flexGrow={2}>
                 <Stack spacing={1}>
                   <Stack direction={"row"} spacing={3}>
-                    <Stack spacing={1}>
+                    <Stack spacing={2}>
                       <Stack direction={"row"} spacing={2}>
                         <Typography>
                           Requested min {resultStore.requested} value:{" "}

@@ -1,8 +1,5 @@
 import UnitRange from "../calculations/unitRange";
 
-// keeping the text visible
-const ESTIMATED_TEXT_LENGTH = 14;
-
 export function MessageDiagram(props: { message: string }): JSX.Element {
   return (
     <svg
@@ -39,11 +36,8 @@ export function RangeDiagram(props: {
    * @param requestedValue - how far on the diagram to plot
    * @returns 
    */
-  const keepTextVisible = (requestedValue: number): number => {
-    if (requestedValue < 50) {
-      return requestedValue;
-    }
-    return requestedValue - ESTIMATED_TEXT_LENGTH;
+  const getTextAnchor = (requestedValue: number): string => {
+    return requestedValue < 50 ? "start" : "end";
   }
 
 
@@ -71,11 +65,11 @@ export function RangeDiagram(props: {
         y2="60%"
         style={{ stroke: "black", strokeWidth: 2 }}
       />
-      <text y="60%" x={`${keepTextVisible(requestedMin)}%`}>
+      <text y="60%" x={`${requestedMin}%`} textAnchor={getTextAnchor(requestedMin)}>
         {" "}
         Requested min
       </text>
-      <text y="80%" x={`${keepTextVisible(requestedMax)}%`}>
+      <text y="80%" x={`${requestedMax}%`} textAnchor={getTextAnchor(requestedMax)}>
         Requested max
       </text>
     </svg>
