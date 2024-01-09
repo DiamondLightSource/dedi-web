@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import NumericRange from "../calculations/numericRange";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
-import { parseNumericInput } from "../utils/units";
+import { ReciprocalWavelengthUnits, WavelengthUnits, parseNumericInput } from "../utils/units";
 import { RangeDiagram, MessageDiagram } from "./rangeDiagram";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -50,6 +50,8 @@ export default function ResultsBar(props: {
     });
   };
 
+  let textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null = null;
+
   if (props.visableQRange && props.fullQrange && requestedRange) {
     switch (resultStore.requested) {
       case ScatteringOptions.d:
@@ -61,6 +63,7 @@ export default function ResultsBar(props: {
           requestedRange,
           resultStore.dUnits as string,
         ).to("nm");
+        textBoxUnits = resultStore.dUnits;
         break;
       case ScatteringOptions.s:
         diagramVisible = props.visableQRange
@@ -71,6 +74,7 @@ export default function ResultsBar(props: {
           requestedRange,
           resultStore.sUnits as string,
         ).to("nm");
+        textBoxUnits = resultStore.sUnits;
         break;
       default:
         diagramVisible = props.visableQRange.to("nm^-1");
@@ -79,8 +83,22 @@ export default function ResultsBar(props: {
           requestedRange,
           resultStore.qUnits as string,
         ).to("nm^-1");
+        textBoxUnits = resultStore.qUnits;
     }
   }
+
+  const displayUnits = (textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null): string => {
+    switch (textBoxUnits as string) {
+      case "angstrom":
+        return "\u212B";
+      case "angstrom^-1":
+        return "\u212B^-1";
+      case null:
+        return "";
+      default:
+        return textBoxUnits as string;
+    }
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -94,28 +112,35 @@ export default function ResultsBar(props: {
               <Divider orientation="vertical" />
               <Stack flexGrow={2}>
                 <Stack spacing={1}>
-                  <Stack direction={"row"} spacing={1}>
+                  <Stack direction={"row"} spacing={3}>
                     <Stack spacing={1}>
-                      <Typography>
-                        Requested min {resultStore.requested} value:{" "}
-                      </Typography>
-                      <Typography>
-                        Requested max {resultStore.requested} value:{" "}
-                      </Typography>
-                    </Stack>
-                    <Stack spacing={1}>
-                      <TextField
-                        type="number"
-                        size="small"
-                        value={resultStore.requestedMin}
-                        onChange={handleRequestedMin}
-                      />
-                      <TextField
-                        type="number"
-                        size="small"
-                        value={resultStore.requestedMax}
-                        onChange={handleRequestedMax}
-                      />
+                      <Stack direction={"row"} spacing={2}>
+                        <Typography>
+                          Requested min {resultStore.requested} value:{" "}
+                        </Typography>
+                        <TextField
+                          type="number"
+                          size="small"
+                          value={resultStore.requestedMin}
+                          onChange={handleRequestedMin}
+                        />
+                        <Typography>{displayUnits(textBoxUnits)}</Typography>
+                      </Stack>
+                      <Stack direction={"row"} spacing={2}>
+                        <Typography>
+                          Requested max {resultStore.requested} value:{" "}
+                        </Typography>
+                        <TextField
+                          type="number"
+                          size="small"
+                          value={resultStore.requestedMax}
+                          onChange={handleRequestedMax}
+                        />
+                        <Typography>{
+                          displayUnits(textBoxUnits)
+                        }</Typography>
+                      </Stack>
+
                     </Stack>
                     <FormControl>
                       <FormLabel>Requested Quantiy</FormLabel>

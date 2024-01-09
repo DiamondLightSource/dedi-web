@@ -5,7 +5,7 @@ export const convertBetweenQAndS = (quantity: mathjs.Unit): math.Unit => {
   if (typeof result == "number" || !("units" in result)) {
     throw TypeError("name this error later ");
   }
-  return result
+  return result;
 };
 
 export const convertBetweenQAndD = (quantity: mathjs.Unit): mathjs.Unit => {
@@ -13,7 +13,7 @@ export const convertBetweenQAndD = (quantity: mathjs.Unit): mathjs.Unit => {
   if (typeof result == "number" || !("units" in result)) {
     throw TypeError("name this error later ");
   }
-  return result
+  return result;
 };
 
 export const convertFromDTooS = (quantity: mathjs.Unit): mathjs.Unit => {
@@ -21,7 +21,7 @@ export const convertFromDTooS = (quantity: mathjs.Unit): mathjs.Unit => {
   if (typeof result == "number" || !("units" in result)) {
     throw TypeError("");
   }
-  return result
+  return result;
 };
 
 export const convertFromStooD = (quantity: mathjs.Unit): mathjs.Unit => {
@@ -29,5 +29,5 @@ export const convertFromStooD = (quantity: mathjs.Unit): mathjs.Unit => {
   if (typeof result == "number" || !("units" in result)) {
     throw TypeError("");
   }
-  return result
+  return result;
 };

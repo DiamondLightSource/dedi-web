@@ -168,7 +168,7 @@ export default function LegendBar(): JSX.Element {
                       plotConfig.update({ inaccessibleRangeColor: color.rgb })
                     }
                   />
-                  <Typography>inaccessible Range</Typography>
+                  <Typography>Inaccessible Range</Typography>
                 </Stack>
               }
             />
@@ -200,6 +200,8 @@ export default function LegendBar(): JSX.Element {
               />
             </RadioGroup>
           </FormControl>
+          <Stack direction={"row"} spacing={1}>
+          </Stack>
         </Stack>
       </CardContent>
     </Card>

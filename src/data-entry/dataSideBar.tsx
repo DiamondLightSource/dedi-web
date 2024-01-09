@@ -10,12 +10,19 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  Button,
 } from "@mui/material";
 import { DistanceUnits } from "../utils/units";
 import BeamStopDataEntry from "./beamstop";
 import CameraTubeDataEntry from "./cameraTube";
-import { useDetectorStore } from "./detectorStore";
 import BeampropertiesDataEntry from "./beamProperties";
+import { useBeamlineConfigStore } from "./beamlineconfigStore";
+import { presetList } from "../presets/presetManager";
+import { useBeamstopStore } from "./beamstopStore";
+import { useCameraTubeStore } from "./cameraTubeStore";
+import { useDetectorStore } from "./detectorStore";
+import DetectorDialog from "../plot/detectorDialog";
+import React from "react";
 
 /**
  * React component which represents the side bar for data entry
@@ -24,26 +31,87 @@ import BeampropertiesDataEntry from "./beamProperties";
 export default function DataSideBar(): JSX.Element {
   const detector = useDetectorStore();
   const detectorList = useDetectorStore((state) => state.detectorList);
+  const beamlineConfig = useBeamlineConfigStore();
 
+  const updateBeamstop = useBeamstopStore((state) => state.updateBeamstop);
+  const updateCameraTube = useCameraTubeStore(
+    (state) => state.updateCameraTube,
+  );
+  const updateBeamlineConfig = useBeamlineConfigStore((state) => state.update);
+  const updateDetector = useDetectorStore((state) => state.updateDetector);
+  const handlePreset = (preset: string) => {
+    const { beamstop, cameraTube, detector, ...beamlineConfig } =
+      presetList[preset];
+    updateDetector(detector);
+    updateBeamstop(beamstop);
+    updateCameraTube(cameraTube);
+    updateBeamlineConfig(beamlineConfig);
+    updateBeamlineConfig({ preset: preset });
+  };
+
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <Card sx={{ height: 1 }}>
       <CardContent>
         <Stack spacing={1}>
+          <Typography variant="h6">Preset</Typography>
+          <Stack direction={"row"} spacing={2}>
+            <Autocomplete
+              size="small"
+              disablePortal
+              id="combo-box-demo"
+              options={Object.keys(presetList)}
+              value={beamlineConfig.preset}
+              sx={{ width: 300, color: "white" }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="choose beamline preset"
+                  sx={{ color: "white" }}
+                />
+              )}
+              onChange={(_, value) => {
+                value ? handlePreset(value) : {};
+              }}
+            />
+            <Button variant="outlined"> Save Current</Button>
+          </Stack>
           <Typography variant="h6">Detector</Typography>
-          <Autocomplete
-            size="small"
-            disablePortal
-            id="combo-box-demo"
-            options={Object.keys(detectorList)}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="choose detector type" />
-            )}
-            value={detector.name}
-            onChange={(_, value) => {
-              value ? detector.updateDetector(value) : {};
-            }}
-          />
+          <Stack direction={"row"} spacing={2}>
+            <Autocomplete
+              size="small"
+              disablePortal
+              id="combo-box-demo"
+              options={Object.keys(detectorList)}
+              sx={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} label="choose detector type" />
+              )}
+              value={detector.name}
+              onChange={(_, value) => {
+                value ? detector.updateDetector(value) : {};
+              }}
+            />
+            <Button variant="outlined" onClick={handleClickOpen}>
+              {" "}
+              Add new detector
+            </Button>
+            <DetectorDialog
+              open={open}
+              handleClose={handleClose}
+              handleOpen={handleClickOpen}
+            />
+          </Stack>
+
           <Typography>
             Resolution (hxw): {detector.resolution.height} x{" "}
             {detector.resolution.width}
