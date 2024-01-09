@@ -15,20 +15,9 @@ import {
 } from "@mui/material";
 import { PlotAxes, usePlotStore } from "./plotStore";
 import ColourPickerPopover from "../utils/colourPicker";
-import * as React from "react";
-import DetectorDialog from "./detectorDialog";
 
 export default function LegendBar(): JSX.Element {
   const plotConfig = usePlotStore();
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Card sx={{ height: 1, width: 1 }}>
@@ -213,16 +202,6 @@ export default function LegendBar(): JSX.Element {
             </RadioGroup>
           </FormControl>
           <Stack direction={"row"} spacing={1}>
-            <Button variant="outlined" onClick={handleClickOpen}>
-              {" "}
-              Add new detector
-            </Button>
-            <DetectorDialog
-              open={open}
-              handleClose={handleClose}
-              handleOpen={handleClickOpen}
-            />
-            <Button variant="outlined"> Save current config as preset</Button>
           </Stack>
         </Stack>
       </CardContent>

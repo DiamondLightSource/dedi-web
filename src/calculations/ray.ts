@@ -1,9 +1,14 @@
 import { Vector2 } from "three";
 import NumericRange from "./numericRange";
 
+/**
+ * A class which represents a (geometrical) ray. 
+ */
 export class Ray {
+
   direction: Vector2;
   initial_point: Vector2;
+
   constructor(direction: Vector2, initial_point: Vector2) {
     if (direction.length() == 0)
       throw TypeError(
@@ -12,7 +17,11 @@ export class Ray {
     this.direction = direction;
     this.initial_point = initial_point;
   }
-
+  /**
+   * The point on the ray that corresponds to the given scalar.
+   * @param scalar - given scalar value
+   * @returns - point on the ray
+   */
   getPoint(scalar: number): Vector2 {
     const result = new Vector2(this.direction.x, this.direction.y);
     result.multiplyScalar(scalar);
@@ -20,11 +29,22 @@ export class Ray {
     return result;
   }
 
+  /**
+   * Get the point at a given distance from the initial point
+   * @param distance - given distance
+   * @returns - point on the 
+   */
   getPointAtDistance(distance: number): Vector2 {
     return this.getPoint(distance / this.direction.length());
   }
 
-  getParameterRange(t1: number, t2: number): NumericRange {
+  /**
+   * Takes an arbitrary closed interval, and restricts it to the interval [0, infinity]
+   * @param t1 - interval endpoint 1
+   * @param t2 - interval endpoint 2
+   * @returns - restricted numeric range
+   */
+  static getParameterRange(t1: number, t2: number): NumericRange {
     let tMin = Math.min(t1, t2);
     const tMax = Math.max(t1, t2);
     if (tMin < 0) tMin = 0;
@@ -32,10 +52,10 @@ export class Ray {
   }
 
   /**
-   * Use quadratic formula to find the intersection of this ray and a circle in 2d.
-   * @param radius radius of the circle
-   * @param centre centre of the circle
-   * @returns
+   * Gets the Numeric range of the scalars of the intersection points of this ray and a circle.
+   * @param radius - radius of the circle
+   * @param centre - centre of the circle
+   * @returns - NumericRange of the intersection scalars
    */
   public getCircleIntersectionParameterRange(
     radius: number,
@@ -61,9 +81,16 @@ export class Ray {
       t1 = (0.5 * (-b - Math.sqrt(discriminant))) / a;
       t2 = (0.5 * (-b + Math.sqrt(discriminant))) / a;
     }
-    return this.getParameterRange(t1, t2);
+    return Ray.getParameterRange(t1, t2);
   }
 
+  /**
+   * Get the scalars of the intersection points of a rectangle with the ray
+   * @param topLeftCorner - top ledt corner of rectangle
+   * @param width - width of rectangle
+   * @param height - height of rectangle
+   * @returns - NumericRange of the scalars
+   */
   public getRectangleIntersectionParameterRange(
     topLeftCorner: Vector2,
     width: number,
@@ -88,7 +115,7 @@ export class Ray {
     if (this.direction.y == 0) {
       if (!new NumericRange(ymin, ymax).containsValue(this.initial_point.y))
         return null;
-      return this.getParameterRange(result.min, result.max);
+      return Ray.getParameterRange(result.min, result.max);
     }
 
     result = result.intersect(
@@ -102,6 +129,6 @@ export class Ray {
       return null;
     }
 
-    return this.getParameterRange(result.min, result.max);
+    return Ray.getParameterRange(result.min, result.max);
   }
 }
