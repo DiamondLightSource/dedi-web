@@ -8,6 +8,7 @@ export interface DetectorStore extends Detector {
   detectorList: Record<string, Detector>;
   updateDetector: (newDetector: string) => void;
   updatePixelUnits: (newUnits: DistanceUnits) => void;
+  addNewDetector: (name: string, detector: Detector) => void;
 }
 
 export const useDetectorStore = create<DetectorStore>((set) => ({
@@ -26,4 +27,7 @@ export const useDetectorStore = create<DetectorStore>((set) => ({
         width: state.pixelSize.width.to(newUnits as string),
       },
     })),
+  addNewDetector: (name: string, detector: Detector) => {
+    detectorList[name] = detector;
+  },
 }));

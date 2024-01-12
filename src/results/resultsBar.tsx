@@ -12,7 +12,11 @@ import {
 } from "@mui/material";
 import NumericRange from "../calculations/numericRange";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
-import { ReciprocalWavelengthUnits, WavelengthUnits, parseNumericInput } from "../utils/units";
+import {
+  ReciprocalWavelengthUnits,
+  WavelengthUnits,
+  parseNumericInput,
+} from "../utils/units";
 import { RangeDiagram, MessageDiagram } from "./rangeDiagram";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -87,7 +91,9 @@ export default function ResultsBar(props: {
     }
   }
 
-  const displayUnits = (textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null): string => {
+  const displayUnits = (
+    textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null,
+  ): string => {
     switch (textBoxUnits as string) {
       case "angstrom":
         return "\u212B";
@@ -136,11 +142,8 @@ export default function ResultsBar(props: {
                           value={resultStore.requestedMax}
                           onChange={handleRequestedMax}
                         />
-                        <Typography>{
-                          displayUnits(textBoxUnits)
-                        }</Typography>
+                        <Typography>{displayUnits(textBoxUnits)}</Typography>
                       </Stack>
-
                     </Stack>
                     <FormControl>
                       <FormLabel>Requested Quantiy</FormLabel>

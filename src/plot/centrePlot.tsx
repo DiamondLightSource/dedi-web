@@ -76,6 +76,10 @@ export default function CentrePlot(): JSX.Element {
         beamlineConfig.wavelength.to("m"),
       ),
     );
+
+    if (scaleFactor && !("units" in scaleFactor)) {
+      throw TypeError("things");
+    }
   }
 
   // evil :( :( :( :()
@@ -160,8 +164,6 @@ export default function CentrePlot(): JSX.Element {
     maxPoint,
     beamstopCentre,
   );
-
-  // I am up to here
 
   const requestedRange = useResultStore<UnitRange | null>((state) => {
     if (!state.requestedMax || !state.requestedMin) {

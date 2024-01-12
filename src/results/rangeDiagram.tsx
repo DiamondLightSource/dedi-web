@@ -32,14 +32,13 @@ export function RangeDiagram(props: {
   // guess text length
 
   /**
-   * Switch which side of the line text appears depending on which side of 50% the value is 
+   * Switch which side of the line text appears depending on which side of 50% the value is
    * @param requestedValue - how far on the diagram to plot
-   * @returns 
+   * @returns
    */
   const getTextAnchor = (requestedValue: number): string => {
     return requestedValue < 50 ? "start" : "end";
-  }
-
+  };
 
   return (
     <svg
@@ -65,11 +64,19 @@ export function RangeDiagram(props: {
         y2="60%"
         style={{ stroke: "black", strokeWidth: 2 }}
       />
-      <text y="60%" x={`${requestedMin}%`} textAnchor={getTextAnchor(requestedMin)}>
+      <text
+        y="60%"
+        x={`${requestedMin}%`}
+        textAnchor={getTextAnchor(requestedMin)}
+      >
         {" "}
         Requested min
       </text>
-      <text y="80%" x={`${requestedMax}%`} textAnchor={getTextAnchor(requestedMax)}>
+      <text
+        y="80%"
+        x={`${requestedMax}%`}
+        textAnchor={getTextAnchor(requestedMax)}
+      >
         Requested max
       </text>
     </svg>

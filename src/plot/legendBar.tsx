@@ -200,8 +200,7 @@ export default function LegendBar(): JSX.Element {
               />
             </RadioGroup>
           </FormControl>
-          <Stack direction={"row"} spacing={1}>
-          </Stack>
+          <Stack direction={"row"} spacing={1}></Stack>
         </Stack>
       </CardContent>
     </Card>
