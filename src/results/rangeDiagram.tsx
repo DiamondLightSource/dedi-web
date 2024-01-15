@@ -23,12 +23,11 @@ export function RangeDiagram({
    * Switch which side of the line text appears
    * depending on which side of 50% the value is 
    * @param requestedValue - how far on the diagram to plot
-   * @returns 
+   * @returns
    */
   const getTextAnchor = (requestedValue: number): string => {
     return requestedValue < 50 ? "start" : "end";
-  }
-
+  };
 
   return (
     <svg

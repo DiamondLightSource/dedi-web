@@ -7,6 +7,7 @@ import {
   MenuItem,
   InputLabel,
   SelectChangeEvent,
+  InputAdornment,
 } from "@mui/material";
 import {
   AngleUnits,
@@ -80,10 +81,10 @@ export default function BeampropertiesDataEntry() {
       <Typography variant="h6">Beam properties</Typography>
       {/* ENERGY */}
       <Stack direction={"row"} spacing={1}>
-        <Typography flexGrow={1}>Energy: </Typography>
         <TextField
           type="number"
           size="small"
+          label="energy"
           value={beamlineConfig.userEnergy}
           onChange={handleEnergy}
         />
@@ -106,10 +107,10 @@ export default function BeampropertiesDataEntry() {
       </Stack>
       {/* WAVELENGTH */}
       <Stack direction={"row"} spacing={1}>
-        <Typography flexGrow={1}>Wavelength: </Typography>
         <TextField
           type="number"
           size="small"
+          label="wavelength"
           value={beamlineConfig.userWavelength}
           onChange={handleWavelength}
         />
@@ -135,10 +136,10 @@ export default function BeampropertiesDataEntry() {
         Maximum allowed wavelength: {beamlineConfig.maxWavelength.toString()}
       </Typography>
       <Stack direction="row" spacing={1}>
-        <Typography>Camera Length: </Typography>
         <TextField
           type="number"
           size="small"
+          label="camera length"
           value={beamlineConfig.cameraLength ?? ""}
           InputProps={{
             inputProps: {
@@ -146,17 +147,17 @@ export default function BeampropertiesDataEntry() {
               min: beamlineConfig.minCameraLength.toNumber(),
               step: beamlineConfig.cameraLengthStep.toNumber(),
             },
+            endAdornment: <InputAdornment position="end">m</InputAdornment>,
           }}
           onChange={handleCameraLength}
         />
-        <Typography>m</Typography>
       </Stack>
       {/* ANGLE */}
       <Stack direction="row" spacing={1}>
-        <Typography flexGrow={2}>Angle:</Typography>
         <TextField
           type="number"
           size="small"
+          label="angle"
           defaultValue={""}
           value={beamlineConfig.userAngle ?? ""}
           onChange={handleAngle}

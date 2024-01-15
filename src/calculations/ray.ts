@@ -2,10 +2,9 @@ import { Vector2 } from "three";
 import NumericRange from "./numericRange";
 
 /**
- * A class which represents a (geometrical) ray. 
+ * A class which represents a (geometrical) ray.
  */
 export class Ray {
-
   direction: Vector2;
   initial_point: Vector2;
 
@@ -33,7 +32,7 @@ export class Ray {
   /**
    * Get the point at a given distance from the initial point
    * @param distance - given distance
-   * @returns - point on the 
+   * @returns - point on the
    */
   getPointAtDistance(distance: number): Vector2 {
     return this.getPoint(distance / this.direction.length());

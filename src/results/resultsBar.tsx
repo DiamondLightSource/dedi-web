@@ -10,19 +10,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import NumericRange from "../calculations/numericRange";
-import { ResultStore, ScatteringOptions, useResultStore } from "./resultsStore";
-import { ReciprocalWavelengthUnits, WavelengthUnits, parseNumericInput } from "../utils/units";
-import { RangeDiagram } from "./rangeDiagram";
-import { MessageDiagram } from "./MessageDiagram";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
+import NumericRange from "../calculations/numericRange";
+import UnitRange from "../calculations/unitRange";
+import { ReciprocalWavelengthUnits, WavelengthUnits, parseNumericInput } from "../utils/units";
+import { MessageDiagram } from "./MessageDiagram";
+import { RangeDiagram } from "./rangeDiagram";
+import RangeTable from "./rangeTable";
+import { ResultStore, ScatteringOptions, useResultStore } from "./resultsStore";
 import {
   convertBetweenQAndD,
   convertBetweenQAndS,
 } from "./scatteringQuantities";
-import RangeTable from "./rangeTable";
-import UnitRange from "../calculations/unitRange";
 
 function getVisibilitySettings(visableQRange: UnitRange, fullQrange: UnitRange, requestedRange: NumericRange | null, resultStore: ResultStore) {
   let diagramVisible: UnitRange | null = null;

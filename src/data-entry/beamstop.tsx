@@ -7,6 +7,7 @@ import {
   InputLabel,
   Button,
   TextField,
+  InputAdornment,
 } from "@mui/material";
 import { DistanceUnits } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
@@ -48,7 +49,7 @@ export default function BeamStopDataEntry(): JSX.Element {
     <Stack spacing={1}>
       <Typography variant="h6"> Beamstop </Typography>
       <Stack direction={"row"}>
-        <Typography flexGrow={2}>
+        <Typography flexGrow={1}>
           {" "}
           Diameter: {beamstop.diameter.toNumber()}{" "}
         </Typography>
@@ -71,48 +72,46 @@ export default function BeamStopDataEntry(): JSX.Element {
       </Stack>
       <Typography>Position:</Typography>
       <Stack direction={"row"} spacing={2}>
-        <Typography flexGrow={2}>x: </Typography>
         <TextField
           type="number"
           size="small"
+          label="x"
           value={beamstop.centre.x}
           onChange={handleX}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">px</InputAdornment>,
+          }}
         />
-        <Typography flexGrow={2} align="center">
-          {" "}
-          px
-        </Typography>
         <Button size="small" variant="outlined" onClick={centreDetector}>
           Centre detector
         </Button>
       </Stack>
       <Stack direction={"row"} spacing={1}>
-        <Typography flexGrow={2}>y: </Typography>
         <TextField
           type="number"
           size="small"
+          label="y"
           value={beamstop.centre.y}
           onChange={handleY}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">px</InputAdornment>,
+          }}
         />
-        <Typography flexGrow={2} align="center">
-          {" "}
-          px
-        </Typography>
         <Button size="small" variant="outlined" onClick={centreTopEdge}>
           Centre top edge
         </Button>
       </Stack>
       <Stack direction="row">
-        <Stack direction="row" spacing={1}>
-          <Typography flexGrow={1}>Clearance: </Typography>
-          <TextField
-            type="number"
-            size="small"
-            value={beamstop.clearance}
-            onChange={handleClearance}
-          />
-          <Typography>px</Typography>
-        </Stack>
+        <TextField
+          type="number"
+          size="small"
+          label="clearance"
+          value={beamstop.clearance}
+          onChange={handleClearance}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">px</InputAdornment>,
+          }}
+        />
       </Stack>
     </Stack>
   );

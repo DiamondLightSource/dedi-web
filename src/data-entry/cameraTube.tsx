@@ -1,5 +1,6 @@
 import {
   FormControl,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -27,7 +28,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
     <Stack spacing={1}>
       <Typography variant="h6"> CameraTube </Typography>
       <Stack direction={"row"}>
-        <Typography flexGrow={2}>
+        <Typography flexGrow={1}>
           {" "}
           Diameter: {cameraTube.diameter.toNumber()}{" "}
         </Typography>
@@ -51,32 +52,26 @@ export default function CameraTubeDataEntry(): JSX.Element {
         </FormControl>
       </Stack>
       <Typography>Position:</Typography>
-      <Stack direction={"row"}>
-        <Typography flexGrow={2}>x: </Typography>
-        <TextField
-          type="number"
-          size="small"
-          value={cameraTube.centre.x}
-          onChange={handleX}
-        />
-        <Typography flexGrow={2} align="center">
-          {" "}
-          px
-        </Typography>
-      </Stack>
-      <Stack direction={"row"}>
-        <Typography flexGrow={2}>y: </Typography>
-        <TextField
-          type="number"
-          size="small"
-          value={cameraTube.centre.y}
-          onChange={handleY}
-        />
-        <Typography flexGrow={2} align="center">
-          {" "}
-          px
-        </Typography>
-      </Stack>
+      <TextField
+        type="number"
+        size="small"
+        label="x"
+        value={cameraTube.centre.x}
+        onChange={handleX}
+        InputProps={{
+          endAdornment: <InputAdornment position="end">px</InputAdornment>,
+        }}
+      />
+      <TextField
+        type="number"
+        size="small"
+        label="y"
+        value={cameraTube.centre.y}
+        onChange={handleY}
+        InputProps={{
+          endAdornment: <InputAdornment position="end">px</InputAdornment>,
+        }}
+      />
     </Stack>
   );
 }

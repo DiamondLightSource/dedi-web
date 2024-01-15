@@ -17,5 +17,3 @@ test("test parameter range", () => {
   expect(output1.min === 14);
   expect(output2.max === 90);
 });
-
-

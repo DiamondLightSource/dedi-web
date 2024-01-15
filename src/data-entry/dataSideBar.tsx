@@ -21,8 +21,9 @@ import { presetList } from "../presets/presetManager";
 import { useBeamstopStore } from "./beamstopStore";
 import { useCameraTubeStore } from "./cameraTubeStore";
 import { useDetectorStore } from "./detectorStore";
-import DetectorDialog from "../plot/detectorDialog";
+import DetectorDialog from "./detectorDialog";
 import React from "react";
+import PresetDialog from "./presetDialog";
 
 /**
  * React component which represents the side bar for data entry
@@ -49,18 +50,28 @@ export default function DataSideBar(): JSX.Element {
     updateBeamlineConfig({ preset: preset });
   };
 
+  const [openDetector, setOpenDetector] = React.useState(false);
 
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickOpenDetector = () => {
+    setOpenDetector(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseDetector = () => {
+    setOpenDetector(false);
   };
+
+  const [openPreset, setOpenPreset] = React.useState(false);
+
+  const handleClickOpenPreset = () => {
+    setOpenPreset(true);
+  };
+
+  const handleClosePreset = () => {
+    setOpenPreset(false);
+  };
+
   return (
-    <Card sx={{ height: 1 }}>
+    <Card>
       <CardContent>
         <Stack spacing={1}>
           <Typography variant="h6">Preset</Typography>
@@ -83,7 +94,14 @@ export default function DataSideBar(): JSX.Element {
                 value ? handlePreset(value) : {};
               }}
             />
-            <Button variant="outlined"> Save Current</Button>
+            <Button variant="outlined" onClick={handleClickOpenPreset}>
+              Save Preset
+            </Button>
+            <PresetDialog
+              open={openPreset}
+              handleClose={handleClosePreset}
+              handleOpen={handleClickOpenPreset}
+            />
           </Stack>
           <Typography variant="h6">Detector</Typography>
           <Stack direction={"row"} spacing={2}>
@@ -101,14 +119,14 @@ export default function DataSideBar(): JSX.Element {
                 value ? detector.updateDetector(value) : {};
               }}
             />
-            <Button variant="outlined" onClick={handleClickOpen}>
+            <Button variant="outlined" onClick={handleClickOpenDetector}>
               {" "}
-              Add new detector
+              Add detector
             </Button>
             <DetectorDialog
-              open={open}
-              handleClose={handleClose}
-              handleOpen={handleClickOpen}
+              open={openDetector}
+              handleClose={handleCloseDetector}
+              handleOpen={handleClickOpenDetector}
             />
           </Stack>
 
