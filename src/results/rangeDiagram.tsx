@@ -1,32 +1,18 @@
 import UnitRange from "../calculations/unitRange";
 
-export function MessageDiagram(props: { message: string }): JSX.Element {
-  return (
-    <svg
-      style={{
-        display: "grid",
-        height: "40%",
-        width: "90%",
-        border: "solid black",
-      }}
-    >
-      <text x="40%" y="50%">
-        {props.message}
-      </text>
-    </svg>
-  );
-}
-
-export function RangeDiagram(props: {
+type RangeDiagramProps = {
   visibleRange: UnitRange;
   fullRange: UnitRange;
   requestedRange: UnitRange;
-}): JSX.Element {
+};
+
+// todo suggestion: fullrange is not used
+export function RangeDiagram({ visibleRange, fullRange, requestedRange }: RangeDiagramProps): JSX.Element {
   const svgRange =
-    props.visibleRange.max.toNumber() - props.visibleRange.min.toNumber();
-  const requestedMax = (props.requestedRange.max.toNumber() / svgRange) * 100;
-  const requestedMin = (props.requestedRange.min.toNumber() / svgRange) * 100;
-  const rectColour = props.visibleRange.containsRange(props.requestedRange)
+    visibleRange.max.toNumber() - visibleRange.min.toNumber();
+  const requestedMax = (requestedRange.max.toNumber() / svgRange) * 100;
+  const requestedMin = (requestedRange.min.toNumber() / svgRange) * 100;
+  const rectColour = visibleRange.containsRange(requestedRange)
     ? "green"
     : "red";
   // guess text length

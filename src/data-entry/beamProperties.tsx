@@ -77,6 +77,7 @@ export default function BeampropertiesDataEntry() {
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Beam properties</Typography>
+      {/* ENERGY */}
       <Stack direction={"row"} spacing={1}>
         <Typography flexGrow={1}>Energy: </Typography>
         <TextField
@@ -102,6 +103,7 @@ export default function BeampropertiesDataEntry() {
           </Select>
         </FormControl>
       </Stack>
+      {/* WAVELENGTH */}
       <Stack direction={"row"} spacing={1}>
         <Typography flexGrow={1}>Wavelength: </Typography>
         <TextField
@@ -148,6 +150,7 @@ export default function BeampropertiesDataEntry() {
         />
         <Typography>m</Typography>
       </Stack>
+      {/* ANGLE */}
       <Stack direction="row" spacing={1}>
         <Typography flexGrow={2}>Angle:</Typography>
         <TextField

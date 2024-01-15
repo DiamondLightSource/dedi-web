@@ -7,7 +7,7 @@ interface Props extends SVGProps<SVGEllipseElement> {
   coords: Rect;
 }
 
-function SvgAxisAlignedEllipse(props: Props) {
+function SvgAxisAlignedEllipse(props: Props):JSX.Element {
   const { coords, ...svgProps } = props;
 
   const [start, endx, endy] = coords;

@@ -17,12 +17,13 @@ export class Ray {
     this.direction = direction;
     this.initial_point = initial_point;
   }
+
   /**
    * The point on the ray that corresponds to the given scalar.
    * @param scalar - given scalar value
    * @returns - point on the ray
    */
-  getPoint(scalar: number): Vector2 {
+  public getPoint(scalar: number): Vector2 {
     const result = new Vector2(this.direction.x, this.direction.y);
     result.multiplyScalar(scalar);
     result.add(this.initial_point);

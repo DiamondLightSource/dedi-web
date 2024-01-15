@@ -1,42 +1,44 @@
-import { Box, Card, CardContent, Stack } from "@mui/material";
 import {
   DataToHtml,
   DefaultInteractions,
   ResetZoomButton,
   SvgElement,
-  VisCanvas,
-  SvgRect,
   SvgLine,
+  SvgRect,
+  VisCanvas,
 } from "@h5web/lib";
+import { Box, Card, CardContent, Stack } from "@mui/material";
+import * as mathjs from "mathjs";
 import { Vector3 } from "three";
+import { computeQrange } from "../calculations/qrange";
+import { getPointForQ } from "../calculations/qvalue";
+import UnitRange from "../calculations/unitRange";
+import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
-import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
-import { UnitVector, Plotter, getDomains } from "./plotUtils";
-import { usePlotStore } from "./plotStore";
+import { useDetectorStore } from "../data-entry/detectorStore";
+import ResultsBar from "../results/resultsBar";
+import { ScatteringOptions, useResultStore } from "../results/resultsStore";
+import {
+  convertBetweenQAndD,
+  convertBetweenQAndS,
+} from "../results/scatteringQuantities";
 import {
   BeamlineConfig,
   Beamstop,
   CircularDevice,
   Detector,
 } from "../utils/types";
-import { computeQrange } from "../calculations/qrange";
-import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
+import { Plotter } from "./Plotter";
 import LegendBar from "./legendBar";
-import ResultsBar from "../results/resultsBar";
-import { getPointForQ } from "../calculations/qvalue";
-import { ScatteringOptions, useResultStore } from "../results/resultsStore";
-import {
-  convertBetweenQAndD,
-  convertBetweenQAndS,
-} from "../results/scatteringQuantities";
-import { color2String } from "./plotUtils";
+import { usePlotStore } from "./plotStore";
+import { UnitVector, color2String, getDomains } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
-import * as mathjs from "mathjs";
-import UnitRange from "../calculations/unitRange";
 
+// todo that's too long!
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
+  // todo some form of destructuring notation {...state} might simplify this
   const beamlineConfig = useBeamlineConfigStore<BeamlineConfig>((state) => {
     return {
       angle: state.angle,
@@ -49,12 +51,14 @@ export default function CentrePlot(): JSX.Element {
       wavelength: state.wavelength,
     };
   });
+
   const detector = useDetectorStore<Detector>((state) => {
     return {
       resolution: state.resolution,
       pixelSize: state.pixelSize,
     };
   });
+
   const beamstop = useBeamstopStore<Beamstop>((state) => {
     return {
       centre: state.centre,

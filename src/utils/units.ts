@@ -14,6 +14,7 @@ export enum EnergyUnits {
 }
 
 export enum WavelengthUnits {
+  // todo is this a typo for nanometers?
   nanmometres = "nm",
   angstroms = "angstrom",
 }
