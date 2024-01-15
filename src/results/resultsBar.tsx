@@ -176,12 +176,7 @@ export default function ResultsBar(props: {
                   </Stack>
                 </Stack>
                 {((): JSX.Element => {
-                  if (
-                    diagramVisible &&
-                    diagramFull &&
-                    diagramRequested &&
-                    diagramFull.containsRange(diagramVisible)
-                  ) {
+                  if (diagramVisible && diagramFull && diagramRequested) {
                     return (
                       <RangeDiagram
                         visibleRange={diagramVisible}
