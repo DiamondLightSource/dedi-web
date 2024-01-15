@@ -19,6 +19,7 @@ import {
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { unit } from "mathjs";
 
+// todo consider splitting this into components
 export default function BeampropertiesDataEntry() {
   const beamlineConfig = useBeamlineConfigStore();
 

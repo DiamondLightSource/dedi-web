@@ -7,7 +7,9 @@ type RangeDiagramProps = {
 };
 
 // todo suggestion: fullrange is not used
-export function RangeDiagram({ visibleRange, fullRange, requestedRange }: RangeDiagramProps): JSX.Element {
+export function RangeDiagram({
+  visibleRange, fullRange, requestedRange
+}: RangeDiagramProps): JSX.Element {
   const svgRange =
     visibleRange.max.toNumber() - visibleRange.min.toNumber();
   const requestedMax = (requestedRange.max.toNumber() / svgRange) * 100;
@@ -18,7 +20,8 @@ export function RangeDiagram({ visibleRange, fullRange, requestedRange }: RangeD
   // guess text length
 
   /**
-   * Switch which side of the line text appears depending on which side of 50% the value is 
+   * Switch which side of the line text appears
+   * depending on which side of 50% the value is 
    * @param requestedValue - how far on the diagram to plot
    * @returns 
    */
@@ -51,11 +54,19 @@ export function RangeDiagram({ visibleRange, fullRange, requestedRange }: RangeD
         y2="60%"
         style={{ stroke: "black", strokeWidth: 2 }}
       />
-      <text y="60%" x={`${requestedMin}%`} textAnchor={getTextAnchor(requestedMin)}>
+      <text
+        y="60%"
+        x={`${requestedMin}%`}
+        textAnchor={getTextAnchor(requestedMin)}
+      >
         {" "}
         Requested min
       </text>
-      <text y="80%" x={`${requestedMax}%`} textAnchor={getTextAnchor(requestedMax)}>
+      <text
+        y="80%"
+        x={`${requestedMax}%`}
+        textAnchor={getTextAnchor(requestedMax)}
+      >
         Requested max
       </text>
     </svg>

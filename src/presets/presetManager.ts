@@ -1,14 +1,19 @@
+import * as mathjs from "mathjs";
 import detectorDataRecord from "../presets/detectors.json";
 import presetData from "../presets/presetConfigs.json";
 import {
   BeamlineConfig,
-  Detector,
-  CircularDevice,
   Beamstop,
+  CircularDevice,
+  Detector,
   SimpleVector2,
 } from "../utils/types";
-import * as mathjs from "mathjs";
 
+// todo consider migrating away from wildcard imports 
+// not too high priority, and makes sense to migrate only if not too difficult https://stackoverflow.com/questions/42051588/wildcard-or-asterisk-vs-named-or-selective-import-es6-javascript
+
+// todo use OOP composition over inheritance
+// https://en.wikipedia.org/wiki/Composition_over_inheritance
 export interface AppDataFormat extends BeamlineConfig {
   detector: string;
   beamstop: Beamstop;
