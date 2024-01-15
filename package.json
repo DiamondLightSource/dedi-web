@@ -11,7 +11,8 @@
     "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --port 3000",
-    "test": "npx vitest"
+    "test": "npx vitest",
+    "arkit": "npx arkit  -c arkit.config.json"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
