@@ -24,6 +24,7 @@ module.exports = {
       { allowConstantExport: true },
     ],
     "no-throw-literal": "off",
+    "max-len": ["warn", { code: 80 }],
     "@typescript-eslint/no-throw-literal": "error",
   },
   settings: {

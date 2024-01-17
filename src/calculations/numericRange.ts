@@ -1,5 +1,6 @@
 /**
- * A class which represents a unitless numeric range by storing it's minimum and maximum numbers
+ * A class which represents a unitless numeric range 
+ * by storing it's minimum and maximum numbers
  */
 export default class NumericRange {
   min: number;

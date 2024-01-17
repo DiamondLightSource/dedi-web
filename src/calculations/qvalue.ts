@@ -1,12 +1,12 @@
+import { unit } from "mathjs";
+import { Vector2 } from "three";
 import { UnitVector } from "../plot/plotUtils";
 import { Ray } from "./ray";
-import { Vector2 } from "three";
-import * as mathjs from "mathjs";
 
 export const calculateQValue = (
   distance: number,
   cameraLength: number,
-  wavelength: number,
+  wavelength: number
 ): number | null => {
   if (cameraLength === 0 || wavelength == 0) {
     return null;
@@ -23,7 +23,7 @@ export const calculateQValue = (
 export const calculateDistanceFromQValue = (
   qValue: number,
   cameraLength: number,
-  wavelength: number,
+  wavelength: number
 ): number | null => {
   if (qValue < 0 || cameraLength < 0 || wavelength < 0) {
     return null;
@@ -35,29 +35,39 @@ export const calculateDistanceFromQValue = (
   return Math.tan(2 * Math.asin(temp)) * cameraLength;
 };
 
+/**
+ *  conver into numbers then get result
+ * @param qValue
+ * @param angle
+ * @param cameralength
+ * @param wavelength
+ * @param beamstopCentre
+ * @returns
+ */
 export const getPointForQ = (
   qValue: math.Unit,
   angle: math.Unit,
   cameralength: math.Unit,
   wavelength: math.Unit,
-  beamstopCentre: UnitVector,
+  beamstopCentre: UnitVector
 ): UnitVector => {
+  const [q, c, v, a, beamX, beamY] = [
+    qValue,
+    cameralength,
+    wavelength,
+    angle,
+    beamstopCentre.x,
+    beamstopCentre.y,
+  ].map((i) => i.toSI().toNumber());
   const ray = new Ray(
-    new Vector2(
-      Math.cos(angle.toSI().toNumber()),
-      Math.sin(angle.toSI().toNumber()),
-    ),
-    new Vector2(
-      beamstopCentre.x.toSI().toNumber(),
-      beamstopCentre.y.toSI().toNumber(),
-    ),
+    new Vector2(Math.cos(a), Math.sin(a)),
+    new Vector2(beamX, beamY)
   );
-  const result = ray.getPointAtDistance(
-    calculateDistanceFromQValue(
-      qValue.toSI().toNumber(),
-      cameralength.toSI().toNumber(),
-      wavelength.toSI().toNumber(),
-    ) ?? 0,
-  );
-  return { x: mathjs.unit(result.x, "m"), y: mathjs.unit(result.y, "m") };
+
+  const distance = calculateDistanceFromQValue(q, c, v) ?? 0;
+
+  const result = ray.getPointAtDistance(distance);
+  const x = unit(result.x, "m");
+  const y = unit(result.y, "m");
+  return { x, y };
 };

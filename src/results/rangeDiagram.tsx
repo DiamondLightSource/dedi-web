@@ -1,44 +1,32 @@
 import UnitRange from "../calculations/unitRange";
 
-export function MessageDiagram(props: { message: string }): JSX.Element {
-  return (
-    <svg
-      style={{
-        display: "grid",
-        height: "40%",
-        width: "90%",
-        border: "solid black",
-      }}
-    >
-      <text x="40%" y="50%">
-        {props.message}
-      </text>
-    </svg>
-  );
+interface RangeDiagramProps {
+  visibleRange: UnitRange;
+  requestedRange: UnitRange;
 }
 
-export function RangeDiagram(props: {
-  visibleRange: UnitRange;
-  fullRange: UnitRange;
-  requestedRange: UnitRange;
-}): JSX.Element {
-  const svgRange =
-    props.visibleRange.max.toNumber() - props.visibleRange.min.toNumber();
-  const requestedMax = (props.requestedRange.max.toNumber() / svgRange) * 100;
-  const requestedMin = (props.requestedRange.min.toNumber() / svgRange) * 100;
-  const rectColour = props.visibleRange.containsRange(props.requestedRange)
+/**
+ * Switch which side of the line text appears
+ * depending on which side of 50% the value is
+ * @param requestedValue - how far on the diagram to plot
+ * @returns
+ */
+const getTextAnchor = (requestedValue: number): string => {
+  return requestedValue < 50 ? "start" : "end";
+};
+
+export function RangeDiagram({
+  visibleRange,
+  requestedRange,
+}: RangeDiagramProps): JSX.Element {
+  const svgRange = visibleRange.max.toNumber() - visibleRange.min.toNumber();
+  const requestedMax = (requestedRange.max.toNumber() / svgRange) * 100;
+  const requestedMin = (requestedRange.min.toNumber() / svgRange) * 100;
+  const rectColour = visibleRange.containsRange(requestedRange)
     ? "green"
     : "red";
-  // guess text length
 
-  /**
-   * Switch which side of the line text appears depending on which side of 50% the value is
-   * @param requestedValue - how far on the diagram to plot
-   * @returns
-   */
-  const getTextAnchor = (requestedValue: number): string => {
-    return requestedValue < 50 ? "start" : "end";
-  };
+  // guess text length
 
   return (
     <svg

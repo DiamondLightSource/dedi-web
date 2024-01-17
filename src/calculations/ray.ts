@@ -16,12 +16,13 @@ export class Ray {
     this.direction = direction;
     this.initial_point = initial_point;
   }
+
   /**
    * The point on the ray that corresponds to the given scalar.
    * @param scalar - given scalar value
    * @returns - point on the ray
    */
-  getPoint(scalar: number): Vector2 {
+  public getPoint(scalar: number): Vector2 {
     const result = new Vector2(this.direction.x, this.direction.y);
     result.multiplyScalar(scalar);
     result.add(this.initial_point);
@@ -38,7 +39,8 @@ export class Ray {
   }
 
   /**
-   * Takes an arbitrary closed interval, and restricts it to the interval [0, infinity]
+   * Takes an arbitrary closed interval,
+   * and restricts it to the interval [0, infinity]
    * @param t1 - interval endpoint 1
    * @param t2 - interval endpoint 2
    * @returns - restricted numeric range
@@ -51,7 +53,8 @@ export class Ray {
   }
 
   /**
-   * Gets the Numeric range of the scalars of the intersection points of this ray and a circle.
+   * Gets the Numeric range of the scalars
+   * of the intersection points of this ray and a circle.
    * @param radius - radius of the circle
    * @param centre - centre of the circle
    * @returns - NumericRange of the intersection scalars

@@ -20,6 +20,7 @@ import {
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { unit } from "mathjs";
 
+// todo consider splitting this into components
 export default function BeampropertiesDataEntry() {
   const beamlineConfig = useBeamlineConfigStore();
 
@@ -78,6 +79,7 @@ export default function BeampropertiesDataEntry() {
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Beam properties</Typography>
+      {/* ENERGY */}
       <Stack direction={"row"} spacing={1}>
         <TextField
           type="number"
@@ -103,6 +105,7 @@ export default function BeampropertiesDataEntry() {
           </Select>
         </FormControl>
       </Stack>
+      {/* WAVELENGTH */}
       <Stack direction={"row"} spacing={1}>
         <TextField
           type="number"
@@ -149,6 +152,7 @@ export default function BeampropertiesDataEntry() {
           onChange={handleCameraLength}
         />
       </Stack>
+      {/* ANGLE */}
       <Stack direction="row" spacing={1}>
         <TextField
           type="number"

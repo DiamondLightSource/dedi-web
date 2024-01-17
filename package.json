@@ -11,7 +11,8 @@
     "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --port 3000",
-    "test": "npx vitest"
+    "test": "npx vitest",
+    "arkit": "npx arkit  -c arkit.config.json"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -39,6 +40,7 @@
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.18.1",
     "@vitejs/plugin-react-swc": "^3.4.1",
+    "arkit": "^1.6.4",
     "eslint": "^8.53.0",
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-react-hooks": "^4.6.0",
