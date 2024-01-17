@@ -52,6 +52,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
     <Box flexGrow={1}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 50 }} aria-label="simple table" size="small">
+          {/* TABLE HEAD */}
           <TableHead>
             <TableRow>
               <TableCell>Values</TableCell>
@@ -60,8 +61,9 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
               <TableCell align="right">Units</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          {/* TABLE BODY */}
             <TableRow key={"q"}>
+              {/* Q RANGE ROW */}
               <TableCell component="th" scope="row">
                 {ScatteringOptions.q}
               </TableCell>
@@ -95,6 +97,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
               </TableCell>
             </TableRow>
             <TableRow key={"s"}>
+              {/* S RANGE ROW*/}
               <TableCell component="th" scope="row">
                 {ScatteringOptions.s}
               </TableCell>
@@ -128,6 +131,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
               </TableCell>
             </TableRow>
             <TableRow key={"d"}>
+              {/* D RANGE ROW*/}
               <TableCell component="th" scope="row">
                 {ScatteringOptions.d}
               </TableCell>
@@ -160,6 +164,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                 </FormControl>
               </TableCell>
             </TableRow>
+          <TableBody>
           </TableBody>
         </Table>
       </TableContainer>

@@ -312,11 +312,11 @@ function getScaleFactor(beamlineConfig: BeamlineConfig) {
       ),
     );
   }
-  if(scaleFactor == null){
+  if (scaleFactor == null) {
     return scaleFactor;
   }
 
-  if(typeof scaleFactor == "number" || !("units" in scaleFactor)){
+  if (typeof scaleFactor == "number" || !("units" in scaleFactor)) {
     throw TypeError("scaleFactor should be a unit not a number");
   }
 

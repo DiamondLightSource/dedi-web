@@ -16,10 +16,9 @@ const defaultReturn = {
   ptMax: new Vector2(0, 0),
   visibleQRange: null,
   fullQRange: null,
-
 };
 
-// todo suggestion: this function is quite big. 
+// todo suggestion: this function is quite big.
 // I created blocks in it with comments (not the only way to do this)
 export function computeQrange(
   detector: Detector,
@@ -32,7 +31,6 @@ export function computeQrange(
   visibleQRange: NumericRange | null;
   fullQRange: NumericRange | null;
 } {
-
   const {
     clearanceWidth,
     beamcentreX,
@@ -42,10 +40,10 @@ export function computeQrange(
     detectorWidth,
     cameraTubeCentreX,
     cemeraTubeCentreY,
-    cameraLength
+    cameraLength,
   } = getRightUnits(beamProperties, beamstop, detector, cameraTube);
 
-  // get initial position x and y 
+  // get initial position x and y
   const initialPositionX = mathjs.add(
     mathjs.multiply(clearanceWidth, mathjs.cos(beamProperties.angle)),
     beamcentreX,
@@ -70,10 +68,10 @@ export function computeQrange(
 
   const rayDirection = new Vector2(
     mathjs.cos(beamProperties.angle),
-    mathjs.sin(beamProperties.angle)
+    mathjs.sin(beamProperties.angle),
   );
 
-  const ray = new Ray( rayDirection, initialPosition);
+  const ray = new Ray(rayDirection, initialPosition);
 
   let t1 = ray.getRectangleIntersectionParameterRange(
     new Vector2(0, detectorHeight.toSI().toNumber()),
@@ -83,18 +81,16 @@ export function computeQrange(
 
   if (t1 === null) return defaultReturn;
 
-  const cameraOk = cameraTube !== null &&
-    cameraTube.diameter.toSI().toNumber() != 0;
+  const cameraOk =
+    cameraTube !== null && cameraTube.diameter.toSI().toNumber() != 0;
 
   if (cameraOk) {
     const radius = mathjs.divide(cameraTube.diameter, 2).toSI().toNumber();
     const centre = new Vector2(
       cameraTubeCentreX.toSI().toNumber(),
-      cemeraTubeCentreY.toSI().toNumber()
+      cemeraTubeCentreY.toSI().toNumber(),
     );
-    t1 = t1.intersect(
-      ray.getCircleIntersectionParameterRange( radius, centre),
-    );
+    t1 = t1.intersect(ray.getCircleIntersectionParameterRange(radius, centre));
   }
 
   if (t1 === null) return defaultReturn;
@@ -106,7 +102,7 @@ export function computeQrange(
   const origin = new Vector3(
     beamcentreX.toSI().toNumber(),
     beamcentreY.toSI().toNumber(),
-    cameraLength.toSI().toNumber()
+    cameraLength.toSI().toNumber(),
   );
 
   const beamVector = new Vector3(0, 0, 1);
@@ -138,7 +134,8 @@ export function computeQrange(
   const fullQMax = qspace.qFromPixelPosition(ptMin);
 
   const visibleQRange = new NumericRange(
-    visibleQMin.length(), visibleQMax.length()
+    visibleQMin.length(),
+    visibleQMax.length(),
   );
   const fullQRange = new NumericRange(fullQMin.length(), fullQMax.length());
 
@@ -149,16 +146,16 @@ function getRightUnits(
   beamProperties: BeamlineConfig,
   beamstop: Beamstop,
   detector: Detector,
-  cameraTube: CircularDevice
+  cameraTube: CircularDevice,
 ) {
   const cameraLength = mathjs.unit(beamProperties.cameraLength ?? NaN, "m");
   const clearanceWidth = mathjs.add(
     mathjs.unit(beamstop.clearance ?? NaN, "xpixel"),
-    mathjs.divide(beamstop.diameter, 2)
+    mathjs.divide(beamstop.diameter, 2),
   );
   const clearanceHeight = mathjs.add(
     mathjs.unit(beamstop.clearance ?? NaN, "ypixel"),
-    mathjs.divide(beamstop.diameter, 2)
+    mathjs.divide(beamstop.diameter, 2),
   );
 
   const beamcentreX = mathjs.unit(beamstop.centre.x ?? NaN, "xpixel");
@@ -179,7 +176,6 @@ function getRightUnits(
     detectorWidth,
     cameraTubeCentreX,
     cemeraTubeCentreY,
-    cameraLength
+    cameraLength,
   };
 }
-
