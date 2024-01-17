@@ -12,8 +12,9 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { useDetectorStore } from "./detectorStore";
+import { useDetectorStore } from "../data-entry/detectorStore";
 import * as mathjs from "mathjs";
+import DetectorTable from "./detectorTable"
 
 export default function DetectorDialog(props: {
   open: boolean;
@@ -49,9 +50,11 @@ export default function DetectorDialog(props: {
 
   return (
     <Dialog open={props.open} keepMounted onClose={props.handleClose}>
-      <DialogTitle>{"Add detector"}</DialogTitle>
+      <DialogTitle>{"Detectors"}</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
+          <DetectorTable/>
+          <Typography>Add new Detector</Typography>
           <Divider />
           <Grid container spacing={2}>
             <Grid item xs={12}>

@@ -21,9 +21,9 @@ import { presetList } from "../presets/presetManager";
 import { useBeamstopStore } from "./beamstopStore";
 import { useCameraTubeStore } from "./cameraTubeStore";
 import { useDetectorStore } from "./detectorStore";
-import DetectorDialog from "./detectorDialog";
+import DetectorDialog from "../dialogs/detectorDialog";
 import React from "react";
-import PresetDialog from "./presetDialog";
+import PresetDialog from "../dialogs/presetDialog";
 
 /**
  * React component which represents the side bar for data entry
