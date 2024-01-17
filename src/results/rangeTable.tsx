@@ -22,17 +22,15 @@ import {
   convertBetweenQAndS,
 } from "./scatteringQuantities";
 
-// todo suggestion: big component, could be split OR comments used to indicate sections
 export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
-  // todo suggestion: this could be typed
+  // STATE STORE LOGIC
   const resultsStore = useResultStore();
   const updateQUnits = useResultStore((state) => state.updateQUnits);
   const updateSUnits = useResultStore((state) => state.updateSUnits);
   const updateDUnits = useResultStore((state) => state.updateDUnits);
 
-  const handleQunits = (
-    event: SelectChangeEvent<string>,
-  ) => {
+  // CALLBACKDS
+  const handleQunits = (event: SelectChangeEvent<string>) => {
     updateQUnits(event.target.value as ReciprocalWavelengthUnits);
   };
 
@@ -43,6 +41,8 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
   const handleDunits = (event: SelectChangeEvent<string>) => {
     updateDUnits(event.target.value as WavelengthUnits);
   };
+
+  // UNIT CONVERSIONS
   const qRange = props.qRange.to(resultsStore.qUnits as string);
   const sRange = props.qRange
     .apply(convertBetweenQAndS)
@@ -118,5 +118,3 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
     </Box>
   );
 }
-
-

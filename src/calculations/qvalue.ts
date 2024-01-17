@@ -1,12 +1,12 @@
 import { unit } from "mathjs";
+import { Vector2 } from "three";
 import { UnitVector } from "../plot/plotUtils";
 import { Ray } from "./ray";
-import { Vector2 } from "three";
 
 export const calculateQValue = (
   distance: number,
   cameraLength: number,
-  wavelength: number,
+  wavelength: number
 ): number | null => {
   if (cameraLength === 0 || wavelength == 0) {
     return null;
@@ -23,7 +23,7 @@ export const calculateQValue = (
 export const calculateDistanceFromQValue = (
   qValue: number,
   cameraLength: number,
-  wavelength: number,
+  wavelength: number
 ): number | null => {
   if (qValue < 0 || cameraLength < 0 || wavelength < 0) {
     return null;
@@ -36,32 +36,37 @@ export const calculateDistanceFromQValue = (
 };
 
 /**
- *  conver into numbers then get result 
- * @param qValue 
- * @param angle 
- * @param cameralength 
- * @param wavelength 
- * @param beamstopCentre 
- * @returns 
+ *  conver into numbers then get result
+ * @param qValue
+ * @param angle
+ * @param cameralength
+ * @param wavelength
+ * @param beamstopCentre
+ * @returns
  */
 export const getPointForQ = (
   qValue: math.Unit,
   angle: math.Unit,
   cameralength: math.Unit,
   wavelength: math.Unit,
-  beamstopCentre: UnitVector,
+  beamstopCentre: UnitVector
 ): UnitVector => {
-  const [q, c, v, a, beamX, beamY] = [qValue, cameralength, wavelength, angle, beamstopCentre.x, beamstopCentre.y].map(i => i.toSI().toNumber());
+  const [q, c, v, a, beamX, beamY] = [
+    qValue,
+    cameralength,
+    wavelength,
+    angle,
+    beamstopCentre.x,
+    beamstopCentre.y,
+  ].map((i) => i.toSI().toNumber());
   const ray = new Ray(
     new Vector2(Math.cos(a), Math.sin(a)),
-    new Vector2( beamX, beamY),
+    new Vector2(beamX, beamY)
   );
 
-  const distance = calculateDistanceFromQValue(
-    q, c, v
-  ) ?? 0;
+  const distance = calculateDistanceFromQValue(q, c, v) ?? 0;
 
-  const result = ray.getPointAtDistance( distance);
+  const result = ray.getPointAtDistance(distance);
   const x = unit(result.x, "m");
   const y = unit(result.y, "m");
   return { x, y };

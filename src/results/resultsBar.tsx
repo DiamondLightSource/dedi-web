@@ -14,7 +14,11 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import NumericRange from "../calculations/numericRange";
 import UnitRange from "../calculations/unitRange";
-import { ReciprocalWavelengthUnits, WavelengthUnits, parseNumericInput } from "../utils/units";
+import {
+  ReciprocalWavelengthUnits,
+  WavelengthUnits,
+  parseNumericInput,
+} from "../utils/units";
 import { MessageDiagram } from "./MessageDiagram";
 import { RangeDiagram } from "./rangeDiagram";
 import RangeTable from "./rangeTable";
@@ -24,7 +28,12 @@ import {
   convertBetweenQAndS,
 } from "./scatteringQuantities";
 
-function getVisibilitySettings(visableQRange: UnitRange, fullQrange: UnitRange, requestedRange: NumericRange | null, resultStore: ResultStore) {
+function getVisibilitySettings(
+  visableQRange: UnitRange,
+  fullQrange: UnitRange,
+  requestedRange: NumericRange | null,
+  resultStore: ResultStore
+) {
   let diagramVisible: UnitRange | null = null;
   let diagramFull: UnitRange | null = null;
   let diagramRequested: UnitRange | null = null;
@@ -37,9 +46,7 @@ function getVisibilitySettings(visableQRange: UnitRange, fullQrange: UnitRange, 
 
   switch (resultStore.requested) {
     case ScatteringOptions.d:
-      diagramVisible = visableQRange
-        .apply(convertBetweenQAndD)
-        .to("nm");
+      diagramVisible = visableQRange.apply(convertBetweenQAndD).to("nm");
       diagramFull = fullQrange.apply(convertBetweenQAndD).to("nm");
       diagramRequested = UnitRange.fromNumericRange(
         requestedRange,
@@ -48,9 +55,7 @@ function getVisibilitySettings(visableQRange: UnitRange, fullQrange: UnitRange, 
       textBoxUnits = resultStore.dUnits;
       break;
     case ScatteringOptions.s:
-      diagramVisible = visableQRange
-        .apply(convertBetweenQAndS)
-        .to("nm");
+      diagramVisible = visableQRange.apply(convertBetweenQAndS).to("nm");
       diagramFull = fullQrange.apply(convertBetweenQAndS).to("nm");
       diagramRequested = UnitRange.fromNumericRange(
         requestedRange,
@@ -71,33 +76,40 @@ function getVisibilitySettings(visableQRange: UnitRange, fullQrange: UnitRange, 
 }
 
 function RangeFormControl({ resultStore }: { resultStore: ResultStore }) {
-  return <FormControl>
-    <FormLabel>Requested Quantiy</FormLabel>
-    <RadioGroup
-      row
-      value={resultStore.requested}
-      onChange={(event) => resultStore.updateRequested(
-        event.target.value as ScatteringOptions
-      )}
-    >
-      <FormControlLabel
-        value={ScatteringOptions.q}
-        control={<Radio />}
-        label={ScatteringOptions.q} />
-      <FormControlLabel
-        value={ScatteringOptions.s}
-        control={<Radio />}
-        label={ScatteringOptions.s} />
-      <FormControlLabel
-        value={ScatteringOptions.d}
-        control={<Radio />}
-        label={ScatteringOptions.d} />
-    </RadioGroup>
-  </FormControl>;
+  return (
+    <FormControl>
+      <FormLabel>Requested Quantiy</FormLabel>
+      <RadioGroup
+        row
+        value={resultStore.requested}
+        onChange={(event) =>
+          resultStore.updateRequested(event.target.value as ScatteringOptions)
+        }
+      >
+        <FormControlLabel
+          value={ScatteringOptions.q}
+          control={<Radio />}
+          label={ScatteringOptions.q}
+        />
+        <FormControlLabel
+          value={ScatteringOptions.s}
+          control={<Radio />}
+          label={ScatteringOptions.s}
+        />
+        <FormControlLabel
+          value={ScatteringOptions.d}
+          control={<Radio />}
+          label={ScatteringOptions.d}
+        />
+      </RadioGroup>
+    </FormControl>
+  );
 }
 
 // NOTE when it's outside it's not redefined on every render
-const displayUnits = (textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null): string => {
+const displayUnits = (
+  textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null
+): string => {
   switch (textBoxUnits as string) {
     case "angstrom":
       return "\u212B";
@@ -110,12 +122,15 @@ const displayUnits = (textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits 
   }
 };
 
-type ResultsBarProps = {
+interface ResultsBarProps {
   visableQRange: UnitRange;
   fullQrange: UnitRange;
-};
+}
 
-export default function ResultsBar({ visableQRange, fullQrange }: ResultsBarProps): JSX.Element {
+export default function ResultsBar({
+  visableQRange,
+  fullQrange,
+}: ResultsBarProps): JSX.Element {
   const resultStore = useResultStore();
   const requestedRange = useResultStore<NumericRange | null>((state) => {
     return state.requestedMax && state.requestedMin
@@ -135,7 +150,13 @@ export default function ResultsBar({ visableQRange, fullQrange }: ResultsBarProp
     });
   };
 
-  const { textBoxUnits, diagramVisible, diagramFull, diagramRequested } = getVisibilitySettings(visableQRange, fullQrange, requestedRange, resultStore);
+  const { textBoxUnits, diagramVisible, diagramFull, diagramRequested } =
+    getVisibilitySettings(
+      visableQRange,
+      fullQrange,
+      requestedRange,
+      resultStore
+    );
 
   const units = displayUnits(textBoxUnits);
   return (
@@ -185,15 +206,14 @@ export default function ResultsBar({ visableQRange, fullQrange }: ResultsBarProp
                   diagramVisible &&
                     diagramFull &&
                     diagramRequested &&
-                    diagramFull.containsRange(diagramVisible)
-                    ?
+                    diagramFull.containsRange(diagramVisible) ? (
                     <RangeDiagram
                       visibleRange={diagramVisible satisfies UnitRange}
-                      fullRange={diagramFull}
                       requestedRange={diagramRequested}
                     />
-                    : <MessageDiagram message="No solution" />
-                }
+                  ) : (
+                    <MessageDiagram message="No solution" />
+                  )}
               </Stack>
             </Stack>
           </Stack>

@@ -9,15 +9,19 @@ import {
   SimpleVector2,
 } from "../utils/types";
 
-// todo consider migrating away from wildcard imports 
-// not too high priority, and makes sense to migrate only if not too difficult https://stackoverflow.com/questions/42051588/wildcard-or-asterisk-vs-named-or-selective-import-es6-javascript
+// todo consider migrating away from wildcard imports
+// not too high priority,
+// and makes sense to migrate only if not too difficult
+// eslint-disable-next-line max-len
+// https://stackoverflow.com/questions/42051588/wildcard-or-asterisk-vs-named-or-selective-import-es6-javascript
 
-// todo use OOP composition over inheritance
-// https://en.wikipedia.org/wiki/Composition_over_inheritance
 export interface AppDataFormat extends BeamlineConfig {
   detector: string;
   beamstop: Beamstop;
   cameraTube: CircularDevice;
+  // todo use OOP composition over inheritance
+  // https://en.wikipedia.org/wiki/Composition_over_inheritance
+  // beamlineConfig: BeamlineConfig;
 }
 
 interface DetectorData {
@@ -62,8 +66,8 @@ export const detectorList: Record<string, Detector> = Object.fromEntries(
           width: mathjs.unit(value.pixelSize.height, "mm"),
         },
       },
-    ],
-  ),
+    ]
+  )
 );
 
 export const presetList: Record<string, AppDataFormat> = Object.fromEntries(
@@ -88,6 +92,6 @@ export const presetList: Record<string, AppDataFormat> = Object.fromEntries(
       wavelength: mathjs.unit(value.wavelength ?? NaN, "nm"),
       angle: mathjs.unit(value.angle ?? NaN, "deg"),
     },
-  ]),
+  ])
 );
 export const defaultConfig = presetList[Object.keys(presetList)[0]];

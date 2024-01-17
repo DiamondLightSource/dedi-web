@@ -9,7 +9,7 @@ import {
 } from "@h5web/lib";
 import { Box, Card, CardContent, Stack } from "@mui/material";
 import * as mathjs from "mathjs";
-import { Vector3 } from "three";
+import { Vector2, Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
 import { getPointForQ } from "../calculations/qvalue";
 import UnitRange from "../calculations/unitRange";
@@ -18,7 +18,11 @@ import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import ResultsBar from "../results/resultsBar";
-import { ResultStore, ScatteringOptions, useResultStore } from "../results/resultsStore";
+import {
+  ResultStore,
+  ScatteringOptions,
+  useResultStore,
+} from "../results/resultsStore";
 import {
   convertBetweenQAndD,
   convertBetweenQAndS,
@@ -35,12 +39,11 @@ import { usePlotStore } from "./plotStore";
 import { UnitVector, color2String, getDomains } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 
-// todo that's too long!
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
-  // todo some form of destructuring notation {...state} might simplify this
   const beamlineConfig = useBeamlineConfig();
 
+  // todo some form of destructuring notation {...state} might simplify this
   const detector = useDetectorStore<Detector>((state) => {
     return {
       resolution: state.resolution,
@@ -82,21 +85,21 @@ export default function CentrePlot(): JSX.Element {
     detector,
     beamstop,
     cameraTube,
-    beamlineConfig,
+    beamlineConfig
   );
 
-  // todo suggestion: consider moving these 2 statements into the ResultsBar component
+  // todo move these 2 statements into the ResultsBar component
   //  as that's the only place that uses these
   const visibleQRangeUnits = UnitRange.fromNumericRange(
     visibleQRange,
-    "m^-1",
+    "m^-1"
   ).to("nm^-1");
   const fullQRangeUnits = UnitRange.fromNumericRange(fullQRange, "m^-1").to(
-    "nm^-1",
+    "nm^-1"
   );
 
-  const { beamstopCentre, cameraTubeCentre, minPoint, maxPoint }
-    = getReferencePoints(ptMin, ptMax, beamstop, cameraTube);
+  const { beamstopCentre, cameraTubeCentre, minPoint, maxPoint } =
+    getReferencePoints(ptMin, ptMax, beamstop, cameraTube);
 
   const plotter = new Plotter(plotConfig.plotAxes, scaleFactor);
 
@@ -105,7 +108,7 @@ export default function CentrePlot(): JSX.Element {
     plotBeamstop,
     plotClearance,
     plotCameraTube,
-    plotVisibleRange
+    plotVisibleRange,
   } = createPlots(
     plotter,
     beamstopCentre,
@@ -116,7 +119,6 @@ export default function CentrePlot(): JSX.Element {
     minPoint,
     maxPoint
   );
-
 
   // abstracting state logic away from the display logic
   const requestedRange = useResultStore<UnitRange | null>(getRange());
@@ -204,7 +206,7 @@ export default function CentrePlot(): JSX.Element {
                       visibleRangeStart,
                       visableRangeEnd,
                       requestedRangeStart,
-                      requestedRangeEnd,
+                      requestedRangeEnd
                     ) => (
                       <SvgElement>
                         {plotConfig.cameraTube && (
@@ -229,7 +231,7 @@ export default function CentrePlot(): JSX.Element {
                           <SvgLine
                             coords={[beamstopCentre, visibleRangeStart]}
                             stroke={color2String(
-                              plotConfig.inaccessibleRangeColor,
+                              plotConfig.inaccessibleRangeColor
                             )}
                             strokeWidth={3}
                             id="inaccessible"
@@ -258,7 +260,7 @@ export default function CentrePlot(): JSX.Element {
                           <SvgLine
                             coords={[requestedRangeStart, requestedRangeEnd]}
                             stroke={color2String(
-                              plotConfig.requestedRangeColor,
+                              plotConfig.requestedRangeColor
                             )}
                             strokeWidth={3}
                             id="requested"
@@ -324,7 +326,12 @@ function useBeamlineConfig() {
   });
 }
 
-function getReferencePoints(ptMin, ptMax, beamstop: Beamstop, cameraTube: CircularDevice) {
+function getReferencePoints(
+  ptMin: Vector2,
+  ptMax: Vector2,
+  beamstop: Beamstop,
+  cameraTube: CircularDevice
+) {
   const minPoint: UnitVector = {
     x: mathjs.unit(ptMin.x, "m"),
     y: mathjs.unit(ptMin.y, "m"),
@@ -347,7 +354,16 @@ function getReferencePoints(ptMin, ptMax, beamstop: Beamstop, cameraTube: Circul
   return { beamstopCentre, cameraTubeCentre, minPoint, maxPoint };
 }
 
-function createPlots(plotter: Plotter, beamstopCentre: UnitVector, beamstop: Beamstop, cameraTubeCentre: UnitVector, cameraTube: CircularDevice, detector: Detector, minPoint: UnitVector, maxPoint: UnitVector) {
+function createPlots(
+  plotter: Plotter,
+  beamstopCentre: UnitVector,
+  beamstop: Beamstop,
+  cameraTubeCentre: UnitVector,
+  cameraTube: CircularDevice,
+  detector: Detector,
+  minPoint: UnitVector,
+  maxPoint: UnitVector
+) {
   const plotBeamstop = plotter.createPlotEllipse(
     beamstopCentre,
     beamstop.diameter,
@@ -377,10 +393,22 @@ function createPlots(plotter: Plotter, beamstopCentre: UnitVector, beamstop: Bea
     maxPoint,
     beamstopCentre
   );
-  return { plotDetector, plotBeamstop, plotClearance, plotCameraTube, plotVisibleRange };
+  return {
+    plotDetector,
+    plotBeamstop,
+    plotClearance,
+    plotCameraTube,
+    plotVisibleRange,
+  };
 }
 
-function getRequestedRange(requestedRange: UnitRange, beamlineConfig: BeamlineConfig, beamstopCentre: UnitVector, plotRequestedRange: { start: Vector3; end: Vector3; }, plotter: Plotter) {
+function getRequestedRange(
+  requestedRange: UnitRange,
+  beamlineConfig: BeamlineConfig,
+  beamstopCentre: UnitVector,
+  plotRequestedRange: { start: Vector3; end: Vector3 },
+  plotter: Plotter
+) {
   const requestedMaxPt = getPointForQ(
     requestedRange.max,
     beamlineConfig.angle,
@@ -430,4 +458,3 @@ function getRange(): (state: ResultStore) => UnitRange | null {
     );
   };
 }
-

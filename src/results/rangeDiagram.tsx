@@ -1,33 +1,32 @@
 import UnitRange from "../calculations/unitRange";
 
-type RangeDiagramProps = {
+interface RangeDiagramProps {
   visibleRange: UnitRange;
-  fullRange: UnitRange;
   requestedRange: UnitRange;
+}
+
+/**
+ * Switch which side of the line text appears
+ * depending on which side of 50% the value is
+ * @param requestedValue - how far on the diagram to plot
+ * @returns
+ */
+const getTextAnchor = (requestedValue: number): string => {
+  return requestedValue < 50 ? "start" : "end";
 };
 
-// todo suggestion: fullrange is not used
 export function RangeDiagram({
-  visibleRange, fullRange, requestedRange
+  visibleRange,
+  requestedRange,
 }: RangeDiagramProps): JSX.Element {
-  const svgRange =
-    visibleRange.max.toNumber() - visibleRange.min.toNumber();
+  const svgRange = visibleRange.max.toNumber() - visibleRange.min.toNumber();
   const requestedMax = (requestedRange.max.toNumber() / svgRange) * 100;
   const requestedMin = (requestedRange.min.toNumber() / svgRange) * 100;
   const rectColour = visibleRange.containsRange(requestedRange)
     ? "green"
     : "red";
-  // guess text length
 
-  /**
-   * Switch which side of the line text appears
-   * depending on which side of 50% the value is 
-   * @param requestedValue - how far on the diagram to plot
-   * @returns
-   */
-  const getTextAnchor = (requestedValue: number): string => {
-    return requestedValue < 50 ? "start" : "end";
-  };
+  // guess text length
 
   return (
     <svg

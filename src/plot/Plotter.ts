@@ -3,7 +3,6 @@ import { Vector3 } from "three";
 import { PlotAxes } from "./plotStore";
 import { PlotEllipse, PlotRange, PlotRectangle, UnitVector } from "./plotUtils";
 
-
 export class Plotter {
   plotAxes: PlotAxes;
   private xunit: string;
@@ -60,17 +59,16 @@ export class Plotter {
 
     const endPointX = new Vector3(
       newcentreVec.x +
-      mathjs
-        .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
-        .to(this.xunit)
-        .toNumber(),
+        mathjs
+          .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
+          .to(this.xunit)
+          .toNumber(),
       newcentreVec.y
     );
 
     const endPointY = new Vector3(
       newcentreVec.x,
-      newcentreVec.y +
-      this._scale(diameter, this.yunit)
+      newcentreVec.y + this._scale(diameter, this.yunit)
     );
 
     return { centre: newcentreVec, endPointX, endPointY };
@@ -82,23 +80,28 @@ export class Plotter {
     clearance: number,
     beamstopCentre: UnitVector
   ): PlotEllipse => {
-
     if (this.plotAxes !== PlotAxes.reciprocal) {
       const centreVec = this._getCentreVector(centre);
 
       const endXVector = new Vector3(
         centreVec.x +
-        mathjs.divide(diameter, 2).to(this.xunit).toNumber() +
-        mathjs.unit(clearance, "xpixel").to(this.xunit).toNumber(),
+          mathjs.divide(diameter, 2).to(this.xunit).toNumber() +
+          mathjs.unit(clearance, "xpixel").to(this.xunit).toNumber(),
         centreVec.y
       );
+
       const endYVector = new Vector3(
         centreVec.x,
         centreVec.y +
-        mathjs.divide(diameter, 2).to(this.yunit).toNumber() +
-        mathjs.unit(clearance, "ypixel").to(this.yunit).toNumber()
+          mathjs.divide(diameter, 2).to(this.yunit).toNumber() +
+          mathjs.unit(clearance, "ypixel").to(this.yunit).toNumber()
       );
-      return { centre: centreVec, endPointX: endXVector, endPointY: endYVector };
+
+      return {
+        centre: centreVec,
+        endPointX: endXVector,
+        endPointY: endYVector,
+      };
     }
 
     if (!this.scaleFactor) {
@@ -117,34 +120,38 @@ export class Plotter {
 
     const endXVector = new Vector3(
       newcentreVec.x +
-      mathjs
-        .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
-        .to(this.xunit)
-        .toNumber() +
-      mathjs
-        .multiply(mathjs.unit(clearance, "xpixel"), this.scaleFactor)
-        .to(this.xunit)
-        .toNumber(),
+        mathjs
+          .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
+          .to(this.xunit)
+          .toNumber() +
+        mathjs
+          .multiply(mathjs.unit(clearance, "xpixel"), this.scaleFactor)
+          .to(this.xunit)
+          .toNumber(),
       newcentreVec.y
     );
 
     const endYVector = new Vector3(
       newcentreVec.x,
       newcentreVec.y +
-      +this._scale(diameter, this.yunit)
-      + mathjs
-        .multiply(mathjs.unit(clearance, "ypixel"), this.scaleFactor)
-        .to(this.yunit)
-        .toNumber()
+        this._scale(diameter, this.yunit) +
+        mathjs
+          .multiply(mathjs.unit(clearance, "ypixel"), this.scaleFactor)
+          .to(this.yunit)
+          .toNumber()
     );
-    return { centre: newcentreVec, endPointX: endXVector, endPointY: endYVector };
+    return {
+      centre: newcentreVec,
+      endPointX: endXVector,
+      endPointY: endYVector,
+    };
   };
 
   /**
    * underscore convention to indicate a private method
-   * @param diameter 
-   * @param unit 
-   * @returns 
+   * @param diameter
+   * @param unit
+   * @returns
    */
   private _scale(diameter: mathjs.Unit, unit: string): number {
     // todo if the scale factor is forced to be defined then "!" not needed
@@ -155,7 +162,7 @@ export class Plotter {
   }
 
   public createPlotRectangle(
-    resolution: { height: number; width: number; },
+    resolution: { height: number; width: number },
     beamstopCentre: UnitVector
   ): PlotRectangle {
     if (this.plotAxes !== PlotAxes.reciprocal) {
@@ -172,8 +179,10 @@ export class Plotter {
       throw TypeError("reciprocal units need a scaleFactor");
     }
 
-    const { lowerBoundVector, upperBoundVector }
-      = this._getVectorBounds(beamstopCentre, resolution);
+    const { lowerBoundVector, upperBoundVector } = this._getVectorBounds(
+      beamstopCentre,
+      resolution
+    );
 
     return { lowerBound: lowerBoundVector, upperBound: upperBoundVector };
   }
@@ -183,7 +192,6 @@ export class Plotter {
     endPoint: UnitVector,
     beamstopCentre: UnitVector
   ): PlotRange => {
-
     if (this.plotAxes === PlotAxes.reciprocal) {
       if (!this.scaleFactor) {
         throw TypeError("reciprocal units need a scaleFactor");
@@ -232,7 +240,7 @@ export class Plotter {
 
   private _getVectorBounds(
     beamstopCentre: UnitVector,
-    resolution: { height: number; width: number; }
+    resolution: { height: number; width: number }
   ) {
     const lowerBound = Plotter.convert2QSpace(
       { x: mathjs.unit(0, "xpixel"), y: mathjs.unit(0, "ypixel") },
@@ -247,18 +255,15 @@ export class Plotter {
 
     const upperBoundVector = new Vector3(
       lowerBound.x.to(this.xunit).toNumber() +
-      mathjs
-        .multiply(mathjs.unit(resolution.width, "xpixel"), this.scaleFactor!)
-        .to(this.xunit)
-        .toNumber(),
+        mathjs
+          .multiply(mathjs.unit(resolution.width, "xpixel"), this.scaleFactor!)
+          .to(this.xunit)
+          .toNumber(),
       lowerBound.y.to(this.yunit).toNumber() +
-      mathjs
-        .multiply(
-          mathjs.unit(resolution.height, "ypixel"),
-          this.scaleFactor!
-        )
-        .to(this.yunit)
-        .toNumber()
+        mathjs
+          .multiply(mathjs.unit(resolution.height, "ypixel"), this.scaleFactor!)
+          .to(this.yunit)
+          .toNumber()
     );
     return { lowerBoundVector, upperBoundVector };
   }
