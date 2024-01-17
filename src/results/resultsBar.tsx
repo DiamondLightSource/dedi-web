@@ -205,8 +205,7 @@ export default function ResultsBar({
                 {
                   diagramVisible &&
                     diagramFull &&
-                    diagramRequested &&
-                    diagramFull.containsRange(diagramVisible) ? (
+                    diagramRequested ? (
                     <RangeDiagram
                       visibleRange={diagramVisible satisfies UnitRange}
                       requestedRange={diagramRequested}
