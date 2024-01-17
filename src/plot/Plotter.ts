@@ -22,25 +22,25 @@ export class Plotter {
   private _getCentreVector(centre: UnitVector): Vector3 {
     return new Vector3(
       centre.x.to(this.xunit).toNumber(),
-      centre.y.to(this.yunit).toNumber()
+      centre.y.to(this.yunit).toNumber(),
     );
   }
 
   createPlotEllipse(
     centre: UnitVector,
     diameter: math.Unit,
-    beamstopCentre: UnitVector
+    beamstopCentre: UnitVector,
   ): PlotEllipse {
     if (this.plotAxes !== PlotAxes.reciprocal) {
       const eclipseCentre = this._getCentreVector(centre);
 
       const endPointX = new Vector3(
         eclipseCentre.x + mathjs.divide(diameter, 2).to(this.xunit).toNumber(),
-        eclipseCentre.y
+        eclipseCentre.y,
       );
       const endPointY = new Vector3(
         eclipseCentre.x,
-        eclipseCentre.y + mathjs.divide(diameter, 2).to(this.yunit).toNumber()
+        eclipseCentre.y + mathjs.divide(diameter, 2).to(this.yunit).toNumber(),
       );
 
       return { centre: eclipseCentre, endPointX, endPointY };
@@ -53,7 +53,7 @@ export class Plotter {
     const newcentre = Plotter.convert2QSpace(
       centre,
       this.scaleFactor,
-      beamstopCentre
+      beamstopCentre,
     );
     const newcentreVec = this._getCentreVector(newcentre);
 
@@ -63,12 +63,12 @@ export class Plotter {
           .multiply(mathjs.divide(diameter, 2), this.scaleFactor)
           .to(this.xunit)
           .toNumber(),
-      newcentreVec.y
+      newcentreVec.y,
     );
 
     const endPointY = new Vector3(
       newcentreVec.x,
-      newcentreVec.y + this._scale(diameter, this.yunit)
+      newcentreVec.y + this._scale(diameter, this.yunit),
     );
 
     return { centre: newcentreVec, endPointX, endPointY };
@@ -78,7 +78,7 @@ export class Plotter {
     centre: UnitVector,
     diameter: math.Unit,
     clearance: number,
-    beamstopCentre: UnitVector
+    beamstopCentre: UnitVector,
   ): PlotEllipse => {
     if (this.plotAxes !== PlotAxes.reciprocal) {
       const centreVec = this._getCentreVector(centre);
@@ -87,14 +87,14 @@ export class Plotter {
         centreVec.x +
           mathjs.divide(diameter, 2).to(this.xunit).toNumber() +
           mathjs.unit(clearance, "xpixel").to(this.xunit).toNumber(),
-        centreVec.y
+        centreVec.y,
       );
 
       const endYVector = new Vector3(
         centreVec.x,
         centreVec.y +
           mathjs.divide(diameter, 2).to(this.yunit).toNumber() +
-          mathjs.unit(clearance, "ypixel").to(this.yunit).toNumber()
+          mathjs.unit(clearance, "ypixel").to(this.yunit).toNumber(),
       );
 
       return {
@@ -111,11 +111,11 @@ export class Plotter {
     const newcentre = Plotter.convert2QSpace(
       centre,
       this.scaleFactor,
-      beamstopCentre
+      beamstopCentre,
     );
     const newcentreVec = new Vector3(
       newcentre.x.to(this.xunit).toNumber(),
-      newcentre.y.to(this.yunit).toNumber()
+      newcentre.y.to(this.yunit).toNumber(),
     );
 
     const endXVector = new Vector3(
@@ -128,7 +128,7 @@ export class Plotter {
           .multiply(mathjs.unit(clearance, "xpixel"), this.scaleFactor)
           .to(this.xunit)
           .toNumber(),
-      newcentreVec.y
+      newcentreVec.y,
     );
 
     const endYVector = new Vector3(
@@ -138,7 +138,7 @@ export class Plotter {
         mathjs
           .multiply(mathjs.unit(clearance, "ypixel"), this.scaleFactor)
           .to(this.yunit)
-          .toNumber()
+          .toNumber(),
     );
     return {
       centre: newcentreVec,
@@ -163,13 +163,13 @@ export class Plotter {
 
   public createPlotRectangle(
     resolution: { height: number; width: number },
-    beamstopCentre: UnitVector
+    beamstopCentre: UnitVector,
   ): PlotRectangle {
     if (this.plotAxes !== PlotAxes.reciprocal) {
       const lowerBound = new Vector3(0, 0);
       const upperBound = new Vector3(
         mathjs.unit(resolution.width, "xpixel").to(this.xunit).toNumber(),
-        mathjs.unit(resolution.height, "ypixel").to(this.yunit).toNumber()
+        mathjs.unit(resolution.height, "ypixel").to(this.yunit).toNumber(),
       );
       // todo putting logic in the return line makes the code less clear
       return { lowerBound, upperBound };
@@ -181,7 +181,7 @@ export class Plotter {
 
     const { lowerBoundVector, upperBoundVector } = this._getVectorBounds(
       beamstopCentre,
-      resolution
+      resolution,
     );
 
     return { lowerBound: lowerBoundVector, upperBound: upperBoundVector };
@@ -190,7 +190,7 @@ export class Plotter {
   public createPlotRange = (
     startPoint: UnitVector,
     endPoint: UnitVector,
-    beamstopCentre: UnitVector
+    beamstopCentre: UnitVector,
   ): PlotRange => {
     if (this.plotAxes === PlotAxes.reciprocal) {
       if (!this.scaleFactor) {
@@ -199,23 +199,23 @@ export class Plotter {
       startPoint = Plotter.convert2QSpace(
         startPoint,
         this.scaleFactor,
-        beamstopCentre
+        beamstopCentre,
       );
       endPoint = Plotter.convert2QSpace(
         endPoint,
         this.scaleFactor,
-        beamstopCentre
+        beamstopCentre,
       );
     }
 
     const startVector = new Vector3(
       startPoint.x.to(this.xunit).toNumber(),
-      startPoint.y.to(this.yunit).toNumber()
+      startPoint.y.to(this.yunit).toNumber(),
     );
 
     const endVector = new Vector3(
       endPoint.x.to(this.xunit).toNumber(),
-      endPoint.y.to(this.yunit).toNumber()
+      endPoint.y.to(this.yunit).toNumber(),
     );
 
     return { start: startVector, end: endVector };
@@ -224,33 +224,33 @@ export class Plotter {
   static convert2QSpace = (
     value: UnitVector,
     scaleFactor: mathjs.Unit,
-    beamstopCentre: UnitVector
+    beamstopCentre: UnitVector,
   ): UnitVector => {
     return {
       x: mathjs.multiply(
         scaleFactor,
-        mathjs.subtract(value.x, beamstopCentre.x)
+        mathjs.subtract(value.x, beamstopCentre.x),
       ),
       y: mathjs.multiply(
         scaleFactor,
-        mathjs.subtract(value.y, beamstopCentre.y)
+        mathjs.subtract(value.y, beamstopCentre.y),
       ),
     };
   };
 
   private _getVectorBounds(
     beamstopCentre: UnitVector,
-    resolution: { height: number; width: number }
+    resolution: { height: number; width: number },
   ) {
     const lowerBound = Plotter.convert2QSpace(
       { x: mathjs.unit(0, "xpixel"), y: mathjs.unit(0, "ypixel") },
       this.scaleFactor!,
-      beamstopCentre
+      beamstopCentre,
     );
 
     const lowerBoundVector = new Vector3(
       lowerBound.x.to(this.xunit).toNumber(),
-      lowerBound.y.to(this.yunit).toNumber()
+      lowerBound.y.to(this.yunit).toNumber(),
     );
 
     const upperBoundVector = new Vector3(
@@ -263,7 +263,7 @@ export class Plotter {
         mathjs
           .multiply(mathjs.unit(resolution.height, "ypixel"), this.scaleFactor!)
           .to(this.yunit)
-          .toNumber()
+          .toNumber(),
     );
     return { lowerBoundVector, upperBoundVector };
   }

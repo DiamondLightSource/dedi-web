@@ -13,7 +13,7 @@ export const getDomains = (
 
   // todo suggestion - why not to use Math.max() or Math.min().
   // todo ctnd or the mathjs equivalent?
-  const minAxis = 
+  const minAxis =
     detector.lowerBound.x < detector.lowerBound.y
       ? detector.lowerBound.x
       : detector.lowerBound.y;
@@ -50,5 +50,3 @@ export interface PlotRange {
   start: Vector3;
   end: Vector3;
 }
-
-

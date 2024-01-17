@@ -68,11 +68,14 @@ export default function CentrePlot(): JSX.Element {
   // todo this might need to be moved elsewhere
   // evil :( :( :( :()
   /* eslint-disable */
+  // @ts-ignore
   if (mathjs.Unit.UNITS.xpixel) {
+    // @ts-ignore
     delete mathjs.Unit.UNITS.xpixel;
   }
-
+  // @ts-ignore
   if (mathjs.Unit.UNITS.ypixel) {
+    // @ts-ignore
     delete mathjs.Unit.UNITS.ypixel;
   }
   /* eslint-enable */
@@ -85,17 +88,18 @@ export default function CentrePlot(): JSX.Element {
     detector,
     beamstop,
     cameraTube,
-    beamlineConfig
+    beamlineConfig,
   );
 
   // todo move these 2 statements into the ResultsBar component
   //  as that's the only place that uses these
   const visibleQRangeUnits = UnitRange.fromNumericRange(
     visibleQRange,
-    "m^-1"
+    "m^-1",
   ).to("nm^-1");
+  console.log(visibleQRange);
   const fullQRangeUnits = UnitRange.fromNumericRange(fullQRange, "m^-1").to(
-    "nm^-1"
+    "nm^-1",
   );
 
   const { beamstopCentre, cameraTubeCentre, minPoint, maxPoint } =
@@ -117,7 +121,7 @@ export default function CentrePlot(): JSX.Element {
     cameraTube,
     detector,
     minPoint,
-    maxPoint
+    maxPoint,
   );
 
   // abstracting state logic away from the display logic
@@ -138,7 +142,7 @@ export default function CentrePlot(): JSX.Element {
       beamlineConfig,
       beamstopCentre,
       plotRequestedRange,
-      plotter
+      plotter,
     );
   }
 
@@ -206,7 +210,7 @@ export default function CentrePlot(): JSX.Element {
                       visibleRangeStart,
                       visableRangeEnd,
                       requestedRangeStart,
-                      requestedRangeEnd
+                      requestedRangeEnd,
                     ) => (
                       <SvgElement>
                         {plotConfig.cameraTube && (
@@ -231,7 +235,7 @@ export default function CentrePlot(): JSX.Element {
                           <SvgLine
                             coords={[beamstopCentre, visibleRangeStart]}
                             stroke={color2String(
-                              plotConfig.inaccessibleRangeColor
+                              plotConfig.inaccessibleRangeColor,
                             )}
                             strokeWidth={3}
                             id="inaccessible"
@@ -260,7 +264,7 @@ export default function CentrePlot(): JSX.Element {
                           <SvgLine
                             coords={[requestedRangeStart, requestedRangeEnd]}
                             stroke={color2String(
-                              plotConfig.requestedRangeColor
+                              plotConfig.requestedRangeColor,
                             )}
                             strokeWidth={3}
                             id="requested"
@@ -298,16 +302,24 @@ export default function CentrePlot(): JSX.Element {
 }
 
 function getScaleFactor(beamlineConfig: BeamlineConfig) {
-  let scaleFactor: mathjs.Unit | null = null;
+  let scaleFactor: mathjs.MathType | null = null;
   if (beamlineConfig.cameraLength && beamlineConfig.wavelength) {
     scaleFactor = mathjs.divide(
       2 * Math.PI,
       mathjs.multiply(
         mathjs.unit(beamlineConfig.cameraLength, "m"),
-        beamlineConfig.wavelength.to("m")
-      )
+        beamlineConfig.wavelength.to("m"),
+      ),
     );
   }
+  if(scaleFactor == null){
+    return scaleFactor;
+  }
+
+  if(typeof scaleFactor == "number" || !("units" in scaleFactor)){
+    throw TypeError("scaleFactor should be a unit not a number");
+  }
+
   return scaleFactor;
 }
 
@@ -330,7 +342,7 @@ function getReferencePoints(
   ptMin: Vector2,
   ptMax: Vector2,
   beamstop: Beamstop,
-  cameraTube: CircularDevice
+  cameraTube: CircularDevice,
 ) {
   const minPoint: UnitVector = {
     x: mathjs.unit(ptMin.x, "m"),
@@ -362,36 +374,36 @@ function createPlots(
   cameraTube: CircularDevice,
   detector: Detector,
   minPoint: UnitVector,
-  maxPoint: UnitVector
+  maxPoint: UnitVector,
 ) {
   const plotBeamstop = plotter.createPlotEllipse(
     beamstopCentre,
     beamstop.diameter,
-    beamstopCentre
+    beamstopCentre,
   );
 
   const plotCameraTube = plotter.createPlotEllipse(
     cameraTubeCentre,
     cameraTube.diameter,
-    beamstopCentre
+    beamstopCentre,
   );
 
   const plotClearance = plotter.createPlotEllipseClearance(
     beamstopCentre,
     beamstop.diameter,
     beamstop.clearance ?? 0,
-    beamstopCentre
+    beamstopCentre,
   );
 
   const plotDetector = plotter.createPlotRectangle(
     detector.resolution,
-    beamstopCentre
+    beamstopCentre,
   );
 
   const plotVisibleRange = plotter.createPlotRange(
     minPoint,
     maxPoint,
-    beamstopCentre
+    beamstopCentre,
   );
   return {
     plotDetector,
@@ -407,26 +419,26 @@ function getRequestedRange(
   beamlineConfig: BeamlineConfig,
   beamstopCentre: UnitVector,
   plotRequestedRange: { start: Vector3; end: Vector3 },
-  plotter: Plotter
+  plotter: Plotter,
 ) {
   const requestedMaxPt = getPointForQ(
     requestedRange.max,
     beamlineConfig.angle,
     mathjs.unit(beamlineConfig.cameraLength, "m"),
     beamlineConfig.wavelength,
-    beamstopCentre
+    beamstopCentre,
   );
   const requestedMinPt = getPointForQ(
     requestedRange.min,
     beamlineConfig.angle,
     mathjs.unit(beamlineConfig.cameraLength, "m"),
     beamlineConfig.wavelength,
-    beamstopCentre
+    beamstopCentre,
   );
   plotRequestedRange = plotter.createPlotRange(
     requestedMinPt,
     requestedMaxPt,
-    beamstopCentre
+    beamstopCentre,
   );
   return plotRequestedRange;
 }
@@ -454,7 +466,7 @@ function getRange(): (state: ResultStore) => UnitRange | null {
 
     return new UnitRange(
       getUnit(state.requestedMin),
-      getUnit(state.requestedMax)
+      getUnit(state.requestedMax),
     );
   };
 }

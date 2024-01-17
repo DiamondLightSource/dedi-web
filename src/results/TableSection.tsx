@@ -17,7 +17,7 @@ interface TableSectionProps {
   range: UnitRange;
   units: WavelengthUnits | ReciprocalWavelengthUnits;
   updateCallback: (
-    event: SelectChangeEvent<WavelengthUnits | ReciprocalWavelengthUnits>
+    event: SelectChangeEvent<WavelengthUnits | ReciprocalWavelengthUnits>,
   ) => void;
 }
 

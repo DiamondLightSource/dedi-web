@@ -2,25 +2,16 @@
   "components": [
     {
       "type": "Dependency",
-      "patterns": [
-        "node_modules/*"
-      ]
+      "patterns": ["node_modules/*"]
     },
     {
       "type": "Component",
-      "patterns": [
-        "**/*.ts",
-        "**/*.js",
-        "**/*.jsx",
-        "**/*.tsx"
-      ]
+      "patterns": ["**/*.ts", "**/*.js", "**/*.jsx", "**/*.tsx"]
     },
     {
       "type": "Vue",
       "format": "full",
-      "patterns": [
-        "**/*.vue"
-      ]
+      "patterns": ["**/*.vue"]
     }
   ],
   "excludePatterns": [
@@ -35,22 +26,15 @@
   ],
   "output": [
     {
-      "path": [
-        "arkit.svg"
-      ],
+      "path": ["arkit.svg"],
       "groups": [
         {
           "first": true,
-          "components": [
-            "Component",
-            "Vue"
-          ]
+          "components": ["Component", "Vue"]
         },
         {
           "type": "Dependencies",
-          "components": [
-            "Dependency"
-          ]
+          "components": ["Dependency"]
         }
       ]
     }

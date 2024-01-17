@@ -66,8 +66,8 @@ export const detectorList: Record<string, Detector> = Object.fromEntries(
           width: mathjs.unit(value.pixelSize.height, "mm"),
         },
       },
-    ]
-  )
+    ],
+  ),
 );
 
 export const presetList: Record<string, AppDataFormat> = Object.fromEntries(
@@ -92,6 +92,6 @@ export const presetList: Record<string, AppDataFormat> = Object.fromEntries(
       wavelength: mathjs.unit(value.wavelength ?? NaN, "nm"),
       angle: mathjs.unit(value.angle ?? NaN, "deg"),
     },
-  ])
+  ]),
 );
 export const defaultConfig = presetList[Object.keys(presetList)[0]];

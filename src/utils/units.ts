@@ -61,11 +61,11 @@ export const energy2WavelengthConverter = (energy: math.Unit): math.Unit => {
  * @returns energy in keV
  */
 export const wavelength2EnergyConverter = (
-  wavelength: math.Unit
+  wavelength: math.Unit,
 ): math.Unit => {
   const result = mathjs.divide(
     mathjs.multiply(PLANCK, CSPEED),
-    wavelength.toSI()
+    wavelength.toSI(),
   );
   if (typeof result == "number" || !("units" in result)) {
     throw TypeError("units for constants h and c are wrong");
@@ -97,7 +97,7 @@ export const parseNumericInput = (input: string): number | null => {
 export const enforceRangeLimits = (
   min: number,
   max: number,
-  value: number
+  value: number,
 ): number => {
   if (value > max) return max;
   if (value < min) return min;

@@ -6,6 +6,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  InputAdornment,
   Stack,
   TextField,
   Typography,
@@ -32,7 +33,7 @@ function getVisibilitySettings(
   visableQRange: UnitRange,
   fullQrange: UnitRange,
   requestedRange: NumericRange | null,
-  resultStore: ResultStore
+  resultStore: ResultStore,
 ) {
   let diagramVisible: UnitRange | null = null;
   let diagramFull: UnitRange | null = null;
@@ -50,7 +51,7 @@ function getVisibilitySettings(
       diagramFull = fullQrange.apply(convertBetweenQAndD).to("nm");
       diagramRequested = UnitRange.fromNumericRange(
         requestedRange,
-        resultStore.dUnits as string
+        resultStore.dUnits as string,
       ).to("nm");
       textBoxUnits = resultStore.dUnits;
       break;
@@ -59,7 +60,7 @@ function getVisibilitySettings(
       diagramFull = fullQrange.apply(convertBetweenQAndS).to("nm");
       diagramRequested = UnitRange.fromNumericRange(
         requestedRange,
-        resultStore.sUnits as string
+        resultStore.sUnits as string,
       ).to("nm");
       textBoxUnits = resultStore.sUnits;
       break;
@@ -68,7 +69,7 @@ function getVisibilitySettings(
       diagramFull = fullQrange.to("nm^-1");
       diagramRequested = UnitRange.fromNumericRange(
         requestedRange,
-        resultStore.qUnits as string
+        resultStore.qUnits as string,
       ).to("nm^-1");
       textBoxUnits = resultStore.qUnits;
   }
@@ -108,7 +109,7 @@ function RangeFormControl({ resultStore }: { resultStore: ResultStore }) {
 
 // NOTE when it's outside it's not redefined on every render
 const displayUnits = (
-  textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null
+  textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null,
 ): string => {
   switch (textBoxUnits as string) {
     case "angstrom":
@@ -155,7 +156,7 @@ export default function ResultsBar({
       visableQRange,
       fullQrange,
       requestedRange,
-      resultStore
+      resultStore,
     );
 
   const units = displayUnits(textBoxUnits);
@@ -175,44 +176,49 @@ export default function ResultsBar({
                   <Stack direction={"row"} spacing={3}>
                     <Stack spacing={2}>
                       <Stack direction={"row"} spacing={2}>
-                        <Typography>
-                          Requested min {resultStore.requested} value:{" "}
-                        </Typography>
                         <TextField
                           type="number"
+                          label={`Requested min ${resultStore.requested} value`}
                           size="small"
                           value={resultStore.requestedMin}
                           onChange={handleRequestedMin}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                {units}
+                              </InputAdornment>
+                            ),
+                          }}
                         />
-                        <Typography>{units}</Typography>
                       </Stack>
                       <Stack direction={"row"} spacing={2}>
-                        <Typography>
-                          Requested max {resultStore.requested} value:{" "}
-                        </Typography>
                         <TextField
                           type="number"
+                          label={`Requested max ${resultStore.requested} value`}
                           size="small"
                           value={resultStore.requestedMax}
                           onChange={handleRequestedMax}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                {units}
+                              </InputAdornment>
+                            ),
+                          }}
                         />
-                        <Typography>{units}</Typography>
                       </Stack>
                     </Stack>
                     <RangeFormControl resultStore={resultStore} />
                   </Stack>
                 </Stack>
-                {
-                  diagramVisible &&
-                    diagramFull &&
-                    diagramRequested ? (
-                    <RangeDiagram
-                      visibleRange={diagramVisible satisfies UnitRange}
-                      requestedRange={diagramRequested}
-                    />
-                  ) : (
-                    <MessageDiagram message="No solution" />
-                  )}
+                {diagramVisible && diagramFull && diagramRequested ? (
+                  <RangeDiagram
+                    visibleRange={diagramVisible satisfies UnitRange}
+                    requestedRange={diagramRequested}
+                  />
+                ) : (
+                  <MessageDiagram message="No solution" />
+                )}
               </Stack>
             </Stack>
           </Stack>

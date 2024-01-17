@@ -13,36 +13,33 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import UnitRange from "../calculations/unitRange";
-import { ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
-import { TableSection } from "./TableSection";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
+import { ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
 import {
   convertBetweenQAndD,
   convertBetweenQAndS,
 } from "./scatteringQuantities";
+import UnitRange from "../calculations/unitRange";
 
 export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
-  // STATE STORE LOGIC
   const resultsStore = useResultStore();
   const updateQUnits = useResultStore((state) => state.updateQUnits);
   const updateSUnits = useResultStore((state) => state.updateSUnits);
   const updateDUnits = useResultStore((state) => state.updateDUnits);
 
-  // CALLBACKDS
-  const handleQunits = (event: SelectChangeEvent<string>) => {
+  const handleQunits = (
+    event: SelectChangeEvent<ReciprocalWavelengthUnits>,
+  ) => {
     updateQUnits(event.target.value as ReciprocalWavelengthUnits);
   };
 
-  const handleSunits = (event: SelectChangeEvent<string>) => {
+  const handleSunits = (event: SelectChangeEvent<WavelengthUnits>) => {
     updateSUnits(event.target.value as WavelengthUnits);
   };
 
-  const handleDunits = (event: SelectChangeEvent<string>) => {
+  const handleDunits = (event: SelectChangeEvent<WavelengthUnits>) => {
     updateDUnits(event.target.value as WavelengthUnits);
   };
-
-  // UNIT CONVERSIONS
   const qRange = props.qRange.to(resultsStore.qUnits as string);
   const sRange = props.qRange
     .apply(convertBetweenQAndS)
@@ -55,7 +52,6 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
     <Box flexGrow={1}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 50 }} aria-label="simple table" size="small">
-          {/* TABLE HEAD */}
           <TableHead>
             <TableRow>
               <TableCell>Values</TableCell>
@@ -64,9 +60,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
               <TableCell align="right">Units</TableCell>
             </TableRow>
           </TableHead>
-          {/* TABLE BODY */}
           <TableBody>
-            {/* TABLE Q ROWS */}
             <TableRow key={"q"}>
               <TableCell component="th" scope="row">
                 {ScatteringOptions.q}
@@ -100,18 +94,72 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                 </FormControl>
               </TableCell>
             </TableRow>
-            <TableSection
-              key={ScatteringOptions.s}
-              range={sRange}
-              units={resultsStore.sUnits}
-              updateCallback={handleSunits}
-            />
-            <TableSection
-              key={ScatteringOptions.d}
-              range={dRange}
-              units={resultsStore.dUnits}
-              updateCallback={handleDunits}
-            />
+            <TableRow key={"s"}>
+              <TableCell component="th" scope="row">
+                {ScatteringOptions.s}
+              </TableCell>
+              <TableCell align="right">
+                {isNaN(sRange.min.toNumber())
+                  ? ""
+                  : sRange.min.toNumber().toFixed(4)}
+              </TableCell>
+              <TableCell align="right">
+                {isNaN(sRange.max.toNumber())
+                  ? ""
+                  : sRange.max.toNumber().toFixed(4)}
+              </TableCell>
+              <TableCell align="right">
+                <FormControl>
+                  <InputLabel>s</InputLabel>
+                  <Select
+                    size="small"
+                    label="units"
+                    value={resultsStore.sUnits}
+                    onChange={handleSunits}
+                  >
+                    <MenuItem value={WavelengthUnits.nanmometres}>
+                      {WavelengthUnits.nanmometres}
+                    </MenuItem>
+                    <MenuItem value={WavelengthUnits.angstroms}>
+                      {"\u212B"}
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </TableCell>
+            </TableRow>
+            <TableRow key={"d"}>
+              <TableCell component="th" scope="row">
+                {ScatteringOptions.d}
+              </TableCell>
+              <TableCell align="right">
+                {isNaN(dRange.min.toNumber())
+                  ? ""
+                  : dRange.min.toNumber().toFixed(4)}
+              </TableCell>
+              <TableCell align="right">
+                {isNaN(dRange.max.toNumber())
+                  ? ""
+                  : dRange.max.toNumber().toFixed(4)}
+              </TableCell>
+              <TableCell align="right">
+                <FormControl>
+                  <InputLabel>d</InputLabel>
+                  <Select
+                    size="small"
+                    label="units"
+                    value={resultsStore.dUnits}
+                    onChange={handleDunits}
+                  >
+                    <MenuItem value={WavelengthUnits.nanmometres}>
+                      {WavelengthUnits.nanmometres}
+                    </MenuItem>
+                    <MenuItem value={WavelengthUnits.angstroms}>
+                      {"\u212B"}
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

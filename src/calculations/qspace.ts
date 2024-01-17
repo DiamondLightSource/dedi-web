@@ -56,5 +56,4 @@ export default class QSpace {
     }
     return q;
   }
-
 }

@@ -2,7 +2,7 @@ import * as mathjs from "mathjs";
 import NumericRange from "./numericRange";
 
 /**
- * A class which represents a numeric range with units 
+ * A class which represents a numeric range with units
  * by storing it's minimum and maximum values
  */
 export default class UnitRange {
@@ -15,7 +15,7 @@ export default class UnitRange {
 
     if (!min.equalBase(max)) {
       throw new TypeError(
-        "min and max units must be same base length, mass, etc"
+        "min and max units must be same base length, mass, etc",
       );
     }
 
@@ -76,7 +76,7 @@ export default class UnitRange {
 
     return new UnitRange(
       mathjs.max(other.min, this.min),
-      mathjs.min(other.max, this.max)
+      mathjs.min(other.max, this.max),
     );
   }
 
@@ -107,11 +107,11 @@ export default class UnitRange {
    */
   static fromNumericRange(
     range: NumericRange | null,
-    units: string
+    units: string,
   ): UnitRange {
     return new UnitRange(
       mathjs.unit(range?.min ?? NaN, units),
-      mathjs.unit(range?.max ?? NaN, units)
+      mathjs.unit(range?.max ?? NaN, units),
     );
   }
 

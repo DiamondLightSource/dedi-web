@@ -119,6 +119,9 @@ export function computeQrange(
     2 * Math.PI,
   );
 
+  // get visible range
+  const visibleQMin = qspace.qFromPixelPosition(ptMin);
+  const visibleQMax = qspace.qFromPixelPosition(ptMax);
 
   // get the min
   detProps.origin.z = beamProperties.minCameraLength.toSI().toNumber();
@@ -134,9 +137,6 @@ export function computeQrange(
   );
   const fullQMax = qspace.qFromPixelPosition(ptMin);
 
-  // get visible range
-  const visibleQMin = qspace.qFromPixelPosition(ptMin);
-  const visibleQMax = qspace.qFromPixelPosition(ptMax);
   const visibleQRange = new NumericRange(
     visibleQMin.length(), visibleQMax.length()
   );

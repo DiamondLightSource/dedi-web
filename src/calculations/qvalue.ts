@@ -6,7 +6,7 @@ import { Ray } from "./ray";
 export const calculateQValue = (
   distance: number,
   cameraLength: number,
-  wavelength: number
+  wavelength: number,
 ): number | null => {
   if (cameraLength === 0 || wavelength == 0) {
     return null;
@@ -23,7 +23,7 @@ export const calculateQValue = (
 export const calculateDistanceFromQValue = (
   qValue: number,
   cameraLength: number,
-  wavelength: number
+  wavelength: number,
 ): number | null => {
   if (qValue < 0 || cameraLength < 0 || wavelength < 0) {
     return null;
@@ -36,7 +36,7 @@ export const calculateDistanceFromQValue = (
 };
 
 /**
- *  conver into numbers then get result
+ *  convert into numbers then get result
  * @param qValue
  * @param angle
  * @param cameralength
@@ -49,7 +49,7 @@ export const getPointForQ = (
   angle: math.Unit,
   cameralength: math.Unit,
   wavelength: math.Unit,
-  beamstopCentre: UnitVector
+  beamstopCentre: UnitVector,
 ): UnitVector => {
   const [q, c, v, a, beamX, beamY] = [
     qValue,
@@ -61,7 +61,7 @@ export const getPointForQ = (
   ].map((i) => i.toSI().toNumber());
   const ray = new Ray(
     new Vector2(Math.cos(a), Math.sin(a)),
-    new Vector2(beamX, beamY)
+    new Vector2(beamX, beamY),
   );
 
   const distance = calculateDistanceFromQValue(q, c, v) ?? 0;

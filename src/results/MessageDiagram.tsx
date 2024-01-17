@@ -1,5 +1,4 @@
-
-export function MessageDiagram(props: { message: string; }): JSX.Element {
+export function MessageDiagram(props: { message: string }): JSX.Element {
   return (
     <svg
       style={{
