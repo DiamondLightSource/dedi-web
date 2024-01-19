@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -12,6 +13,9 @@ import {
 } from "@mui/material";
 import React from "react";
 import BeamlineTable from "./BeamlineTable";
+import { detectorList } from "../presets/presetManager";
+
+const GRID_ITEM_SIZE = 3;
 
 export default function PresetDialog(props: {
   open: boolean;
@@ -19,6 +23,7 @@ export default function PresetDialog(props: {
   handleOpen: () => void;
 }): JSX.Element {
   const [name, setName] = React.useState<string>();
+  const [detector, setDetector] = React.useState<string>();
   const [angle, setAngle] = React.useState<number>();
   const [cameraLength, setCameraLength] = React.useState<number>();
   const [minWavelength, setMinWavelength] = React.useState<number>();
@@ -45,7 +50,7 @@ export default function PresetDialog(props: {
           <BeamlineTable />
           <Divider />
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+          <Grid item xs={12}>
               <TextField
                 label="name"
                 value={name}
@@ -54,7 +59,26 @@ export default function PresetDialog(props: {
                 onChange={(event) => setName(event.target.value)}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={GRID_ITEM_SIZE}>
+            <Autocomplete
+              size="small"
+              disablePortal
+              options={Object.keys(detectorList)}
+              value={detector}
+              sx={{ width: 300, color: "white" }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="detector"
+                  sx={{ color: "white" }}
+                />
+              )}
+              onChange={(_, value) => {
+                value ? setDetector(value) : {};
+              }}
+            />
+            </Grid>
+            <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
                 label="angle"
@@ -69,7 +93,7 @@ export default function PresetDialog(props: {
                 }}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
                 label="min wavelength"
@@ -86,7 +110,7 @@ export default function PresetDialog(props: {
                 }}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
                 label="max wavelength "
@@ -103,7 +127,7 @@ export default function PresetDialog(props: {
                 }}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
                 label="min camera length"
@@ -120,7 +144,7 @@ export default function PresetDialog(props: {
                 }}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
                 label="max camera length"
@@ -137,7 +161,7 @@ export default function PresetDialog(props: {
                 }}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
                 label="camera length"
@@ -154,7 +178,7 @@ export default function PresetDialog(props: {
                 }}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
                 label="camera length step"

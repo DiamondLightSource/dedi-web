@@ -95,7 +95,7 @@ export default function DataSideBar(): JSX.Element {
               }}
             />
             <Button variant="outlined" onClick={handleClickOpenPreset}>
-              Save Preset
+              Add beamline
             </Button>
             <PresetDialog
               open={openPreset}
