@@ -11,7 +11,7 @@
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [3000],
+  "forwardPorts": [3000],
   // // Uncomment the next line to run commands after the container is created.
   // // "postCreateCommand": "cat /etc/os-release",
   "initializeCommand": "bash -c 'for i in $HOME/.inputrc; do [ -f $i ] || touch $i; done'",

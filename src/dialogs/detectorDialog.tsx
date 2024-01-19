@@ -14,7 +14,7 @@ import {
 import React from "react";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import * as mathjs from "mathjs";
-import DetectorTable from "./detectorTable"
+import DetectorTable from "./detectorTable";
 
 export default function DetectorDialog(props: {
   open: boolean;
@@ -53,7 +53,7 @@ export default function DetectorDialog(props: {
       <DialogTitle>{"Detectors"}</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
-          <DetectorTable/>
+          <DetectorTable />
           <Typography>Add new Detector</Typography>
           <Divider />
           <Grid container spacing={2}>
