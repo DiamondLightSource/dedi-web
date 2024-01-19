@@ -40,8 +40,8 @@ export default function BeamlineTable() {
     { field: "cameraLength", headerName: "cameraLength", flex: 1 },
     { field: "minWavelength", headerName: "min wavelength", flex: 1 },
     { field: "maxWavelength", headerName: "max wavelength", flex: 1 },
-    { field: "minCameraLength", headerName: "min cameraLength", flex: 1 },
-    { field: "maxCameraLength", headerName: "max cameraLength", flex: 1 },
+    { field: "minCameraLength", headerName: "min camera length", flex: 1 },
+    { field: "maxCameraLength", headerName: "max camera length", flex: 1 },
     { field: "cameraLengthStep", headerName: "camera length step", flex: 1 },
   ];
 
