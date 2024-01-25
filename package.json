@@ -20,7 +20,7 @@
     "@h5web/lib": "^10.0.0",
     "@mui/icons-material": "^5.15.3",
     "@mui/material": "^5.14.17",
-    "@react-three/fiber": "^8.13.7",
+    "@react-three/fiber": "^8.15.15",
     "@mui/x-data-grid": "^5.17.4",
     "d3-scale": "^4.0.2",
     "framer-motion": "^10.15.2",
