@@ -1,12 +1,16 @@
 import { BeamlineConfig } from "../utils/types";
 import { create } from "zustand";
 import { AngleUnits, EnergyUnits, WavelengthUnits } from "../utils/units";
-import { presetList, defaultConfig } from "../presets/presetManager";
+import { 
+    presetList,
+    defaultConfig,
+    AppDataFormat } from "../presets/presetManager";
 import { Unit, unit } from "mathjs";
 import { wavelength2EnergyConverter } from "../utils/units";
 
 export interface BeamlineConfigStore extends BeamlineConfig {
   preset: string | null;
+  presetList: Record<string, AppDataFormat>;
   energy: Unit;
   userEnergy: number | null;
   userWavelength: number | null;
@@ -22,10 +26,15 @@ export interface BeamlineConfigStore extends BeamlineConfig {
   updateEnergy: (newEnergy: number | null, newUnits: EnergyUnits) => void;
   updateEnergyUnits: (newUnits: EnergyUnits) => void;
   update: (newConfig: Partial<BeamlineConfigStore>) => void;
+  addPreset: (name: string, preset: AppDataFormat) => void;
 }
 
+/**
+ * Zustand store for information relating to the beamline
+ */
 export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   preset: Object.keys(presetList)[0],
+  presetList: presetList,
   ...defaultConfig,
   userEnergy: wavelength2EnergyConverter(defaultConfig.wavelength)
     .to("keV")
@@ -70,4 +79,9 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
       userEnergy: state.energy.to(newUnits).toNumber(),
     })),
   update: (newConfig: Partial<BeamlineConfigStore>) => set({ ...newConfig }),
+  addPreset: (name: string, preset: AppDataFormat)=> 
+  { (state: BeamlineConfigStore) => {
+    state.presetList[name] = preset;
+  }
+  }
 }));

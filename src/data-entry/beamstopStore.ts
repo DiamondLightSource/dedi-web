@@ -12,6 +12,9 @@ export interface BeamstopStore extends Beamstop {
   updateBeamstop: (presetBeamstop: Beamstop) => void;
 }
 
+/**
+ * Zustand store with information on the beamstop
+ */
 export const useBeamstopStore = create<BeamstopStore>((set) => ({
   ...defaultConfig.beamstop,
   updateCentre: (newCentre: Partial<SimpleVector2>) =>

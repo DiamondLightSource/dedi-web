@@ -10,7 +10,10 @@ import {
 } from "../utils/types";
 import NumericRange from "./numericRange";
 
-// convert pixel values to mm
+/**
+ * Is returned from computeQrange if the full
+ * calculation cannot be completed.
+ */
 const defaultReturn = {
   ptMin: new Vector2(0, 0),
   ptMax: new Vector2(0, 0),
@@ -20,6 +23,14 @@ const defaultReturn = {
 
 // todo suggestion: this function is quite big.
 // I created blocks in it with comments (not the only way to do this)
+/**
+ * Computes the qrange given detector, beamstop, cameraTube, and Beamproperties
+ * @param detector 
+ * @param beamstop 
+ * @param cameraTube 
+ * @param beamProperties 
+ * @returns 
+ */
 export function computeQrange(
   detector: Detector,
   beamstop: Beamstop,
@@ -142,6 +153,14 @@ export function computeQrange(
   return { ptMin, ptMax, visibleQRange, fullQRange };
 }
 
+/**
+ * Convert values from app into units needed for calculating qrange.
+ * @param beamProperties Information relating to the beamline
+ * @param beamstop Information relating to the beamstop
+ * @param detector Information relating to the detector
+ * @param cameraTube information relating to the cameraTube
+ * @returns Information needed to calculate qrange in correct units.
+ */
 function getRightUnits(
   beamProperties: BeamlineConfig,
   beamstop: Beamstop,

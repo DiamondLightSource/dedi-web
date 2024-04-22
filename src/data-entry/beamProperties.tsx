@@ -21,6 +21,10 @@ import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { unit } from "mathjs";
 
 // todo consider splitting this into components
+/**
+ * Component with data entry inputs for the Beamline.
+ * @returns 
+ */
 export default function BeampropertiesDataEntry() {
   const beamlineConfig = useBeamlineConfigStore();
 

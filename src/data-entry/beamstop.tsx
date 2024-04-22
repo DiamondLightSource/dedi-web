@@ -13,6 +13,10 @@ import { DistanceUnits } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 
+/**
+ * Component with data entry inputs for the Beamstop
+ * @returns 
+ */
 export default function BeamStopDataEntry(): JSX.Element {
   const beamstop = useBeamstopStore();
 
@@ -49,6 +53,7 @@ export default function BeamStopDataEntry(): JSX.Element {
     <Stack spacing={1}>
       <Typography variant="h6"> Beamstop </Typography>
       <Stack direction={"row"}>
+        {/* Diameter */}
         <Typography flexGrow={1}>
           {" "}
           Diameter: {beamstop.diameter.toNumber()}{" "}
@@ -70,6 +75,7 @@ export default function BeamStopDataEntry(): JSX.Element {
           </Select>
         </FormControl>
       </Stack>
+      {/* Position */}
       <Typography>Position:</Typography>
       <Stack direction={"row"} spacing={2}>
         <TextField

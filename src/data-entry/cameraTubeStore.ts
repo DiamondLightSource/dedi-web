@@ -9,6 +9,9 @@ export interface CameraTubeStore extends CircularDevice {
   updateCameraTube: (presetCameraTube: CircularDevice) => void;
 }
 
+/**
+ * Zustand store with camera tube information
+ */
 export const useCameraTubeStore = create<CameraTubeStore>((set) => ({
   ...defaultConfig.cameraTube,
   updateCentre: (newCentre: Partial<SimpleVector2>) =>

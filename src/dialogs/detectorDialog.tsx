@@ -53,8 +53,8 @@ export default function DetectorDialog(props: {
       <DialogTitle>{"Detectors"}</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
+        <Divider />
           <DetectorTable />
-          <Typography>Add new Detector</Typography>
           <Divider />
           <Grid container spacing={2}>
             <Grid item xs={12}>

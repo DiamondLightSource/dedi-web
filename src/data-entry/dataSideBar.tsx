@@ -26,7 +26,7 @@ import React from "react";
 import PresetDialog from "../dialogs/presetDialog";
 
 /**
- * React component which represents the side bar for data entry
+ * React component which represents the whole side bar for data entry
  * @returns
  */
 export default function DataSideBar(): JSX.Element {

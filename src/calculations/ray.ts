@@ -2,12 +2,17 @@ import { Vector2 } from "three";
 import NumericRange from "./numericRange";
 
 /**
- * A class which represents a (geometrical) ray.
+ * A class which represents a  ( geometric ) ray.
  */
 export class Ray {
   direction: Vector2;
   initial_point: Vector2;
 
+  /**
+   * Create a ray object from an intial point and direction vector
+   * @param direction Vector representing the direction of the ray
+   * @param initial_point Vector representing the initial point of the ray
+   */
   constructor(direction: Vector2, initial_point: Vector2) {
     if (direction.length() == 0)
       throw TypeError(
@@ -18,9 +23,9 @@ export class Ray {
   }
 
   /**
-   * The point on the ray that corresponds to the given scalar.
-   * @param scalar - given scalar value
-   * @returns - point on the ray
+   * Returns the point on the ray that corresponds to a the given scalar value.
+   * @param scalar Given scalar value
+   * @returns Point on the ray
    */
   public getPoint(scalar: number): Vector2 {
     const result = new Vector2(this.direction.x, this.direction.y);
@@ -30,9 +35,9 @@ export class Ray {
   }
 
   /**
-   * Get the point at a given distance from the initial point
-   * @param distance - given distance
-   * @returns - point on the
+   * Get the point at a given distance from the initial point.
+   * @param distance Given distance
+   * @returns Point on the
    */
   getPointAtDistance(distance: number): Vector2 {
     return this.getPoint(distance / this.direction.length());
@@ -41,9 +46,9 @@ export class Ray {
   /**
    * Takes an arbitrary closed interval,
    * and restricts it to the interval [0, infinity]
-   * @param t1 - interval endpoint 1
-   * @param t2 - interval endpoint 2
-   * @returns - restricted numeric range
+   * @param t1 Interval endpoint 1
+   * @param t2 Interval endpoint 2
+   * @returns Restricted numeric range
    */
   static getParameterRange(t1: number, t2: number): NumericRange {
     let tMin = Math.min(t1, t2);
@@ -55,9 +60,9 @@ export class Ray {
   /**
    * Gets the Numeric range of the scalars
    * of the intersection points of this ray and a circle.
-   * @param radius - radius of the circle
-   * @param centre - centre of the circle
-   * @returns - NumericRange of the intersection scalars
+   * @param radius Radius of the circle
+   * @param centre Centre of the circle
+   * @returns NumericRange of the intersection scalars
    */
   public getCircleIntersectionParameterRange(
     radius: number,
@@ -87,11 +92,11 @@ export class Ray {
   }
 
   /**
-   * Get the scalars of the intersection points of a rectangle with the ray
-   * @param topLeftCorner - top ledt corner of rectangle
-   * @param width - width of rectangle
-   * @param height - height of rectangle
-   * @returns - NumericRange of the scalars
+   * Get the scalars of the intersection points of a rectangle with the ray.
+   * @param topLeftCorner Top left corner of the rectangle
+   * @param width Width of the rectangle
+   * @param height Height of the rectangle
+   * @returns NumericRange of the scalars
    */
   public getRectangleIntersectionParameterRange(
     topLeftCorner: Vector2,

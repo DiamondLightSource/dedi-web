@@ -11,6 +11,10 @@ import { Stack } from "@mui/system";
 import { useCameraTubeStore } from "./cameraTubeStore";
 import { DistanceUnits } from "../utils/units";
 
+/**
+ * Component with inputs for cameratube data entry
+ * @returns 
+ */
 export default function CameraTubeDataEntry(): JSX.Element {
   const cameraTube = useCameraTubeStore();
   const handleX = (event: React.ChangeEvent<HTMLInputElement>) => {

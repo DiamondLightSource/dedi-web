@@ -3,6 +3,8 @@ import { Vector2 } from "three";
 import { UnitVector } from "../plot/plotUtils";
 import { Ray } from "./ray";
 
+// Add doc strings here
+
 export const calculateQValue = (
   distance: number,
   cameraLength: number,

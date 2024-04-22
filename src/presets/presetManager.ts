@@ -1,4 +1,4 @@
-import * as mathjs from "mathjs";
+import {unit} from "mathjs";
 import detectorDataRecord from "../presets/detectors.json";
 import presetData from "../presets/presetConfigs.json";
 import {
@@ -8,12 +8,6 @@ import {
   Detector,
   SimpleVector2,
 } from "../utils/types";
-
-// todo consider migrating away from wildcard imports
-// not too high priority,
-// and makes sense to migrate only if not too difficult
-// eslint-disable-next-line max-len
-// https://stackoverflow.com/questions/42051588/wildcard-or-asterisk-vs-named-or-selective-import-es6-javascript
 
 export interface AppDataFormat extends BeamlineConfig {
   detector: string;
@@ -62,8 +56,8 @@ export const detectorList: Record<string, Detector> = Object.fromEntries(
       {
         ...value,
         pixelSize: {
-          height: mathjs.unit(value.pixelSize.height, "mm"),
-          width: mathjs.unit(value.pixelSize.height, "mm"),
+          height: unit(value.pixelSize.height, "mm"),
+          width: unit(value.pixelSize.height, "mm"),
         },
       },
     ],
@@ -77,20 +71,20 @@ export const presetList: Record<string, AppDataFormat> = Object.fromEntries(
       ...value,
       beamstop: {
         ...value.beamstop,
-        diameter: mathjs.unit(value.beamstop.diameter, "mm"),
+        diameter: unit(value.beamstop.diameter, "mm"),
       },
       cameraTube: {
         ...value.cameraTube,
-        diameter: mathjs.unit(value.cameraTube.diameter, "mm"),
+        diameter: unit(value.cameraTube.diameter, "mm"),
       },
-      minWavelength: mathjs.unit(value.minWavelength, "nm"),
-      maxWavelength: mathjs.unit(value.maxWavelength, "nm"),
-      minCameraLength: mathjs.unit(value.minCameraLength, "m"),
-      maxCameraLength: mathjs.unit(value.maxCameraLength, "m"),
-      cameraLengthStep: mathjs.unit(value.cameraLengthStep, "m"),
+      minWavelength: unit(value.minWavelength, "nm"),
+      maxWavelength: unit(value.maxWavelength, "nm"),
+      minCameraLength: unit(value.minCameraLength, "m"),
+      maxCameraLength: unit(value.maxCameraLength, "m"),
+      cameraLengthStep: unit(value.cameraLengthStep, "m"),
 
-      wavelength: mathjs.unit(value.wavelength ?? NaN, "nm"),
-      angle: mathjs.unit(value.angle ?? NaN, "deg"),
+      wavelength: unit(value.wavelength ?? NaN, "nm"),
+      angle: unit(value.angle ?? NaN, "deg"),
     },
   ]),
 );
