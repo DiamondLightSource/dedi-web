@@ -15,7 +15,7 @@ import React from "react";
 import BeamlineTable from "./BeamlineTable";
 import { detectorList } from "../presets/presetManager";
 
-const GRID_ITEM_SIZE = 3;
+const GRID_ITEM_SIZE = 4;
 
 export default function PresetDialog(props: {
   open: boolean;
@@ -50,7 +50,7 @@ export default function PresetDialog(props: {
           <BeamlineTable />
           <Divider />
           <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 label="name"
                 value={name}

@@ -86,7 +86,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                   value={resultsStore.qUnits}
                   onChange={handleQunits}
                 >
-                  <MenuItem value={ReciprocalWavelengthUnits.nanmometres}>
+                  <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
                     {"1 / nm"}
                   </MenuItem>
                   <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
@@ -120,8 +120,8 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                   value={resultsStore.sUnits}
                   onChange={handleSunits}
                 >
-                  <MenuItem value={WavelengthUnits.nanmometres}>
-                    {WavelengthUnits.nanmometres}
+                  <MenuItem value={WavelengthUnits.nanometres}>
+                    {WavelengthUnits.nanometres}
                   </MenuItem>
                   <MenuItem value={WavelengthUnits.angstroms}>
                     {"\u212B"}
@@ -154,8 +154,8 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                   value={resultsStore.dUnits}
                   onChange={handleDunits}
                 >
-                  <MenuItem value={WavelengthUnits.nanmometres}>
-                    {WavelengthUnits.nanmometres}
+                  <MenuItem value={WavelengthUnits.nanometres}>
+                    {WavelengthUnits.nanometres}
                   </MenuItem>
                   <MenuItem value={WavelengthUnits.angstroms}>
                     {"\u212B"}

@@ -28,11 +28,14 @@ export interface ResultStore {
   updateDUnits: (newunits: WavelengthUnits) => void;
 }
 
+/**
+ * Zustand store for the results
+ */
 export const useResultStore = create<ResultStore>((set) => ({
   requested: ScatteringOptions.q,
-  qUnits: ReciprocalWavelengthUnits.nanmometres,
-  sUnits: WavelengthUnits.nanmometres,
-  dUnits: WavelengthUnits.nanmometres,
+  qUnits: ReciprocalWavelengthUnits.nanometres,
+  sUnits: WavelengthUnits.nanometres,
+  dUnits: WavelengthUnits.nanometres,
   requestedMin: null,
   requestedMax: null,
   updateRequested: (quantity: ScatteringOptions) => {

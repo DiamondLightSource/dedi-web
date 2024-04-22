@@ -15,12 +15,12 @@ export enum EnergyUnits {
 
 export enum WavelengthUnits {
   // todo is this a typo for nanometers?
-  nanmometres = "nm",
+  nanometres = "nm",
   angstroms = "angstrom",
 }
 
 export enum ReciprocalWavelengthUnits {
-  nanmometres = "nm^-1",
+  nanometres = "nm^-1",
   angstroms = `angstrom^-1`,
 }
 

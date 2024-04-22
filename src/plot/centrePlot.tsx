@@ -38,18 +38,18 @@ import LegendBar from "./legendBar";
 import { usePlotStore } from "./plotStore";
 import { UnitVector, color2String, getDomains } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
+import { useMemo } from "react";
 
+/**
+ * A react componenet that plots the items that make up the system
+ * @returns 
+ */
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
   const beamlineConfig = useBeamlineConfig();
 
   // todo some form of destructuring notation {...state} might simplify this
-  const detector = useDetectorStore<Detector>((state) => {
-    return {
-      resolution: state.resolution,
-      pixelSize: state.pixelSize,
-    };
-  });
+  const detector = useDetectorStore<Detector>();
 
   const beamstop = useBeamstopStore<Beamstop>((state) => {
     return {
@@ -65,31 +65,41 @@ export default function CentrePlot(): JSX.Element {
 
   const scaleFactor: mathjs.Unit | null = getScaleFactor(beamlineConfig);
 
+
+
+const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(()=> {
+    
   // todo this might need to be moved elsewhere
-  // evil :( :( :( :()
-  /* eslint-disable */
-  // @ts-ignore
-  if (mathjs.Unit.UNITS.xpixel) {
+    /* eslint-disable */
     // @ts-ignore
-    delete mathjs.Unit.UNITS.xpixel;
-  }
-  // @ts-ignore
-  if (mathjs.Unit.UNITS.ypixel) {
+    if (mathjs.Unit.UNITS.xpixel) {
+      // @ts-ignore
+      delete mathjs.Unit.UNITS.xpixel;
+    }
     // @ts-ignore
-    delete mathjs.Unit.UNITS.ypixel;
-  }
-  /* eslint-enable */
-  // evil :( :( :( :()
+    if (mathjs.Unit.UNITS.ypixel) {
+      // @ts-ignore
+      delete mathjs.Unit.UNITS.ypixel;
+    }
+    /* eslint-enable */
 
-  mathjs.createUnit("xpixel", detector.pixelSize.width.toString());
-  mathjs.createUnit("ypixel", detector.pixelSize.height.toString());
 
-  const { ptMin, ptMax, visibleQRange, fullQRange } = computeQrange(
-    detector,
-    beamstop,
-    cameraTube,
-    beamlineConfig,
-  );
+    mathjs.createUnit("xpixel", detector.pixelSize.width.toString());
+    mathjs.createUnit("ypixel", detector.pixelSize.height.toString());
+
+    console.log("calculating qrange");
+
+    return computeQrange(
+      detector,
+      beamstop,
+      cameraTube,
+      beamlineConfig,
+    );
+    }, [detector, beamstop, cameraTube, beamlineConfig]);
+
+
+
+
 
   // todo move these 2 statements into the ResultsBar component
   //  as that's the only place that uses these
@@ -145,8 +155,6 @@ export default function CentrePlot(): JSX.Element {
       plotter,
     );
   }
-
-  console.log(plotDetector);
 
   const domains = getDomains(plotDetector);
 

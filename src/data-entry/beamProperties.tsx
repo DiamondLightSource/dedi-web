@@ -126,8 +126,8 @@ export default function BeampropertiesDataEntry() {
             value={beamlineConfig.wavelength.formatUnits() as WavelengthUnits}
             onChange={handleWavelengthUnits}
           >
-            <MenuItem value={WavelengthUnits.nanmometres}>
-              {WavelengthUnits.nanmometres}
+            <MenuItem value={WavelengthUnits.nanometres}>
+              {WavelengthUnits.nanometres}
             </MenuItem>
             <MenuItem value={WavelengthUnits.angstroms}>{"\u212B"}</MenuItem>
           </Select>
