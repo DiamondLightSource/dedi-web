@@ -56,7 +56,7 @@ export default function BeamStopDataEntry(): JSX.Element {
         {/* Diameter */}
         <Typography flexGrow={1}>
           {" "}
-          Diameter: {beamstop.diameter.toNumber()}{" "}
+          Diameter: {beamstop.diameter.toNumber().toFixed(2)}{" "}
         </Typography>
         <FormControl>
           <InputLabel>units </InputLabel>

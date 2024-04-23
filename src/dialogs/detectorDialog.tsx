@@ -49,7 +49,10 @@ export default function DetectorDialog(props: {
   };
 
   return (
-    <Dialog open={props.open} keepMounted onClose={props.handleClose}>
+    <Dialog 
+      open={props.open} 
+      keepMounted onClose={props.handleClose} 
+      maxWidth={"md"}>
       <DialogTitle>{"Detectors"}</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
@@ -77,6 +80,11 @@ export default function DetectorDialog(props: {
                   setResolutionWidth(parseFloat(event.target.value))
                 }
                 size="small"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">px</InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             <Grid item xs={3}>
@@ -87,6 +95,11 @@ export default function DetectorDialog(props: {
                   setResolutionHeight(parseFloat(event.target.value))
                 }
                 size="small"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">px</InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             <Grid item xs={4}>

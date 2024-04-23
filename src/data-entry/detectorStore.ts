@@ -31,7 +31,8 @@ export const useDetectorStore = create<DetectorStore>((set) => ({
       },
     })),
   addNewDetector: (name: string, detector: Detector) => 
-  { (state: DetectorStore) =>
+  { (state: DetectorStore) =>{
     state.detectorList[name] = detector;
+  }
   },
 }));

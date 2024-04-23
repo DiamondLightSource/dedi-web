@@ -49,7 +49,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
     .to(resultsStore.dUnits as string);
 
   return (
-    <Box flexGrow={1}>
+    <Box flexGrow={1} >
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 50 }} aria-label="simple table" size="small">
           {/* TABLE HEAD */}
