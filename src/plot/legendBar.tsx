@@ -42,7 +42,11 @@ export default function LegendBar(): JSX.Element {
                       plotConfig.update({ detectorColour: color.rgb })
                     }
                   />
-                  <Typography>Detector:</Typography>
+                  <Typography 
+                    display={"flex"} 
+                    alignItems={"center"} 
+                    >
+                      Detector</Typography>
                 </Stack>
               }
             />
@@ -63,7 +67,11 @@ export default function LegendBar(): JSX.Element {
                       plotConfig.update({ cameraTubeColor: color.rgb })
                     }
                   />
-                  <Typography>Camera Tube:</Typography>
+                  <Typography 
+                    display={"flex"} 
+                    alignItems={"center"} 
+                  >
+                    Camera Tube</Typography>
                 </Stack>
               }
             />
@@ -84,7 +92,9 @@ export default function LegendBar(): JSX.Element {
                       plotConfig.update({ beamstopColor: color.rgb })
                     }
                   />
-                  <Typography>Beamstop</Typography>
+                  <Typography 
+                    display={"flex"} alignItems={"center"}>
+                      Beamstop</Typography>
                 </Stack>
               }
             />
@@ -105,7 +115,11 @@ export default function LegendBar(): JSX.Element {
                       plotConfig.update({ clearanceColor: color.rgb })
                     }
                   />
-                  <Typography>Clearance</Typography>
+                  <Typography 
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
+                    Clearance</Typography>
                 </Stack>
               }
             />
@@ -126,7 +140,11 @@ export default function LegendBar(): JSX.Element {
                       plotConfig.update({ visibleColor: color.rgb })
                     }
                   />
-                  <Typography>Visible Range</Typography>
+                  <Typography 
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
+                    Visible Range</Typography>
                 </Stack>
               }
             />
@@ -147,7 +165,11 @@ export default function LegendBar(): JSX.Element {
                       plotConfig.update({ requestedRangeColor: color.rgb })
                     }
                   />
-                  <Typography>Requested Range</Typography>
+                  <Typography 
+                    display={"flex"} 
+                    alignItems={"center"} 
+                  >
+                    Requested Range</Typography>
                 </Stack>
               }
             />
@@ -168,7 +190,11 @@ export default function LegendBar(): JSX.Element {
                       plotConfig.update({ inaccessibleRangeColor: color.rgb })
                     }
                   />
-                  <Typography>Inaccessible Range</Typography>
+                  <Typography 
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
+                    Inaccessible Range</Typography>
                 </Stack>
               }
             />
