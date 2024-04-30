@@ -1,0 +1,9 @@
+{
+    "I22": {
+        "minWavelength": 0.062,
+        "maxWavelength": 0.335,
+        "minCameraLength": 1.9,
+        "maxCameraLength": 9.9,
+        "cameraLengthStep": 0.25
+    }
+}
