@@ -1,29 +1,29 @@
-import { Beamstop, SimpleVector2 } from "../utils/types";
+import { AppBeamstop, SimpleVector2 } from "../utils/types";
 import { create } from "zustand";
-import { DistanceUnits } from "../utils/units";
+import { LengthUnits } from "../utils/units";
 import { defaultConfig } from "../presets/presetManager";
 import { unit } from "mathjs";
 
-export interface BeamstopStore extends Beamstop {
+export interface BeamstopStore extends AppBeamstop {
   updateCentre: (centre: Partial<SimpleVector2>) => void;
-  updateDiameter: (newDiameter: number, newUnits: DistanceUnits) => void;
-  updateDiameterUnits: (newUnits: DistanceUnits) => void;
+  updateDiameter: (newDiameter: number, newUnits: LengthUnits) => void;
+  updateDiameterUnits: (newUnits: LengthUnits) => void;
   updateClearance: (newClearnace: number | null) => void;
-  updateBeamstop: (presetBeamstop: Beamstop) => void;
+  updateBeamstop: (presetBeamstop: AppBeamstop) => void;
 }
 
 /**
- * Zustand store with information on the beamstop
+ * Zustand store for the beamstop
  */
 export const useBeamstopStore = create<BeamstopStore>((set) => ({
   ...defaultConfig.beamstop,
   updateCentre: (newCentre: Partial<SimpleVector2>) =>
     set((state) => ({ centre: { ...state.centre, ...newCentre } })),
-  updateDiameter: (newDiameter: number, newUnits: DistanceUnits) =>
+  updateDiameter: (newDiameter: number, newUnits: LengthUnits) =>
     set({ diameter: unit(newDiameter, newUnits) }),
-  updateDiameterUnits: (newUnits: DistanceUnits) =>
+  updateDiameterUnits: (newUnits: LengthUnits) =>
     set((state) => ({ diameter: state.diameter.to(newUnits) })),
   updateClearance: (newClearnace: number | null) =>
     set({ clearance: newClearnace }),
-  updateBeamstop: (presetBeamstop: Beamstop) => set(presetBeamstop),
+  updateBeamstop: (presetBeamstop: AppBeamstop) => set(presetBeamstop),
 }));

@@ -49,14 +49,16 @@ export default function DetectorDialog(props: {
   };
 
   return (
-    <Dialog 
-      open={props.open} 
-      keepMounted onClose={props.handleClose} 
-      maxWidth={"md"}>
+    <Dialog
+      open={props.open}
+      keepMounted
+      onClose={props.handleClose}
+      maxWidth={"md"}
+    >
       <DialogTitle>{"Detectors"}</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
-        <Divider />
+          <Divider />
           <DetectorTable />
           <Divider />
           <Grid container spacing={2}>

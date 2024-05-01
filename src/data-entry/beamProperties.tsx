@@ -23,7 +23,7 @@ import { unit } from "mathjs";
 // todo consider splitting this into components
 /**
  * Component with data entry inputs for the Beamline.
- * @returns 
+ * @returns
  */
 export default function BeampropertiesDataEntry() {
   const beamlineConfig = useBeamlineConfigStore();

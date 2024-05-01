@@ -12,43 +12,23 @@ import {
   InputLabel,
   Button,
 } from "@mui/material";
-import { DistanceUnits } from "../utils/units";
+import { LengthUnits } from "../utils/units";
 import BeamStopDataEntry from "./beamstop";
 import CameraTubeDataEntry from "./cameraTube";
 import BeampropertiesDataEntry from "./beamProperties";
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
-import { presetList } from "../presets/presetManager";
-import { useBeamstopStore } from "./beamstopStore";
-import { useCameraTubeStore } from "./cameraTubeStore";
 import { useDetectorStore } from "./detectorStore";
 import DetectorDialog from "../dialogs/detectorDialog";
 import React from "react";
-import PresetDialog from "../dialogs/presetDialog";
+import PresetDialog from "../dialogs/beamlineDialog";
 
 /**
- * React component which represents the whole side bar for data entry.
+ * React components which represents the whole side bar for data entry.
  * @returns
  */
 export default function DataSideBar(): JSX.Element {
-  const detector = useDetectorStore();
-  const detectorList = useDetectorStore((state) => state.detectorList);
-  const beamlineConfig = useBeamlineConfigStore();
-
-  const updateBeamstop = useBeamstopStore((state) => state.updateBeamstop);
-  const updateCameraTube = useCameraTubeStore(
-    (state) => state.updateCameraTube,
-  );
-  const updateBeamlineConfig = useBeamlineConfigStore((state) => state.update);
-  const updateDetector = useDetectorStore((state) => state.updateDetector);
-  const handlePreset = (preset: string) => {
-    const { beamstop, cameraTube, detector, ...beamlineConfig } =
-      presetList[preset];
-    updateDetector(detector);
-    updateBeamstop(beamstop);
-    updateCameraTube(cameraTube);
-    updateBeamlineConfig(beamlineConfig);
-    updateBeamlineConfig({ preset: preset });
-  };
+  const detectorStore = useDetectorStore();
+  const beamlineConfigStore  = useBeamlineConfigStore();
 
   const [openDetector, setOpenDetector] = React.useState(false);
 
@@ -60,63 +40,60 @@ export default function DataSideBar(): JSX.Element {
     setOpenDetector(false);
   };
 
-  const [openPreset, setOpenPreset] = React.useState(false);
+  const [openBeamline, setOpenBeamline] = React.useState(false);
 
   const handleClickOpenPreset = () => {
-    setOpenPreset(true);
+    setOpenBeamline(true);
   };
 
   const handleClosePreset = () => {
-    setOpenPreset(false);
+    setOpenBeamline(false);
   };
 
   return (
     <Card>
       <CardContent>
         <Stack spacing={1}>
-          <Typography variant="h6">Preset</Typography>
+          <Typography variant="h6">Beamline</Typography>
           <Stack direction={"row"} spacing={2}>
             <Autocomplete
               size="small"
-              disablePortal
-              id="combo-box-demo"
-              options={Object.keys(presetList)}
-              value={beamlineConfig.preset}
+              options={Object.keys(beamlineConfigStore.beamlineRecord)}
+              value={beamlineConfigStore.beamline}
               sx={{ width: 300, color: "white" }}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="choose beamline preset"
+                  label="choose beamline"
                   sx={{ color: "white" }}
                 />
               )}
               onChange={(_, value) => {
-                value ? handlePreset(value) : {};
+                value ? beamlineConfigStore.updateBeamline(value) : {};
               }}
             />
             <Button variant="outlined" onClick={handleClickOpenPreset}>
               Add beamline
             </Button>
             <PresetDialog
-              open={openPreset}
+              open={openBeamline}
               handleClose={handleClosePreset}
               handleOpen={handleClickOpenPreset}
             />
           </Stack>
+          <Divider/>
           <Typography variant="h6">Detector</Typography>
           <Stack direction={"row"} spacing={2}>
             <Autocomplete
               size="small"
-              disablePortal
-              id="combo-box-demo"
-              options={Object.keys(detectorList)}
+              options={Object.keys(detectorStore.detectorRecord)}
               sx={{ width: 300 }}
               renderInput={(params) => (
-                <TextField {...params} label="choose detector type" />
+                <TextField {...params} label="choose detector" />
               )}
-              value={detector.name}
+              value={detectorStore.name}
               onChange={(_, value) => {
-                value ? detector.updateDetector(value) : {};
+                value ? detectorStore.updateDetector(value) : {};
               }}
             />
             <Button variant="outlined" onClick={handleClickOpenDetector}>
@@ -131,28 +108,29 @@ export default function DataSideBar(): JSX.Element {
           </Stack>
 
           <Typography>
-            Resolution (hxw): {detector.resolution.height} x{" "}
-            {detector.resolution.width}
+            Resolution (hxw): {detectorStore.resolution.height} x{" "}
+            {detectorStore.resolution.width}
           </Typography>
           <Stack direction="row">
             <Typography flexGrow={2}>
-              Pixel size: {detector.pixelSize.height.toString()} x{" "}
-              {detector.pixelSize.width.toString()}
+              Pixel size: {detectorStore.pixelSize.height.toString()} x{" "}
+              {detectorStore.pixelSize.width.toString()}
             </Typography>
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
                 size="small"
                 label="units"
-                value={detector.pixelSize.height.formatUnits()}
+                value={detectorStore.pixelSize.height.formatUnits()}
                 onChange={(event) =>
-                  detector.updatePixelUnits(event.target.value as DistanceUnits)
+                  detectorStore.updatePixelUnits(
+                    event.target.value as LengthUnits)
                 }
               >
-                <MenuItem value={DistanceUnits.millimetre}>
-                  {DistanceUnits.millimetre} x {DistanceUnits.millimetre}
+                <MenuItem value={LengthUnits.millimetre}>
+                  {LengthUnits.millimetre} x {LengthUnits.millimetre}
                 </MenuItem>
-                <MenuItem value={DistanceUnits.micrometre}>
+                <MenuItem value={LengthUnits.micrometre}>
                   {"\u03BC" + "m"} x {"\u03BC" + "m"}
                 </MenuItem>
               </Select>

@@ -42,7 +42,7 @@ import { useMemo } from "react";
 
 /**
  * A react componenet that plots the items that make up the system
- * @returns 
+ * @returns
  */
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
@@ -65,11 +65,8 @@ export default function CentrePlot(): JSX.Element {
 
   const scaleFactor: mathjs.Unit | null = getScaleFactor(beamlineConfig);
 
-
-
-const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(()=> {
-    
-  // todo this might need to be moved elsewhere
+  const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(() => {
+    // todo this might need to be moved elsewhere
     /* eslint-disable */
     // @ts-ignore
     if (mathjs.Unit.UNITS.xpixel) {
@@ -83,23 +80,13 @@ const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(()=> {
     }
     /* eslint-enable */
 
-
     mathjs.createUnit("xpixel", detector.pixelSize.width.toString());
     mathjs.createUnit("ypixel", detector.pixelSize.height.toString());
 
     console.log("calculating qrange");
 
-    return computeQrange(
-      detector,
-      beamstop,
-      cameraTube,
-      beamlineConfig,
-    );
-    }, [detector, beamstop, cameraTube, beamlineConfig]);
-
-
-
-
+    return computeQrange(detector, beamstop, cameraTube, beamlineConfig);
+  }, [detector, beamstop, cameraTube, beamlineConfig]);
 
   // todo move these 2 statements into the ResultsBar component
   //  as that's the only place that uses these

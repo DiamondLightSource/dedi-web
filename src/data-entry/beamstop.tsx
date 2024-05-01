@@ -9,13 +9,13 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-import { DistanceUnits } from "../utils/units";
+import { LengthUnits } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 
 /**
  * Component with data entry inputs for the Beamstop
- * @returns 
+ * @returns
  */
 export default function BeamStopDataEntry(): JSX.Element {
   const beamstop = useBeamstopStore();
@@ -65,11 +65,11 @@ export default function BeamStopDataEntry(): JSX.Element {
             label="units"
             value={beamstop.diameter.formatUnits()}
             onChange={(event) =>
-              beamstop.updateDiameterUnits(event.target.value as DistanceUnits)
+              beamstop.updateDiameterUnits(event.target.value as LengthUnits)
             }
           >
-            <MenuItem value={DistanceUnits.millimetre}>{"mm"}</MenuItem>
-            <MenuItem value={DistanceUnits.micrometre}>
+            <MenuItem value={LengthUnits.millimetre}>{"mm"}</MenuItem>
+            <MenuItem value={LengthUnits.micrometre}>
               {"\u03bc" + "m"}
             </MenuItem>
           </Select>

@@ -28,10 +28,10 @@ export default class UnitRange {
 
   /**
    * Creates a new UnitRange with the units converted to the input unit string.
-   * 
-   * @remarks To learn about the unit strings refer to 
+   *
+   * @remarks To learn about the unit strings refer to
    * https://mathjs.org/docs/datatypes/units.html
-   * 
+   *
    * @param units Unit name to convert too
    * @returns Unit range object with converted units
    */
@@ -109,16 +109,16 @@ export default class UnitRange {
       this.max = this.min;
       this.min = temp;
     }
-    
+
     return this;
   }
 
   /**
    * Creates a UnitRange from a Numeric range
-   * 
-   * @remarks To learn about the unit strings refer to 
+   *
+   * @remarks To learn about the unit strings refer to
    * https://mathjs.org/docs/datatypes/units.html
-   * 
+   *
    * @param range Input NumericRange
    * @param units Unit name of range
    * @returns
@@ -135,17 +135,16 @@ export default class UnitRange {
 
   /**
    * Returns a string representation of this UnitRange.
-   * @returns 
+   * @returns
    */
   toString(): string {
     return `(min:${this.min.toString()}, max:${this.max.toString()})`;
   }
 
-  
   /**
    * Check if this range is equal to the input range
-   * @param other Another UnitRange 
-   * @returns 
+   * @param other Another UnitRange
+   * @returns
    */
   equals(other: UnitRange): boolean {
     const result =

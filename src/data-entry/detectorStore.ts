@@ -1,14 +1,14 @@
-import { Detector } from "../utils/types";
+import { AppDetector } from "../utils/types";
 import { create } from "zustand";
-import { DistanceUnits } from "../utils/units";
-import { detectorList, defaultConfig } from "../presets/presetManager";
+import { LengthUnits } from "../utils/units";
+import { detectorRecord, defaultConfig } from "../presets/presetManager";
 
-export interface DetectorStore extends Detector {
+export interface DetectorStore extends AppDetector {
   name: string;
-  detectorList: Record<string, Detector>;
+  detectorRecord: Record<string, AppDetector>;
   updateDetector: (newDetector: string) => void;
-  updatePixelUnits: (newUnits: DistanceUnits) => void;
-  addNewDetector: (name: string, detector: Detector) => void;
+  updatePixelUnits: (newUnits: LengthUnits) => void;
+  addNewDetector: (name: string, detector: AppDetector) => void;
 }
 
 /**
@@ -16,23 +16,23 @@ export interface DetectorStore extends Detector {
  */
 export const useDetectorStore = create<DetectorStore>((set) => ({
   name: defaultConfig.detector,
-  ...detectorList[defaultConfig.detector],
-  detectorList: detectorList,
+  ...detectorRecord[defaultConfig.detector],
+  detectorRecord: detectorRecord,
   updateDetector: (newDetector: string) =>
     set((state: DetectorStore) => ({
-      ...state.detectorList[newDetector],
+      ...state.detectorRecord[newDetector],
       name: newDetector,
     })),
-  updatePixelUnits: (newUnits: DistanceUnits) =>
+  updatePixelUnits: (newUnits: LengthUnits) =>
     set((state: DetectorStore) => ({
       pixelSize: {
         height: state.pixelSize.height.to(newUnits as string),
         width: state.pixelSize.width.to(newUnits as string),
       },
     })),
-  addNewDetector: (name: string, detector: Detector) => 
-  { (state: DetectorStore) =>{
-    state.detectorList[name] = detector;
-  }
-  },
+    addNewDetector: (name: string, detector: AppDetector) => 
+      { (state: DetectorStore) =>{
+        state.detectorRecord[name] = detector;
+      }
+      },
 }));

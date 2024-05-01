@@ -25,11 +25,11 @@ const defaultReturn = {
 // I created blocks in it with comments (not the only way to do this)
 /**
  * Computes the qrange given detector, beamstop, cameraTube, and Beamproperties
- * @param detector 
- * @param beamstop 
- * @param cameraTube 
- * @param beamProperties 
- * @returns 
+ * @param detector
+ * @param beamstop
+ * @param cameraTube
+ * @param beamProperties
+ * @returns
  */
 export function computeQrange(
   detector: Detector,

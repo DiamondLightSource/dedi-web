@@ -1,5 +1,5 @@
-import { Detector } from "../utils/types";
-import { detectorList } from "../presets/presetManager";
+import { AppDetector } from "../utils/types";
+import { detectorRecord } from "../presets/presetManager";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 
 interface DetectorTableRow {
@@ -10,7 +10,7 @@ interface DetectorTableRow {
   pixel_width: number;
 }
 
-function createData(name: string, detector: Detector): DetectorTableRow {
+function createData(name: string, detector: AppDetector): DetectorTableRow {
   return {
     name: name,
     resolution_height: detector.resolution.height,
@@ -22,7 +22,7 @@ function createData(name: string, detector: Detector): DetectorTableRow {
 
 export default function DetectorTable() {
   const displayArray: DetectorTableRow[] = [];
-  for (const [key, value] of Object.entries(detectorList)) {
+  for (const [key, value] of Object.entries(detectorRecord)) {
     displayArray.push(createData(key, value));
   }
 

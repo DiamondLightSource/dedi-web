@@ -9,11 +9,11 @@ import {
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useCameraTubeStore } from "./cameraTubeStore";
-import { DistanceUnits } from "../utils/units";
+import { LengthUnits } from "../utils/units";
 
 /**
  * Component with inputs for cameratube data entry
- * @returns 
+ * @returns
  */
 export default function CameraTubeDataEntry(): JSX.Element {
   const cameraTube = useCameraTubeStore();
@@ -44,12 +44,12 @@ export default function CameraTubeDataEntry(): JSX.Element {
             value={cameraTube.diameter.formatUnits()}
             onChange={(event) =>
               cameraTube.updateDiameterUnits(
-                event.target.value as DistanceUnits,
+                event.target.value as LengthUnits,
               )
             }
           >
-            <MenuItem value={DistanceUnits.millimetre}>{"mm"}</MenuItem>
-            <MenuItem value={DistanceUnits.micrometre}>
+            <MenuItem value={LengthUnits.millimetre}>{"mm"}</MenuItem>
+            <MenuItem value={LengthUnits.micrometre}>
               {"\u03bc" + "m"}
             </MenuItem>
           </Select>

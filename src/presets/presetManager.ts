@@ -1,16 +1,15 @@
-import {unit} from "mathjs";
+import { unit } from "mathjs";
 import detectorData from "./detectors.json";
 import presetConfigData from "./presetConfigs.json";
-import beamlineData from "./beamlines.json"
-import { 
+import beamlineData from "./beamlines.json";
+import {
   AppBeamline,
   AppDetector,
-  AppConfig, 
-  IOBeamline, 
-  IODetector, 
-  IOPresetConfig 
+  AppConfig,
+  IOBeamline,
+  IODetector,
+  IOPresetConfig,
 } from "../utils/types";
-
 
 /**
  * Creates an internal detector with pixel size units from an IODetector
@@ -19,12 +18,12 @@ import {
  */
 export function createInternalDetector(detectorData: IODetector): AppDetector {
   return {
-      ...detectorData,
-      pixelSize: {
-        height: unit(detectorData.pixelSize.height, "mm"),
-        width: unit(detectorData.pixelSize.height, "mm"),
-      },
-    }
+    ...detectorData,
+    pixelSize: {
+      height: unit(detectorData.pixelSize.height, "mm"),
+      width: unit(detectorData.pixelSize.height, "mm"),
+    },
+  };
 }
 
 /**
@@ -32,13 +31,9 @@ export function createInternalDetector(detectorData: IODetector): AppDetector {
  */
 export const detectorRecord: Record<string, AppDetector> = Object.fromEntries(
   Object.entries(detectorData as Record<string, IODetector>).map(
-    ([key, value]) => [
-      key,
-      createInternalDetector(value)
-    ],
+    ([key, value]) => [key, createInternalDetector(value)],
   ),
 );
-
 
 /**
  * Creates an internal beamline with units from an IODetector
@@ -52,7 +47,7 @@ export function createInternalBeamline(beamlineData: IOBeamline): AppBeamline {
     minCameraLength: unit(beamlineData.minCameraLength, "m"),
     maxCameraLength: unit(beamlineData.maxCameraLength, "m"),
     cameraLengthStep: unit(beamlineData.cameraLengthStep, "m"),
-  }
+  };
 }
 
 /**
@@ -60,50 +55,43 @@ export function createInternalBeamline(beamlineData: IOBeamline): AppBeamline {
  */
 export const beamlineRecord: Record<string, AppBeamline> = Object.fromEntries(
   Object.entries(beamlineData as Record<string, IOBeamline>).map(
-    ([key, value]) => [
-      key,
-      createInternalBeamline(value)
-    ],
+    ([key, value]) => [key, createInternalBeamline(value)],
   ),
-)
+);
 
 /**
  * Creates internal AppConfig from IOPresetConfig
  * @param preset input IOPresetConfig
- * @returns  
+ * @returns
  */
-function createPresetConfigRecord(preset: IOPresetConfig):AppConfig{
-    return {
-        ...preset,
-        beamstop: {
-          ...preset.beamstop,
-          diameter: unit(preset.beamstop.diameter, "mm"),
-        },
-        cameraTube: {
-          ...preset.cameraTube,
-          diameter: unit(preset.cameraTube.diameter, "mm"),
-        },
-        wavelength: unit(NaN, "nm"),
-        angle: unit(90, "deg"),
-        cameraLength: 
-          beamlineRecord[preset.beamline].minCameraLength.toNumber("m"),
-      }
-  }
+function createPresetConfigRecord(preset: IOPresetConfig): AppConfig {
+  return {
+    ...preset,
+    beamstop: {
+      ...preset.beamstop,
+      diameter: unit(preset.beamstop.diameter, "mm"),
+    },
+    cameraTube: {
+      ...preset.cameraTube,
+      diameter: unit(preset.cameraTube.diameter, "mm"),
+    },
+    wavelength: unit(NaN, "nm"),
+    angle: unit(90, "deg"),
+    cameraLength: beamlineRecord[preset.beamline].minCameraLength.toNumber("m"),
+  };
+}
 
-
-  /**
-   * Holds the internal app configurations
-   */
+/**
+ * Holds the internal app configurations
+ */
 export const presetConfigRecord: Record<string, AppConfig> = Object.fromEntries(
   Object.entries(presetConfigData as Record<string, IOPresetConfig>).map(
-    ([key, value]) => [
-    key,
-    createPresetConfigRecord(value)
-  ]),
+    ([key, value]) => [key, createPresetConfigRecord(value)],
+  ),
 );
 
 /**
  * Sets how the app is configured by default
  */
-export const defaultConfig = presetConfigRecord[
-  Object.keys(presetConfigRecord)[0]];
+export const defaultConfig =
+  presetConfigRecord[Object.keys(presetConfigRecord)[0]];

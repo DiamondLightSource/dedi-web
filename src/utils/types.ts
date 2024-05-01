@@ -25,7 +25,7 @@ export interface AppCircularDevice {
 }
 
 /**
- * Internal Beamstop type 
+ * Internal Beamstop type
  */
 export interface AppBeamstop extends AppCircularDevice {
   clearance: number | null;
@@ -72,14 +72,14 @@ export interface IOCircularDevice {
 }
 
 /**
- * External Beamline type for use in 
+ * External Beamline type for use in
  */
 export interface IOBeamline {
   readonly minWavelength: number;
   readonly maxWavelength: number;
-  readonly minCameraLength: number; 
-  readonly maxCameraLength: number; 
-  readonly cameraLengthStep: number; 
+  readonly minCameraLength: number;
+  readonly maxCameraLength: number;
+  readonly cameraLengthStep: number;
 }
 
 /**

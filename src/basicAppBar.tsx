@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 
 export default function BasicAppBar(): JSX.Element {
   return (
-    <Box >
+    <Box>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
