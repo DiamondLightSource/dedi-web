@@ -3,7 +3,8 @@ import { create } from "zustand";
 import { LengthUnits } from "../utils/units";
 import { detectorRecord, defaultConfig } from "../presets/presetManager";
 
-export interface DetectorStore extends AppDetector {
+export interface DetectorStore{
+  detector: AppDetector;
   name: string;
   detectorRecord: Record<string, AppDetector>;
   updateDetector: (newDetector: string) => void;
@@ -16,19 +17,23 @@ export interface DetectorStore extends AppDetector {
  */
 export const useDetectorStore = create<DetectorStore>((set) => ({
   name: defaultConfig.detector,
-  ...detectorRecord[defaultConfig.detector],
+  detector: detectorRecord[defaultConfig.detector],
   detectorRecord: detectorRecord,
   updateDetector: (newDetector: string) =>
     set((state: DetectorStore) => ({
-      ...state.detectorRecord[newDetector],
+      detector: state.detectorRecord[newDetector],
       name: newDetector,
     })),
   updatePixelUnits: (newUnits: LengthUnits) =>
     set((state: DetectorStore) => ({
-      pixelSize: {
-        height: state.pixelSize.height.to(newUnits as string),
-        width: state.pixelSize.width.to(newUnits as string),
-      },
+      detector: {
+        ...state.detector,
+        pixelSize: {
+          height: state.detector.pixelSize.height.to(newUnits as string),
+          width: state.detector.pixelSize.width.to(newUnits as string),
+        },
+      }
+
     })),
     addNewDetector: (name: string, detector: AppDetector) => 
       { (state: DetectorStore) =>{

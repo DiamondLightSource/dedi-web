@@ -30,11 +30,12 @@ export default function BeamlineTable() {
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "name", flex: 1 },
-    { field: "minWavelength", headerName: "min wavelength", flex: 1 },
-    { field: "maxWavelength", headerName: "max wavelength", flex: 1 },
-    { field: "minCameraLength", headerName: "min camera length", flex: 1 },
-    { field: "maxCameraLength", headerName: "max camera length", flex: 1 },
-    { field: "cameraLengthStep", headerName: "camera length step", flex: 1 },
+    { field: "minWavelength", headerName: "Min wavelength (nm)", flex: 1 },
+    { field: "maxWavelength", headerName: "Max wavelength (nm)", flex: 1 },
+    { field: "minCameraLength", headerName: "Min camera length (m)", flex: 1 },
+    { field: "maxCameraLength", headerName: "Max camera length (m)", flex: 1 },
+    { field: "cameraLengthStep", 
+      headerName: "Camera length step (m)", flex: 1 },
   ];
 
   return (

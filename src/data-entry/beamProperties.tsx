@@ -134,10 +134,12 @@ export default function BeampropertiesDataEntry() {
         </FormControl>
       </Stack>
       <Typography>
-        Minimum allowed wavelength: {beamlineConfig.minWavelength.toString()}
+        Minimum allowed wavelength: 
+        {beamlineConfig.beamline.minWavelength.toString()}
       </Typography>
       <Typography>
-        Maximum allowed wavelength: {beamlineConfig.maxWavelength.toString()}
+        Maximum allowed wavelength: 
+        {beamlineConfig.beamline.maxWavelength.toString()}
       </Typography>
       <Stack direction="row" spacing={1}>
         <TextField
@@ -147,9 +149,9 @@ export default function BeampropertiesDataEntry() {
           value={beamlineConfig.cameraLength ?? ""}
           InputProps={{
             inputProps: {
-              max: beamlineConfig.maxCameraLength.toNumber(),
-              min: beamlineConfig.minCameraLength.toNumber(),
-              step: beamlineConfig.cameraLengthStep.toNumber(),
+              max: beamlineConfig.beamline.maxCameraLength.toNumber(),
+              min: beamlineConfig.beamline.minCameraLength.toNumber(),
+              step: beamlineConfig.beamline.cameraLengthStep.toNumber(),
             },
             endAdornment: <InputAdornment position="end">m</InputAdornment>,
           }}

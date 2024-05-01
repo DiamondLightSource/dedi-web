@@ -59,7 +59,7 @@ export default function DataSideBar(): JSX.Element {
             <Autocomplete
               size="small"
               options={Object.keys(beamlineConfigStore.beamlineRecord)}
-              value={beamlineConfigStore.beamline}
+              value={beamlineConfigStore.beamlineName}
               sx={{ width: 300, color: "white" }}
               renderInput={(params) => (
                 <TextField
@@ -108,20 +108,22 @@ export default function DataSideBar(): JSX.Element {
           </Stack>
 
           <Typography>
-            Resolution (hxw): {detectorStore.resolution.height} x{" "}
-            {detectorStore.resolution.width}
+            Resolution (hxw): {detectorStore.detector.resolution.height} x{" "}
+            {detectorStore.detector.resolution.width}
           </Typography>
           <Stack direction="row">
             <Typography flexGrow={2}>
-              Pixel size: {detectorStore.pixelSize.height.toString()} x{" "}
-              {detectorStore.pixelSize.width.toString()}
+              Pixel size: {" "}
+              {detectorStore.detector.pixelSize.height.toNumber().toFixed(2)} 
+              {" x "}
+              {detectorStore.detector.pixelSize.width.toNumber().toFixed(2)}
             </Typography>
             <FormControl>
               <InputLabel>units</InputLabel>
               <Select
                 size="small"
                 label="units"
-                value={detectorStore.pixelSize.height.formatUnits()}
+                value={detectorStore.detector.pixelSize.height.formatUnits()}
                 onChange={(event) =>
                   detectorStore.updatePixelUnits(
                     event.target.value as LengthUnits)

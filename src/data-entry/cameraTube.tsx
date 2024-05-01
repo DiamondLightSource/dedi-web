@@ -16,14 +16,14 @@ import { LengthUnits } from "../utils/units";
  * @returns
  */
 export default function CameraTubeDataEntry(): JSX.Element {
-  const cameraTube = useCameraTubeStore();
+  const cameraTubeStore = useCameraTubeStore();
   const handleX = (event: React.ChangeEvent<HTMLInputElement>) => {
-    cameraTube.updateCentre({
+    cameraTubeStore.updateCentre({
       x: parseFloat(event.target.value),
     });
   };
   const handleY = (event: React.ChangeEvent<HTMLInputElement>) => {
-    cameraTube.updateCentre({
+    cameraTubeStore.updateCentre({
       y: parseFloat(event.target.value),
     });
   };
@@ -34,16 +34,16 @@ export default function CameraTubeDataEntry(): JSX.Element {
       <Stack direction={"row"}>
         <Typography flexGrow={1}>
           {" "}
-          Diameter: {cameraTube.diameter.toNumber()}{" "}
+          Diameter: {cameraTubeStore.cameraTube.diameter.toNumber()}{" "}
         </Typography>
         <FormControl>
           <InputLabel>units </InputLabel>
           <Select
             size="small"
             label="units"
-            value={cameraTube.diameter.formatUnits()}
+            value={cameraTubeStore.cameraTube.diameter.formatUnits()}
             onChange={(event) =>
-              cameraTube.updateDiameterUnits(
+              cameraTubeStore.updateDiameterUnits(
                 event.target.value as LengthUnits,
               )
             }
@@ -60,7 +60,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
         type="number"
         size="small"
         label="x"
-        value={cameraTube.centre.x}
+        value={cameraTubeStore.cameraTube.centre.x}
         onChange={handleX}
         InputProps={{
           endAdornment: <InputAdornment position="end">px</InputAdornment>,
@@ -70,7 +70,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
         type="number"
         size="small"
         label="y"
-        value={cameraTube.centre.y}
+        value={cameraTubeStore.cameraTube.centre.y}
         onChange={handleY}
         InputProps={{
           endAdornment: <InputAdornment position="end">px</InputAdornment>,

@@ -9,10 +9,10 @@
       "height": 0.172
     }
   },
-  "long boy": {
+  "test": {
     "resolution": {
-      "width": 1475,
-      "height": 679
+      "width": 1000,
+      "height": 1000
     },
     "pixelSize": {
       "width": 0.2,

@@ -36,5 +36,24 @@
       },
       "diameter": 310
     }
+  },
+  "test":{
+    "detector": "test",
+    "beamline": "test",
+    "beamstop": {
+      "centre": {
+        "x": 500,
+        "y": 500
+      },
+      "diameter": 5,
+      "clearance": 5
+    },
+    "cameraTube": {
+      "centre": {
+        "x": 500,
+        "y": 500
+      },
+      "diameter": 200
+    }
   }
 }

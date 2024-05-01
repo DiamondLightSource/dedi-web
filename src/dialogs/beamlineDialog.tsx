@@ -34,7 +34,7 @@ export default function PresetDialog(props: {
   return (
     <Dialog
       fullWidth={true}
-      maxWidth={"xl"}
+      maxWidth={"lg"}
       open={props.open}
       keepMounted
       onClose={props.handleClose}
@@ -74,23 +74,6 @@ export default function PresetDialog(props: {
             <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
-                label="max wavelength "
-                variant="outlined"
-                value={maxWavelength}
-                size="small"
-                onChange={(event) =>
-                  setMaxwavelength(parseFloat(event.target.value))
-                }
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">nm</InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-            <Grid item xs={GRID_ITEM_SIZE}>
-              <TextField
-                type="number"
                 label="min camera length"
                 value={minCameraLength}
                 variant="outlined"
@@ -108,12 +91,12 @@ export default function PresetDialog(props: {
             <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
-                label="max camera length"
+                label="camera length step"
+                value={cameraLengthStep}
                 variant="outlined"
-                value={maxCameraLangth}
                 size="small"
                 onChange={(event) =>
-                  setMaxCameraLangth(parseFloat(event.target.value))
+                  setCameraLengthStep(parseFloat(event.target.value))
                 }
                 InputProps={{
                   endAdornment: (
@@ -125,12 +108,29 @@ export default function PresetDialog(props: {
             <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
-                label="camera length step"
-                value={cameraLengthStep}
+                label="max wavelength "
                 variant="outlined"
+                value={maxWavelength}
                 size="small"
                 onChange={(event) =>
-                  setCameraLengthStep(parseFloat(event.target.value))
+                  setMaxwavelength(parseFloat(event.target.value))
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">nm</InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={GRID_ITEM_SIZE}>
+              <TextField
+                type="number"
+                label="max camera length"
+                variant="outlined"
+                value={maxCameraLangth}
+                size="small"
+                onChange={(event) =>
+                  setMaxCameraLangth(parseFloat(event.target.value))
                 }
                 InputProps={{
                   endAdornment: (

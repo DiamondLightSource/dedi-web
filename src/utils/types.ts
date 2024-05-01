@@ -98,3 +98,10 @@ export interface IOPresetConfig {
   readonly beamstop: IOBeamstop;
   readonly cameraTube: IOCircularDevice;
 }
+
+export interface BeamlineConfig {
+  beamline: AppBeamline;
+  wavelength: Unit;
+  angle: Unit;
+  cameraLength: number | null;
+}

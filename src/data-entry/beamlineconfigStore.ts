@@ -8,13 +8,13 @@ import {
 import {
   beamlineRecord,
   defaultConfig,
-  presetConfigRecord
 } from "../presets/presetManager";
 import { Unit, unit } from "mathjs";
 import { wavelength2EnergyConverter } from "../utils/units";
 
-export interface BeamlineConfigStore extends AppBeamline {
-  beamline: string;
+export interface BeamlineConfigStore {
+  beamlineName: string;
+  beamline: AppBeamline;
   beamlineRecord: Record<string, AppBeamline>;
   
   energy: Unit;
@@ -48,12 +48,9 @@ export interface BeamlineConfigStore extends AppBeamline {
  * Zustand store for information relating to the beamline
  */
 export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
-  ...beamlineRecord[defaultConfig.beamline],
-  beamline: defaultConfig.beamline,
+  beamline: beamlineRecord[defaultConfig.beamline],
+  beamlineName: defaultConfig.beamline,
   beamlineRecord: beamlineRecord,
-  
-  preset: Object.keys(presetConfigRecord)[0],
-  presetRecord: presetConfigRecord,
   
   energy: wavelength2EnergyConverter(defaultConfig.wavelength).to("keV"),
   userEnergy: wavelength2EnergyConverter(defaultConfig.wavelength)
@@ -70,8 +67,8 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
 
   updateBeamline: (newBeamline: string) => 
     set((state: BeamlineConfigStore) => ({
-      ...state.beamlineRecord[newBeamline],
-      beamline: newBeamline,
+      beamline: state.beamlineRecord[newBeamline],
+      beamlineName: newBeamline,
     })),
 
   addNewBeamline: (name: string, beamline: AppBeamline) => {
@@ -99,16 +96,22 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     set((state) => ({ 
       wavelength: unit(newWavelength ?? NaN, newUnits),
       userWavelength: newWavelength,
-      minWavelength: state.minWavelength.to(newUnits),
-      maxWavelength: state.maxWavelength.to(newUnits),
+      beamline: {
+        ...state.beamline,
+        minWavelength: state.beamline.minWavelength.to(newUnits),
+        maxWavelength: state.beamline.maxWavelength.to(newUnits),
+      },
     })),
 
   updateWavelengthUnits: (newUnits: WavelengthUnits) =>
     set((state) => ({
       wavelength: state.wavelength.to(newUnits),
       userWavelength: state.wavelength.to(newUnits).toNumber(),
-      minWavelength: state.minWavelength.to(newUnits),
-      maxWavelength: state.maxWavelength.to(newUnits),
+      beamline: {
+        ...state.beamline,
+        minWavelength: state.beamline.minWavelength.to(newUnits),
+        maxWavelength: state.beamline.maxWavelength.to(newUnits),
+      },
     })),
 
   updateEnergy: (newEnergy: number | null, newUnits: EnergyUnits) =>
