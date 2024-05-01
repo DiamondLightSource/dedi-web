@@ -79,7 +79,7 @@ export default function CentrePlot(): JSX.Element {
       detectorStore.detector,
       beamstopStore.beamstop, 
       cameraTubeStore.cameraTube,
-       beamlineConfig);
+      beamlineConfig);
   }, [
     detectorStore.detector,
     beamstopStore.beamstop, 
