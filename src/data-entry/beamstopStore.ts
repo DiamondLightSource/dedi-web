@@ -27,13 +27,13 @@ export const useBeamstopStore = create<BeamstopStore>((set) => ({
     set((state) => ({ 
       beamstop: {
         ...state.beamstop,
-        diameter: unit(newDiameter, newUnits) 
+        diameter: unit(newDiameter, newUnits as string) 
       }})),
   updateDiameterUnits: (newUnits: LengthUnits) =>
     set((state) => ({ 
       beamstop: {
         ...state.beamstop, 
-        diameter: state.beamstop.diameter.to(newUnits) }})),
+        diameter: state.beamstop.diameter.to(newUnits as string) }})),
   updateClearance: (newClearnace: number | null) =>
     set((state) => ({
       beamstop:{ 

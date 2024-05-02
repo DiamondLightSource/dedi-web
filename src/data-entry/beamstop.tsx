@@ -12,6 +12,7 @@ import {
 import { LengthUnits } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
+import { AppDetector } from "../utils/types";
 
 /**
  * Component with data entry inputs for the Beamstop
@@ -36,7 +37,7 @@ export default function BeamStopDataEntry(): JSX.Element {
     beamstopStore.updateClearance(parseFloat(event.target.value));
   };
 
-  const detector = useDetectorStore(state => state.detector);
+  const detector = useDetectorStore<AppDetector>((state) => state.detector);
 
   const centreDetector = () => {
     beamstopStore.updateCentre({
@@ -69,8 +70,8 @@ export default function BeamStopDataEntry(): JSX.Element {
                 .updateDiameterUnits(event.target.value as LengthUnits)
             }
           >
-            <MenuItem value={LengthUnits.millimetre}>{"mm"}</MenuItem>
-            <MenuItem value={LengthUnits.micrometre}>
+            <MenuItem value={LengthUnits.millimetre as string}>{"mm"}</MenuItem>
+            <MenuItem value={LengthUnits.micrometre as string}>
               {"\u03bc" + "m"}
             </MenuItem>
           </Select>

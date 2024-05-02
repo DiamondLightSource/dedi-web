@@ -26,7 +26,7 @@ export const useCameraTubeStore = create<CameraTubeStore>((set) => ({
       cameraTube:
       { 
         ...state.cameraTube,
-        diameter: state.cameraTube.diameter.to(newUnits) }})),
+        diameter: state.cameraTube.diameter.to(newUnits as string) }})),
   updateCameraTube: 
     (presetCameraTube: AppCircularDevice) => 
       set({cameraTube: presetCameraTube}),

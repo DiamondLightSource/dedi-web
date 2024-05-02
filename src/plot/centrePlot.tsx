@@ -28,6 +28,7 @@ import {
   convertBetweenQAndS,
 } from "../results/scatteringQuantities";
 import {
+  AppBeamline,
   AppBeamstop,
   AppCircularDevice,
   AppDetector,
@@ -47,7 +48,7 @@ import { useMemo } from "react";
  */
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
-  const beamlineConfig = useBeamlineConfig();
+  const beamlineConfigStore = useBeamlineConfigStore()
   const detectorStore = useDetectorStore();
   const beamstopStore = useBeamstopStore();
   const cameraTubeStore = useCameraTubeStore();
@@ -55,7 +56,7 @@ export default function CentrePlot(): JSX.Element {
 
   // Needed for plotting in q space
   const scaleFactor: Unit | null = getScaleFactor(
-    beamlineConfig.wavelength,beamlineConfig.cameraLength);
+    beamlineConfigStore.wavelength,beamlineConfigStore.cameraLength);
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(() => {
     // todo this might need to be moved elsewhere
@@ -74,6 +75,12 @@ export default function CentrePlot(): JSX.Element {
 
     createUnit("xpixel", detectorStore.detector.pixelSize.width.toString());
     createUnit("ypixel", detectorStore.detector.pixelSize.height.toString());
+    console.log("help");
+    const beamlineConfig = getBeamlineConfig(
+      beamlineConfigStore.angle,
+      beamlineConfigStore.cameraLength,
+      beamlineConfigStore.wavelength,
+      beamlineConfigStore.beamline);
 
     return computeQrange(
       detectorStore.detector,
@@ -84,7 +91,10 @@ export default function CentrePlot(): JSX.Element {
     detectorStore.detector,
     beamstopStore.beamstop, 
     cameraTubeStore.cameraTube,
-    beamlineConfig,
+    beamlineConfigStore.angle,
+    beamlineConfigStore.cameraLength,
+    beamlineConfigStore.wavelength,
+    beamlineConfigStore.beamline
   ]);
 
   // todo move these 2 statements into the ResultsBar component
@@ -322,22 +332,19 @@ function getScaleFactor(wavelength: Unit, cameraLength: number | null) {
   return scaleFactor;
 }
 
-function useBeamlineConfig(): BeamlineConfig{
-  return useBeamlineConfigStore<BeamlineConfig>((state) => {
+function getBeamlineConfig( 
+    angle:Unit,
+    cameraLength:number | null,
+    wavelength: Unit,
+    beamline: AppBeamline
+  ): BeamlineConfig{
     return {
-      angle: state.angle,
-      cameraLength: state.cameraLength,
-      beamline:{
-        minWavelength: state.beamline.minWavelength,
-        maxWavelength: state.beamline.maxWavelength,
-        minCameraLength: state.beamline.minCameraLength,
-        maxCameraLength: state.beamline.maxCameraLength,
-        cameraLengthStep: state.beamline.cameraLengthStep,
-      },
-      wavelength: state.wavelength,
+      angle: angle,
+      cameraLength: cameraLength,
+      beamline: beamline,
+      wavelength: wavelength,
     };
-  });
-}
+  }
 
 function getReferencePoints(
   ptMin: Vector2,
