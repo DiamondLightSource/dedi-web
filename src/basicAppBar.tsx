@@ -9,6 +9,7 @@ import { useBeamlineConfigStore } from "./data-entry/beamlineconfigStore";
 import { useState } from "react";
 import { useBeamstopStore } from "./data-entry/beamstopStore";
 import { useCameraTubeStore } from "./data-entry/cameraTubeStore";
+import { LengthUnits } from "./utils/units";
 
 
 export default function BasicAppBar(): JSX.Element {
@@ -26,6 +27,12 @@ export default function BasicAppBar(): JSX.Element {
     beamstopStore.updateBeamstop(beamstop);
     cameraTubeStore.updateCameraTube(cameraTube);
     beamlineConfigStore.updateBeamline(beamline);
+    beamstopStore.updateDiameter(
+      beamlineConfigStore.beamlineRecord[beamline].beamstopDiameter,
+      LengthUnits.millimetre);
+    cameraTubeStore.updateDiameter(
+      beamlineConfigStore.beamlineRecord[beamline].cameratubeDiameter,
+      LengthUnits.millimetre);
     setPreset(preset);
   };
 

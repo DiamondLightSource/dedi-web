@@ -28,10 +28,11 @@ export default function DetectorTable() {
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "name", flex: 1 },
-    { field: "resolution_height", headerName: "resolution height", flex: 1 },
-    { field: "resolution_width", headerName: "resolution width", flex: 1 },
-    { field: "pixel_height", headerName: "pixel height", flex: 1 },
-    { field: "pixel_width", headerName: "pixel width", flex: 1 },
+    { field: "resolution_height", 
+      headerName: "resolution height (px)", flex: 1 },
+    { field: "resolution_width", headerName: "resolution width (px)", flex: 1 },
+    { field: "pixel_height", headerName: "pixel height (mm)", flex: 1 },
+    { field: "pixel_width", headerName: "pixel width (mm)", flex: 1 },
   ];
 
   return (

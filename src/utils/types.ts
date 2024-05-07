@@ -35,6 +35,8 @@ export interface AppBeamstop extends AppCircularDevice {
  * Internal Beamline type (contains all immutable information about a beamline)
  */
 export interface AppBeamline {
+  readonly beamstopDiameter: number;
+  readonly cameratubeDiameter: number;
   readonly minWavelength: Unit;
   readonly maxWavelength: Unit;
   readonly minCameraLength: Unit;
@@ -68,13 +70,14 @@ export interface IODetector {
  */
 export interface IOCircularDevice {
   readonly centre: SimpleVector2;
-  readonly diameter: number;
 }
 
 /**
  * External Beamline type for use in
  */
 export interface IOBeamline {
+  readonly beamstopDiameter: number;
+  readonly cameratubeDiameter: number;
   readonly minWavelength: number;
   readonly maxWavelength: number;
   readonly minCameraLength: number;

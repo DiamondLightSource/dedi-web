@@ -7,15 +7,13 @@
         "x": 738,
         "y": 100
       },
-      "diameter": 4,
       "clearance": 10
     },
     "cameraTube": {
       "centre": {
         "x": 738,
         "y": 840
-      },
-      "diameter": 310
+      }
     }
   },
   "I22 SAXS Anisotropic": {

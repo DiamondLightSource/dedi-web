@@ -42,6 +42,8 @@ export const detectorRecord: Record<string, AppDetector> = Object.fromEntries(
  */
 export function createInternalBeamline(beamlineData: IOBeamline): AppBeamline {
   return {
+    cameratubeDiameter: beamlineData.cameratubeDiameter,
+    beamstopDiameter: beamlineData.beamstopDiameter,
     minWavelength: unit(beamlineData.minWavelength, "nm"),
     maxWavelength: unit(beamlineData.maxWavelength, "nm"),
     minCameraLength: unit(beamlineData.minCameraLength, "m"),
@@ -69,11 +71,11 @@ function createPresetConfigRecord(preset: IOPresetConfig): AppConfig {
     ...preset,
     beamstop: {
       ...preset.beamstop,
-      diameter: unit(preset.beamstop.diameter, "mm"),
+      diameter: unit(beamlineRecord[preset.beamline].beamstopDiameter, "mm"),
     },
     cameraTube: {
       ...preset.cameraTube,
-      diameter: unit(preset.cameraTube.diameter, "mm"),
+      diameter: unit(beamlineRecord[preset.beamline].beamstopDiameter, "mm"),
     },
     wavelength: unit(NaN, "nm"),
     angle: unit(90, "deg"),

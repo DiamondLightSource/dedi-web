@@ -31,7 +31,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
   return (
     <Stack spacing={1}>
       <Typography variant="h6"> CameraTube </Typography>
-      <Stack direction={"row"}>
+      <Stack direction={"row"} alignItems={"center"}>
         <Typography flexGrow={1}>
           {" "}
           Diameter: {cameraTubeStore.cameraTube.diameter.toNumber()}{" "}

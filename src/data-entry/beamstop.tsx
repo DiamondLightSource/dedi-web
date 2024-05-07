@@ -53,7 +53,7 @@ export default function BeamStopDataEntry(): JSX.Element {
   return (
     <Stack spacing={1}>
       <Typography variant="h6"> Beamstop </Typography>
-      <Stack direction={"row"}>
+      <Stack direction={"row"} alignItems={"center"}>
         {/* Diameter */}
         <Typography flexGrow={1}>
           {" "}

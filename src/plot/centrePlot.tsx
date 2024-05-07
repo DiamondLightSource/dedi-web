@@ -53,12 +53,12 @@ export default function CentrePlot(): JSX.Element {
   const beamstopStore = useBeamstopStore();
   const cameraTubeStore = useCameraTubeStore();
 
-
   // Needed for plotting in q space
   const scaleFactor: Unit | null = getScaleFactor(
     beamlineConfigStore.wavelength,beamlineConfigStore.cameraLength);
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(() => {
+    
     // todo this might need to be moved elsewhere
     /* eslint-disable */
     // @ts-ignore
@@ -75,7 +75,7 @@ export default function CentrePlot(): JSX.Element {
 
     createUnit("xpixel", detectorStore.detector.pixelSize.width.toString());
     createUnit("ypixel", detectorStore.detector.pixelSize.height.toString());
-    console.log("help");
+
     const beamlineConfig = getBeamlineConfig(
       beamlineConfigStore.angle,
       beamlineConfigStore.cameraLength,
@@ -141,12 +141,16 @@ export default function CentrePlot(): JSX.Element {
 
   if (
     requestedRange &&
-    beamlineConfig.cameraLength &&
-    beamlineConfig.wavelength
+    beamlineConfigStore.cameraLength &&
+    beamlineConfigStore.wavelength
   ) {
     plotRequestedRange = getRequestedRange(
       requestedRange,
-      beamlineConfig,
+      getBeamlineConfig(
+        beamlineConfigStore.angle,
+        beamlineConfigStore.cameraLength,
+        beamlineConfigStore.wavelength,
+        beamlineConfigStore.beamline),
       beamstopCentre,
       plotRequestedRange,
       plotter,

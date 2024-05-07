@@ -4,6 +4,8 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 
 interface BeamlineTableRow {
   name: string
+  cameraTubeDiameter: number;
+  beamstopDiameter: number;
   minWavelength: number;
   maxWavelength: number;
   minCameraLength: number;
@@ -14,6 +16,8 @@ interface BeamlineTableRow {
 function createData( name: string, beamline: AppBeamline): BeamlineTableRow {
   return {
     name: name,
+    cameraTubeDiameter: beamline.cameratubeDiameter,
+    beamstopDiameter: beamline.beamstopDiameter,
     minWavelength: beamline.minWavelength.toNumber("nm"),
     maxWavelength: beamline.maxWavelength.toNumber("nm"),
     minCameraLength: beamline.minCameraLength.toNumber("m"),
@@ -30,6 +34,10 @@ export default function BeamlineTable() {
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "name", flex: 1 },
+    { field: "beamstopDiameter",
+      headerName: "Beamstop Diameter (mm)", flex: 1 },
+    { field: "cameraTubeDiameter",
+      headerName: "CameraTube Diameter (mm)", flex: 1 },
     { field: "minWavelength", headerName: "Min wavelength (nm)", flex: 1 },
     { field: "maxWavelength", headerName: "Max wavelength (nm)", flex: 1 },
     { field: "minCameraLength", headerName: "Min camera length (m)", flex: 1 },

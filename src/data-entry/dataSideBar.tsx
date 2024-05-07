@@ -21,6 +21,8 @@ import { useDetectorStore } from "./detectorStore";
 import DetectorDialog from "../dialogs/detectorDialog";
 import React from "react";
 import PresetDialog from "../dialogs/beamlineDialog";
+import { useBeamstopStore } from "./beamstopStore";
+import { useCameraTubeStore } from "./cameraTubeStore";
 
 /**
  * React components which represents the whole side bar for data entry.
@@ -28,6 +30,8 @@ import PresetDialog from "../dialogs/beamlineDialog";
  */
 export default function DataSideBar(): JSX.Element {
   const detectorStore = useDetectorStore();
+  const beamstopStore = useBeamstopStore();
+  const cameraTubeStore = useCameraTubeStore();
   const beamlineConfigStore  = useBeamlineConfigStore();
 
   const [openDetector, setOpenDetector] = React.useState(false);
@@ -50,6 +54,19 @@ export default function DataSideBar(): JSX.Element {
     setOpenBeamline(false);
   };
 
+  const handleBeamlineUpdate = (
+    _:React.SyntheticEvent , value: string | null) =>{
+    if (value){
+      beamlineConfigStore.updateBeamline(value);
+      beamstopStore.updateDiameter(
+        beamlineConfigStore.beamlineRecord[value].beamstopDiameter,
+        LengthUnits.millimetre);
+      cameraTubeStore.updateDiameter(
+        beamlineConfigStore.beamlineRecord[value].cameratubeDiameter,
+        LengthUnits.millimetre);
+    }
+  };
+
   return (
     <Card>
       <CardContent>
@@ -68,9 +85,7 @@ export default function DataSideBar(): JSX.Element {
                   sx={{ color: "white" }}
                 />
               )}
-              onChange={(_, value) => {
-                value ? beamlineConfigStore.updateBeamline(value) : {};
-              }}
+              onChange={handleBeamlineUpdate}
             />
             <Button variant="outlined" onClick={handleClickOpenPreset}>
               Add beamline
@@ -111,7 +126,7 @@ export default function DataSideBar(): JSX.Element {
             Resolution (hxw): {detectorStore.detector.resolution.height} x{" "}
             {detectorStore.detector.resolution.width}
           </Typography>
-          <Stack direction="row">
+          <Stack direction="row" alignItems={"center"}>
             <Typography flexGrow={2}>
               Pixel size: {" "}
               {detectorStore.detector.pixelSize.height.toNumber().toFixed(2)} 

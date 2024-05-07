@@ -34,7 +34,7 @@ export default function PresetDialog(props: {
   return (
     <Dialog
       fullWidth={true}
-      maxWidth={"lg"}
+      maxWidth={"xl"}
       open={props.open}
       keepMounted
       onClose={props.handleClose}
