@@ -32,7 +32,7 @@ export default function DataSideBar(): JSX.Element {
   const detectorStore = useDetectorStore();
   const beamstopStore = useBeamstopStore();
   const cameraTubeStore = useCameraTubeStore();
-  const beamlineConfigStore  = useBeamlineConfigStore();
+  const beamlineConfigStore = useBeamlineConfigStore();
 
   const [openDetector, setOpenDetector] = React.useState(false);
 
@@ -55,15 +55,19 @@ export default function DataSideBar(): JSX.Element {
   };
 
   const handleBeamlineUpdate = (
-    _:React.SyntheticEvent , value: string | null) =>{
-    if (value){
+    _: React.SyntheticEvent,
+    value: string | null,
+  ) => {
+    if (value) {
       beamlineConfigStore.updateBeamline(value);
       beamstopStore.updateDiameter(
         beamlineConfigStore.beamlineRecord[value].beamstopDiameter,
-        LengthUnits.millimetre);
+        LengthUnits.millimetre,
+      );
       cameraTubeStore.updateDiameter(
         beamlineConfigStore.beamlineRecord[value].cameratubeDiameter,
-        LengthUnits.millimetre);
+        LengthUnits.millimetre,
+      );
     }
   };
 
@@ -96,7 +100,7 @@ export default function DataSideBar(): JSX.Element {
               handleOpen={handleClickOpenPreset}
             />
           </Stack>
-          <Divider/>
+          <Divider />
           <Typography variant="h6">Detector</Typography>
           <Stack direction={"row"} spacing={2}>
             <Autocomplete
@@ -128,8 +132,8 @@ export default function DataSideBar(): JSX.Element {
           </Typography>
           <Stack direction="row" alignItems={"center"}>
             <Typography flexGrow={2}>
-              Pixel size: {" "}
-              {detectorStore.detector.pixelSize.height.toNumber().toFixed(2)} 
+              Pixel size:{" "}
+              {detectorStore.detector.pixelSize.height.toNumber().toFixed(2)}
               {" x "}
               {detectorStore.detector.pixelSize.width.toNumber().toFixed(2)}
             </Typography>
@@ -141,7 +145,8 @@ export default function DataSideBar(): JSX.Element {
                 value={detectorStore.detector.pixelSize.height.formatUnits()}
                 onChange={(event) =>
                   detectorStore.updatePixelUnits(
-                    event.target.value as LengthUnits)
+                    event.target.value as LengthUnits,
+                  )
                 }
               >
                 <MenuItem value={LengthUnits.millimetre}>

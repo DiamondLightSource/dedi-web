@@ -49,9 +49,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
             }
           >
             <MenuItem value={LengthUnits.millimetre}>{"mm"}</MenuItem>
-            <MenuItem value={LengthUnits.micrometre}>
-              {"\u03bc" + "m"}
-            </MenuItem>
+            <MenuItem value={LengthUnits.micrometre}>{"\u03bc" + "m"}</MenuItem>
           </Select>
         </FormControl>
       </Stack>

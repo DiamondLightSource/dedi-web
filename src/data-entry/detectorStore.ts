@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { LengthUnits } from "../utils/units";
 import { detectorRecord, defaultConfig } from "../presets/presetManager";
 
-export interface DetectorStore{
+export interface DetectorStore {
   detector: AppDetector;
   name: string;
   detectorRecord: Record<string, AppDetector>;
@@ -32,11 +32,11 @@ export const useDetectorStore = create<DetectorStore>((set) => ({
           height: state.detector.pixelSize.height.to(newUnits as string),
           width: state.detector.pixelSize.width.to(newUnits as string),
         },
-      }
-
+      },
     })),
-    addNewDetector: (name: string, detector: AppDetector) => 
-      { set((state: DetectorStore) =>({
-        detectorRecord: {...state.detectorRecord, [name]: detector }
-      }))}
+  addNewDetector: (name: string, detector: AppDetector) => {
+    set((state: DetectorStore) => ({
+      detectorRecord: { ...state.detectorRecord, [name]: detector },
+    }));
+  },
 }));

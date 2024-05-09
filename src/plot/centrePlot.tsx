@@ -8,7 +8,7 @@ import {
   VisCanvas,
 } from "@h5web/lib";
 import { Box, Card, CardContent, Stack } from "@mui/material";
-import { Unit, MathType, divide, multiply, unit, createUnit} from "mathjs";
+import { Unit, MathType, divide, multiply, unit, createUnit } from "mathjs";
 import { Vector2, Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
 import { getPointForQ } from "../calculations/qvalue";
@@ -32,7 +32,7 @@ import {
   AppBeamstop,
   AppCircularDevice,
   AppDetector,
-  BeamlineConfig
+  BeamlineConfig,
 } from "../utils/types";
 import { Plotter } from "./Plotter";
 import LegendBar from "./legendBar";
@@ -41,24 +41,24 @@ import { UnitVector, color2String, getDomains } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import { useMemo } from "react";
 
-
 /**
  * A react componenet that plots the items that make up the system
  * @returns
  */
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
-  const beamlineConfigStore = useBeamlineConfigStore()
+  const beamlineConfigStore = useBeamlineConfigStore();
   const detectorStore = useDetectorStore();
   const beamstopStore = useBeamstopStore();
   const cameraTubeStore = useCameraTubeStore();
 
   // Needed for plotting in q space
   const scaleFactor: Unit | null = getScaleFactor(
-    beamlineConfigStore.wavelength,beamlineConfigStore.cameraLength);
+    beamlineConfigStore.wavelength,
+    beamlineConfigStore.cameraLength,
+  );
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(() => {
-    
     // todo this might need to be moved elsewhere
     /* eslint-disable */
     // @ts-ignore
@@ -80,21 +80,23 @@ export default function CentrePlot(): JSX.Element {
       beamlineConfigStore.angle,
       beamlineConfigStore.cameraLength,
       beamlineConfigStore.wavelength,
-      beamlineConfigStore.beamline);
+      beamlineConfigStore.beamline,
+    );
 
     return computeQrange(
       detectorStore.detector,
-      beamstopStore.beamstop, 
+      beamstopStore.beamstop,
       cameraTubeStore.cameraTube,
-      beamlineConfig);
+      beamlineConfig,
+    );
   }, [
     detectorStore.detector,
-    beamstopStore.beamstop, 
+    beamstopStore.beamstop,
     cameraTubeStore.cameraTube,
     beamlineConfigStore.angle,
     beamlineConfigStore.cameraLength,
     beamlineConfigStore.wavelength,
-    beamlineConfigStore.beamline
+    beamlineConfigStore.beamline,
   ]);
 
   // todo move these 2 statements into the ResultsBar component
@@ -110,7 +112,11 @@ export default function CentrePlot(): JSX.Element {
 
   const { beamstopCentre, cameraTubeCentre, minPoint, maxPoint } =
     getReferencePoints(
-      ptMin, ptMax, beamstopStore.beamstop, cameraTubeStore.cameraTube);
+      ptMin,
+      ptMax,
+      beamstopStore.beamstop,
+      cameraTubeStore.cameraTube,
+    );
 
   const plotter = new Plotter(plotConfig.plotAxes, scaleFactor);
 
@@ -150,7 +156,8 @@ export default function CentrePlot(): JSX.Element {
         beamlineConfigStore.angle,
         beamlineConfigStore.cameraLength,
         beamlineConfigStore.wavelength,
-        beamlineConfigStore.beamline),
+        beamlineConfigStore.beamline,
+      ),
       beamstopCentre,
       plotRequestedRange,
       plotter,
@@ -314,17 +321,14 @@ export default function CentrePlot(): JSX.Element {
  * Calculates the scale factor which is used for Plotting in units of Q
  * @param wavelength current wave length as a Unit
  * @param cameraLength cameralength
- * @returns 
+ * @returns
  */
 function getScaleFactor(wavelength: Unit, cameraLength: number | null) {
   let scaleFactor: MathType | null = null;
   if (cameraLength && wavelength) {
     scaleFactor = divide(
       2 * Math.PI,
-      multiply(
-        unit(cameraLength, "m"),
-        wavelength.to("m"),
-      ),
+      multiply(unit(cameraLength, "m"), wavelength.to("m")),
     );
   }
   if (scaleFactor == null) {
@@ -336,19 +340,19 @@ function getScaleFactor(wavelength: Unit, cameraLength: number | null) {
   return scaleFactor;
 }
 
-function getBeamlineConfig( 
-    angle:Unit,
-    cameraLength:number | null,
-    wavelength: Unit,
-    beamline: AppBeamline
-  ): BeamlineConfig{
-    return {
-      angle: angle,
-      cameraLength: cameraLength,
-      beamline: beamline,
-      wavelength: wavelength,
-    };
-  }
+function getBeamlineConfig(
+  angle: Unit,
+  cameraLength: number | null,
+  wavelength: Unit,
+  beamline: AppBeamline,
+): BeamlineConfig {
+  return {
+    angle: angle,
+    cameraLength: cameraLength,
+    beamline: beamline,
+    wavelength: wavelength,
+  };
+}
 
 function getReferencePoints(
   ptMin: Vector2,

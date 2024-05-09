@@ -5,7 +5,7 @@ import { defaultConfig } from "../presets/presetManager";
 import { unit } from "mathjs";
 
 export interface CameraTubeStore {
-  cameraTube: AppCircularDevice
+  cameraTube: AppCircularDevice;
   updateCentre: (centre: Partial<SimpleVector2>) => void;
   updateDiameterUnits: (newUnits: LengthUnits) => void;
   updateCameraTube: (presetCameraTube: AppCircularDevice) => void;
@@ -19,23 +19,25 @@ export const useCameraTubeStore = create<CameraTubeStore>((set) => ({
   cameraTube: defaultConfig.cameraTube,
   updateCentre: (newCentre: Partial<SimpleVector2>) =>
     set((state) => ({
-      cameraTube:
-      { 
+      cameraTube: {
         ...state.cameraTube,
-        centre: { ...state.cameraTube.centre, ...newCentre } }})),
+        centre: { ...state.cameraTube.centre, ...newCentre },
+      },
+    })),
   updateDiameterUnits: (newUnits: LengthUnits) =>
     set((state) => ({
-      cameraTube:
-      { 
+      cameraTube: {
         ...state.cameraTube,
-        diameter: state.cameraTube.diameter.to(newUnits as string) }})),
-  updateCameraTube: 
-    (presetCameraTube: AppCircularDevice) => 
-      set({cameraTube: presetCameraTube}),
+        diameter: state.cameraTube.diameter.to(newUnits as string),
+      },
+    })),
+  updateCameraTube: (presetCameraTube: AppCircularDevice) =>
+    set({ cameraTube: presetCameraTube }),
   updateDiameter: (newDiameter: number, newUnits: LengthUnits) =>
-      set((state) => ({ 
-        cameraTube: {
-          ...state.cameraTube,
-          diameter: unit(newDiameter, newUnits as string) 
-        }})),
+    set((state) => ({
+      cameraTube: {
+        ...state.cameraTube,
+        diameter: unit(newDiameter, newUnits as string),
+      },
+    })),
 }));

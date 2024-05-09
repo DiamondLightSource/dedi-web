@@ -66,8 +66,9 @@ export default function BeamStopDataEntry(): JSX.Element {
             label="units"
             value={beamstopStore.beamstop.diameter.formatUnits()}
             onChange={(event) =>
-              beamstopStore
-                .updateDiameterUnits(event.target.value as LengthUnits)
+              beamstopStore.updateDiameterUnits(
+                event.target.value as LengthUnits,
+              )
             }
           >
             <MenuItem value={LengthUnits.millimetre as string}>{"mm"}</MenuItem>

@@ -134,11 +134,11 @@ export default function BeampropertiesDataEntry() {
         </FormControl>
       </Stack>
       <Typography>
-        Minimum allowed wavelength: 
+        Minimum allowed wavelength:
         {beamlineConfig.beamline.minWavelength.toString()}
       </Typography>
       <Typography>
-        Maximum allowed wavelength: 
+        Maximum allowed wavelength:
         {beamlineConfig.beamline.maxWavelength.toString()}
       </Typography>
       <Stack direction="row" spacing={1}>

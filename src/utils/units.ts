@@ -43,19 +43,6 @@ export enum AngleUnits {
   degrees = "deg",
 }
 
-// Could be dead code
-/**
- * An interface to keep track of all units in the app
- */
-// export interface UnitConfig {
-//   pixelSizeUnits: LengthUnits;
-//   beamEnergyUnits: EnergyUnits;
-//   beamstopDiameterUnits: LengthUnits;
-//   cameraDiameterUnits: LengthUnits;
-//   wavelengthUnits: WavelengthUnits;
-//   angleUnits: AngleUnits;
-// }
-
 /**
  * Converts energy in kilo electronvolts to wavelength in nm
  * @param energy energy in keV

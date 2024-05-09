@@ -1,8 +1,8 @@
 import { expect, test } from "vitest";
-import { 
+import {
   beamlineRecord,
   detectorRecord,
-  presetConfigRecord
+  presetConfigRecord,
 } from "./presetManager";
 
 test("Test detectors exist detectors are valid", () => {
@@ -31,10 +31,12 @@ test("Test beamlines exist and are valid", () => {
 test("Test that app presets are valid", () => {
   expect(presetConfigRecord).toBeTruthy();
   for (const config in presetConfigRecord) {
-    expect(Object.keys(detectorRecord))
-      .toContain(presetConfigRecord[config].detector);
-    expect(Object.keys(beamlineRecord))
-      .toContain(presetConfigRecord[config].beamline);
+    expect(Object.keys(detectorRecord)).toContain(
+      presetConfigRecord[config].detector,
+    );
+    expect(Object.keys(beamlineRecord)).toContain(
+      presetConfigRecord[config].beamline,
+    );
     expect(presetConfigRecord[config]).toHaveProperty("beamstop.centre.x");
     expect(presetConfigRecord[config]).toHaveProperty("beamstop.centre.y");
     expect(presetConfigRecord[config]).toHaveProperty("beamstop.clearance");

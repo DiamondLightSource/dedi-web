@@ -1,14 +1,7 @@
 import { AppBeamline } from "../utils/types";
 import { create } from "zustand";
-import {
-  AngleUnits,
-  EnergyUnits,
-  WavelengthUnits
-} from "../utils/units";
-import {
-  beamlineRecord,
-  defaultConfig,
-} from "../presets/presetManager";
+import { AngleUnits, EnergyUnits, WavelengthUnits } from "../utils/units";
+import { beamlineRecord, defaultConfig } from "../presets/presetManager";
 import { Unit, unit } from "mathjs";
 import { wavelength2EnergyConverter } from "../utils/units";
 
@@ -16,21 +9,21 @@ export interface BeamlineConfigStore {
   beamlineName: string;
   beamline: AppBeamline;
   beamlineRecord: Record<string, AppBeamline>;
-  
+
   energy: Unit;
   userEnergy: number | null;
-  
+
   wavelength: Unit;
   userWavelength: number | null;
-  
+
   angle: Unit;
   userAngle: number | null;
 
   cameraLength: number | null;
-  
+
   updateBeamline: (newBeamline: string) => void;
-  addNewBeamline: (name: string, beamline:AppBeamline) => void;
-  
+  addNewBeamline: (name: string, beamline: AppBeamline) => void;
+
   updateEnergy: (newEnergy: number | null, newUnits: EnergyUnits) => void;
   updateEnergyUnits: (newUnits: EnergyUnits) => void;
   updateWavelength: (
@@ -51,30 +44,32 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   beamline: beamlineRecord[defaultConfig.beamline],
   beamlineName: defaultConfig.beamline,
   beamlineRecord: beamlineRecord,
-  
+
   energy: wavelength2EnergyConverter(defaultConfig.wavelength).to("keV"),
   userEnergy: wavelength2EnergyConverter(defaultConfig.wavelength)
-  .to("keV")
-  .toNumber(),
+    .to("keV")
+    .toNumber(),
 
   wavelength: defaultConfig.wavelength,
   userWavelength: defaultConfig.wavelength.toNumber(),
-  
+
   angle: defaultConfig.angle,
   userAngle: defaultConfig.angle.toNumber(),
 
   cameraLength: defaultConfig.cameraLength,
 
-  updateBeamline: (newBeamline: string) => 
+  updateBeamline: (newBeamline: string) =>
     set((state: BeamlineConfigStore) => ({
       beamline: state.beamlineRecord[newBeamline],
       beamlineName: newBeamline,
     })),
 
   addNewBeamline: (name: string, beamline: AppBeamline) => {
-    { set((state: BeamlineConfigStore) =>({
-      beamlineRecord: {...state.beamlineRecord, [name]: beamline }
-    }))}
+    {
+      set((state: BeamlineConfigStore) => ({
+        beamlineRecord: { ...state.beamlineRecord, [name]: beamline },
+      }));
+    }
   },
 
   updateAngle: (newAngle: number | null, newUnits: string) =>
@@ -93,7 +88,7 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     set({ cameraLength: newLength }),
 
   updateWavelength: (newWavelength: number | null, newUnits: WavelengthUnits) =>
-    set((state) => ({ 
+    set((state) => ({
       wavelength: unit(newWavelength ?? NaN, newUnits),
       userWavelength: newWavelength,
       beamline: {
@@ -127,5 +122,4 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     })),
 
   update: (newConfig: Partial<BeamlineConfigStore>) => set({ ...newConfig }),
-
 }));

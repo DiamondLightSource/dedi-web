@@ -11,10 +11,10 @@ import { useBeamstopStore } from "./data-entry/beamstopStore";
 import { useCameraTubeStore } from "./data-entry/cameraTubeStore";
 import { LengthUnits } from "./utils/units";
 
-
 export default function BasicAppBar(): JSX.Element {
-  const [ preset, setPreset ] = 
-    useState<string>(Object.keys(presetConfigRecord)[0]);
+  const [preset, setPreset] = useState<string>(
+    Object.keys(presetConfigRecord)[0],
+  );
   const detectorStore = useDetectorStore();
   const beamlineConfigStore = useBeamlineConfigStore();
   const beamstopStore = useBeamstopStore();
@@ -29,10 +29,12 @@ export default function BasicAppBar(): JSX.Element {
     beamlineConfigStore.updateBeamline(beamline);
     beamstopStore.updateDiameter(
       beamlineConfigStore.beamlineRecord[beamline].beamstopDiameter,
-      LengthUnits.millimetre);
+      LengthUnits.millimetre,
+    );
     cameraTubeStore.updateDiameter(
       beamlineConfigStore.beamlineRecord[beamline].cameratubeDiameter,
-      LengthUnits.millimetre);
+      LengthUnits.millimetre,
+    );
     setPreset(preset);
   };
 
@@ -44,24 +46,19 @@ export default function BasicAppBar(): JSX.Element {
             Dedi Web
           </Typography>
           <Autocomplete
-              size="small"
-              options={Object.keys(presetConfigRecord)}
-              value={preset}
-              sx={{ width: 300, color: "white" }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="preset"
-                  sx={{ color: "black" }}
-                />
-              )}
-              onChange={(_, value) => {
-                value ? handlePreset(value) : {};
-              }}
-            />
+            size="small"
+            options={Object.keys(presetConfigRecord)}
+            value={preset}
+            sx={{ width: 300, color: "white" }}
+            renderInput={(params) => (
+              <TextField {...params} label="preset" sx={{ color: "black" }} />
+            )}
+            onChange={(_, value) => {
+              value ? handlePreset(value) : {};
+            }}
+          />
         </Toolbar>
       </AppBar>
     </Box>
   );
 }
-
