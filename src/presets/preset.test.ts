@@ -18,6 +18,8 @@ test("Test detectors exist detectors are valid", () => {
 test("Test beamlines exist and are valid", () => {
   expect(beamlineRecord).toBeTruthy();
   for (const beamline in beamlineRecord) {
+    expect(beamlineRecord[beamline]).toHaveProperty("beamstopDiameter");
+    expect(beamlineRecord[beamline]).toHaveProperty("cameratubeDiameter");
     expect(beamlineRecord[beamline]).toHaveProperty("minWavelength");
     expect(beamlineRecord[beamline]).toHaveProperty("maxWavelength");
     expect(beamlineRecord[beamline]).toHaveProperty("minCameraLength");
@@ -33,12 +35,10 @@ test("Test that app presets are valid", () => {
       .toContain(presetConfigRecord[config].detector);
     expect(Object.keys(beamlineRecord))
       .toContain(presetConfigRecord[config].beamline);
-    expect(presetConfigRecord[config]).toHaveProperty("beamstop.diameter");
     expect(presetConfigRecord[config]).toHaveProperty("beamstop.centre.x");
     expect(presetConfigRecord[config]).toHaveProperty("beamstop.centre.y");
     expect(presetConfigRecord[config]).toHaveProperty("beamstop.clearance");
     expect(presetConfigRecord[config]).toHaveProperty("cameraTube.centre.x");
     expect(presetConfigRecord[config]).toHaveProperty("cameraTube.centre.y");
-    expect(presetConfigRecord[config]).toHaveProperty("cameraTube.diameter");
   }
 });

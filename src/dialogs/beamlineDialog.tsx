@@ -9,28 +9,39 @@ import {
   InputAdornment,
   Stack,
   TextField,
+  IconButton,
+  Typography,
 } from "@mui/material";
-import React from "react";
 import BeamlineTable from "./BeamlineTable";
+import CloseIcon from '@mui/icons-material/Close';
+import { IOBeamline } from "../utils/types";
+import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
+import { createInternalBeamline } from "../presets/presetManager";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-const GRID_ITEM_SIZE = 4;
+const GRID_ITEM_SIZE = 3;
+const INPUT_PRECISION = 0.000001;
+
+interface BeamlineForm {
+  name: string;
+  beamline: IOBeamline;
+}
+
 
 export default function PresetDialog(props: {
   open: boolean;
   handleClose: () => void;
   handleOpen: () => void;
 }): JSX.Element {
-  const [name, setName] = React.useState<string>();
-  const [minWavelength, setMinWavelength] = React.useState<number>();
-  const [maxWavelength, setMaxwavelength] = React.useState<number>();
-  const [minCameraLength, setMinCameraLength] = React.useState<number>();
-  const [maxCameraLangth, setMaxCameraLangth] = React.useState<number>();
-  const [cameraLengthStep, setCameraLengthStep] = React.useState<number>();
-
-  const handleSubmit = () => {
+  const beamlineConfigStore = useBeamlineConfigStore();
+  const { register, handleSubmit } = useForm<BeamlineForm>();
+  const onSubmit: SubmitHandler<BeamlineForm> = (data: BeamlineForm) => {
+    beamlineConfigStore.addNewBeamline(
+      data.name, createInternalBeamline(data.beamline));
+    console.log(data);
     props.handleClose();
+    reset();
   };
-
   return (
     <Dialog
       fullWidth={true}
@@ -39,7 +50,13 @@ export default function PresetDialog(props: {
       keepMounted
       onClose={props.handleClose}
     >
-      <DialogTitle>{"Beamlines"}</DialogTitle>
+      <form onSubmit={handleSubmit(onSubmit)}>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+        <Typography variant="h5"> Beamlines </Typography>
+        <IconButton onClick={props.handleClose} sx={{ ml: 'auto' }}>
+            <CloseIcon />
+        </IconButton>
+        </DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
           <BeamlineTable />
@@ -48,22 +65,21 @@ export default function PresetDialog(props: {
             <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 label="name"
-                value={name}
+                {...register("name", {required: true})}
                 variant="outlined"
                 size="small"
-                onChange={(event) => setName(event.target.value)}
               />
             </Grid>
             <Grid item xs={GRID_ITEM_SIZE}>
               <TextField
                 type="number"
                 label="min wavelength"
+                {...register("beamline.minWavelength", {required: true})}
                 variant="outlined"
-                value={minWavelength}
                 size="small"
-                onChange={(event) =>
-                  setMinWavelength(parseFloat(event.target.value))
-                }
+                inputProps={{
+                  step: INPUT_PRECISION,
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">nm</InputAdornment>
@@ -75,12 +91,12 @@ export default function PresetDialog(props: {
               <TextField
                 type="number"
                 label="min camera length"
-                value={minCameraLength}
+                {...register("beamline.minCameraLength", {required: true})}
                 variant="outlined"
                 size="small"
-                onChange={(event) =>
-                  setMinCameraLength(parseFloat(event.target.value))
-                }
+                inputProps={{
+                  step: INPUT_PRECISION,
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">m</InputAdornment>
@@ -92,12 +108,12 @@ export default function PresetDialog(props: {
               <TextField
                 type="number"
                 label="camera length step"
-                value={cameraLengthStep}
+                {...register("beamline.cameraLengthStep", {required: true})}
                 variant="outlined"
                 size="small"
-                onChange={(event) =>
-                  setCameraLengthStep(parseFloat(event.target.value))
-                }
+                inputProps={{
+                  step: INPUT_PRECISION,
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">m</InputAdornment>
@@ -110,11 +126,11 @@ export default function PresetDialog(props: {
                 type="number"
                 label="max wavelength "
                 variant="outlined"
-                value={maxWavelength}
                 size="small"
-                onChange={(event) =>
-                  setMaxwavelength(parseFloat(event.target.value))
-                }
+                {...register("beamline.maxWavelength", {required: true})}
+                inputProps={{
+                  step: INPUT_PRECISION,
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">nm</InputAdornment>
@@ -127,14 +143,48 @@ export default function PresetDialog(props: {
                 type="number"
                 label="max camera length"
                 variant="outlined"
-                value={maxCameraLangth}
                 size="small"
-                onChange={(event) =>
-                  setMaxCameraLangth(parseFloat(event.target.value))
-                }
+                {...register("beamline.maxCameraLength", {required: true})}
+                inputProps={{
+                  step: INPUT_PRECISION,
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">m</InputAdornment>
+                  ),
+                }}
+              />
+              </Grid>
+              <Grid item xs={GRID_ITEM_SIZE}>
+              <TextField
+                type="number"
+                label="camera tube diameter"
+                variant="outlined"
+                {...register("beamline.cameratubeDiameter", {required: true})}
+                size="small"
+                inputProps={{
+                  step: INPUT_PRECISION,
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">mm</InputAdornment>
+                  ),
+                }}
+              />
+              </Grid>
+              <Grid item xs={GRID_ITEM_SIZE}>
+              <TextField
+                type="number"
+                label="beamstop diamter"
+                {...register("beamline.beamstopDiameter", {required: true})}
+                variant="outlined"
+                size="small"
+                inputProps={{
+                  step: INPUT_PRECISION,
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">mm</InputAdornment>
                   ),
                 }}
               />
@@ -143,10 +193,9 @@ export default function PresetDialog(props: {
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleSubmit} variant="outlined">
-          Submit
-        </Button>
+        <Button type="submit" variant="outlined">Submit</Button>
       </DialogActions>
+      </form>
     </Dialog>
   );
 }

@@ -6,15 +6,23 @@ import {
   DialogTitle,
   Divider,
   Grid,
+  IconButton,
   InputAdornment,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
 import { useDetectorStore } from "../data-entry/detectorStore";
-import * as mathjs from "mathjs";
 import DetectorTable from "./detectorTable";
+import CloseIcon from '@mui/icons-material/Close';
+import { IODetector } from "../utils/types";
+import { useForm, SubmitHandler } from "react-hook-form"
+import { createInternalDetector } from "../presets/presetManager";
+
+interface DetectorForm {
+  name: string;
+  detector: IODetector;
+}
 
 export default function DetectorDialog(props: {
   open: boolean;
@@ -22,30 +30,13 @@ export default function DetectorDialog(props: {
   handleOpen: () => void;
 }): JSX.Element {
   const detectorStore = useDetectorStore();
-  const [resolutionHeight, setResolutionHeight] = React.useState<number>();
-  const [resolutionWidth, setResolutionWidth] = React.useState<number>();
-  const [pixelHeight, setPixelHeight] = React.useState<number>();
-  const [pixelWidth, setPixelWidth] = React.useState<number>();
-  const [name, setName] = React.useState<string>();
-
-  const handleSubmit = () => {
-    if (
-      resolutionHeight &&
-      resolutionWidth &&
-      pixelHeight &&
-      pixelWidth &&
-      name
-    ) {
-      detectorStore.addNewDetector(name, {
-        resolution: { height: resolutionHeight, width: resolutionWidth },
-        pixelSize: {
-          height: mathjs.unit(pixelHeight, "mm"),
-          width: mathjs.unit(pixelWidth, "mm"),
-        },
-      });
-    }
-
+  const { register, reset, handleSubmit } = useForm<DetectorForm>();
+  const onSubmit: SubmitHandler<DetectorForm> = (data: DetectorForm) => {
+    detectorStore.addNewDetector(
+      data.name, createInternalDetector(data.detector));
+    console.log(data);
     props.handleClose();
+    reset();
   };
 
   return (
@@ -55,18 +46,23 @@ export default function DetectorDialog(props: {
       onClose={props.handleClose}
       maxWidth={"md"}
     >
-      <DialogTitle>{"Detectors"}</DialogTitle>
+      <form onSubmit={handleSubmit(onSubmit)}>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+        <Typography variant="h5"> Detectors </Typography>
+        <IconButton onClick={props.handleClose} sx={{ ml: 'auto' }}>
+            <CloseIcon />
+        </IconButton>
+        </DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
-          <Divider />
           <DetectorTable />
           <Divider />
+          
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                id="outlined-basic"
                 label="name"
-                onChange={(event) => setName(event.target.value)}
+                {...register("name", {required: true})}
                 variant="outlined"
                 size="small"
               />
@@ -78,9 +74,7 @@ export default function DetectorDialog(props: {
               <TextField
                 type="number"
                 label="width"
-                onChange={(event) =>
-                  setResolutionWidth(parseFloat(event.target.value))
-                }
+                {...register("detector.resolution.width",  {required: true})}
                 size="small"
                 InputProps={{
                   endAdornment: (
@@ -93,9 +87,7 @@ export default function DetectorDialog(props: {
               <TextField
                 type="number"
                 label="height"
-                onChange={(event) =>
-                  setResolutionHeight(parseFloat(event.target.value))
-                }
+                {...register("detector.resolution.height", {required: true})}
                 size="small"
                 InputProps={{
                   endAdornment: (
@@ -110,11 +102,12 @@ export default function DetectorDialog(props: {
             <Grid item xs={3}>
               <TextField
                 type="number"
-                label="x"
-                onChange={(event) =>
-                  setPixelWidth(parseFloat(event.target.value))
-                }
+                label="width"
+                {...register("detector.pixelSize.width", {required: true})}
                 size="small"
+                inputProps={{
+                  step: 0.000001,
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">mm</InputAdornment>
@@ -125,11 +118,12 @@ export default function DetectorDialog(props: {
             <Grid item xs={3}>
               <TextField
                 type="number"
-                label="y"
-                onChange={(event) =>
-                  setPixelHeight(parseFloat(event.target.value))
-                }
+                label="height"
+                {...register("detector.pixelSize.height", {required: true})}
                 size="small"
+                inputProps={{
+                  step: 0.000001,
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">mm</InputAdornment>
@@ -141,10 +135,9 @@ export default function DetectorDialog(props: {
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleSubmit} variant="outlined">
-          Submit
-        </Button>
+      <Button variant="outlined" type="submit">Submit</Button>
       </DialogActions>
+      </form>
     </Dialog>
   );
 }

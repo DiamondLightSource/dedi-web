@@ -75,7 +75,7 @@ function createPresetConfigRecord(preset: IOPresetConfig): AppConfig {
     },
     cameraTube: {
       ...preset.cameraTube,
-      diameter: unit(beamlineRecord[preset.beamline].beamstopDiameter, "mm"),
+      diameter: unit(beamlineRecord[preset.beamline].cameratubeDiameter, "mm"),
     },
     wavelength: unit(NaN, "nm"),
     angle: unit(90, "deg"),

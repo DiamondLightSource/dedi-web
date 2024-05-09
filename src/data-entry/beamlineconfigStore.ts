@@ -72,9 +72,9 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     })),
 
   addNewBeamline: (name: string, beamline: AppBeamline) => {
-    ( state: BeamlineConfigStore ) => {
-      state.beamlineRecord[name] = beamline;
-    }
+    { set((state: BeamlineConfigStore) =>({
+      beamlineRecord: {...state.beamlineRecord, [name]: beamline }
+    }))}
   },
 
   updateAngle: (newAngle: number | null, newUnits: string) =>

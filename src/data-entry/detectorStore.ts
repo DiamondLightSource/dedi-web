@@ -36,8 +36,7 @@ export const useDetectorStore = create<DetectorStore>((set) => ({
 
     })),
     addNewDetector: (name: string, detector: AppDetector) => 
-      { (state: DetectorStore) =>{
-        state.detectorRecord[name] = detector;
-      }
-      },
+      { set((state: DetectorStore) =>({
+        detectorRecord: {...state.detectorRecord, [name]: detector }
+      }))}
 }));

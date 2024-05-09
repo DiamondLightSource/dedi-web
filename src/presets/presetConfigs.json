@@ -24,15 +24,13 @@
         "x": 738,
         "y": 840
       },
-      "diameter": 4,
       "clearance": 10
     },
     "cameraTube": {
       "centre": {
         "x": 738,
         "y": 840
-      },
-      "diameter": 310
+      }
     }
   },
   "test":{
@@ -43,15 +41,13 @@
         "x": 500,
         "y": 500
       },
-      "diameter": 5,
       "clearance": 5
     },
     "cameraTube": {
       "centre": {
         "x": 500,
         "y": 500
-      },
-      "diameter": 200
+      }
     }
   }
 }

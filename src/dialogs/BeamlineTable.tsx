@@ -1,4 +1,4 @@
-import { beamlineRecord } from "../presets/presetManager";
+import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { AppBeamline} from "../utils/types"
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 
@@ -27,8 +27,10 @@ function createData( name: string, beamline: AppBeamline): BeamlineTableRow {
 }
 
 export default function BeamlineTable() {
+  const beamlineConfigStore = useBeamlineConfigStore()
   const displayArray: BeamlineTableRow[] = [];
-  for (const [key, value] of Object.entries(beamlineRecord)) {
+  for (const [key, value] of 
+      Object.entries(beamlineConfigStore.beamlineRecord)) {
     displayArray.push(createData(key, value));
   }
 
