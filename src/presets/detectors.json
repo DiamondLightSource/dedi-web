@@ -9,14 +9,25 @@
       "height": 0.172
     }
   },
-  "test": {
+  "Pilatus6M": {
     "resolution": {
-      "width": 1000,
-      "height": 1000
+      "width": 2527,
+      "height": 2463
     },
     "pixelSize": {
-      "width": 0.2,
-      "height": 0.2
+      "width": 0.172,
+      "height": 0.172
+    }
+  },
+  "Eiger 16M": {
+    "resolution": {
+      "width": 4150,
+      "height": 4371
+    },
+    "pixelSize": {
+      "width": 7.50e-2,
+      "height": 7.50e-2
     }
   }
+
 }

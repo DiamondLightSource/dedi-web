@@ -34,7 +34,7 @@ export default function PresetDialog(props: {
   handleOpen: () => void;
 }): JSX.Element {
   const beamlineConfigStore = useBeamlineConfigStore();
-  const { register, handleSubmit } = useForm<BeamlineForm>();
+  const { register, reset,  handleSubmit } = useForm<BeamlineForm>();
   const onSubmit: SubmitHandler<BeamlineForm> = (data: BeamlineForm) => {
     beamlineConfigStore.addNewBeamline(
       data.name, createInternalBeamline(data.beamline));
@@ -50,7 +50,7 @@ export default function PresetDialog(props: {
       keepMounted
       onClose={props.handleClose}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={void handleSubmit(onSubmit)}>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
         <Typography variant="h5"> Beamlines </Typography>
         <IconButton onClick={props.handleClose} sx={{ ml: 'auto' }}>

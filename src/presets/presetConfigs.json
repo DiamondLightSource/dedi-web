@@ -32,22 +32,5 @@
         "y": 840
       }
     }
-  },
-  "test":{
-    "detector": "test",
-    "beamline": "test",
-    "beamstop": {
-      "centre": {
-        "x": 500,
-        "y": 500
-      },
-      "clearance": 5
-    },
-    "cameraTube": {
-      "centre": {
-        "x": 500,
-        "y": 500
-      }
-    }
   }
 }

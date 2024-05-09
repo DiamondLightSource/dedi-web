@@ -44,8 +44,9 @@ export function createInternalBeamline(beamlineData: IOBeamline): AppBeamline {
   return {
     cameratubeDiameter: beamlineData.cameratubeDiameter,
     beamstopDiameter: beamlineData.beamstopDiameter,
-    minWavelength: unit(beamlineData.minWavelength, "nm"),
-    maxWavelength: unit(beamlineData.maxWavelength, "nm"),
+    // Solution to units not being properly initialised
+    minWavelength: unit(beamlineData.minWavelength, "nm").to("nm"),
+    maxWavelength: unit(beamlineData.maxWavelength, "nm").to("nm"),
     minCameraLength: unit(beamlineData.minCameraLength, "m"),
     maxCameraLength: unit(beamlineData.maxCameraLength, "m"),
     cameraLengthStep: unit(beamlineData.cameraLengthStep, "m"),
