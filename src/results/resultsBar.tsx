@@ -160,10 +160,12 @@ export default function ResultsBar({
 
   const units = displayUnits(textBoxUnits);
   return (
-      <Card sx={{ 
+      <Card variant="outlined" sx={{ 
         height: 1 ,
         maxHeight: "27vh",
-        overflow: "scroll", flexGrow: 1,}}>
+        overflow: "scroll",
+        flexGrow: 1
+        }}>
         <CardContent>
           <Stack spacing={1}>
             <Typography variant="h6"> Results</Typography>

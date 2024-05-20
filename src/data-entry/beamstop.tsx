@@ -8,6 +8,7 @@ import {
   Button,
   TextField,
   InputAdornment,
+  Divider,
 } from "@mui/material";
 import { LengthUnits } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
@@ -53,6 +54,7 @@ export default function BeamStopDataEntry(): JSX.Element {
   return (
     <Stack spacing={1}>
       <Typography variant="h6"> Beamstop </Typography>
+      <Divider/>
       <Stack direction={"row"} alignItems={"center"}>
         {/* Diameter */}
         <Typography flexGrow={1}>

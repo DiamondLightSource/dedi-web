@@ -169,7 +169,7 @@ export default function CentrePlot(): JSX.Element {
   return (
       <Stack direction="column" spacing={1}>
         <Stack direction="row" spacing={1}>
-          <Card>
+          <Card variant="outlined">
             <CardContent>
               <div
                 style={{

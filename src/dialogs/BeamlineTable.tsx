@@ -1,3 +1,4 @@
+import { Paper } from "@mui/material";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { AppBeamline } from "../utils/types";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
@@ -59,6 +60,7 @@ export default function BeamlineTable() {
   ];
 
   return (
+  <Paper>
     <DataGrid
       autoHeight
       rows={displayArray}
@@ -68,5 +70,6 @@ export default function BeamlineTable() {
       sx={{ border: 0 }}
       disableSelectionOnClick
     />
+  </Paper>
   );
 }

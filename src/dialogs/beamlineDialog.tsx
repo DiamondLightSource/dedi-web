@@ -4,7 +4,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   Grid,
   InputAdornment,
   Stack,
@@ -19,7 +18,7 @@ import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { createInternalBeamline } from "../presets/presetManager";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-const GRID_ITEM_SIZE = 3;
+const GRID_ITEM_SIZE = 12;
 const INPUT_PRECISION = 0.000001;
 
 interface BeamlineForm {
@@ -61,7 +60,6 @@ export default function PresetDialog(props: {
         <DialogContent>
           <Stack spacing={2}>
             <BeamlineTable />
-            <Divider />
             <Grid container spacing={2}>
               <Grid item xs={GRID_ITEM_SIZE}>
                 <TextField

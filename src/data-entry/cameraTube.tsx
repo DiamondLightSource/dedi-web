@@ -1,4 +1,5 @@
 import {
+  Divider,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -31,6 +32,7 @@ export default function CameraTubeDataEntry(): JSX.Element {
   return (
     <Stack spacing={1}>
       <Typography variant="h6"> CameraTube </Typography>
+      <Divider/>
       <Stack direction={"row"} alignItems={"center"}>
         <Typography flexGrow={1}>
           {" "}

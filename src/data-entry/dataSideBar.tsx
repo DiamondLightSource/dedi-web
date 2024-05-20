@@ -1,9 +1,7 @@
 import {
   Card,
-  CardContent,
   Stack,
   Typography,
-  Divider,
   Autocomplete,
   TextField,
   FormControl,
@@ -11,6 +9,7 @@ import {
   MenuItem,
   InputLabel,
   Button,
+  Divider,
 } from "@mui/material";
 import { LengthUnits } from "../utils/units";
 import BeamStopDataEntry from "./beamstop";
@@ -72,10 +71,12 @@ export default function DataSideBar(): JSX.Element {
   };
 
   return (
-    <Card sx={{ maxHeight: "92vh", overflow: "scroll"}}>
-      <CardContent>
+    <Stack sx={{ maxHeight: "92vh", overflow: "scroll"}}>
         <Stack spacing={1}>
+          <Card sx={{ p:2}} variant="outlined">
+          <Stack spacing={1}>
           <Typography variant="h6">Beamline</Typography>
+          <Divider/>
           <Stack direction={"row"} spacing={1}>
             <Autocomplete
               size="small"
@@ -100,8 +101,12 @@ export default function DataSideBar(): JSX.Element {
               handleOpen={handleClickOpenPreset}
             />
           </Stack>
-          <Divider />
+          </Stack>
+          </Card>
+          <Card sx={{ p:2}} variant="outlined">
+          <Stack spacing={1}>
           <Typography variant="h6">Detector</Typography>
+          <Divider/>
           <Stack direction={"row"} spacing={1}>
             <Autocomplete
               size="small"
@@ -125,7 +130,6 @@ export default function DataSideBar(): JSX.Element {
               handleOpen={handleClickOpenDetector}
             />
           </Stack>
-
           <Typography>
             Resolution (hxw): {detectorStore.detector.resolution.height} x{" "}
             {detectorStore.detector.resolution.width}
@@ -158,14 +162,18 @@ export default function DataSideBar(): JSX.Element {
               </Select>
             </FormControl>
           </Stack>
-          <Divider />
+          </Stack>
+          </Card>
+          <Card sx={{p:2}} variant="outlined">
           <BeamStopDataEntry />
-          <Divider />
+          </Card>
+          <Card sx={{ p:2}} variant="outlined">
           <CameraTubeDataEntry />
-          <Divider />
+          </Card>
+          <Card sx={{p:2}} variant="outlined">
           <BeampropertiesDataEntry />
+          </Card>
         </Stack>
-      </CardContent>
-    </Card>
+    </Stack>
   );
 }

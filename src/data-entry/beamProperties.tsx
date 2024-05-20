@@ -8,6 +8,7 @@ import {
   InputLabel,
   SelectChangeEvent,
   InputAdornment,
+  Divider,
 } from "@mui/material";
 import {
   AngleUnits,
@@ -83,6 +84,7 @@ export default function BeampropertiesDataEntry() {
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Beam properties</Typography>
+      <Divider/>
       {/* ENERGY */}
       <Stack direction={"row"} spacing={1}>
         <TextField
