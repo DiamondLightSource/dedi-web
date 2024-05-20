@@ -80,7 +80,7 @@ export default function BeamStopDataEntry(): JSX.Element {
       </Stack>
       {/* Position */}
       <Typography>Position:</Typography>
-      <Stack direction={"row"} spacing={2}>
+      <Stack direction={"row"} spacing={1}>
         <TextField
           type="number"
           size="small"

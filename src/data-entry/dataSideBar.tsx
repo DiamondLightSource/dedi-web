@@ -72,11 +72,11 @@ export default function DataSideBar(): JSX.Element {
   };
 
   return (
-    <Card>
+    <Card sx={{ maxHeight: "92vh", overflow: "scroll"}}>
       <CardContent>
         <Stack spacing={1}>
           <Typography variant="h6">Beamline</Typography>
-          <Stack direction={"row"} spacing={2}>
+          <Stack direction={"row"} spacing={1}>
             <Autocomplete
               size="small"
               options={Object.keys(beamlineConfigStore.beamlineRecord)}
@@ -102,7 +102,7 @@ export default function DataSideBar(): JSX.Element {
           </Stack>
           <Divider />
           <Typography variant="h6">Detector</Typography>
-          <Stack direction={"row"} spacing={2}>
+          <Stack direction={"row"} spacing={1}>
             <Autocomplete
               size="small"
               options={Object.keys(detectorStore.detectorRecord)}

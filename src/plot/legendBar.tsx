@@ -19,7 +19,7 @@ export default function LegendBar(): JSX.Element {
   const plotConfig = usePlotStore();
 
   return (
-    <Card sx={{ height: 1, width: 1 }}>
+    <Card sx={{flexGrow: 1}}>
       <CardContent>
         <Stack spacing={1}>
           <Typography variant="h6"> Legend</Typography>

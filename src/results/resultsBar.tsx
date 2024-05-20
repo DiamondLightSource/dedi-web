@@ -1,5 +1,4 @@
 import {
-  Box,
   Card,
   CardContent,
   Divider,
@@ -161,8 +160,10 @@ export default function ResultsBar({
 
   const units = displayUnits(textBoxUnits);
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Card sx={{ height: 1 }}>
+      <Card sx={{ 
+        height: 1 ,
+        maxHeight: "27vh",
+        overflow: "scroll", flexGrow: 1,}}>
         <CardContent>
           <Stack spacing={1}>
             <Typography variant="h6"> Results</Typography>
@@ -210,7 +211,7 @@ export default function ResultsBar({
                     </Stack>
                     <RangeFormControl resultStore={resultStore} />
                   </Stack>
-                </Stack>
+                
                 {diagramVisible && diagramFull && diagramRequested ? (
                   <RangeDiagram
                     visibleRange={diagramVisible satisfies UnitRange}
@@ -219,11 +220,11 @@ export default function ResultsBar({
                 ) : (
                   <MessageDiagram message="No solution" />
                 )}
+                </Stack>
               </Stack>
             </Stack>
           </Stack>
         </CardContent>
       </Card>
-    </Box>
   );
 }
