@@ -48,7 +48,7 @@ export default function DetectorDialog(props: {
       onClose={props.handleClose}
       maxWidth={"md"}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={() => handleSubmit(onSubmit)}>
         <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="h5"> Detectors </Typography>
           <IconButton onClick={props.handleClose} sx={{ ml: "auto" }}>

@@ -243,7 +243,7 @@ export default function CentrePlot(): JSX.Element {
                         {plotConfig.detector && (
                           <SvgRect
                             coords={[detectorLower, detectorUpper]}
-                            fill={color2String(plotConfig.detectorColour)}
+                            fill={color2String(plotConfig.detectorColor)}
                             id="detector"
                           />
                         )}

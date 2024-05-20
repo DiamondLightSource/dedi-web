@@ -21,7 +21,7 @@ function createData(name: string, detector: AppDetector): DetectorTableRow {
 }
 
 export default function DetectorTable() {
-  const detectorStore = useDetectorStore()
+  const detectorStore = useDetectorStore();
   const displayArray: DetectorTableRow[] = [];
   for (const [key, value] of Object.entries(detectorStore.detectorRecord)) {
     displayArray.push(createData(key, value));

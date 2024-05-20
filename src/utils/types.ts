@@ -14,7 +14,6 @@ export interface SimpleVector2 {
 export interface AppDetector {
   readonly resolution: { height: number; width: number };
   readonly pixelSize: { height: Unit; width: Unit };
-  readonly mask?: DetectorMask;
 }
 
 /**
@@ -64,7 +63,6 @@ export interface AppConfig {
 export interface IODetector {
   readonly resolution: { height: number; width: number };
   readonly pixelSize: { height: number; width: number };
-  readonly mask?: DetectorMask;
 }
 
 /**

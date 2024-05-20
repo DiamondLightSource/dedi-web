@@ -51,7 +51,7 @@ export default function PresetDialog(props: {
       keepMounted
       onClose={props.handleClose}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={() => handleSubmit(onSubmit)}>
         <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="h5"> Beamlines </Typography>
           <IconButton onClick={props.handleClose} sx={{ ml: "auto" }}>

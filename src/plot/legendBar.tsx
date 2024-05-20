@@ -37,9 +37,9 @@ export default function LegendBar(): JSX.Element {
               label={
                 <Stack direction={"row"}>
                   <ColourPickerPopover
-                    color={plotConfig.detectorColour}
+                    color={plotConfig.detectorColor}
                     onChangeComplete={(color) =>
-                      plotConfig.update({ detectorColour: color.rgb })
+                      plotConfig.update({ detectorColor: color.rgb })
                     }
                   />
                   <Typography display={"flex"} alignItems={"center"}>

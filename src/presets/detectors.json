@@ -7,12 +7,6 @@
     "pixelSize": {
       "width": 0.172,
       "height": 0.172
-    },
-    "mask": {
-      "horizontalModules": 3,
-      "verticalModules": 8,
-      "horizontalGap": 7,
-      "verticalGap": 17
     }
   },
   "Pilatus P3-2M-DLS (for WAXS)": {
@@ -23,15 +17,6 @@
     "pixelSize": {
       "width": 0.172,
       "height": 0.172
-    },
-    "mask": {
-      "horizontalModules": 3,
-      "verticalModules": 8,
-      "horizontalGap": 7,
-      "verticalGap": 17,
-      "missingModules": [
-        17,20,23
-      ]
     }
   },
   "Pilatus6m": {
