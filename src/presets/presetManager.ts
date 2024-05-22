@@ -1,91 +1,100 @@
-import {unit} from "mathjs";
-import detectorDataRecord from "../presets/detectors.json";
-import presetData from "../presets/presetConfigs.json";
+import { unit } from "mathjs";
+import detectorData from "./detectors.json";
+import presetConfigData from "./presetConfigs.json";
+import beamlineData from "./beamlines.json";
 import {
-  BeamlineConfig,
-  Beamstop,
-  CircularDevice,
-  Detector,
-  SimpleVector2,
+  AppBeamline,
+  AppDetector,
+  AppConfig,
+  IOBeamline,
+  IODetector,
+  IOPresetConfig,
 } from "../utils/types";
 
-export interface AppDataFormat extends BeamlineConfig {
-  detector: string;
-  beamstop: Beamstop;
-  cameraTube: CircularDevice;
-  // todo use OOP composition over inheritance
-  // https://en.wikipedia.org/wiki/Composition_over_inheritance
-  // beamlineConfig: BeamlineConfig;
+/**
+ * Creates an internal detector with pixel size units from an IODetector
+ * @param detectorData IOdetector input
+ * @returns AppDetector output
+ */
+export function createInternalDetector(detectorData: IODetector): AppDetector {
+  return {
+    ...detectorData,
+    pixelSize: {
+      height: unit(detectorData.pixelSize.height, "mm"),
+      width: unit(detectorData.pixelSize.height, "mm"),
+    },
+  };
 }
 
-interface DetectorData {
-  readonly resolution: { height: number; width: number };
-  readonly pixelSize: { height: number; width: number };
-}
-
-interface CircularDeviceData {
-  readonly centre: SimpleVector2;
-  readonly diameter: number;
-}
-
-export interface BeamlineData {
-  readonly angle: number | null;
-  readonly cameraLength: number | null;
-  readonly minWavelength: number;
-  readonly maxWavelength: number;
-  readonly minCameraLength: number;
-  readonly maxCameraLength: number;
-  readonly wavelength: number | null;
-  readonly cameraLengthStep: number;
-}
-
-interface BeamstopData extends CircularDeviceData {
-  readonly clearance: number | null;
-}
-
-export interface AppData extends BeamlineData {
-  readonly detector: string;
-  readonly beamstop: BeamstopData;
-  readonly cameraTube: CircularDeviceData;
-}
-
-export const detectorList: Record<string, Detector> = Object.fromEntries(
-  Object.entries(detectorDataRecord as Record<string, DetectorData>).map(
-    ([key, value]) => [
-      key,
-      {
-        ...value,
-        pixelSize: {
-          height: unit(value.pixelSize.height, "mm"),
-          width: unit(value.pixelSize.height, "mm"),
-        },
-      },
-    ],
+/**
+ * Holds all the preset detectors as AppDetectors
+ */
+export const detectorRecord: Record<string, AppDetector> = Object.fromEntries(
+  Object.entries(detectorData as Record<string, IODetector>).map(
+    ([key, value]) => [key, createInternalDetector(value)],
   ),
 );
 
-export const presetList: Record<string, AppDataFormat> = Object.fromEntries(
-  Object.entries(presetData as Record<string, AppData>).map(([key, value]) => [
-    key,
-    {
-      ...value,
-      beamstop: {
-        ...value.beamstop,
-        diameter: unit(value.beamstop.diameter, "mm"),
-      },
-      cameraTube: {
-        ...value.cameraTube,
-        diameter: unit(value.cameraTube.diameter, "mm"),
-      },
-      minWavelength: unit(value.minWavelength, "nm"),
-      maxWavelength: unit(value.maxWavelength, "nm"),
-      minCameraLength: unit(value.minCameraLength, "m"),
-      maxCameraLength: unit(value.maxCameraLength, "m"),
-      cameraLengthStep: unit(value.cameraLengthStep, "m"),
+/**
+ * Creates an internal beamline with units from an IODetector
+ * @param beamlineData Input IOBeamline
+ * @returns AppBeamline with correct data
+ */
+export function createInternalBeamline(beamlineData: IOBeamline): AppBeamline {
+  return {
+    cameratubeDiameter: beamlineData.cameratubeDiameter,
+    beamstopDiameter: beamlineData.beamstopDiameter,
+    // Solution to units not being properly initialised
+    minWavelength: unit(beamlineData.minWavelength, "nm").to("nm"),
+    maxWavelength: unit(beamlineData.maxWavelength, "nm").to("nm"),
+    minCameraLength: unit(beamlineData.minCameraLength, "m"),
+    maxCameraLength: unit(beamlineData.maxCameraLength, "m"),
+    cameraLengthStep: unit(beamlineData.cameraLengthStep, "m"),
+  };
+}
 
-      wavelength: unit(value.wavelength ?? NaN, "nm"),
-      angle: unit(value.angle ?? NaN, "deg"),
-    },
-  ]),
+/**
+ * Holds all the preset beamlines as AppBeamlines
+ */
+export const beamlineRecord: Record<string, AppBeamline> = Object.fromEntries(
+  Object.entries(beamlineData as Record<string, IOBeamline>).map(
+    ([key, value]) => [key, createInternalBeamline(value)],
+  ),
 );
-export const defaultConfig = presetList[Object.keys(presetList)[0]];
+
+/**
+ * Creates internal AppConfig from IOPresetConfig
+ * @param preset input IOPresetConfig
+ * @returns
+ */
+function createPresetConfigRecord(preset: IOPresetConfig): AppConfig {
+  return {
+    ...preset,
+    beamstop: {
+      ...preset.beamstop,
+      diameter: unit(beamlineRecord[preset.beamline].beamstopDiameter, "mm"),
+    },
+    cameraTube: {
+      ...preset.cameraTube,
+      diameter: unit(beamlineRecord[preset.beamline].cameratubeDiameter, "mm"),
+    },
+    wavelength: unit(NaN, "nm"),
+    angle: unit(90, "deg"),
+    cameraLength: beamlineRecord[preset.beamline].minCameraLength.toNumber("m"),
+  };
+}
+
+/**
+ * Holds the internal app configurations
+ */
+export const presetConfigRecord: Record<string, AppConfig> = Object.fromEntries(
+  Object.entries(presetConfigData as Record<string, IOPresetConfig>).map(
+    ([key, value]) => [key, createPresetConfigRecord(value)],
+  ),
+);
+
+/**
+ * Sets how the app is configured by default
+ */
+export const defaultConfig =
+  presetConfigRecord[Object.keys(presetConfigRecord)[0]];

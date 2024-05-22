@@ -1,11 +1,11 @@
-import { AppDataFormat, presetList } from "../presets/presetManager";
+import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
+import { AppBeamline } from "../utils/types";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 
 interface BeamlineTableRow {
   name: string;
-  detector: string;
-  angle: number;
-  cameraLength: number | null;
+  cameraTubeDiameter: number;
+  beamstopDiameter: number;
   minWavelength: number;
   maxWavelength: number;
   minCameraLength: number;
@@ -13,12 +13,11 @@ interface BeamlineTableRow {
   cameraLengthStep: number;
 }
 
-function createData(name: string, beamline: AppDataFormat): BeamlineTableRow {
+function createData(name: string, beamline: AppBeamline): BeamlineTableRow {
   return {
     name: name,
-    detector: beamline.detector,
-    angle: beamline.angle.toNumber("deg"),
-    cameraLength: beamline.cameraLength,
+    cameraTubeDiameter: beamline.cameratubeDiameter,
+    beamstopDiameter: beamline.beamstopDiameter,
     minWavelength: beamline.minWavelength.toNumber("nm"),
     maxWavelength: beamline.maxWavelength.toNumber("nm"),
     minCameraLength: beamline.minCameraLength.toNumber("m"),
@@ -28,21 +27,35 @@ function createData(name: string, beamline: AppDataFormat): BeamlineTableRow {
 }
 
 export default function BeamlineTable() {
+  const beamlineConfigStore = useBeamlineConfigStore();
   const displayArray: BeamlineTableRow[] = [];
-  for (const [key, value] of Object.entries(presetList)) {
+  for (const [key, value] of Object.entries(
+    beamlineConfigStore.beamlineRecord,
+  )) {
     displayArray.push(createData(key, value));
   }
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "name", flex: 1 },
-    { field: "detector", headerName: "detector", flex: 1 },
-    { field: "angle", headerName: "angle", flex: 1 },
-    { field: "cameraLength", headerName: "cameraLength", flex: 1 },
-    { field: "minWavelength", headerName: "min wavelength", flex: 1 },
-    { field: "maxWavelength", headerName: "max wavelength", flex: 1 },
-    { field: "minCameraLength", headerName: "min camera length", flex: 1 },
-    { field: "maxCameraLength", headerName: "max camera length", flex: 1 },
-    { field: "cameraLengthStep", headerName: "camera length step", flex: 1 },
+    {
+      field: "beamstopDiameter",
+      headerName: "Beamstop Diameter (mm)",
+      flex: 1,
+    },
+    {
+      field: "cameraTubeDiameter",
+      headerName: "CameraTube Diameter (mm)",
+      flex: 1,
+    },
+    { field: "minWavelength", headerName: "Min wavelength (nm)", flex: 1 },
+    { field: "maxWavelength", headerName: "Max wavelength (nm)", flex: 1 },
+    { field: "minCameraLength", headerName: "Min camera length (m)", flex: 1 },
+    { field: "maxCameraLength", headerName: "Max camera length (m)", flex: 1 },
+    {
+      field: "cameraLengthStep",
+      headerName: "Camera length step (m)",
+      flex: 1,
+    },
   ];
 
   return (

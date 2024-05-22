@@ -4,9 +4,9 @@ import QSpace, { DetectorProperties } from "../calculations/qspace";
 import { Ray } from "../calculations/ray";
 import {
   BeamlineConfig,
-  Beamstop,
-  CircularDevice,
-  Detector,
+  AppBeamstop,
+  AppCircularDevice,
+  AppDetector,
 } from "../utils/types";
 import NumericRange from "./numericRange";
 
@@ -25,16 +25,16 @@ const defaultReturn = {
 // I created blocks in it with comments (not the only way to do this)
 /**
  * Computes the qrange given detector, beamstop, cameraTube, and Beamproperties
- * @param detector 
- * @param beamstop 
- * @param cameraTube 
- * @param beamProperties 
- * @returns 
+ * @param detector
+ * @param beamstop
+ * @param cameraTube
+ * @param beamProperties
+ * @returns
  */
 export function computeQrange(
-  detector: Detector,
-  beamstop: Beamstop,
-  cameraTube: CircularDevice,
+  detector: AppDetector,
+  beamstop: AppBeamstop,
+  cameraTube: AppCircularDevice,
   beamProperties: BeamlineConfig,
 ): {
   ptMin: Vector2;
@@ -131,16 +131,16 @@ export function computeQrange(
   const visibleQMax = qspace.qFromPixelPosition(ptMax);
 
   // get the min
-  detProps.origin.z = beamProperties.minCameraLength.toSI().toNumber();
+  detProps.origin.z = beamProperties.beamline.minCameraLength.toSI().toNumber();
   qspace.setDiffractionCrystalEnviroment(
-    beamProperties.minWavelength.toSI().toNumber(),
+    beamProperties.beamline.minWavelength.toSI().toNumber(),
   );
   const fullQMin = qspace.qFromPixelPosition(ptMax);
 
   // get the max
-  detProps.origin.z = beamProperties.maxCameraLength.toSI().toNumber();
+  detProps.origin.z = beamProperties.beamline.maxCameraLength.toSI().toNumber();
   qspace.setDiffractionCrystalEnviroment(
-    beamProperties.maxWavelength.toSI().toNumber(),
+    beamProperties.beamline.maxWavelength.toSI().toNumber(),
   );
   const fullQMax = qspace.qFromPixelPosition(ptMin);
 
@@ -163,9 +163,9 @@ export function computeQrange(
  */
 function getRightUnits(
   beamProperties: BeamlineConfig,
-  beamstop: Beamstop,
-  detector: Detector,
-  cameraTube: CircularDevice,
+  beamstop: AppBeamstop,
+  detector: AppDetector,
+  cameraTube: AppCircularDevice,
 ) {
   const cameraLength = mathjs.unit(beamProperties.cameraLength ?? NaN, "m");
   const clearanceWidth = mathjs.add(

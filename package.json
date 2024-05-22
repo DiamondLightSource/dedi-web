@@ -7,8 +7,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
-    "check-types": "tsc",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --port 3000",
     "test": "npx vitest",
@@ -23,11 +22,11 @@
     "@mui/system": "^5.15.9",
     "@mui/x-data-grid": "^5.17.4",
     "@react-three/fiber": "8.16.2",
-    "formik": "^2.4.5",
     "mathjs": "^12.1.0",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.51.4",
     "three": "^0.158.0",
     "zustand": "^4.4.6"
   },
@@ -43,7 +42,7 @@
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
-    "typescript": "^5.0.2",
+    "typescript": "^5.4.5",
     "vite": "^4.5.1",
     "vitest": "^1.5.1"
   }

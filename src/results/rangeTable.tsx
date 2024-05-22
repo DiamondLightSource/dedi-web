@@ -1,13 +1,11 @@
 import {
-  Box,
+  Card,
   FormControl,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   SelectChangeEvent,
   Table,
-  TableBody,
   TableCell,
   TableContainer,
   TableHead,
@@ -49,35 +47,35 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
     .to(resultsStore.dUnits as string);
 
   return (
-    <Box flexGrow={1} >
-      <TableContainer component={Paper}>
+    <Card variant="outlined" sx={{ maxWidth: "30vw" }}>
+      <TableContainer>
         <Table sx={{ minWidth: 50 }} aria-label="simple table" size="small">
           {/* TABLE HEAD */}
           <TableHead>
             <TableRow>
-              <TableCell>Values</TableCell>
-              <TableCell align="right">Min</TableCell>
-              <TableCell align="right">Max</TableCell>
-              <TableCell align="right">Units</TableCell>
+              <TableCell align="center">Values</TableCell>
+              <TableCell align="center">Min</TableCell>
+              <TableCell align="center">Max</TableCell>
+              <TableCell align="center">Units</TableCell>
             </TableRow>
           </TableHead>
           {/* TABLE BODY */}
           <TableRow key={"q"}>
             {/* Q RANGE ROW */}
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" align="center">
               {ScatteringOptions.q}
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               {isNaN(qRange.min.toNumber())
                 ? ""
                 : qRange.min.toNumber().toFixed(4)}
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               {isNaN(qRange.max.toNumber())
                 ? ""
                 : qRange.max.toNumber().toFixed(4)}
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               <FormControl>
                 <InputLabel>q</InputLabel>
                 <Select
@@ -98,20 +96,20 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
           </TableRow>
           <TableRow key={"s"}>
             {/* S RANGE ROW*/}
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" align="center">
               {ScatteringOptions.s}
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               {isNaN(sRange.min.toNumber())
                 ? ""
                 : sRange.min.toNumber().toFixed(4)}
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               {isNaN(sRange.max.toNumber())
                 ? ""
                 : sRange.max.toNumber().toFixed(4)}
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               <FormControl>
                 <InputLabel>s</InputLabel>
                 <Select
@@ -132,20 +130,20 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
           </TableRow>
           <TableRow key={"d"}>
             {/* D RANGE ROW*/}
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" align="center">
               {ScatteringOptions.d}
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               {isNaN(dRange.min.toNumber())
                 ? ""
                 : dRange.min.toNumber().toFixed(4)}
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               {isNaN(dRange.max.toNumber())
                 ? ""
                 : dRange.max.toNumber().toFixed(4)}
             </TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               <FormControl>
                 <InputLabel>d</InputLabel>
                 <Select
@@ -164,9 +162,8 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
               </FormControl>
             </TableCell>
           </TableRow>
-          <TableBody></TableBody>
         </Table>
       </TableContainer>
-    </Box>
+    </Card>
   );
 }

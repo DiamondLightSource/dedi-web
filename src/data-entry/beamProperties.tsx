@@ -8,6 +8,7 @@ import {
   InputLabel,
   SelectChangeEvent,
   InputAdornment,
+  Divider,
 } from "@mui/material";
 import {
   AngleUnits,
@@ -23,7 +24,7 @@ import { unit } from "mathjs";
 // todo consider splitting this into components
 /**
  * Component with data entry inputs for the Beamline.
- * @returns 
+ * @returns
  */
 export default function BeampropertiesDataEntry() {
   const beamlineConfig = useBeamlineConfigStore();
@@ -83,6 +84,7 @@ export default function BeampropertiesDataEntry() {
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Beam properties</Typography>
+      <Divider />
       {/* ENERGY */}
       <Stack direction={"row"} spacing={1}>
         <TextField
@@ -134,10 +136,12 @@ export default function BeampropertiesDataEntry() {
         </FormControl>
       </Stack>
       <Typography>
-        Minimum allowed wavelength: {beamlineConfig.minWavelength.toString()}
+        Minimum allowed wavelength: 
+        {" " + beamlineConfig.beamline.minWavelength.toString()}
       </Typography>
       <Typography>
-        Maximum allowed wavelength: {beamlineConfig.maxWavelength.toString()}
+        Maximum allowed wavelength: 
+        {" " + beamlineConfig.beamline.maxWavelength.toString()}
       </Typography>
       <Stack direction="row" spacing={1}>
         <TextField
@@ -147,9 +151,9 @@ export default function BeampropertiesDataEntry() {
           value={beamlineConfig.cameraLength ?? ""}
           InputProps={{
             inputProps: {
-              max: beamlineConfig.maxCameraLength.toNumber(),
-              min: beamlineConfig.minCameraLength.toNumber(),
-              step: beamlineConfig.cameraLengthStep.toNumber(),
+              max: beamlineConfig.beamline.maxCameraLength.toNumber(),
+              min: beamlineConfig.beamline.minCameraLength.toNumber(),
+              step: beamlineConfig.beamline.cameraLengthStep.toNumber(),
             },
             endAdornment: <InputAdornment position="end">m</InputAdornment>,
           }}

@@ -20,9 +20,9 @@ export default class NumericRange {
 
   /**
    * Checks if the input is contained in this range.
-   * 
-   * @param value - Input number 
-   * @returns 
+   *
+   * @param value - Input number
+   * @returns
    */
   containsValue(value: number): boolean {
     return value >= this.min && value <= this.max;
@@ -71,19 +71,19 @@ export default class NumericRange {
   applyInPlace(func: (value: number) => number): NumericRange {
     this.min = func(this.min);
     this.max = func(this.max);
-    
+
     if (this.min > this.max) {
       const temp = this.max;
       this.max = this.min;
       this.min = temp;
     }
-    
+
     return this;
   }
 
   /**
    * Returns a string representation of this range.
-   * @returns 
+   * @returns
    */
   toString(): string {
     return `(min:${this.min}, max:${this.max})`;
@@ -91,8 +91,8 @@ export default class NumericRange {
 
   /**
    * Check if this range is equal to the input range
-   * @param other Another NumericRange 
-   * @returns 
+   * @param other Another NumericRange
+   * @returns
    */
   equals(other: NumericRange): boolean {
     return this.min === other.min && this.max === other.max;

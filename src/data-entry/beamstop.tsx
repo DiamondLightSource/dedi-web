@@ -8,68 +8,73 @@ import {
   Button,
   TextField,
   InputAdornment,
+  Divider,
 } from "@mui/material";
-import { DistanceUnits } from "../utils/units";
+import { LengthUnits } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
+import { AppDetector } from "../utils/types";
 
 /**
  * Component with data entry inputs for the Beamstop
- * @returns 
+ * @returns
  */
 export default function BeamStopDataEntry(): JSX.Element {
-  const beamstop = useBeamstopStore();
+  const beamstopStore = useBeamstopStore();
 
   const handleX = (event: React.ChangeEvent<HTMLInputElement>) => {
-    beamstop.updateCentre({
+    beamstopStore.updateCentre({
       x: parseFloat(event.target.value),
     });
   };
 
   const handleY = (event: React.ChangeEvent<HTMLInputElement>) => {
-    beamstop.updateCentre({
+    beamstopStore.updateCentre({
       y: parseFloat(event.target.value),
     });
   };
 
   const handleClearance = (event: React.ChangeEvent<HTMLInputElement>) => {
-    beamstop.updateClearance(parseFloat(event.target.value));
+    beamstopStore.updateClearance(parseFloat(event.target.value));
   };
 
-  const detector = useDetectorStore();
+  const detector = useDetectorStore<AppDetector>((state) => state.detector);
 
   const centreDetector = () => {
-    beamstop.updateCentre({
+    beamstopStore.updateCentre({
       x: detector.resolution.width / 2,
       y: detector.resolution.height / 2,
     });
   };
 
   const centreTopEdge = () => {
-    beamstop.updateCentre({ x: detector.resolution.width / 2, y: 0 });
+    beamstopStore.updateCentre({ x: detector.resolution.width / 2, y: 0 });
   };
 
   return (
     <Stack spacing={1}>
       <Typography variant="h6"> Beamstop </Typography>
-      <Stack direction={"row"}>
+      <Divider />
+      <Stack direction={"row"} alignItems={"center"}>
         {/* Diameter */}
         <Typography flexGrow={1}>
           {" "}
-          Diameter: {beamstop.diameter.toNumber().toFixed(2)}{" "}
+          Diameter: {beamstopStore.beamstop.diameter.toNumber().toFixed(2)}{" "}
         </Typography>
         <FormControl>
           <InputLabel>units </InputLabel>
           <Select
             size="small"
             label="units"
-            value={beamstop.diameter.formatUnits()}
+            value={beamstopStore.beamstop.diameter.formatUnits()}
             onChange={(event) =>
-              beamstop.updateDiameterUnits(event.target.value as DistanceUnits)
+              beamstopStore.updateDiameterUnits(
+                event.target.value as LengthUnits,
+              )
             }
           >
-            <MenuItem value={DistanceUnits.millimetre}>{"mm"}</MenuItem>
-            <MenuItem value={DistanceUnits.micrometre}>
+            <MenuItem value={LengthUnits.millimetre as string}>{"mm"}</MenuItem>
+            <MenuItem value={LengthUnits.micrometre as string}>
               {"\u03bc" + "m"}
             </MenuItem>
           </Select>
@@ -77,12 +82,12 @@ export default function BeamStopDataEntry(): JSX.Element {
       </Stack>
       {/* Position */}
       <Typography>Position:</Typography>
-      <Stack direction={"row"} spacing={2}>
+      <Stack direction={"row"} spacing={1}>
         <TextField
           type="number"
           size="small"
           label="x"
-          value={beamstop.centre.x}
+          value={beamstopStore.beamstop.centre.x}
           onChange={handleX}
           InputProps={{
             endAdornment: <InputAdornment position="end">px</InputAdornment>,
@@ -97,7 +102,7 @@ export default function BeamStopDataEntry(): JSX.Element {
           type="number"
           size="small"
           label="y"
-          value={beamstop.centre.y}
+          value={beamstopStore.beamstop.centre.y}
           onChange={handleY}
           InputProps={{
             endAdornment: <InputAdornment position="end">px</InputAdornment>,
@@ -112,7 +117,7 @@ export default function BeamStopDataEntry(): JSX.Element {
           type="number"
           size="small"
           label="clearance"
-          value={beamstop.clearance}
+          value={beamstopStore.beamstop.clearance}
           onChange={handleClearance}
           InputProps={{
             endAdornment: <InputAdornment position="end">px</InputAdornment>,

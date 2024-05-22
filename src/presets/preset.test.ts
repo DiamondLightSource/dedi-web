@@ -1,38 +1,46 @@
 import { expect, test } from "vitest";
-import { defaultConfig, detectorList, presetList } from "./presetManager";
+import {
+  beamlineRecord,
+  detectorRecord,
+  presetConfigRecord,
+} from "./presetManager";
 
-test("Test detectors exist and are valid", () => {
-  expect(detectorList).toBeTruthy();
-  for (const detector in detectorList) {
-    expect(detectorList[detector]).toHaveProperty("resolution.width");
-    expect(detectorList[detector]).toHaveProperty("resolution.height");
-    expect(detectorList[detector]).toHaveProperty("pixelSize.width");
-    expect(detectorList[detector]).toHaveProperty("pixelSize.height");
+test("Test detectors exist detectors are valid", () => {
+  expect(detectorRecord).toBeTruthy();
+  for (const detector in detectorRecord) {
+    expect(detectorRecord[detector]).toHaveProperty("resolution.width");
+    expect(detectorRecord[detector]).toHaveProperty("resolution.height");
+    expect(detectorRecord[detector]).toHaveProperty("pixelSize.width");
+    expect(detectorRecord[detector]).toHaveProperty("pixelSize.height");
   }
 });
 
-test("Test beamstop and camera tube are valid", () => {
-  for (const preset in presetList) {
-    expect(presetList[preset]).toHaveProperty("beamstop.diameter");
-    expect(presetList[preset]).toHaveProperty("beamstop.centre.x");
-    expect(presetList[preset]).toHaveProperty("beamstop.centre.y");
-    expect(presetList[preset]).toHaveProperty("beamstop.clearance");
-    expect(presetList[preset]).toHaveProperty("cameraTube.centre.x");
-    expect(presetList[preset]).toHaveProperty("cameraTube.centre.y");
-    expect(presetList[preset]).toHaveProperty("cameraTube.diameter");
+test("Test beamlines exist and are valid", () => {
+  expect(beamlineRecord).toBeTruthy();
+  for (const beamline in beamlineRecord) {
+    expect(beamlineRecord[beamline]).toHaveProperty("beamstopDiameter");
+    expect(beamlineRecord[beamline]).toHaveProperty("cameratubeDiameter");
+    expect(beamlineRecord[beamline]).toHaveProperty("minWavelength");
+    expect(beamlineRecord[beamline]).toHaveProperty("maxWavelength");
+    expect(beamlineRecord[beamline]).toHaveProperty("minCameraLength");
+    expect(beamlineRecord[beamline]).toHaveProperty("maxCameraLength");
+    expect(beamlineRecord[beamline]).toHaveProperty("cameraLengthStep");
   }
 });
 
-test("Test presets exist and are valid", () => {
-  expect(presetList).toBeTruthy();
-  expect(defaultConfig).toBeTruthy();
-  for (const preset in presetList) {
-    expect(Object.keys(detectorList)).toContain(presetList[preset].detector);
-    expect(presetList[preset]).toHaveProperty("angle");
-    expect(presetList[preset]).toHaveProperty("cameraLength");
-    expect(presetList[preset]).toHaveProperty("minWavelength");
-    expect(presetList[preset]).toHaveProperty("maxWavelength");
-    expect(presetList[preset]).toHaveProperty("minCameraLength");
-    expect(presetList[preset]).toHaveProperty("maxCameraLength");
+test("Test that app presets are valid", () => {
+  expect(presetConfigRecord).toBeTruthy();
+  for (const config in presetConfigRecord) {
+    expect(Object.keys(detectorRecord)).toContain(
+      presetConfigRecord[config].detector,
+    );
+    expect(Object.keys(beamlineRecord)).toContain(
+      presetConfigRecord[config].beamline,
+    );
+    expect(presetConfigRecord[config]).toHaveProperty("beamstop.centre.x");
+    expect(presetConfigRecord[config]).toHaveProperty("beamstop.centre.y");
+    expect(presetConfigRecord[config]).toHaveProperty("beamstop.clearance");
+    expect(presetConfigRecord[config]).toHaveProperty("cameraTube.centre.x");
+    expect(presetConfigRecord[config]).toHaveProperty("cameraTube.centre.y");
   }
 });

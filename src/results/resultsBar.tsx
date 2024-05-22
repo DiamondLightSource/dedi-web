@@ -1,5 +1,4 @@
 import {
-  Box,
   Card,
   CardContent,
   Divider,
@@ -161,69 +160,64 @@ export default function ResultsBar({
 
   const units = displayUnits(textBoxUnits);
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Card sx={{ height: 1 }}>
-        <CardContent>
-          <Stack spacing={1}>
-            <Typography variant="h6"> Results</Typography>
-            <Divider />
-            <Stack direction={"row"} spacing={3}>
-              <RangeTable qRange={visableQRange} />
-              <Divider orientation="vertical" />
-              {/* SOME SECTION TITLE */}
-              <Stack flexGrow={2}>
-                <Stack spacing={1}>
-                  <Stack direction={"row"} spacing={3}>
-                    <Stack spacing={2}>
-                      <Stack direction={"row"} spacing={2}>
-                        <TextField
-                          type="number"
-                          label={`Requested min ${resultStore.requested} value`}
-                          size="small"
-                          value={resultStore.requestedMin}
-                          onChange={handleRequestedMin}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                {units}
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </Stack>
-                      <Stack direction={"row"} spacing={2}>
-                        <TextField
-                          type="number"
-                          label={`Requested max ${resultStore.requested} value`}
-                          size="small"
-                          value={resultStore.requestedMax}
-                          onChange={handleRequestedMax}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                {units}
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </Stack>
-                    </Stack>
-                    <RangeFormControl resultStore={resultStore} />
-                  </Stack>
-                </Stack>
-                {diagramVisible && diagramFull && diagramRequested ? (
-                  <RangeDiagram
-                    visibleRange={diagramVisible satisfies UnitRange}
-                    requestedRange={diagramRequested}
-                  />
-                ) : (
-                  <MessageDiagram message="No solution" />
-                )}
-              </Stack>
+    <Card
+      variant="outlined"
+      sx={{
+        height: 1,
+        maxHeight: "30vh",
+        overflow: "scroll",
+        flexGrow: 1,
+      }}
+    >
+      <CardContent>
+        <Stack spacing={1}>
+          <Typography variant="h6"> Results</Typography>
+          <Divider />
+          <Stack direction={"row"} spacing={2}>
+            {/* Range Table */}
+            <RangeTable qRange={visableQRange} />
+            {/* Requested Range */}
+            <Stack direction={"column"} spacing={1}>
+              <RangeFormControl resultStore={resultStore} />
+              <TextField
+                type="number"
+                label={`Requested min ${resultStore.requested} value`}
+                size="small"
+                value={resultStore.requestedMin}
+                onChange={handleRequestedMin}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">{units}</InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                type="number"
+                label={`Requested max ${resultStore.requested} value`}
+                size="small"
+                value={resultStore.requestedMax}
+                onChange={handleRequestedMax}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">{units}</InputAdornment>
+                  ),
+                }}
+              />
+            </Stack>
+            {/* Range Diagram */}
+            <Stack flexGrow={2} sx={{ alignItems: "center" }}>
+              {diagramVisible && diagramFull && diagramRequested ? (
+                <RangeDiagram
+                  visibleRange={diagramVisible satisfies UnitRange}
+                  requestedRange={diagramRequested}
+                />
+              ) : (
+                <MessageDiagram message="No solution" />
+              )}
             </Stack>
           </Stack>
-        </CardContent>
-      </Card>
-    </Box>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }

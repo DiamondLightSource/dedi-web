@@ -1,6 +1,6 @@
-import { Detector } from "../utils/types";
-import { detectorList } from "../presets/presetManager";
+import { AppDetector } from "../utils/types";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { useDetectorStore } from "../data-entry/detectorStore";
 
 interface DetectorTableRow {
   name: string;
@@ -10,7 +10,7 @@ interface DetectorTableRow {
   pixel_width: number;
 }
 
-function createData(name: string, detector: Detector): DetectorTableRow {
+function createData(name: string, detector: AppDetector): DetectorTableRow {
   return {
     name: name,
     resolution_height: detector.resolution.height,
@@ -21,17 +21,22 @@ function createData(name: string, detector: Detector): DetectorTableRow {
 }
 
 export default function DetectorTable() {
+  const detectorStore = useDetectorStore();
   const displayArray: DetectorTableRow[] = [];
-  for (const [key, value] of Object.entries(detectorList)) {
+  for (const [key, value] of Object.entries(detectorStore.detectorRecord)) {
     displayArray.push(createData(key, value));
   }
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "name", flex: 1 },
-    { field: "resolution_height", headerName: "resolution height", flex: 1 },
-    { field: "resolution_width", headerName: "resolution width", flex: 1 },
-    { field: "pixel_height", headerName: "pixel height", flex: 1 },
-    { field: "pixel_width", headerName: "pixel width", flex: 1 },
+    {
+      field: "resolution_height",
+      headerName: "resolution height (px)",
+      flex: 1,
+    },
+    { field: "resolution_width", headerName: "resolution width (px)", flex: 1 },
+    { field: "pixel_height", headerName: "pixel height (mm)", flex: 1 },
+    { field: "pixel_width", headerName: "pixel width (mm)", flex: 1 },
   ];
 
   return (

@@ -9,14 +9,40 @@
       "height": 0.172
     }
   },
-  "long boy": {
+  "Pilatus P3-2M-DLS (for WAXS)": {
     "resolution": {
       "width": 1475,
-      "height": 679
+      "height": 1679
     },
     "pixelSize": {
-      "width": 0.2,
-      "height": 0.2
+      "width": 0.172,
+      "height": 0.172
+    }
+  },
+  "Pilatus6m": {
+    "resolution": {
+      "width": 2527,
+      "height": 2463
+    },
+    "pixelSize": {
+      "width": 0.172,
+      "height": 0.172
+    },
+    "mask": {
+      "horizontalModules": 12,
+      "verticalModules": 5,
+      "horizontalGap": 17,
+      "verticalGap": 7
+    }
+  },
+  "Eiger 16M": {
+    "resolution": {
+      "width": 4150,
+      "height": 4371
+    },
+    "pixelSize": {
+      "width": 7.5e-2,
+      "height": 7.5e-2
     }
   }
 }

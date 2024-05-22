@@ -5,6 +5,11 @@ import { IconButton } from "@mui/material";
 import { color2String } from "../plot/plotUtils";
 import SquareIcon from "@mui/icons-material/Square";
 
+/**
+ * Renders a popover componenet with a color picker from react-color
+ * @param props The current colour value, and change callback
+ * @returns
+ */
 export default function ColourPickerPopover(props: {
   color: RGBColor;
   onChangeComplete: (color: ColorResult) => void;
@@ -34,7 +39,7 @@ export default function ColourPickerPopover(props: {
         onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "left",
+          horizontal: "right",
         }}
       >
         <SketchPicker

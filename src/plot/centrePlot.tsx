@@ -7,8 +7,8 @@ import {
   SvgRect,
   VisCanvas,
 } from "@h5web/lib";
-import { Box, Card, CardContent, Stack } from "@mui/material";
-import * as mathjs from "mathjs";
+import { Card, CardContent, Stack } from "@mui/material";
+import { Unit, MathType, divide, multiply, unit, createUnit } from "mathjs";
 import { Vector2, Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
 import { getPointForQ } from "../calculations/qvalue";
@@ -28,10 +28,11 @@ import {
   convertBetweenQAndS,
 } from "../results/scatteringQuantities";
 import {
+  AppBeamline,
+  AppBeamstop,
+  AppCircularDevice,
+  AppDetector,
   BeamlineConfig,
-  Beamstop,
-  CircularDevice,
-  Detector,
 } from "../utils/types";
 import { Plotter } from "./Plotter";
 import LegendBar from "./legendBar";
@@ -42,64 +43,61 @@ import { useMemo } from "react";
 
 /**
  * A react componenet that plots the items that make up the system
- * @returns 
+ * @returns
  */
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
-  const beamlineConfig = useBeamlineConfig();
+  const beamlineConfigStore = useBeamlineConfigStore();
+  const detectorStore = useDetectorStore();
+  const beamstopStore = useBeamstopStore();
+  const cameraTubeStore = useCameraTubeStore();
 
-  // todo some form of destructuring notation {...state} might simplify this
-  const detector = useDetectorStore<Detector>();
+  // Needed for plotting in q space
+  const scaleFactor: Unit | null = getScaleFactor(
+    beamlineConfigStore.wavelength,
+    beamlineConfigStore.cameraLength,
+  );
 
-  const beamstop = useBeamstopStore<Beamstop>((state) => {
-    return {
-      centre: state.centre,
-      diameter: state.diameter,
-      clearance: state.clearance,
-    };
-  });
-
-  const cameraTube = useCameraTubeStore<CircularDevice>((state) => {
-    return { centre: state.centre, diameter: state.diameter };
-  });
-
-  const scaleFactor: mathjs.Unit | null = getScaleFactor(beamlineConfig);
-
-
-
-const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(()=> {
-    
-  // todo this might need to be moved elsewhere
+  const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(() => {
+    // todo this might need to be moved elsewhere
     /* eslint-disable */
     // @ts-ignore
-    if (mathjs.Unit.UNITS.xpixel) {
+    if (Unit.UNITS.xpixel) {
       // @ts-ignore
-      delete mathjs.Unit.UNITS.xpixel;
+      delete Unit.UNITS.xpixel;
     }
     // @ts-ignore
-    if (mathjs.Unit.UNITS.ypixel) {
+    if (Unit.UNITS.ypixel) {
       // @ts-ignore
-      delete mathjs.Unit.UNITS.ypixel;
+      delete Unit.UNITS.ypixel;
     }
     /* eslint-enable */
 
+    createUnit("xpixel", detectorStore.detector.pixelSize.width.toString());
+    createUnit("ypixel", detectorStore.detector.pixelSize.height.toString());
 
-    mathjs.createUnit("xpixel", detector.pixelSize.width.toString());
-    mathjs.createUnit("ypixel", detector.pixelSize.height.toString());
-
-    console.log("calculating qrange");
+    const beamlineConfig = getBeamlineConfig(
+      beamlineConfigStore.angle,
+      beamlineConfigStore.cameraLength,
+      beamlineConfigStore.wavelength,
+      beamlineConfigStore.beamline,
+    );
 
     return computeQrange(
-      detector,
-      beamstop,
-      cameraTube,
+      detectorStore.detector,
+      beamstopStore.beamstop,
+      cameraTubeStore.cameraTube,
       beamlineConfig,
     );
-    }, [detector, beamstop, cameraTube, beamlineConfig]);
-
-
-
-
+  }, [
+    detectorStore.detector,
+    beamstopStore.beamstop,
+    cameraTubeStore.cameraTube,
+    beamlineConfigStore.angle,
+    beamlineConfigStore.cameraLength,
+    beamlineConfigStore.wavelength,
+    beamlineConfigStore.beamline,
+  ]);
 
   // todo move these 2 statements into the ResultsBar component
   //  as that's the only place that uses these
@@ -113,7 +111,12 @@ const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(()=> {
   );
 
   const { beamstopCentre, cameraTubeCentre, minPoint, maxPoint } =
-    getReferencePoints(ptMin, ptMax, beamstop, cameraTube);
+    getReferencePoints(
+      ptMin,
+      ptMax,
+      beamstopStore.beamstop,
+      cameraTubeStore.cameraTube,
+    );
 
   const plotter = new Plotter(plotConfig.plotAxes, scaleFactor);
 
@@ -126,10 +129,10 @@ const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(()=> {
   } = createPlots(
     plotter,
     beamstopCentre,
-    beamstop,
+    beamstopStore.beamstop,
     cameraTubeCentre,
-    cameraTube,
-    detector,
+    cameraTubeStore.cameraTube,
+    detectorStore.detector,
     minPoint,
     maxPoint,
   );
@@ -144,12 +147,17 @@ const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(()=> {
 
   if (
     requestedRange &&
-    beamlineConfig.cameraLength &&
-    beamlineConfig.wavelength
+    beamlineConfigStore.cameraLength &&
+    beamlineConfigStore.wavelength
   ) {
     plotRequestedRange = getRequestedRange(
       requestedRange,
-      beamlineConfig,
+      getBeamlineConfig(
+        beamlineConfigStore.angle,
+        beamlineConfigStore.cameraLength,
+        beamlineConfigStore.wavelength,
+        beamlineConfigStore.beamline,
+      ),
       beamstopCentre,
       plotRequestedRange,
       plotter,
@@ -159,217 +167,211 @@ const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(()=> {
   const domains = getDomains(plotDetector);
 
   return (
-    <Box>
-      <Stack direction="column" spacing={1}>
-        <Stack direction="row" spacing={1}>
-          <Card>
-            <CardContent>
-              <div
-                style={{
-                  display: "grid",
-                  height: "60vh",
-                  width: "65vh",
-                  border: "solid black",
+    <Stack direction="column" spacing={1} sx={{ maxHeight: "91vh" }}>
+      <Stack direction="row" spacing={1}>
+        <Card variant="outlined">
+          <CardContent>
+            <div
+              style={{
+                display: "grid",
+                height: "55vh",
+                width: "60vh",
+                border: "solid black",
+              }}
+            >
+              <VisCanvas
+                abscissaConfig={{
+                  visDomain: [domains.xAxis.min, domains.xAxis.max],
+                  showGrid: true,
+                }}
+                ordinateConfig={{
+                  visDomain: [domains.yAxis.max, domains.yAxis.min],
+                  showGrid: true,
                 }}
               >
-                <VisCanvas
-                  abscissaConfig={{
-                    visDomain: [domains.xAxis.min, domains.xAxis.max],
-                    showGrid: true,
-                  }}
-                  ordinateConfig={{
-                    visDomain: [domains.yAxis.max, domains.yAxis.min],
-                    showGrid: true,
-                  }}
+                <DefaultInteractions />
+                <ResetZoomButton />
+                <DataToHtml
+                  points={[
+                    plotBeamstop.centre,
+                    plotBeamstop.endPointX,
+                    plotBeamstop.endPointY,
+                    plotClearance.centre,
+                    plotClearance.endPointX,
+                    plotClearance.endPointY,
+                    plotCameraTube.centre,
+                    plotCameraTube.endPointX,
+                    plotCameraTube.endPointY,
+                    plotDetector.lowerBound,
+                    plotDetector.upperBound,
+                    plotVisibleRange.start,
+                    plotVisibleRange.end,
+                    plotRequestedRange.start,
+                    plotRequestedRange.end,
+                  ]}
                 >
-                  <DefaultInteractions />
-                  <ResetZoomButton />
-                  <DataToHtml
-                    points={[
-                      plotBeamstop.centre,
-                      plotBeamstop.endPointX,
-                      plotBeamstop.endPointY,
-                      plotClearance.centre,
-                      plotClearance.endPointX,
-                      plotClearance.endPointY,
-                      plotCameraTube.centre,
-                      plotCameraTube.endPointX,
-                      plotCameraTube.endPointY,
-                      plotDetector.lowerBound,
-                      plotDetector.upperBound,
-                      plotVisibleRange.start,
-                      plotVisibleRange.end,
-                      plotRequestedRange.start,
-                      plotRequestedRange.end,
-                    ]}
-                  >
-                    {(
-                      beamstopCentre,
-                      beamstopEndPointX,
-                      beamstopEndPointY,
-                      clearanceCentre,
-                      clearnaceEndPointX,
-                      clearenaceEndPointY,
-                      cameraTubeCentre,
-                      cameraTubeEndPointX,
-                      cameraTubeEndPointY,
-                      detectorLower,
-                      detectorUpper,
-                      visibleRangeStart,
-                      visableRangeEnd,
-                      requestedRangeStart,
-                      requestedRangeEnd,
-                    ) => (
-                      <SvgElement>
-                        {plotConfig.cameraTube && (
-                          <SvgAxisAlignedEllipse
-                            coords={[
-                              cameraTubeCentre,
-                              cameraTubeEndPointX,
-                              cameraTubeEndPointY,
-                            ]}
-                            fill={color2String(plotConfig.cameraTubeColor)}
-                            id="camera tube"
-                          />
-                        )}
-                        {plotConfig.detector && (
-                          <SvgRect
-                            coords={[detectorLower, detectorUpper]}
-                            fill={color2String(plotConfig.detectorColour)}
-                            id="detector"
-                          />
-                        )}
-                        {plotConfig.inaccessibleRange && (
-                          <SvgLine
-                            coords={[beamstopCentre, visibleRangeStart]}
-                            stroke={color2String(
-                              plotConfig.inaccessibleRangeColor,
-                            )}
-                            strokeWidth={3}
-                            id="inaccessible"
-                          />
-                        )}
-                        {plotConfig.clearance && (
-                          <SvgAxisAlignedEllipse
-                            coords={[
-                              clearanceCentre,
-                              clearnaceEndPointX,
-                              clearenaceEndPointY,
-                            ]}
-                            fill={color2String(plotConfig.clearanceColor)}
-                            id="clearance"
-                          />
-                        )}
-                        {plotConfig.visibleRange && (
-                          <SvgLine
-                            coords={[visibleRangeStart, visableRangeEnd]}
-                            stroke={color2String(plotConfig.visibleColor)}
-                            strokeWidth={3}
-                            id="visible"
-                          />
-                        )}
-                        {plotConfig.requestedRange && (
-                          <SvgLine
-                            coords={[requestedRangeStart, requestedRangeEnd]}
-                            stroke={color2String(
-                              plotConfig.requestedRangeColor,
-                            )}
-                            strokeWidth={3}
-                            id="requested"
-                          />
-                        )}
-                        {plotConfig.beamstop && (
-                          <SvgAxisAlignedEllipse
-                            coords={[
-                              beamstopCentre,
-                              beamstopEndPointX,
-                              beamstopEndPointY,
-                            ]}
-                            fill={color2String(plotConfig.beamstopColor)}
-                            id="beamstop"
-                          />
-                        )}
-                      </SvgElement>
-                    )}
-                  </DataToHtml>
-                </VisCanvas>
-              </div>
-            </CardContent>
-          </Card>
-          <Box flexGrow={1}>
-            <LegendBar />
-          </Box>
-        </Stack>
-        <ResultsBar
-          visableQRange={visibleQRangeUnits}
-          fullQrange={fullQRangeUnits}
-        />
+                  {(
+                    beamstopCentre,
+                    beamstopEndPointX,
+                    beamstopEndPointY,
+                    clearanceCentre,
+                    clearnaceEndPointX,
+                    clearenaceEndPointY,
+                    cameraTubeCentre,
+                    cameraTubeEndPointX,
+                    cameraTubeEndPointY,
+                    detectorLower,
+                    detectorUpper,
+                    visibleRangeStart,
+                    visableRangeEnd,
+                    requestedRangeStart,
+                    requestedRangeEnd,
+                  ) => (
+                    <SvgElement>
+                      {plotConfig.cameraTube && (
+                        <SvgAxisAlignedEllipse
+                          coords={[
+                            cameraTubeCentre,
+                            cameraTubeEndPointX,
+                            cameraTubeEndPointY,
+                          ]}
+                          fill={color2String(plotConfig.cameraTubeColor)}
+                          id="camera tube"
+                        />
+                      )}
+                      {plotConfig.detector && (
+                        <SvgRect
+                          coords={[detectorLower, detectorUpper]}
+                          fill={color2String(plotConfig.detectorColor)}
+                          id="detector"
+                        />
+                      )}
+                      {plotConfig.inaccessibleRange && (
+                        <SvgLine
+                          coords={[beamstopCentre, visibleRangeStart]}
+                          stroke={color2String(
+                            plotConfig.inaccessibleRangeColor,
+                          )}
+                          strokeWidth={3}
+                          id="inaccessible"
+                        />
+                      )}
+                      {plotConfig.clearance && (
+                        <SvgAxisAlignedEllipse
+                          coords={[
+                            clearanceCentre,
+                            clearnaceEndPointX,
+                            clearenaceEndPointY,
+                          ]}
+                          fill={color2String(plotConfig.clearanceColor)}
+                          id="clearance"
+                        />
+                      )}
+                      {plotConfig.visibleRange && (
+                        <SvgLine
+                          coords={[visibleRangeStart, visableRangeEnd]}
+                          stroke={color2String(plotConfig.visibleColor)}
+                          strokeWidth={3}
+                          id="visible"
+                        />
+                      )}
+                      {plotConfig.requestedRange && (
+                        <SvgLine
+                          coords={[requestedRangeStart, requestedRangeEnd]}
+                          stroke={color2String(plotConfig.requestedRangeColor)}
+                          strokeWidth={3}
+                          id="requested"
+                        />
+                      )}
+                      {plotConfig.beamstop && (
+                        <SvgAxisAlignedEllipse
+                          coords={[
+                            beamstopCentre,
+                            beamstopEndPointX,
+                            beamstopEndPointY,
+                          ]}
+                          fill={color2String(plotConfig.beamstopColor)}
+                          id="beamstop"
+                        />
+                      )}
+                    </SvgElement>
+                  )}
+                </DataToHtml>
+              </VisCanvas>
+            </div>
+          </CardContent>
+        </Card>
+        <LegendBar />
       </Stack>
-    </Box>
+      <ResultsBar
+        visableQRange={visibleQRangeUnits}
+        fullQrange={fullQRangeUnits}
+      />
+    </Stack>
   );
 }
 
-function getScaleFactor(beamlineConfig: BeamlineConfig) {
-  let scaleFactor: mathjs.MathType | null = null;
-  if (beamlineConfig.cameraLength && beamlineConfig.wavelength) {
-    scaleFactor = mathjs.divide(
+/**
+ * Calculates the scale factor which is used for Plotting in units of Q
+ * @param wavelength current wave length as a Unit
+ * @param cameraLength cameralength
+ * @returns
+ */
+function getScaleFactor(wavelength: Unit, cameraLength: number | null) {
+  let scaleFactor: MathType | null = null;
+  if (cameraLength && wavelength) {
+    scaleFactor = divide(
       2 * Math.PI,
-      mathjs.multiply(
-        mathjs.unit(beamlineConfig.cameraLength, "m"),
-        beamlineConfig.wavelength.to("m"),
-      ),
+      multiply(unit(cameraLength, "m"), wavelength.to("m")),
     );
   }
   if (scaleFactor == null) {
     return scaleFactor;
   }
-
   if (typeof scaleFactor == "number" || !("units" in scaleFactor)) {
     throw TypeError("scaleFactor should be a unit not a number");
   }
-
   return scaleFactor;
 }
 
-function useBeamlineConfig() {
-  return useBeamlineConfigStore<BeamlineConfig>((state) => {
-    return {
-      angle: state.angle,
-      cameraLength: state.cameraLength,
-      minWavelength: state.minWavelength,
-      maxWavelength: state.maxWavelength,
-      minCameraLength: state.minCameraLength,
-      maxCameraLength: state.maxCameraLength,
-      cameraLengthStep: state.cameraLengthStep,
-      wavelength: state.wavelength,
-    };
-  });
+function getBeamlineConfig(
+  angle: Unit,
+  cameraLength: number | null,
+  wavelength: Unit,
+  beamline: AppBeamline,
+): BeamlineConfig {
+  return {
+    angle: angle,
+    cameraLength: cameraLength,
+    beamline: beamline,
+    wavelength: wavelength,
+  };
 }
 
 function getReferencePoints(
   ptMin: Vector2,
   ptMax: Vector2,
-  beamstop: Beamstop,
-  cameraTube: CircularDevice,
+  beamstop: AppBeamstop,
+  cameraTube: AppCircularDevice,
 ) {
   const minPoint: UnitVector = {
-    x: mathjs.unit(ptMin.x, "m"),
-    y: mathjs.unit(ptMin.y, "m"),
+    x: unit(ptMin.x, "m"),
+    y: unit(ptMin.y, "m"),
   };
 
   const maxPoint: UnitVector = {
-    x: mathjs.unit(ptMax.x, "m"),
-    y: mathjs.unit(ptMax.y, "m"),
+    x: unit(ptMax.x, "m"),
+    y: unit(ptMax.y, "m"),
   };
 
   const beamstopCentre: UnitVector = {
-    x: mathjs.unit(beamstop.centre.x ?? NaN, "xpixel"),
-    y: mathjs.unit(beamstop.centre.y ?? NaN, "ypixel"),
+    x: unit(beamstop.centre.x ?? NaN, "xpixel"),
+    y: unit(beamstop.centre.y ?? NaN, "ypixel"),
   };
 
   const cameraTubeCentre: UnitVector = {
-    x: mathjs.unit(cameraTube.centre.x ?? NaN, "xpixel"),
-    y: mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel"),
+    x: unit(cameraTube.centre.x ?? NaN, "xpixel"),
+    y: unit(cameraTube.centre.y ?? NaN, "ypixel"),
   };
   return { beamstopCentre, cameraTubeCentre, minPoint, maxPoint };
 }
@@ -377,10 +379,10 @@ function getReferencePoints(
 function createPlots(
   plotter: Plotter,
   beamstopCentre: UnitVector,
-  beamstop: Beamstop,
+  beamstop: AppBeamstop,
   cameraTubeCentre: UnitVector,
-  cameraTube: CircularDevice,
-  detector: Detector,
+  cameraTube: AppCircularDevice,
+  detector: AppDetector,
   minPoint: UnitVector,
   maxPoint: UnitVector,
 ) {
@@ -432,14 +434,14 @@ function getRequestedRange(
   const requestedMaxPt = getPointForQ(
     requestedRange.max,
     beamlineConfig.angle,
-    mathjs.unit(beamlineConfig.cameraLength, "m"),
+    unit(beamlineConfig.cameraLength ?? NaN, "m"),
     beamlineConfig.wavelength,
     beamstopCentre,
   );
   const requestedMinPt = getPointForQ(
     requestedRange.min,
     beamlineConfig.angle,
-    mathjs.unit(beamlineConfig.cameraLength, "m"),
+    unit(beamlineConfig.cameraLength ?? NaN, "m"),
     beamlineConfig.wavelength,
     beamstopCentre,
   );
@@ -457,17 +459,17 @@ function getRange(): (state: ResultStore) => UnitRange | null {
       return null;
     }
 
-    const getUnit = (value: number): mathjs.Unit => {
-      let result: mathjs.Unit;
+    const getUnit = (value: number): Unit => {
+      let result: Unit;
       switch (state.requested) {
         case ScatteringOptions.d:
-          result = convertBetweenQAndD(mathjs.unit(value, state.dUnits));
+          result = convertBetweenQAndD(unit(value, state.dUnits));
           break;
         case ScatteringOptions.s:
-          result = convertBetweenQAndS(mathjs.unit(value, state.sUnits));
+          result = convertBetweenQAndS(unit(value, state.sUnits));
           break;
         default:
-          result = mathjs.unit(value, state.qUnits);
+          result = unit(value, state.qUnits);
       }
       return result;
     };
