@@ -49,7 +49,7 @@ export default function PresetDialog(props: {
       keepMounted
       onClose={props.handleClose}
     >
-      <form onSubmit={() => handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="h5"> Beamlines </Typography>
           <Divider />
@@ -92,36 +92,6 @@ export default function PresetDialog(props: {
                 />
                 <TextField
                   type="number"
-                  label="min camera length"
-                  {...register("beamline.minCameraLength", { required: true })}
-                  variant="outlined"
-                  size="small"
-                  inputProps={{
-                    step: INPUT_PRECISION,
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">m</InputAdornment>
-                    ),
-                  }}
-                />
-                <TextField
-                  type="number"
-                  label="camera length step"
-                  {...register("beamline.cameraLengthStep", { required: true })}
-                  variant="outlined"
-                  size="small"
-                  inputProps={{
-                    step: INPUT_PRECISION,
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">m</InputAdornment>
-                    ),
-                  }}
-                />
-                <TextField
-                  type="number"
                   label="max wavelength "
                   variant="outlined"
                   size="small"
@@ -137,10 +107,40 @@ export default function PresetDialog(props: {
                 />
                 <TextField
                   type="number"
+                  label="min camera length"
+                  {...register("beamline.minCameraLength", { required: true })}
+                  variant="outlined"
+                  size="small"
+                  inputProps={{
+                    step: INPUT_PRECISION,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">m</InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  type="number"
                   label="max camera length"
                   variant="outlined"
                   size="small"
                   {...register("beamline.maxCameraLength", { required: true })}
+                  inputProps={{
+                    step: INPUT_PRECISION,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">m</InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  type="number"
+                  label="camera length step"
+                  {...register("beamline.cameraLengthStep", { required: true })}
+                  variant="outlined"
+                  size="small"
                   inputProps={{
                     step: INPUT_PRECISION,
                   }}

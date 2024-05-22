@@ -26,6 +26,7 @@ module.exports = {
     "no-throw-literal": "off",
     "max-len": ["warn", { code: 80 }],
     "@typescript-eslint/no-throw-literal": "error",
+    "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": { "attributes": false } }],
   },
   settings: {
     react: {
