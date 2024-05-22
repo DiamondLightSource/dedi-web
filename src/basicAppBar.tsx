@@ -38,24 +38,24 @@ export default function BasicAppBar(): JSX.Element {
   };
 
   return (
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Dedi Web
-          </Typography>
-          <Autocomplete
-            size="small"
-            options={Object.keys(presetConfigRecord)}
-            value={preset}
-            sx={{ width: 300, color: "white" }}
-            renderInput={(params) => (
-              <TextField {...params} label="preset" sx={{ color: "black" }} />
-            )}
-            onChange={(_, value) => {
-              value ? handlePreset(value) : {};
-            }}
-          />
-        </Toolbar>
-      </AppBar>
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          Dedi Web
+        </Typography>
+        <Autocomplete
+          size="small"
+          options={Object.keys(presetConfigRecord)}
+          value={preset}
+          sx={{ width: 300, color: "white" }}
+          renderInput={(params) => (
+            <TextField {...params} label="preset" sx={{ color: "black" }} />
+          )}
+          onChange={(_, value) => {
+            value ? handlePreset(value) : {};
+          }}
+        />
+      </Toolbar>
+    </AppBar>
   );
 }

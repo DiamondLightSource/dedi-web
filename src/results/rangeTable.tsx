@@ -47,8 +47,8 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
     .to(resultsStore.dUnits as string);
 
   return (
-    <Card variant="outlined" sx={{ maxWidth: "30vw"}}>
-      <TableContainer >
+    <Card variant="outlined" sx={{ maxWidth: "30vw" }}>
+      <TableContainer>
         <Table sx={{ minWidth: 50 }} aria-label="simple table" size="small">
           {/* TABLE HEAD */}
           <TableHead>
@@ -164,6 +164,6 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
           </TableRow>
         </Table>
       </TableContainer>
-      </Card>
+    </Card>
   );
 }

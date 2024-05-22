@@ -71,109 +71,110 @@ export default function DataSideBar(): JSX.Element {
   };
 
   return (
-    <Stack sx={{ maxHeight: "92vh", overflow: "scroll"}}>
-        <Stack spacing={1}>
-          <Card sx={{ p:2}} variant="outlined">
+    <Stack sx={{ maxHeight: "91vh", overflow: "scroll" }}>
+      <Stack spacing={1}>
+        <Card sx={{ p: 2 }} variant="outlined">
           <Stack spacing={1}>
-          <Typography variant="h6">Beamline</Typography>
-          <Divider/>
-          <Stack direction={"row"} spacing={1}>
-            <Autocomplete
-              size="small"
-              options={Object.keys(beamlineConfigStore.beamlineRecord)}
-              value={beamlineConfigStore.beamlineName}
-              sx={{ width: 300, color: "white" }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="choose beamline"
-                  sx={{ color: "white" }}
-                />
-              )}
-              onChange={handleBeamlineUpdate}
-            />
-            <Button variant="outlined" onClick={handleClickOpenPreset}>
-              Add beamline
-            </Button>
-            <PresetDialog
-              open={openBeamline}
-              handleClose={handleClosePreset}
-              handleOpen={handleClickOpenPreset}
-            />
-          </Stack>
-          </Stack>
-          </Card>
-          <Card sx={{ p:2}} variant="outlined">
-          <Stack spacing={1}>
-          <Typography variant="h6">Detector</Typography>
-          <Divider/>
-          <Stack direction={"row"} spacing={1}>
-            <Autocomplete
-              size="small"
-              options={Object.keys(detectorStore.detectorRecord)}
-              sx={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="choose detector" />
-              )}
-              value={detectorStore.name}
-              onChange={(_, value) => {
-                value ? detectorStore.updateDetector(value) : {};
-              }}
-            />
-            <Button variant="outlined" onClick={handleClickOpenDetector}>
-              {" "}
-              Add detector
-            </Button>
-            <DetectorDialog
-              open={openDetector}
-              handleClose={handleCloseDetector}
-              handleOpen={handleClickOpenDetector}
-            />
-          </Stack>
-          <Typography>
-            Resolution (hxw): {detectorStore.detector.resolution.height} x{" "}
-            {detectorStore.detector.resolution.width}
-          </Typography>
-          <Stack direction="row" alignItems={"center"}>
-            <Typography flexGrow={2}>
-              Pixel size:{" "}
-              {detectorStore.detector.pixelSize.height.toNumber().toFixed(2)}
-              {" x "}
-              {detectorStore.detector.pixelSize.width.toNumber().toFixed(2)}
-            </Typography>
-            <FormControl>
-              <InputLabel>units</InputLabel>
-              <Select
+            <Typography variant="h6">Beamline</Typography>
+            <Divider />
+            <Stack direction={"row"} spacing={1}>
+              <Autocomplete
                 size="small"
-                label="units"
-                value={detectorStore.detector.pixelSize.height.formatUnits()}
-                onChange={(event) =>
-                  detectorStore.updatePixelUnits(
-                    event.target.value as LengthUnits,
-                  )
-                }
-              >
-                <MenuItem value={LengthUnits.millimetre}>
-                  {LengthUnits.millimetre} x {LengthUnits.millimetre}
-                </MenuItem>
-                <MenuItem value={LengthUnits.micrometre}>
-                  {"\u03BC" + "m"} x {"\u03BC" + "m"}
-                </MenuItem>
-              </Select>
-            </FormControl>
+                options={Object.keys(beamlineConfigStore.beamlineRecord)}
+                value={beamlineConfigStore.beamlineName}
+                sx={{ width: 300, color: "white" }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="choose beamline"
+                    sx={{ color: "white" }}
+                  />
+                )}
+                onChange={handleBeamlineUpdate}
+              />
+              <Button variant="outlined" onClick={handleClickOpenPreset}>
+                Add beamline
+              </Button>
+              <PresetDialog
+                open={openBeamline}
+                handleClose={handleClosePreset}
+                handleOpen={handleClickOpenPreset}
+              />
+            </Stack>
           </Stack>
+        </Card>
+        <Card sx={{ p: 2 }} variant="outlined">
+          <Stack spacing={1}>
+            <Typography variant="h6">Detector</Typography>
+            <Divider />
+            <Stack direction={"row"} spacing={1}>
+              <Autocomplete
+                size="small"
+                options={Object.keys(detectorStore.detectorRecord)}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="choose detector" />
+                )}
+                value={detectorStore.name}
+                onChange={(_, value) => {
+                  value ? detectorStore.updateDetector(value) : {};
+                }}
+              />
+              <Button variant="outlined" onClick={handleClickOpenDetector}>
+                {" "}
+                Add detector
+              </Button>
+              <DetectorDialog
+                open={openDetector}
+                handleClose={handleCloseDetector}
+                handleOpen={handleClickOpenDetector}
+              />
+            </Stack>
+            <Typography>
+              Resolution (hxw): 
+              {detectorStore.detector.resolution.height} x{" "}
+              {detectorStore.detector.resolution.width}
+            </Typography>
+            <Stack direction="row" alignItems={"center"}>
+              <Typography flexGrow={2}>
+                Pixel size:{" "}
+                {detectorStore.detector.pixelSize.height.toNumber().toFixed(2)}
+                {" x "}
+                {detectorStore.detector.pixelSize.width.toNumber().toFixed(2)}
+              </Typography>
+              <FormControl>
+                <InputLabel>units</InputLabel>
+                <Select
+                  size="small"
+                  label="units"
+                  value={detectorStore.detector.pixelSize.height.formatUnits()}
+                  onChange={(event) =>
+                    detectorStore.updatePixelUnits(
+                      event.target.value as LengthUnits,
+                    )
+                  }
+                >
+                  <MenuItem value={LengthUnits.millimetre}>
+                    {LengthUnits.millimetre} x {LengthUnits.millimetre}
+                  </MenuItem>
+                  <MenuItem value={LengthUnits.micrometre}>
+                    {"\u03BC" + "m"} x {"\u03BC" + "m"}
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
           </Stack>
-          </Card>
-          <Card sx={{p:2}} variant="outlined">
+        </Card>
+        <Card sx={{ p: 2 }} variant="outlined">
           <BeamStopDataEntry />
-          </Card>
-          <Card sx={{ p:2}} variant="outlined">
+        </Card>
+        <Card sx={{ p: 2 }} variant="outlined">
           <CameraTubeDataEntry />
-          </Card>
-          <Card sx={{p:2}} variant="outlined">
+        </Card>
+        <Card sx={{ p: 2 }} variant="outlined">
           <BeampropertiesDataEntry />
-          </Card>
-        </Stack>
+        </Card>
+      </Stack>
     </Stack>
   );
 }

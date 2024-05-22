@@ -7,7 +7,7 @@ import {
   SvgRect,
   VisCanvas,
 } from "@h5web/lib";
-import {Card, CardContent, Stack } from "@mui/material";
+import { Card, CardContent, Stack } from "@mui/material";
 import { Unit, MathType, divide, multiply, unit, createUnit } from "mathjs";
 import { Vector2, Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
@@ -167,149 +167,147 @@ export default function CentrePlot(): JSX.Element {
   const domains = getDomains(plotDetector);
 
   return (
-      <Stack direction="column" spacing={1}>
-        <Stack direction="row" spacing={1}>
-          <Card variant="outlined">
-            <CardContent>
-              <div
-                style={{
-                  display: "grid",
-                  height: "60vh",
-                  width: "65vh",
-                  border: "solid black",
+    <Stack direction="column" spacing={1} sx={{ maxHeight: "91vh" }}>
+      <Stack direction="row" spacing={1}>
+        <Card variant="outlined">
+          <CardContent>
+            <div
+              style={{
+                display: "grid",
+                height: "55vh",
+                width: "60vh",
+                border: "solid black",
+              }}
+            >
+              <VisCanvas
+                abscissaConfig={{
+                  visDomain: [domains.xAxis.min, domains.xAxis.max],
+                  showGrid: true,
+                }}
+                ordinateConfig={{
+                  visDomain: [domains.yAxis.max, domains.yAxis.min],
+                  showGrid: true,
                 }}
               >
-                <VisCanvas
-                  abscissaConfig={{
-                    visDomain: [domains.xAxis.min, domains.xAxis.max],
-                    showGrid: true,
-                  }}
-                  ordinateConfig={{
-                    visDomain: [domains.yAxis.max, domains.yAxis.min],
-                    showGrid: true,
-                  }}
+                <DefaultInteractions />
+                <ResetZoomButton />
+                <DataToHtml
+                  points={[
+                    plotBeamstop.centre,
+                    plotBeamstop.endPointX,
+                    plotBeamstop.endPointY,
+                    plotClearance.centre,
+                    plotClearance.endPointX,
+                    plotClearance.endPointY,
+                    plotCameraTube.centre,
+                    plotCameraTube.endPointX,
+                    plotCameraTube.endPointY,
+                    plotDetector.lowerBound,
+                    plotDetector.upperBound,
+                    plotVisibleRange.start,
+                    plotVisibleRange.end,
+                    plotRequestedRange.start,
+                    plotRequestedRange.end,
+                  ]}
                 >
-                  <DefaultInteractions />
-                  <ResetZoomButton />
-                  <DataToHtml
-                    points={[
-                      plotBeamstop.centre,
-                      plotBeamstop.endPointX,
-                      plotBeamstop.endPointY,
-                      plotClearance.centre,
-                      plotClearance.endPointX,
-                      plotClearance.endPointY,
-                      plotCameraTube.centre,
-                      plotCameraTube.endPointX,
-                      plotCameraTube.endPointY,
-                      plotDetector.lowerBound,
-                      plotDetector.upperBound,
-                      plotVisibleRange.start,
-                      plotVisibleRange.end,
-                      plotRequestedRange.start,
-                      plotRequestedRange.end,
-                    ]}
-                  >
-                    {(
-                      beamstopCentre,
-                      beamstopEndPointX,
-                      beamstopEndPointY,
-                      clearanceCentre,
-                      clearnaceEndPointX,
-                      clearenaceEndPointY,
-                      cameraTubeCentre,
-                      cameraTubeEndPointX,
-                      cameraTubeEndPointY,
-                      detectorLower,
-                      detectorUpper,
-                      visibleRangeStart,
-                      visableRangeEnd,
-                      requestedRangeStart,
-                      requestedRangeEnd,
-                    ) => (
-                      <SvgElement>
-                        {plotConfig.cameraTube && (
-                          <SvgAxisAlignedEllipse
-                            coords={[
-                              cameraTubeCentre,
-                              cameraTubeEndPointX,
-                              cameraTubeEndPointY,
-                            ]}
-                            fill={color2String(plotConfig.cameraTubeColor)}
-                            id="camera tube"
-                          />
-                        )}
-                        {plotConfig.detector && (
-                          <SvgRect
-                            coords={[detectorLower, detectorUpper]}
-                            fill={color2String(plotConfig.detectorColor)}
-                            id="detector"
-                          />
-                        )}
-                        {plotConfig.inaccessibleRange && (
-                          <SvgLine
-                            coords={[beamstopCentre, visibleRangeStart]}
-                            stroke={color2String(
-                              plotConfig.inaccessibleRangeColor,
-                            )}
-                            strokeWidth={3}
-                            id="inaccessible"
-                          />
-                        )}
-                        {plotConfig.clearance && (
-                          <SvgAxisAlignedEllipse
-                            coords={[
-                              clearanceCentre,
-                              clearnaceEndPointX,
-                              clearenaceEndPointY,
-                            ]}
-                            fill={color2String(plotConfig.clearanceColor)}
-                            id="clearance"
-                          />
-                        )}
-                        {plotConfig.visibleRange && (
-                          <SvgLine
-                            coords={[visibleRangeStart, visableRangeEnd]}
-                            stroke={color2String(plotConfig.visibleColor)}
-                            strokeWidth={3}
-                            id="visible"
-                          />
-                        )}
-                        {plotConfig.requestedRange && (
-                          <SvgLine
-                            coords={[requestedRangeStart, requestedRangeEnd]}
-                            stroke={color2String(
-                              plotConfig.requestedRangeColor,
-                            )}
-                            strokeWidth={3}
-                            id="requested"
-                          />
-                        )}
-                        {plotConfig.beamstop && (
-                          <SvgAxisAlignedEllipse
-                            coords={[
-                              beamstopCentre,
-                              beamstopEndPointX,
-                              beamstopEndPointY,
-                            ]}
-                            fill={color2String(plotConfig.beamstopColor)}
-                            id="beamstop"
-                          />
-                        )}
-                      </SvgElement>
-                    )}
-                  </DataToHtml>
-                </VisCanvas>
-              </div>
-            </CardContent>
-          </Card>
-            <LegendBar />
-        </Stack>
-        <ResultsBar
-          visableQRange={visibleQRangeUnits}
-          fullQrange={fullQRangeUnits}
-        />
+                  {(
+                    beamstopCentre,
+                    beamstopEndPointX,
+                    beamstopEndPointY,
+                    clearanceCentre,
+                    clearnaceEndPointX,
+                    clearenaceEndPointY,
+                    cameraTubeCentre,
+                    cameraTubeEndPointX,
+                    cameraTubeEndPointY,
+                    detectorLower,
+                    detectorUpper,
+                    visibleRangeStart,
+                    visableRangeEnd,
+                    requestedRangeStart,
+                    requestedRangeEnd,
+                  ) => (
+                    <SvgElement>
+                      {plotConfig.cameraTube && (
+                        <SvgAxisAlignedEllipse
+                          coords={[
+                            cameraTubeCentre,
+                            cameraTubeEndPointX,
+                            cameraTubeEndPointY,
+                          ]}
+                          fill={color2String(plotConfig.cameraTubeColor)}
+                          id="camera tube"
+                        />
+                      )}
+                      {plotConfig.detector && (
+                        <SvgRect
+                          coords={[detectorLower, detectorUpper]}
+                          fill={color2String(plotConfig.detectorColor)}
+                          id="detector"
+                        />
+                      )}
+                      {plotConfig.inaccessibleRange && (
+                        <SvgLine
+                          coords={[beamstopCentre, visibleRangeStart]}
+                          stroke={color2String(
+                            plotConfig.inaccessibleRangeColor,
+                          )}
+                          strokeWidth={3}
+                          id="inaccessible"
+                        />
+                      )}
+                      {plotConfig.clearance && (
+                        <SvgAxisAlignedEllipse
+                          coords={[
+                            clearanceCentre,
+                            clearnaceEndPointX,
+                            clearenaceEndPointY,
+                          ]}
+                          fill={color2String(plotConfig.clearanceColor)}
+                          id="clearance"
+                        />
+                      )}
+                      {plotConfig.visibleRange && (
+                        <SvgLine
+                          coords={[visibleRangeStart, visableRangeEnd]}
+                          stroke={color2String(plotConfig.visibleColor)}
+                          strokeWidth={3}
+                          id="visible"
+                        />
+                      )}
+                      {plotConfig.requestedRange && (
+                        <SvgLine
+                          coords={[requestedRangeStart, requestedRangeEnd]}
+                          stroke={color2String(plotConfig.requestedRangeColor)}
+                          strokeWidth={3}
+                          id="requested"
+                        />
+                      )}
+                      {plotConfig.beamstop && (
+                        <SvgAxisAlignedEllipse
+                          coords={[
+                            beamstopCentre,
+                            beamstopEndPointX,
+                            beamstopEndPointY,
+                          ]}
+                          fill={color2String(plotConfig.beamstopColor)}
+                          id="beamstop"
+                        />
+                      )}
+                    </SvgElement>
+                  )}
+                </DataToHtml>
+              </VisCanvas>
+            </div>
+          </CardContent>
+        </Card>
+        <LegendBar />
       </Stack>
+      <ResultsBar
+        visableQRange={visibleQRangeUnits}
+        fullQrange={fullQRangeUnits}
+      />
+    </Stack>
   );
 }
 

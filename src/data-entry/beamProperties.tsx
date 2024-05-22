@@ -84,7 +84,7 @@ export default function BeampropertiesDataEntry() {
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Beam properties</Typography>
-      <Divider/>
+      <Divider />
       {/* ENERGY */}
       <Stack direction={"row"} spacing={1}>
         <TextField
@@ -136,12 +136,12 @@ export default function BeampropertiesDataEntry() {
         </FormControl>
       </Stack>
       <Typography>
-        Minimum allowed wavelength:
-        {beamlineConfig.beamline.minWavelength.toString()}
+        Minimum allowed wavelength: 
+        {" " + beamlineConfig.beamline.minWavelength.toString()}
       </Typography>
       <Typography>
-        Maximum allowed wavelength:
-        {beamlineConfig.beamline.maxWavelength.toString()}
+        Maximum allowed wavelength: 
+        {" " + beamlineConfig.beamline.maxWavelength.toString()}
       </Typography>
       <Stack direction="row" spacing={1}>
         <TextField

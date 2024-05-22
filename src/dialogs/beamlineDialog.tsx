@@ -1,7 +1,6 @@
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
@@ -10,6 +9,7 @@ import {
   TextField,
   IconButton,
   Typography,
+  Divider,
 } from "@mui/material";
 import BeamlineTable from "./BeamlineTable";
 import CloseIcon from "@mui/icons-material/Close";
@@ -18,7 +18,6 @@ import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { createInternalBeamline } from "../presets/presetManager";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-const GRID_ITEM_SIZE = 12;
 const INPUT_PRECISION = 0.000001;
 
 interface BeamlineForm {
@@ -53,23 +52,29 @@ export default function PresetDialog(props: {
       <form onSubmit={() => handleSubmit(onSubmit)}>
         <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="h5"> Beamlines </Typography>
+          <Divider />
           <IconButton onClick={props.handleClose} sx={{ ml: "auto" }}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Stack spacing={2}>
-            <BeamlineTable />
-            <Grid container spacing={2}>
-              <Grid item xs={GRID_ITEM_SIZE}>
+          <Grid container spacing={4}>
+            <Grid item xs={8}>
+              <BeamlineTable />
+            </Grid>
+            <Grid item xs={1}>
+              <Divider orientation={"vertical"} />
+            </Grid>
+            <Grid item xs={3}>
+              <Stack spacing={1}>
+                <Typography>Add New Beamline:</Typography>
+                <Divider />
                 <TextField
                   label="name"
                   {...register("name", { required: true })}
                   variant="outlined"
                   size="small"
                 />
-              </Grid>
-              <Grid item xs={GRID_ITEM_SIZE}>
                 <TextField
                   type="number"
                   label="min wavelength"
@@ -85,8 +90,6 @@ export default function PresetDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={GRID_ITEM_SIZE}>
                 <TextField
                   type="number"
                   label="min camera length"
@@ -102,8 +105,6 @@ export default function PresetDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={GRID_ITEM_SIZE}>
                 <TextField
                   type="number"
                   label="camera length step"
@@ -119,8 +120,6 @@ export default function PresetDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={GRID_ITEM_SIZE}>
                 <TextField
                   type="number"
                   label="max wavelength "
@@ -136,8 +135,6 @@ export default function PresetDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={GRID_ITEM_SIZE}>
                 <TextField
                   type="number"
                   label="max camera length"
@@ -153,8 +150,6 @@ export default function PresetDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={GRID_ITEM_SIZE}>
                 <TextField
                   type="number"
                   label="camera tube diameter"
@@ -172,8 +167,6 @@ export default function PresetDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={GRID_ITEM_SIZE}>
                 <TextField
                   type="number"
                   label="beamstop diamter"
@@ -189,15 +182,13 @@ export default function PresetDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
+                <Button type="submit" variant="outlined">
+                  Submit
+                </Button>
+              </Stack>
             </Grid>
-          </Stack>
+          </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button type="submit" variant="outlined">
-            Submit
-          </Button>
-        </DialogActions>
       </form>
     </Dialog>
   );

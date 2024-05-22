@@ -8,11 +8,11 @@ export default function App(): JSX.Element {
     <>
       <BasicAppBar />
       <Stack direction={"row"} spacing={1} margin={1}>
-          <DataSideBar />
+        <DataSideBar />
         <Stack direction={"column"} spacing={1} flexGrow={1}>
           <CentrePlot />
         </Stack>
-        </Stack>
+      </Stack>
     </>
   );
 }

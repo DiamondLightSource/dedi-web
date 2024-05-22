@@ -1,7 +1,6 @@
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
@@ -46,7 +45,7 @@ export default function DetectorDialog(props: {
       open={props.open}
       keepMounted
       onClose={props.handleClose}
-      maxWidth={"md"}
+      maxWidth={"xl"}
     >
       <form onSubmit={() => handleSubmit(onSubmit)}>
         <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
@@ -56,23 +55,23 @@ export default function DetectorDialog(props: {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Stack spacing={2}>
-            <DetectorTable />
-            <Divider />
-
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
+          <Grid container spacing={4}>
+            <Grid item xs={8}>
+              <DetectorTable />
+            </Grid>
+            <Grid item xs={1}>
+              <Divider orientation="vertical" />
+            </Grid>
+            <Grid item xs={3}>
+              <Stack spacing={1}>
+                <Typography>Add new Detector:</Typography>
                 <TextField
                   label="name"
                   {...register("name", { required: true })}
                   variant="outlined"
                   size="small"
                 />
-              </Grid>
-              <Grid item xs={4}>
                 <Typography>Resolution:</Typography>
-              </Grid>
-              <Grid item xs={3}>
                 <TextField
                   type="number"
                   label="width"
@@ -84,8 +83,6 @@ export default function DetectorDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={3}>
                 <TextField
                   type="number"
                   label="height"
@@ -99,11 +96,7 @@ export default function DetectorDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={4}>
                 <Typography> Pixel Size:</Typography>
-              </Grid>
-              <Grid item xs={3}>
                 <TextField
                   type="number"
                   label="width"
@@ -118,8 +111,6 @@ export default function DetectorDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={3}>
                 <TextField
                   type="number"
                   label="height"
@@ -134,15 +125,13 @@ export default function DetectorDialog(props: {
                     ),
                   }}
                 />
-              </Grid>
+                <Button variant="outlined" type="submit">
+                  Submit
+                </Button>
+              </Stack>
             </Grid>
-          </Stack>
+          </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" type="submit">
-            Submit
-          </Button>
-        </DialogActions>
       </form>
     </Dialog>
   );
