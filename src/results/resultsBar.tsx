@@ -163,8 +163,7 @@ export default function ResultsBar({
     <Card
       variant="outlined"
       sx={{
-        height: 1,
-        maxHeight: "30vh",
+        height: "30vh",
         overflow: "scroll",
         flexGrow: 1,
       }}
