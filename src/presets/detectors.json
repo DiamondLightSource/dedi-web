@@ -27,12 +27,66 @@
     "pixelSize": {
       "width": 0.172,
       "height": 0.172
+    }
+  },
+  "Pilatus100k": {
+    "resolution": {
+      "width": 619,
+      "height": 487
     },
-    "mask": {
-      "horizontalModules": 12,
-      "verticalModules": 5,
-      "horizontalGap": 17,
-      "verticalGap": 7
+    "pixelSize": {
+      "width": 0.172,
+      "height": 0.172
+    }
+  },
+  "Pilatus300k-W":{
+    "resolution": {
+      "width": 195,
+      "height": 1495
+    },
+    "pixelSize": {
+      "width": 0.172,
+      "height": 0.172
+    }
+  },
+  "Eiger 500k": {
+    "resolution": {
+      "width": 1030,
+      "height": 514
+    },
+    "pixelSize": {
+      "width": 7.5e-2,
+      "height": 7.5e-2
+    }
+  },
+  "Eiger 1M": {
+    "resolution": {
+      "width": 1030,
+      "height": 1065
+    },
+    "pixelSize": {
+      "width": 7.5e-2,
+      "height": 7.5e-2
+    }
+  },
+  "Eiger 4M": {
+    "resolution": {
+      "width": 2070,
+      "height": 2167
+    },
+    "pixelSize": {
+      "width": 7.5e-2,
+      "height": 7.5e-2
+    }
+  },
+  "Eiger 9M": {
+    "resolution": {
+      "width": 3110,
+      "height": 3269
+    },
+    "pixelSize": {
+      "width": 7.5e-2,
+      "height": 7.5e-2
     }
   },
   "Eiger 16M": {
