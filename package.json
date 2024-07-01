@@ -38,7 +38,7 @@
     "@typescript-eslint/parser": "^6.18.1",
     "@vitejs/plugin-react-swc": "^3.4.1",
     "arkit": "^1.6.4",
-    "eslint": "^8.53.0",
+    "eslint": "^9.6.0",
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
