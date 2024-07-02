@@ -35,7 +35,7 @@
     "@types/react-dom": "^18.2.15",
     "@types/three": "^0.155.0",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.18.1",
+    "@typescript-eslint/parser": "^7.15.0",
     "@vitejs/plugin-react-swc": "^3.4.1",
     "arkit": "^1.6.4",
     "eslint": "^8.53.0",
