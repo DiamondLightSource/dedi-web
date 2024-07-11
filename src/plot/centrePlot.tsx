@@ -40,6 +40,7 @@ import { usePlotStore } from "./plotStore";
 import { UnitVector, color2String, getDomains } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import { useMemo } from "react";
+import { formatLogMessage } from "../utils/units";
 
 /**
  * A react componenet that plots the items that make up the system
@@ -59,6 +60,7 @@ export default function CentrePlot(): JSX.Element {
   );
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(() => {
+    console.info(formatLogMessage("Calculating Q range"));
     // todo this might need to be moved elsewhere
     /* eslint-disable */
     // @ts-ignore
@@ -105,7 +107,7 @@ export default function CentrePlot(): JSX.Element {
     visibleQRange,
     "m^-1",
   ).to("nm^-1");
-  console.log(visibleQRange);
+
   const fullQRangeUnits = UnitRange.fromNumericRange(fullQRange, "m^-1").to(
     "nm^-1",
   );
@@ -165,7 +167,7 @@ export default function CentrePlot(): JSX.Element {
   }
 
   const domains = getDomains(plotDetector);
-
+  console.info(formatLogMessage("Refreshing plot"))
   return (
     <Stack direction="column" spacing={1} flexGrow={1}>
     <Stack direction={{ sm: "column", md: "row"}} spacing={1} flexGrow={1}>

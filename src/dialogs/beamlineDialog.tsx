@@ -17,6 +17,7 @@ import { IOBeamline } from "../utils/types";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { createInternalBeamline } from "../presets/presetManager";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { formatLogMessage } from "../utils/units";
 
 const INPUT_PRECISION = 0.000001;
 
@@ -37,6 +38,7 @@ export default function PresetDialog(props: {
       data.name,
       createInternalBeamline(data.beamline),
     );
+    console.info(formatLogMessage(`New detector created : ${data.name} `));
     console.log(data);
     props.handleClose();
     reset();

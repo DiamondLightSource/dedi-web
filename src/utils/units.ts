@@ -100,3 +100,8 @@ export const enforceRangeLimits = (
   if (value < min) return min;
   return value;
 };
+
+export function formatLogMessage(message: string): string{
+  const timestamp = new Date().toISOString();
+  return `[${timestamp}] ${message}`
+}

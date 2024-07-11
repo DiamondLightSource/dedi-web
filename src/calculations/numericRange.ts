@@ -1,6 +1,5 @@
 /**
- * A class which represents a unitless numeric range
- * by storing it's minimum and maximum numbers
+ * A class which represents a unitless numeric range.
  */
 export default class NumericRange {
   min: number;
@@ -19,8 +18,7 @@ export default class NumericRange {
   }
 
   /**
-   * Checks if the input is contained in this range.
-   *
+   * Checks if an input number is contained in this range.
    * @param value - Input number
    * @returns
    */
@@ -38,9 +36,9 @@ export default class NumericRange {
   }
 
   /**
-   * Finds the intersection of this range and the input range.
+   * Finds the intersection of this range and the input range. Or returns null
    * @param input input NumericRange
-   * @returns The intersection NumericRange or null
+   * @returns
    */
   intersect(input: NumericRange | null): NumericRange | null {
     if (input === null) {

@@ -9,6 +9,7 @@ import {
   AppDetector,
 } from "../utils/types";
 import NumericRange from "./numericRange";
+import { formatLogMessage } from "../utils/units";
 
 /**
  * Is returned from computeQrange if the full
@@ -61,6 +62,9 @@ export function computeQrange(
   );
 
   if (typeof initialPositionX === "number" || !("units" in initialPositionX)) {
+    console.error(
+      formatLogMessage(
+        "Units are wrong for either beamcentre x or clearance width"));
     return defaultReturn;
   }
 
@@ -68,7 +72,11 @@ export function computeQrange(
     mathjs.multiply(clearanceHeight, mathjs.sin(beamProperties.angle)),
     beamcentreY,
   );
+
   if (typeof initialPositionY === "number" || !("units" in initialPositionY)) {
+    console.error(
+      formatLogMessage(
+        "Units are wrong for either beamcentre y or clearance width"));
     return defaultReturn;
   }
 
@@ -90,7 +98,12 @@ export function computeQrange(
     detectorHeight.toSI().toNumber(),
   );
 
-  if (t1 === null) return defaultReturn;
+  if (t1 === null){
+    console.warn(
+      formatLogMessage("Ray does not intersect with detector")
+    )
+    return defaultReturn;
+  }
 
   const cameraOk =
     cameraTube !== null && cameraTube.diameter.toSI().toNumber() != 0;
@@ -104,7 +117,11 @@ export function computeQrange(
     t1 = t1.intersect(ray.getCircleIntersectionParameterRange(radius, centre));
   }
 
-  if (t1 === null) return defaultReturn;
+  if (t1 === null) {
+    console.warn(
+      formatLogMessage("Ray does not intersect with camera tube")
+    )
+    return defaultReturn;}
 
   // set up the min, max and qspace values
   const ptMin = ray.getPoint(t1.min);
@@ -149,7 +166,14 @@ export function computeQrange(
     visibleQMax.length(),
   );
   const fullQRange = new NumericRange(fullQMin.length(), fullQMax.length());
-
+  console.info(
+    formatLogMessage(
+      ` The visible q range is: ${visibleQRange.toString()}`
+  ))
+  console.info(
+    formatLogMessage(
+      ` The full q range is: ${fullQRange.toString()}`
+  ))
   return { ptMin, ptMax, visibleQRange, fullQRange };
 }
 
