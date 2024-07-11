@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Divider,
   Grid,
   IconButton,
   InputAdornment,
@@ -56,14 +55,13 @@ export default function DetectorDialog(props: {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={4}>
-            <Grid item xs={8}>
+            <Grid item xs={12} sm={12} md={12} lg={8}>
               <DetectorTable />
             </Grid>
-            <Grid item xs={1}>
-              <Divider orientation="vertical" />
+            <Grid item md={0} lg={1} >
             </Grid>
-            <Grid item xs={3}>
-              <Stack spacing={1}>
+            <Grid item xs={12} sm={12} md={12} lg={3}>
+              <Stack spacing={1} width={"100%"}>
                 <Typography>Add new Detector:</Typography>
                 <TextField
                   label="name"
