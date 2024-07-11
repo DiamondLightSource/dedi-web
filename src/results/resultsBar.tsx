@@ -163,8 +163,6 @@ export default function ResultsBar({
     <Card
       variant="outlined"
       sx={{
-        height: "30vh",
-        overflow: "scroll",
         flexGrow: 1,
       }}
     >
@@ -172,7 +170,11 @@ export default function ResultsBar({
         <Stack spacing={1}>
           <Typography variant="h6"> Results</Typography>
           <Divider />
-          <Stack direction={"row"} spacing={2}>
+          <Stack 
+            direction={{md: "column", lg:"row"}}
+            spacing={2}
+            sx={{direction:"column"}}
+            >
             {/* Range Table */}
             <RangeTable qRange={visableQRange} />
             {/* Requested Range */}

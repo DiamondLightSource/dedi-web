@@ -7,7 +7,7 @@ import {
   SvgRect,
   VisCanvas,
 } from "@h5web/lib";
-import { Card, CardContent, Stack } from "@mui/material";
+import { Card, CardContent, Stack} from "@mui/material";
 import { Unit, MathType, divide, multiply, unit, createUnit } from "mathjs";
 import { Vector2, Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
@@ -167,15 +167,15 @@ export default function CentrePlot(): JSX.Element {
   const domains = getDomains(plotDetector);
 
   return (
-    <Stack direction="column" spacing={1} sx={{ maxHeight: "91vh" }}>
-      <Stack direction="row" spacing={1}>
-        <Card variant="outlined">
-          <CardContent>
+    <Stack direction="column" spacing={1} flexGrow={1}>
+    <Stack direction={{ sm: "column", md: "row"}} spacing={1} flexGrow={1}>
+    <Card variant="outlined" sx= {{ aspectRatio : 1.05 / 1}}>
+          <CardContent sx={{ width: "100%", height: "100%"}}>
             <div
               style={{
                 display: "grid",
-                height: "55vh",
-                width: "60vh",
+                width: "100%",
+                height: "100%",
                 border: "solid black",
               }}
             >
@@ -301,13 +301,13 @@ export default function CentrePlot(): JSX.Element {
             </div>
           </CardContent>
         </Card>
-        <LegendBar />
+      <LegendBar />
       </Stack>
       <ResultsBar
         visableQRange={visibleQRangeUnits}
         fullQrange={fullQRangeUnits}
       />
-    </Stack>
+      </Stack>
   );
 }
 

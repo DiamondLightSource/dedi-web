@@ -32,7 +32,7 @@ export function RangeDiagram({
     <svg
       style={{
         display: "grid",
-        height: "40%",
+        maxHeight: "200px",
         width: "90%",
         border: "solid black",
       }}

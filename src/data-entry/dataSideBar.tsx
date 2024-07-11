@@ -71,8 +71,8 @@ export default function DataSideBar(): JSX.Element {
   };
 
   return (
-    <Stack sx={{ maxHeight: "91vh", overflow: "scroll" }}>
-      <Stack spacing={1}>
+    <Stack  maxHeight={{ lg:"91vh" }} overflow={{ lg: "scroll"}}>
+      <Stack spacing={1} >
         <Card sx={{ p: 2 }} variant="outlined">
           <Stack spacing={1}>
             <Typography variant="h6">Beamline</Typography>
@@ -93,7 +93,7 @@ export default function DataSideBar(): JSX.Element {
                 onChange={handleBeamlineUpdate}
               />
               <Button variant="outlined" onClick={handleClickOpenPreset}>
-                Add beamline
+                Beamlines
               </Button>
               <PresetDialog
                 open={openBeamline}
@@ -122,7 +122,7 @@ export default function DataSideBar(): JSX.Element {
               />
               <Button variant="outlined" onClick={handleClickOpenDetector}>
                 {" "}
-                Add detector
+                Detectors
               </Button>
               <DetectorDialog
                 open={openDetector}

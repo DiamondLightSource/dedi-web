@@ -6,7 +6,7 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useCameraTubeStore } from "./cameraTubeStore";
