@@ -22,7 +22,7 @@ function SvgMask(props: Props){
     const moduleLength = 
         fulllength.clone()
         .sub(gaplength.clone()
-        .multiply(props.numModules))
+        .multiply(props.numModules.clone().subScalar(1)))
         .divide(props.numModules);
 
     return (
