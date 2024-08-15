@@ -15,7 +15,7 @@ import { ScatteringOptions, useResultStore } from "./resultsStore";
 import { ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
 import {
   convertBetweenQAndD,
-  convertBetweenQAndS,
+  convertFromQTooS,
 } from "./scatteringQuantities";
 import UnitRange from "../calculations/unitRange";
 
@@ -31,8 +31,8 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
     updateQUnits(event.target.value as ReciprocalWavelengthUnits);
   };
 
-  const handleSunits = (event: SelectChangeEvent<WavelengthUnits>) => {
-    updateSUnits(event.target.value as WavelengthUnits);
+  const handleSunits = (event: SelectChangeEvent<ReciprocalWavelengthUnits>) => {
+    updateSUnits(event.target.value as ReciprocalWavelengthUnits);
   };
 
   const handleDunits = (event: SelectChangeEvent<WavelengthUnits>) => {
@@ -40,7 +40,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
   };
   const qRange = props.qRange.to(resultsStore.qUnits as string);
   const sRange = props.qRange
-    .apply(convertBetweenQAndS)
+    .apply(convertFromQTooS)
     .to(resultsStore.sUnits as string);
   const dRange = props.qRange
     .apply(convertBetweenQAndD)
@@ -118,11 +118,11 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                   value={resultsStore.sUnits}
                   onChange={handleSunits}
                 >
-                  <MenuItem value={WavelengthUnits.nanometres}>
-                    {WavelengthUnits.nanometres}
+                  <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
+                    {"1 / nm"}
                   </MenuItem>
-                  <MenuItem value={WavelengthUnits.angstroms}>
-                    {"\u212B"}
+                  <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
+                  {"1 / " + "\u212B"}
                   </MenuItem>
                 </Select>
               </FormControl>

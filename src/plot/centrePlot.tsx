@@ -25,7 +25,7 @@ import {
 } from "../results/resultsStore";
 import {
   convertBetweenQAndD,
-  convertBetweenQAndS,
+  convertFromQTooS,
 } from "../results/scatteringQuantities";
 import {
   AppBeamline,
@@ -41,6 +41,7 @@ import { UnitVector, color2String, getDomains } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import { useMemo } from "react";
 import { formatLogMessage } from "../utils/units";
+import SvgMask from "./svgMask";
 
 /**
  * A react componenet that plots the items that make up the system
@@ -171,7 +172,7 @@ export default function CentrePlot(): JSX.Element {
   return (
     <Stack direction="column" spacing={1} flexGrow={1}>
     <Stack direction={{ sm: "column", md: "row"}} spacing={1} flexGrow={1}>
-    <Card variant="outlined" sx= {{ aspectRatio : 1.05 / 1}}>
+    <Card variant="outlined" sx= {{ aspectRatio : 1.07 / 1 }}>
           <CardContent sx={{ width: "100%", height: "100%"}}>
             <div
               style={{
@@ -246,6 +247,15 @@ export default function CentrePlot(): JSX.Element {
                           coords={[detectorLower, detectorUpper]}
                           fill={color2String(plotConfig.detectorColor)}
                           id="detector"
+                        />
+                      )}
+                      {plotConfig.detector && (
+                        <SvgMask
+                          coords={[detectorLower, detectorUpper]}
+                          fill={color2String(plotConfig.visibleColor)}
+                          numModules={new Vector3(3,4)}
+                          gapFraction= {new Vector3(0.1,0.1)} 
+                          missingSegments={[6]}
                         />
                       )}
                       {plotConfig.inaccessibleRange && (
@@ -468,7 +478,7 @@ function getRange(): (state: ResultStore) => UnitRange | null {
           result = convertBetweenQAndD(unit(value, state.dUnits));
           break;
         case ScatteringOptions.s:
-          result = convertBetweenQAndS(unit(value, state.sUnits));
+          result = convertFromQTooS(unit(value, state.sUnits));
           break;
         default:
           result = unit(value, state.qUnits);

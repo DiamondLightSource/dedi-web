@@ -12,7 +12,7 @@ export enum ScatteringOptions {
 export interface ResultStore {
   requested: ScatteringOptions;
   qUnits: ReciprocalWavelengthUnits;
-  sUnits: WavelengthUnits;
+  sUnits: ReciprocalWavelengthUnits;
   dUnits: WavelengthUnits;
   requestedMin: number | null;
   requestedMax: number | null;
@@ -24,7 +24,7 @@ export interface ResultStore {
     }>,
   ) => void;
   updateQUnits: (newunits: ReciprocalWavelengthUnits) => void;
-  updateSUnits: (newunits: WavelengthUnits) => void;
+  updateSUnits: (newunits: ReciprocalWavelengthUnits) => void;
   updateDUnits: (newunits: WavelengthUnits) => void;
 }
 
@@ -34,7 +34,7 @@ export interface ResultStore {
 export const useResultStore = create<ResultStore>((set) => ({
   requested: ScatteringOptions.q,
   qUnits: ReciprocalWavelengthUnits.nanometres,
-  sUnits: WavelengthUnits.nanometres,
+  sUnits: ReciprocalWavelengthUnits.nanometres,
   dUnits: WavelengthUnits.nanometres,
   requestedMin: null,
   requestedMax: null,
@@ -51,6 +51,7 @@ export const useResultStore = create<ResultStore>((set) => ({
   },
   updateQUnits: (newunits: ReciprocalWavelengthUnits) =>
     set({ qUnits: newunits }),
-  updateSUnits: (newunits: WavelengthUnits) => set({ sUnits: newunits }),
+  updateSUnits: (newunits: ReciprocalWavelengthUnits) =>
+     set({ sUnits: newunits }),
   updateDUnits: (newunits: WavelengthUnits) => set({ dUnits: newunits }),
 }));

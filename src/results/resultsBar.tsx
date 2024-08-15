@@ -25,7 +25,7 @@ import RangeTable from "./rangeTable";
 import { ResultStore, ScatteringOptions, useResultStore } from "./resultsStore";
 import {
   convertBetweenQAndD,
-  convertBetweenQAndS,
+  convertFromSTooQ,
 } from "./scatteringQuantities";
 
 function getVisibilitySettings(
@@ -55,8 +55,8 @@ function getVisibilitySettings(
       textBoxUnits = resultStore.dUnits;
       break;
     case ScatteringOptions.s:
-      diagramVisible = visableQRange.apply(convertBetweenQAndS).to("nm");
-      diagramFull = fullQrange.apply(convertBetweenQAndS).to("nm");
+      diagramVisible = visableQRange.apply(convertFromSTooQ).to("nm");
+      diagramFull = fullQrange.apply(convertFromSTooQ).to("nm");
       diagramRequested = UnitRange.fromNumericRange(
         requestedRange,
         resultStore.sUnits as string,
