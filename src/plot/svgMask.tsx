@@ -14,7 +14,6 @@ interface Props extends SVGProps<SVGPathElement> {
 }
 
 function SvgMask(props: Props){
-    // watch out some crazy insane big boy maths is incoming
     const [detectorUpper, detectorLower] = props.coords;
     // check if clone is needed later on
     const fulllength = detectorLower.clone().sub(detectorUpper);
@@ -39,23 +38,37 @@ function SvgMask(props: Props){
                     i+1)
                 }
             fill={props.fill}
-            id="mask"
         />)
         }
         {/* plot horizontal stripes */}
-        {[...Array(props.numModules.y -1).keys()].map((i:number) =>         
+        {[...Array(props.numModules.y -1).keys()].map((item:number) =>         
         <SvgRect
-            key={i}
+            key={item}
             coords={
                 generateHorizontalStripes(
                     props.coords,
                     moduleLength.y,
                     gaplength.y,
-                    i+1)
+                    item+1)
                 }
             fill={props.fill}
-            id="mask"
         />)
+        }
+        {/* plot missing sections*/}
+        {
+            props.missingSegments.map((item: number) => 
+            <SvgRect
+            key={item}
+            coords={generateMissingModule(
+                props.coords,
+                props.numModules,
+                moduleLength,
+                gaplength,
+                item
+            )}
+            fill={props.fill}
+            />
+            )
         }
     </>
     )
@@ -80,13 +93,13 @@ function generateVerticalStripes(
     coords: Rect,
     moduleLenX: number,
     gapLenX: number,
-    moduleNum: number): Rect{
+    idx: number): Rect{
     return [
         new Vector3(
-            coords[0].x + generateLowerBound(moduleLenX, gapLenX, moduleNum),
+            coords[0].x + generateLowerBound(moduleLenX, gapLenX, idx),
             coords[0].y),
         new Vector3(
-            coords[0].x + generateUpperBound(moduleLenX, gapLenX, moduleNum),
+            coords[0].x + generateUpperBound(moduleLenX, gapLenX, idx),
             coords[1].y)
     ]
 }
@@ -95,11 +108,33 @@ function generateHorizontalStripes(
     coords: Rect,
     moduleLenY: number,
     gapLenY: number,
-    moduleNum: number): Rect{
+    idx: number): Rect{
     return [
         new Vector3(coords[0].x, 
-            coords[0].y + generateLowerBound(moduleLenY, gapLenY, moduleNum)),
+            coords[0].y + generateLowerBound(moduleLenY, gapLenY, idx)),
         new Vector3(coords[1].x, 
-            coords[0].y + generateUpperBound(moduleLenY, gapLenY, moduleNum))
+            coords[0].y + generateUpperBound(moduleLenY, gapLenY, idx))
     ]
 }
+
+function generateMissingModule(
+    coords: Rect,
+    moduleNum: Vector3,
+    moduleLen: Vector3,
+    gapLen: Vector3,
+    idx: number): Rect{
+    return [
+            new Vector3(
+                coords[0].x + (moduleLen.x + gapLen.x) *
+                (idx % moduleNum.x),
+                coords[0].y + (moduleLen.y + gapLen.y) *
+                (Math.floor(idx / moduleNum.x))
+            ),
+            new Vector3(
+                coords[0].x + (moduleLen.x + gapLen.x) *
+                (idx % moduleNum.x) + moduleLen.x,
+                coords[0].y + (moduleLen.y + gapLen.y) *
+                (Math.floor(idx / moduleNum.x)) + moduleLen.y
+            )
+        ]
+    }

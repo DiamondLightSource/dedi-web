@@ -254,7 +254,7 @@ export default function CentrePlot(): JSX.Element {
                           coords={[detectorLower, detectorUpper]}
                           fill={color2String(plotConfig.visibleColor)}
                           numModules={new Vector3(3,4)}
-                          gapFraction= {new Vector3(0.1,0.1)} 
+                          gapFraction= {new Vector3(0.01,0.01)} 
                           missingSegments={[6]}
                         />
                       )}
