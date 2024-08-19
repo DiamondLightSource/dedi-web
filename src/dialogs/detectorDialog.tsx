@@ -30,7 +30,7 @@ export default function DetectorDialog(props: {
 }): JSX.Element {
   const detectorStore = useDetectorStore();
   const { register,
-     reset, handleSubmit, control} = useForm<DetectorForm>();
+     reset, handleSubmit, control, getValues} = useForm<DetectorForm>();
   const onSubmit: SubmitHandler<DetectorForm> = (data: DetectorForm) => {
     detectorStore.addNewDetector(
       data.name,
@@ -185,7 +185,9 @@ export default function DetectorDialog(props: {
                     <Autocomplete
                     {...props}
                     multiple
-                    options={[...Array(10).keys()]}
+                    options={[...Array(
+                    getValues().detector.mask?.horizontalGap??5
+                    ).keys()]}
                     getOptionLabel={(option:number) => `${option}`}
                     defaultValue={[]}
                     filterSelectedOptions
