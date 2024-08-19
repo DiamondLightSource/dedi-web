@@ -19,6 +19,13 @@ import {
  */
 export function createInternalDetector(detectorData: IODetector): AppDetector {
   return {
+    mask: {
+      horizontalModules: 1,
+      verticalModules: 1,
+      horizontalGap: 0,
+      verticalGap: 0,
+      missingModules: []
+    },
     ...detectorData,
     pixelSize: {
       height: unit(detectorData.pixelSize.height, "mm"),

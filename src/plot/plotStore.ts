@@ -10,6 +10,8 @@ export enum PlotAxes {
 export interface PlotConfig {
   detector: boolean;
   detectorColor: RGBColor;
+  mask: boolean;
+  maskColor: RGBColor;
   beamstop: boolean;
   beamstopColor: RGBColor;
   cameraTube: boolean;
@@ -29,6 +31,8 @@ export interface PlotConfig {
 export const usePlotStore = create<PlotConfig>((set) => ({
   detector: true,
   detectorColor: { r: 144, g: 19, b: 254, a: 0.4 },
+  mask: false,
+  maskColor: { r: 0, g: 0, b: 0, a: 1 },
   beamstop: true,
   beamstopColor: { r: 0, g: 0, b: 0, a: 1 },
   cameraTube: true,

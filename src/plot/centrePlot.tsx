@@ -249,13 +249,21 @@ export default function CentrePlot(): JSX.Element {
                           id="detector"
                         />
                       )}
-                      {plotConfig.detector && (
+                      {plotConfig.mask && (
                         <SvgMask
                           coords={[detectorLower, detectorUpper]}
-                          fill={color2String(plotConfig.visibleColor)}
-                          numModules={new Vector3(3,4)}
-                          gapFraction= {new Vector3(0.01,0.01)} 
-                          missingSegments={[6]}
+                          fill={color2String(plotConfig.maskColor)}
+                          numModules={
+                            new Vector3(
+                              detectorStore.detector.mask.horizontalModules,
+                              detectorStore.detector.mask.verticalModules)}
+                          gapFraction= {new Vector3(
+                            detectorStore.detector.mask.horizontalGap/
+                                detectorStore.detector.resolution.width,
+                              detectorStore.detector.mask.verticalGap/
+                                detectorStore.detector.resolution.height)} 
+                          missingSegments={
+                            detectorStore.detector.mask.missingModules??[]}
                         />
                       )}
                       {plotConfig.inaccessibleRange && (

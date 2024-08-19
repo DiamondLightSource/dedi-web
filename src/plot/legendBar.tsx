@@ -27,6 +27,7 @@ export default function LegendBar(): JSX.Element {
           <Typography variant="h6"> Legend</Typography>
           <Divider />
           <FormGroup>
+            {/* Detector */}
             <FormControlLabel
               control={
                 <Checkbox
@@ -50,6 +51,7 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
+            {/* Camera Tube */}
             <FormControlLabel
               control={
                 <Checkbox
@@ -73,6 +75,7 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
+            {/* Beamstop */}
             <FormControlLabel
               control={
                 <Checkbox
@@ -96,6 +99,7 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
+            {/* Clearance */}
             <FormControlLabel
               control={
                 <Checkbox
@@ -119,6 +123,7 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
+            {/* Visible Range */}
             <FormControlLabel
               control={
                 <Checkbox
@@ -142,6 +147,7 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
+            {/* Requested Range */}
             <FormControlLabel
               control={
                 <Checkbox
@@ -165,6 +171,7 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
+            {/* Inaccessible Range */}
             <FormControlLabel
               control={
                 <Checkbox
@@ -184,6 +191,30 @@ export default function LegendBar(): JSX.Element {
                   />
                   <Typography display={"flex"} alignItems={"center"}>
                     Inaccessible Range
+                  </Typography>
+                </Stack>
+              }
+            />
+            {/* Mask */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={plotConfig.mask}
+                  onChange={(_, checked) =>
+                    plotConfig.update({ mask: checked })
+                  }
+                />
+              }
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover
+                    color={plotConfig.maskColor}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ maskColor: color.rgb })
+                    }
+                  />
+                  <Typography display={"flex"} alignItems={"center"}>
+                    Mask
                   </Typography>
                 </Stack>
               }

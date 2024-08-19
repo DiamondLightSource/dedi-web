@@ -78,7 +78,6 @@ export type {Props as SvgMaskProps};
 export default SvgMask;
 
 
-
 function generateLowerBound(
     moduleLen: number, gapLen:number, moduleNum: number): number{
     return moduleNum*moduleLen + (moduleNum-1)*gapLen

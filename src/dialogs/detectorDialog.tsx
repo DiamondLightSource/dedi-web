@@ -14,8 +14,9 @@ import { useDetectorStore } from "../data-entry/detectorStore";
 import DetectorTable from "./detectorTable";
 import CloseIcon from "@mui/icons-material/Close";
 import { IODetector } from "../utils/types";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { createInternalDetector } from "../presets/presetManager";
+import Autocomplete from '@mui/material/Autocomplete';
 
 interface DetectorForm {
   name: string;
@@ -28,7 +29,8 @@ export default function DetectorDialog(props: {
   handleOpen: () => void;
 }): JSX.Element {
   const detectorStore = useDetectorStore();
-  const { register, reset, handleSubmit } = useForm<DetectorForm>();
+  const { register,
+     reset, handleSubmit, control} = useForm<DetectorForm>();
   const onSubmit: SubmitHandler<DetectorForm> = (data: DetectorForm) => {
     detectorStore.addNewDetector(
       data.name,
@@ -38,6 +40,7 @@ export default function DetectorDialog(props: {
     props.handleClose();
     reset();
   };
+
 
   return (
     <Dialog
@@ -122,6 +125,80 @@ export default function DetectorDialog(props: {
                       <InputAdornment position="end">mm</InputAdornment>
                     ),
                   }}
+                />
+                <Typography> Mask: </Typography>
+                <TextField
+                  type="number"
+                  label="Horizontal Modules"
+                  {...register("detector.mask.horizontalModules",
+                     { required: true })}
+                  size="small"
+                  inputProps={{
+                    step: 1,
+                  }}
+                />
+                <TextField
+                  type="number"
+                  label="Vertical Modules"
+                  {...register("detector.mask.verticalModules",
+                     { required: true })}
+                  size="small"
+                  inputProps={{
+                    step: 1,
+                  }}
+                />
+                <TextField
+                  type="number"
+                  label="Horizontal Gap"
+                  {...register("detector.mask.horizontalGap",
+                     { required: true })}
+                  size="small"
+                  inputProps={{
+                    step: 1,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">px</InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  type="number"
+                  label="Vertical Gap"
+                  {...register("detector.mask.verticalGap",
+                     { required: true,})}
+                  size="small"
+                  inputProps={{
+                    step: 1,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">px</InputAdornment>
+                    ),
+                  }}
+                />
+                <Controller
+                  name={"detector.mask.missingModules"}
+                  control={control}
+                  defaultValue={[]}
+                  render={({ field: {onChange, ...props}})=>(
+                    <Autocomplete
+                    {...props}
+                    multiple
+                    options={[...Array(10).keys()]}
+                    getOptionLabel={(option:number) => `${option}`}
+                    defaultValue={[]}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Missing Modules"
+                        placeholder="Pick missing modules"
+                      />
+                    )}
+                    onChange={(_, data) => onChange(data)}
+                    />
+                    )}
                 />
                 <Button variant="outlined" type="submit">
                   Submit
