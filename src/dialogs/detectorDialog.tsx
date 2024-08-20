@@ -14,9 +14,8 @@ import { useDetectorStore } from "../data-entry/detectorStore";
 import DetectorTable from "./detectorTable";
 import CloseIcon from "@mui/icons-material/Close";
 import { IODetector } from "../utils/types";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { createInternalDetector } from "../presets/presetManager";
-import Autocomplete from '@mui/material/Autocomplete';
 
 interface DetectorForm {
   name: string;
@@ -30,7 +29,7 @@ export default function DetectorDialog(props: {
 }): JSX.Element {
   const detectorStore = useDetectorStore();
   const { register,
-     reset, handleSubmit, control, getValues} = useForm<DetectorForm>();
+     reset, handleSubmit, setValue} = useForm<DetectorForm>();
   const onSubmit: SubmitHandler<DetectorForm> = (data: DetectorForm) => {
     detectorStore.addNewDetector(
       data.name,
@@ -40,7 +39,7 @@ export default function DetectorDialog(props: {
     props.handleClose();
     reset();
   };
-
+  setValue("detector.mask.missingModules", [])
 
   return (
     <Dialog
@@ -176,31 +175,6 @@ export default function DetectorDialog(props: {
                       <InputAdornment position="end">px</InputAdornment>
                     ),
                   }}
-                />
-                <Controller
-                  name={"detector.mask.missingModules"}
-                  control={control}
-                  defaultValue={[]}
-                  render={({ field: {onChange, ...props}})=>(
-                    <Autocomplete
-                    {...props}
-                    multiple
-                    options={[...Array(
-                    getValues().detector.mask?.horizontalGap??5
-                    ).keys()]}
-                    getOptionLabel={(option:number) => `${option}`}
-                    defaultValue={[]}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Missing Modules"
-                        placeholder="Pick missing modules"
-                      />
-                    )}
-                    onChange={(_, data) => onChange(data)}
-                    />
-                    )}
                 />
                 <Button variant="outlined" type="submit">
                   Submit
