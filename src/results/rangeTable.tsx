@@ -31,7 +31,8 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
     updateQUnits(event.target.value as ReciprocalWavelengthUnits);
   };
 
-  const handleSunits = (event: SelectChangeEvent<ReciprocalWavelengthUnits>) => {
+  const handleSunits = (
+    event: SelectChangeEvent<ReciprocalWavelengthUnits>) => {
     updateSUnits(event.target.value as ReciprocalWavelengthUnits);
   };
 
