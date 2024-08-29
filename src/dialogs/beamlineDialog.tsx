@@ -17,7 +17,7 @@ import { IOBeamline } from "../utils/types";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { createInternalBeamline } from "../presets/presetManager";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { formatLogMessage } from "../utils/units";
+import { formatLogMessage, LengthUnits, WavelengthUnits } from "../utils/units";
 
 const INPUT_PRECISION = 0.000001;
 
@@ -87,7 +87,8 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">nm</InputAdornment>
+                      <InputAdornment position="end">
+                          {WavelengthUnits.nanometres}</InputAdornment>
                     ),
                   }}
                 />
@@ -102,7 +103,8 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">nm</InputAdornment>
+                      <InputAdornment position="end">
+                        {WavelengthUnits.nanometres}</InputAdornment>
                     ),
                   }}
                 />
@@ -117,7 +119,8 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">m</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.metre}</InputAdornment>
                     ),
                   }}
                 />
@@ -132,7 +135,8 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">m</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.metre}</InputAdornment>
                     ),
                   }}
                 />
@@ -147,7 +151,8 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">m</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.metre}</InputAdornment>
                     ),
                   }}
                 />
@@ -164,7 +169,9 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">mm</InputAdornment>
+                      <InputAdornment position="end">{
+                        LengthUnits.millimetre
+                      }</InputAdornment>
                     ),
                   }}
                 />
@@ -179,7 +186,8 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">mm</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.millimetre}</InputAdornment>
                     ),
                   }}
                 />

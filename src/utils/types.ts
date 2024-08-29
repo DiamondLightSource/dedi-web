@@ -118,3 +118,15 @@ export interface DetectorMask {
   readonly verticalGap: number;
   readonly missingModules?: number[];
 }
+
+
+export interface Calibrant {
+  positions: Position[],
+}
+
+export interface Position {
+  d: number,
+  h: number,
+  k: number,
+  l: number,
+}

@@ -15,6 +15,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import NumericRange from "../calculations/numericRange";
 import UnitRange from "../calculations/unitRange";
 import {
+  AngstromSymbol,
   ReciprocalWavelengthUnits,
   WavelengthUnits,
   parseNumericInput,
@@ -24,8 +25,8 @@ import { RangeDiagram } from "./rangeDiagram";
 import RangeTable from "./rangeTable";
 import { ResultStore, ScatteringOptions, useResultStore } from "./resultsStore";
 import {
-  convertBetweenQAndD,
-  convertFromQTooS,
+  convertFromQtoD,
+  convertFromQToS,
 } from "./scatteringQuantities";
 
 interface VisibilitySettings {
@@ -53,35 +54,44 @@ function getVisibilitySettings(
   if(resultStore.requested === ScatteringOptions.d){
     return {
       textBoxUnits: resultStore.dUnits,
-      diagramVisible: visableQRange.apply(convertBetweenQAndD).to("nm"),
-      diagramFull: fullQrange.apply(convertBetweenQAndD).to("nm"),
+      diagramVisible: 
+        visableQRange
+        .apply(convertFromQtoD)
+        .to(WavelengthUnits.nanometres),
+      diagramFull: 
+        fullQrange
+        .apply(convertFromQtoD)
+        .to(WavelengthUnits.nanometres),
       diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         resultStore.dUnits as string,
-      ).to("nm")
+      ).to(WavelengthUnits.nanometres)
     };
   }
 
   if(resultStore.requested === ScatteringOptions.s){
     return {
       textBoxUnits :resultStore.sUnits,
-      diagramVisible:visableQRange.apply(convertFromQTooS).to("nm^-1"),
-      diagramFull: fullQrange.apply(convertFromQTooS).to("nm^-1"),
+      diagramVisible: 
+        visableQRange
+        .apply(convertFromQToS).to(ReciprocalWavelengthUnits.nanometres),
+      diagramFull: fullQrange
+      .apply(convertFromQToS).to(ReciprocalWavelengthUnits.nanometres),
       diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         resultStore.sUnits as string,
-      ).to("nm^-1")
+      ).to(ReciprocalWavelengthUnits.nanometres)
   }
   }
 
   return { 
     textBoxUnits:resultStore.qUnits,
-    diagramVisible:visableQRange.to("nm^-1"),
-    diagramFull: fullQrange.to("nm^-1") ,
+    diagramVisible:visableQRange.to(ReciprocalWavelengthUnits.nanometres),
+    diagramFull: fullQrange.to(ReciprocalWavelengthUnits.nanometres) ,
     diagramRequested: UnitRange.fromNumericRange(
       requestedRange,
       resultStore.qUnits as string,
-    ).to("nm^-1")};
+    ).to(ReciprocalWavelengthUnits.nanometres)};
 }
 
 function RangeFormControl({ resultStore }: { resultStore: ResultStore }) {
@@ -121,9 +131,9 @@ const displayUnits = (
 ): string => {
   switch (textBoxUnits as string) {
     case "angstrom":
-      return "\u212B";
+      return AngstromSymbol;
     case "angstrom^-1":
-      return "\u212B^-1";
+      return AngstromSymbol+"^-1";
     case null:
       return "";
     default:

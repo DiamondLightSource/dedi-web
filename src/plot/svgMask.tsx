@@ -14,10 +14,16 @@ interface Props extends SVGProps<SVGPathElement> {
 }
 
 function SvgMask(props: Props){
-    const [detectorUpper, detectorLower] = props.coords;
     // check if clone is needed later on
+    const [detectorUpper, detectorLower] = props.coords;
+
+    // Get full length and width of detector
     const fulllength = detectorLower.clone().sub(detectorUpper);
+    // Get the length of the horizontal and vertical gaps between modules
     const gaplength = fulllength.clone().multiply(props.gapFraction);
+    // Get the length and width of each module
+    // module length = 
+    //    (detector length - (number of gaps)*(gap length))/(number of modules)
     const moduleLength = 
         fulllength.clone()
         .sub(gaplength.clone()

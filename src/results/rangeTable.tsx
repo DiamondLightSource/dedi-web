@@ -12,10 +12,13 @@ import {
   TableRow,
 } from "@mui/material";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
-import { ReciprocalWavelengthUnits, WavelengthUnits } from "../utils/units";
+import { 
+  AngstromSymbol,
+  ReciprocalWavelengthUnits,
+  WavelengthUnits } from "../utils/units";
 import {
-  convertBetweenQAndD,
-  convertFromQTooS,
+  convertFromQtoD,
+  convertFromQToS,
 } from "./scatteringQuantities";
 import UnitRange from "../calculations/unitRange";
 
@@ -41,10 +44,10 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
   };
   const qRange = props.qRange.to(resultsStore.qUnits as string);
   const sRange = props.qRange
-    .apply(convertFromQTooS)
+    .apply(convertFromQToS)
     .to(resultsStore.sUnits as string);
   const dRange = props.qRange
-    .apply(convertBetweenQAndD)
+    .apply(convertFromQtoD)
     .to(resultsStore.dUnits as string);
 
   return (
@@ -89,7 +92,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                     {"1 / nm"}
                   </MenuItem>
                   <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
-                    {"1 / " + "\u212B"}
+                    {"1 / " + AngstromSymbol}
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -123,7 +126,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                     {"1 / nm"}
                   </MenuItem>
                   <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
-                  {"1 / " + "\u212B"}
+                  {"1 / " + AngstromSymbol}
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -157,7 +160,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                     {WavelengthUnits.nanometres}
                   </MenuItem>
                   <MenuItem value={WavelengthUnits.angstroms}>
-                    {"\u212B"}
+                    {AngstromSymbol}
                   </MenuItem>
                 </Select>
               </FormControl>

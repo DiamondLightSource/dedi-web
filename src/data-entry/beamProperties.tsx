@@ -17,6 +17,7 @@ import {
   wavelength2EnergyConverter,
   energy2WavelengthConverter,
   parseNumericInput,
+  AngstromSymbol,
 } from "../utils/units";
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { unit } from "mathjs";
@@ -131,7 +132,8 @@ export default function BeampropertiesDataEntry() {
             <MenuItem value={WavelengthUnits.nanometres}>
               {WavelengthUnits.nanometres}
             </MenuItem>
-            <MenuItem value={WavelengthUnits.angstroms}>{"\u212B"}</MenuItem>
+            <MenuItem 
+              value={WavelengthUnits.angstroms}>{AngstromSymbol}</MenuItem>
           </Select>
         </FormControl>
       </Stack>

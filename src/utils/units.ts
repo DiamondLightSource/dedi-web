@@ -6,12 +6,17 @@ export const PLANCK = unit(6.62607015e-34, "J s");
 
 // Refer to https://mathjs.org/docs/datatypes/units.html for unit strings
 
+
+export const AngstromSymbol = "\u212B";
+export const MuSymbol = "\u03bc";
+
 /**
  * An Enum of the Length Units that the app supports
  */
 export enum LengthUnits {
   millimetre = "mm",
   micrometre = "um",
+  metre = "m"
 }
 
 /**

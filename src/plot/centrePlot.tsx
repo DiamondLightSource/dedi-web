@@ -24,8 +24,8 @@ import {
   useResultStore,
 } from "../results/resultsStore";
 import {
-  convertBetweenQAndD,
-  convertFromSTooQ,
+  convertFromDtoQ,
+  convertFromSToQ,
 } from "../results/scatteringQuantities";
 import {
   AppBeamline,
@@ -40,7 +40,7 @@ import { usePlotStore } from "./plotStore";
 import { UnitVector, color2String, getDomains } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import { useMemo } from "react";
-import { formatLogMessage } from "../utils/units";
+import { formatLogMessage, LengthUnits } from "../utils/units";
 import SvgMask from "./svgMask";
 
 /**
@@ -342,7 +342,8 @@ function getScaleFactor(wavelength: Unit, cameraLength: number | null) {
   if (cameraLength && wavelength) {
     scaleFactor = divide(
       2 * Math.PI,
-      multiply(unit(cameraLength, "m"), wavelength.to("m")),
+      multiply(unit(cameraLength, LengthUnits.metre),
+       wavelength.to(LengthUnits.metre)),
     );
   }
   if (scaleFactor == null) {
@@ -375,13 +376,13 @@ function getReferencePoints(
   cameraTube: AppCircularDevice,
 ) {
   const minPoint: UnitVector = {
-    x: unit(ptMin.x, "m"),
-    y: unit(ptMin.y, "m"),
+    x: unit(ptMin.x, LengthUnits.metre),
+    y: unit(ptMin.y, LengthUnits.metre),
   };
 
   const maxPoint: UnitVector = {
-    x: unit(ptMax.x, "m"),
-    y: unit(ptMax.y, "m"),
+    x: unit(ptMax.x, LengthUnits.metre),
+    y: unit(ptMax.y, LengthUnits.metre),
   };
 
   const beamstopCentre: UnitVector = {
@@ -454,14 +455,14 @@ function getRequestedRange(
   const requestedMaxPt = getPointForQ(
     requestedRange.max,
     beamlineConfig.angle,
-    unit(beamlineConfig.cameraLength ?? NaN, "m"),
+    unit(beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
     beamlineConfig.wavelength,
     beamstopCentre,
   );
   const requestedMinPt = getPointForQ(
     requestedRange.min,
     beamlineConfig.angle,
-    unit(beamlineConfig.cameraLength ?? NaN, "m"),
+    unit(beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
     beamlineConfig.wavelength,
     beamstopCentre,
   );
@@ -482,11 +483,11 @@ function getRange(): (state: ResultStore) => UnitRange | null {
     const getUnit = (value: number): Unit => {
 
       if(state.requested === ScatteringOptions.d){
-        return convertBetweenQAndD(unit(value, state.dUnits));
+        return convertFromDtoQ(unit(value, state.dUnits));
       }
 
       if(state.requested === ScatteringOptions.s){
-        return convertFromSTooQ(unit(value, state.sUnits));
+        return convertFromSToQ(unit(value, state.sUnits));
       }
 
       return unit(value, state.qUnits);
