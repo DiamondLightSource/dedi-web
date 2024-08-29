@@ -101,7 +101,12 @@ export const enforceRangeLimits = (
   return value;
 };
 
+/**
+ * Add timestamp to log message
+ * @param message 
+ * @returns 
+ */
 export function formatLogMessage(message: string): string{
   const timestamp = new Date().toISOString();
-  return `[${timestamp}] ${message}`
+  return `[${timestamp}]: ${message}`
 }
