@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import { WavelengthUnits, ReciprocalWavelengthUnits } from "../utils/units";
 
-export const theta = "\u03B8";
-
 export enum ScatteringOptions {
   q = "q",
   s = "s",

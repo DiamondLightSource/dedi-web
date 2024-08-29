@@ -25,54 +25,63 @@ import RangeTable from "./rangeTable";
 import { ResultStore, ScatteringOptions, useResultStore } from "./resultsStore";
 import {
   convertBetweenQAndD,
-  convertFromSTooQ,
+  convertFromQTooS,
 } from "./scatteringQuantities";
+
+interface VisibilitySettings {
+    textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null,
+    diagramVisible: UnitRange | null,
+    diagramFull: UnitRange | null,
+    diagramRequested: UnitRange | null,
+}
 
 function getVisibilitySettings(
   visableQRange: UnitRange,
   fullQrange: UnitRange,
   requestedRange: NumericRange | null,
   resultStore: ResultStore,
-) {
-  let diagramVisible: UnitRange | null = null;
-  let diagramFull: UnitRange | null = null;
-  let diagramRequested: UnitRange | null = null;
+): VisibilitySettings {
 
-  let textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null = null;
-  // NOTE early return pattern , reduces nesting logic
   if (!(visableQRange && fullQrange && requestedRange)) {
-    return { textBoxUnits, diagramVisible, diagramFull, diagramRequested };
+    return { 
+      textBoxUnits: null,
+      diagramVisible: null,
+      diagramFull: null,
+      diagramRequested: null};
   }
 
-  switch (resultStore.requested) {
-    case ScatteringOptions.d:
-      diagramVisible = visableQRange.apply(convertBetweenQAndD).to("nm");
-      diagramFull = fullQrange.apply(convertBetweenQAndD).to("nm");
-      diagramRequested = UnitRange.fromNumericRange(
+  if(resultStore.requested === ScatteringOptions.d){
+    return {
+      textBoxUnits: resultStore.dUnits,
+      diagramVisible: visableQRange.apply(convertBetweenQAndD).to("nm"),
+      diagramFull: fullQrange.apply(convertBetweenQAndD).to("nm"),
+      diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         resultStore.dUnits as string,
-      ).to("nm");
-      textBoxUnits = resultStore.dUnits;
-      break;
-    case ScatteringOptions.s:
-      diagramVisible = visableQRange.apply(convertFromSTooQ).to("nm");
-      diagramFull = fullQrange.apply(convertFromSTooQ).to("nm");
-      diagramRequested = UnitRange.fromNumericRange(
+      ).to("nm")
+    };
+  }
+
+  if(resultStore.requested === ScatteringOptions.s){
+    return {
+      textBoxUnits :resultStore.sUnits,
+      diagramVisible:visableQRange.apply(convertFromQTooS).to("nm^-1"),
+      diagramFull: fullQrange.apply(convertFromQTooS).to("nm^-1"),
+      diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         resultStore.sUnits as string,
-      ).to("nm");
-      textBoxUnits = resultStore.sUnits;
-      break;
-    default:
-      diagramVisible = visableQRange.to("nm^-1");
-      diagramFull = fullQrange.to("nm^-1");
-      diagramRequested = UnitRange.fromNumericRange(
-        requestedRange,
-        resultStore.qUnits as string,
-      ).to("nm^-1");
-      textBoxUnits = resultStore.qUnits;
+      ).to("nm^-1")
   }
-  return { textBoxUnits, diagramVisible, diagramFull, diagramRequested };
+  }
+
+  return { 
+    textBoxUnits:resultStore.qUnits,
+    diagramVisible:visableQRange.to("nm^-1"),
+    diagramFull: fullQrange.to("nm^-1") ,
+    diagramRequested: UnitRange.fromNumericRange(
+      requestedRange,
+      resultStore.qUnits as string,
+    ).to("nm^-1")};
 }
 
 function RangeFormControl({ resultStore }: { resultStore: ResultStore }) {

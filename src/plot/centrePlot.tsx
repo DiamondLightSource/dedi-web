@@ -25,7 +25,7 @@ import {
 } from "../results/resultsStore";
 import {
   convertBetweenQAndD,
-  convertFromQTooS,
+  convertFromSTooQ,
 } from "../results/scatteringQuantities";
 import {
   AppBeamline,
@@ -480,18 +480,16 @@ function getRange(): (state: ResultStore) => UnitRange | null {
     }
 
     const getUnit = (value: number): Unit => {
-      let result: Unit;
-      switch (state.requested) {
-        case ScatteringOptions.d:
-          result = convertBetweenQAndD(unit(value, state.dUnits));
-          break;
-        case ScatteringOptions.s:
-          result = convertFromQTooS(unit(value, state.sUnits));
-          break;
-        default:
-          result = unit(value, state.qUnits);
+
+      if(state.requested === ScatteringOptions.d){
+        return convertBetweenQAndD(unit(value, state.dUnits));
       }
-      return result;
+
+      if(state.requested === ScatteringOptions.s){
+        return convertFromSTooQ(unit(value, state.sUnits));
+      }
+
+      return unit(value, state.qUnits);
     };
 
     return new UnitRange(
