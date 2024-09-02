@@ -12,14 +12,12 @@ import {
   TableRow,
 } from "@mui/material";
 import { ScatteringOptions, useResultStore } from "./resultsStore";
-import { 
+import {
   AngstromSymbol,
   ReciprocalWavelengthUnits,
-  WavelengthUnits } from "../utils/units";
-import {
-  convertFromQtoD,
-  convertFromQToS,
-} from "./scatteringQuantities";
+  WavelengthUnits,
+} from "../utils/units";
+import { convertFromQtoD, convertFromQToS } from "./scatteringQuantities";
 import UnitRange from "../calculations/unitRange";
 
 export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
@@ -35,7 +33,8 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
   };
 
   const handleSunits = (
-    event: SelectChangeEvent<ReciprocalWavelengthUnits>) => {
+    event: SelectChangeEvent<ReciprocalWavelengthUnits>,
+  ) => {
     updateSUnits(event.target.value as ReciprocalWavelengthUnits);
   };
 
@@ -51,7 +50,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
     .to(resultsStore.dUnits as string);
 
   return (
-    <Card variant="outlined" >
+    <Card variant="outlined">
       <TableContainer>
         <Table sx={{ minWidth: 50 }} aria-label="simple table" size="small">
           {/* TABLE HEAD */}
@@ -126,7 +125,7 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
                     {"1 / nm"}
                   </MenuItem>
                   <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
-                  {"1 / " + AngstromSymbol}
+                    {"1 / " + AngstromSymbol}
                   </MenuItem>
                 </Select>
               </FormControl>

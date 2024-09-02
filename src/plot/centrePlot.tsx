@@ -7,7 +7,7 @@ import {
   SvgRect,
   VisCanvas,
 } from "@h5web/lib";
-import { Card, CardContent, Stack} from "@mui/material";
+import { Card, CardContent, Stack } from "@mui/material";
 import { Unit, MathType, divide, multiply, unit, createUnit } from "mathjs";
 import { Vector2, Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
@@ -168,12 +168,12 @@ export default function CentrePlot(): JSX.Element {
   }
 
   const domains = getDomains(plotDetector);
-  console.info(formatLogMessage("Refreshing plot"))
+  console.info(formatLogMessage("Refreshing plot"));
   return (
     <Stack direction="column" spacing={1} flexGrow={1}>
-    <Stack direction={{ sm: "column", md: "row"}} spacing={1} flexGrow={1}>
-    <Card variant="outlined" sx= {{ aspectRatio : 1.07 / 1 }}>
-          <CardContent sx={{ width: "100%", height: "100%"}}>
+      <Stack direction={{ sm: "column", md: "row" }} spacing={1} flexGrow={1}>
+        <Card variant="outlined" sx={{ aspectRatio: 1.07 / 1 }}>
+          <CardContent sx={{ width: "100%", height: "100%" }}>
             <div
               style={{
                 display: "grid",
@@ -256,14 +256,20 @@ export default function CentrePlot(): JSX.Element {
                           numModules={
                             new Vector3(
                               detectorStore.detector.mask.horizontalModules,
-                              detectorStore.detector.mask.verticalModules)}
-                          gapFraction= {new Vector3(
-                            detectorStore.detector.mask.horizontalGap/
+                              detectorStore.detector.mask.verticalModules,
+                            )
+                          }
+                          gapFraction={
+                            new Vector3(
+                              detectorStore.detector.mask.horizontalGap /
                                 detectorStore.detector.resolution.width,
-                              detectorStore.detector.mask.verticalGap/
-                                detectorStore.detector.resolution.height)} 
+                              detectorStore.detector.mask.verticalGap /
+                                detectorStore.detector.resolution.height,
+                            )
+                          }
                           missingSegments={
-                            detectorStore.detector.mask.missingModules??[]}
+                            detectorStore.detector.mask.missingModules ?? []
+                          }
                         />
                       )}
                       {plotConfig.inaccessibleRange && (
@@ -321,13 +327,13 @@ export default function CentrePlot(): JSX.Element {
             </div>
           </CardContent>
         </Card>
-      <LegendBar />
+        <LegendBar />
       </Stack>
       <ResultsBar
         visableQRange={visibleQRangeUnits}
         fullQrange={fullQRangeUnits}
       />
-      </Stack>
+    </Stack>
   );
 }
 
@@ -342,8 +348,10 @@ function getScaleFactor(wavelength: Unit, cameraLength: number | null) {
   if (cameraLength && wavelength) {
     scaleFactor = divide(
       2 * Math.PI,
-      multiply(unit(cameraLength, LengthUnits.metre),
-       wavelength.to(LengthUnits.metre)),
+      multiply(
+        unit(cameraLength, LengthUnits.metre),
+        wavelength.to(LengthUnits.metre),
+      ),
     );
   }
   if (scaleFactor == null) {
@@ -481,12 +489,11 @@ function getRange(): (state: ResultStore) => UnitRange | null {
     }
 
     const getUnit = (value: number): Unit => {
-
-      if(state.requested === ScatteringOptions.d){
+      if (state.requested === ScatteringOptions.d) {
         return convertFromDtoQ(unit(value, state.dUnits));
       }
 
-      if(state.requested === ScatteringOptions.s){
+      if (state.requested === ScatteringOptions.s) {
         return convertFromSToQ(unit(value, state.sUnits));
       }
 

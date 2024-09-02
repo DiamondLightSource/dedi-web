@@ -18,9 +18,8 @@ const DefaultDtectorMask: DetectorMask = {
   verticalModules: 1,
   horizontalGap: 0,
   verticalGap: 0,
-  missingModules: []
-}
-
+  missingModules: [],
+};
 
 /**
  * Creates an internal detector with pixel size units from an IODetector
@@ -57,11 +56,14 @@ export function createInternalBeamline(beamlineData: IOBeamline): AppBeamline {
     cameratubeDiameter: beamlineData.cameratubeDiameter,
     beamstopDiameter: beamlineData.beamstopDiameter,
     // Solution to units not being properly initialised
-    minWavelength: 
-      unit(beamlineData.minWavelength,
-        WavelengthUnits.nanometres).to(WavelengthUnits.nanometres),
-    maxWavelength: unit(beamlineData.maxWavelength,
-      WavelengthUnits.nanometres).to(WavelengthUnits.nanometres),
+    minWavelength: unit(
+      beamlineData.minWavelength,
+      WavelengthUnits.nanometres,
+    ).to(WavelengthUnits.nanometres),
+    maxWavelength: unit(
+      beamlineData.maxWavelength,
+      WavelengthUnits.nanometres,
+    ).to(WavelengthUnits.nanometres),
     minCameraLength: unit(beamlineData.minCameraLength, LengthUnits.metre),
     maxCameraLength: unit(beamlineData.maxCameraLength, LengthUnits.metre),
     cameraLengthStep: unit(beamlineData.cameraLengthStep, LengthUnits.metre),
@@ -87,19 +89,23 @@ function createPresetConfigRecord(preset: IOPresetConfig): AppConfig {
     ...preset,
     beamstop: {
       ...preset.beamstop,
-      diameter: unit(beamlineRecord[preset.beamline].beamstopDiameter,
-         LengthUnits.millimetre),
+      diameter: unit(
+        beamlineRecord[preset.beamline].beamstopDiameter,
+        LengthUnits.millimetre,
+      ),
     },
     cameraTube: {
       ...preset.cameraTube,
-      diameter: unit(beamlineRecord[preset.beamline].cameratubeDiameter, 
-        LengthUnits.millimetre),
+      diameter: unit(
+        beamlineRecord[preset.beamline].cameratubeDiameter,
+        LengthUnits.millimetre,
+      ),
     },
     wavelength: unit(NaN, "nm"),
     angle: unit(90, "deg"),
-    cameraLength: 
-      beamlineRecord[preset.beamline]
-      .minCameraLength.toNumber(LengthUnits.metre),
+    cameraLength: beamlineRecord[preset.beamline].minCameraLength.toNumber(
+      LengthUnits.metre,
+    ),
   };
 }
 

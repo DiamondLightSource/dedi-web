@@ -132,17 +132,18 @@ export default function BeampropertiesDataEntry() {
             <MenuItem value={WavelengthUnits.nanometres}>
               {WavelengthUnits.nanometres}
             </MenuItem>
-            <MenuItem 
-              value={WavelengthUnits.angstroms}>{AngstromSymbol}</MenuItem>
+            <MenuItem value={WavelengthUnits.angstroms}>
+              {AngstromSymbol}
+            </MenuItem>
           </Select>
         </FormControl>
       </Stack>
       <Typography>
-        Minimum allowed wavelength: 
+        Minimum allowed wavelength:
         {" " + beamlineConfig.beamline.minWavelength.toString()}
       </Typography>
       <Typography>
-        Maximum allowed wavelength: 
+        Maximum allowed wavelength:
         {" " + beamlineConfig.beamline.maxWavelength.toString()}
       </Typography>
       <Stack direction="row" spacing={1}>

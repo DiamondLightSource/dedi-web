@@ -74,9 +74,10 @@ export default function BeamStopDataEntry(): JSX.Element {
             }
           >
             <MenuItem value={LengthUnits.millimetre as string}>
-              {LengthUnits.millimetre}</MenuItem>
+              {LengthUnits.millimetre}
+            </MenuItem>
             <MenuItem value={LengthUnits.micrometre as string}>
-              { MuSymbol + "m"}
+              {MuSymbol + "m"}
             </MenuItem>
           </Select>
         </FormControl>

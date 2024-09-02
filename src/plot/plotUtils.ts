@@ -6,8 +6,8 @@ import NumericRange from "../calculations/numericRange";
 export const getDomains = (
   detector: PlotRectangle,
 ): { xAxis: NumericRange; yAxis: NumericRange } => {
-  const maxAxis = Math.max(detector.upperBound.x, detector.upperBound.y)
-  const minAxis = Math.min(detector.lowerBound.x,detector.lowerBound.y)
+  const maxAxis = Math.max(detector.upperBound.x, detector.upperBound.y);
+  const minAxis = Math.min(detector.lowerBound.x, detector.lowerBound.y);
   const offset = 0.2 * (maxAxis - minAxis);
   const min = Math.round(minAxis - offset);
   const max = Math.round(maxAxis + offset);

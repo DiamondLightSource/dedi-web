@@ -38,9 +38,9 @@ export default function BasicAppBar(): JSX.Element {
   };
 
   return (
-    <AppBar  style={{position:"static", width: "100%"}}>
+    <AppBar style={{ position: "static", width: "100%" }}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1}}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Dedi Web
         </Typography>
         <Autocomplete

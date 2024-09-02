@@ -3,7 +3,7 @@ kind: Component
 metadata:
   name: dedi-web
   title: Dedi-Web
-  description: A client only Q-Range calculator 
+  description: A client only Q-Range calculator
   annotations:
     backstage.io/techdocs-ref: dir:.
     github.com/project-slug: DiamondLightSource/dedi-web

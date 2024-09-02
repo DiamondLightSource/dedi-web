@@ -6,7 +6,6 @@ export const PLANCK = unit(6.62607015e-34, "J s");
 
 // Refer to https://mathjs.org/docs/datatypes/units.html for unit strings
 
-
 export const AngstromSymbol = "\u212B";
 export const MuSymbol = "\u03bc";
 
@@ -16,7 +15,7 @@ export const MuSymbol = "\u03bc";
 export enum LengthUnits {
   millimetre = "mm",
   micrometre = "um",
-  metre = "m"
+  metre = "m",
 }
 
 /**
@@ -108,10 +107,10 @@ export const enforceRangeLimits = (
 
 /**
  * Add timestamp to log message
- * @param message 
- * @returns 
+ * @param message
+ * @returns
  */
-export function formatLogMessage(message: string): string{
+export function formatLogMessage(message: string): string {
   const timestamp = new Date().toISOString();
-  return `[${timestamp}]: ${message}`
+  return `[${timestamp}]: ${message}`;
 }

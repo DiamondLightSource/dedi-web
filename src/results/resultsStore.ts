@@ -50,6 +50,6 @@ export const useResultStore = create<ResultStore>((set) => ({
   updateQUnits: (newunits: ReciprocalWavelengthUnits) =>
     set({ qUnits: newunits }),
   updateSUnits: (newunits: ReciprocalWavelengthUnits) =>
-     set({ sUnits: newunits }),
+    set({ sUnits: newunits }),
   updateDUnits: (newunits: WavelengthUnits) => set({ dUnits: newunits }),
 }));

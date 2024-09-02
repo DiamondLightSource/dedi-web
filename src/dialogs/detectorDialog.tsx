@@ -28,8 +28,7 @@ export default function DetectorDialog(props: {
   handleOpen: () => void;
 }): JSX.Element {
   const detectorStore = useDetectorStore();
-  const { register,
-     reset, handleSubmit, setValue} = useForm<DetectorForm>();
+  const { register, reset, handleSubmit, setValue } = useForm<DetectorForm>();
   const onSubmit: SubmitHandler<DetectorForm> = (data: DetectorForm) => {
     detectorStore.addNewDetector(
       data.name,
@@ -39,7 +38,7 @@ export default function DetectorDialog(props: {
     props.handleClose();
     reset();
   };
-  setValue("detector.mask.missingModules", [])
+  setValue("detector.mask.missingModules", []);
 
   return (
     <Dialog
@@ -60,8 +59,7 @@ export default function DetectorDialog(props: {
             <Grid item xs={12} sm={12} md={12} lg={7}>
               <DetectorTable />
             </Grid>
-            <Grid item md={0} lg={1} >
-            </Grid>
+            <Grid item md={0} lg={1}></Grid>
             <Grid item xs={12} sm={12} md={12} lg={4}>
               <Stack spacing={1} width={"100%"}>
                 <Typography>Add new Detector:</Typography>
@@ -129,8 +127,9 @@ export default function DetectorDialog(props: {
                 <TextField
                   type="number"
                   label="Horizontal Modules"
-                  {...register("detector.mask.horizontalModules",
-                     { required: true })}
+                  {...register("detector.mask.horizontalModules", {
+                    required: true,
+                  })}
                   size="small"
                   inputProps={{
                     step: 1,
@@ -139,8 +138,9 @@ export default function DetectorDialog(props: {
                 <TextField
                   type="number"
                   label="Vertical Modules"
-                  {...register("detector.mask.verticalModules",
-                     { required: true })}
+                  {...register("detector.mask.verticalModules", {
+                    required: true,
+                  })}
                   size="small"
                   inputProps={{
                     step: 1,
@@ -149,8 +149,9 @@ export default function DetectorDialog(props: {
                 <TextField
                   type="number"
                   label="Horizontal Gap"
-                  {...register("detector.mask.horizontalGap",
-                     { required: true })}
+                  {...register("detector.mask.horizontalGap", {
+                    required: true,
+                  })}
                   size="small"
                   inputProps={{
                     step: 1,
@@ -164,8 +165,7 @@ export default function DetectorDialog(props: {
                 <TextField
                   type="number"
                   label="Vertical Gap"
-                  {...register("detector.mask.verticalGap",
-                     { required: true,})}
+                  {...register("detector.mask.verticalGap", { required: true })}
                   size="small"
                   inputProps={{
                     step: 1,

@@ -64,8 +64,7 @@ export default function PresetDialog(props: {
             <Grid item xs={12} sm={12} md={12} lg={8}>
               <BeamlineTable />
             </Grid>
-            <Grid item md={0} lg={1} >
-            </Grid>
+            <Grid item md={0} lg={1}></Grid>
             <Grid item xs={12} sm={12} md={12} lg={3}>
               <Stack spacing={1}>
                 <Typography>Add New Beamline:</Typography>
@@ -88,7 +87,8 @@ export default function PresetDialog(props: {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                          {WavelengthUnits.nanometres}</InputAdornment>
+                        {WavelengthUnits.nanometres}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -104,7 +104,8 @@ export default function PresetDialog(props: {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        {WavelengthUnits.nanometres}</InputAdornment>
+                        {WavelengthUnits.nanometres}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -120,7 +121,8 @@ export default function PresetDialog(props: {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        {LengthUnits.metre}</InputAdornment>
+                        {LengthUnits.metre}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -136,7 +138,8 @@ export default function PresetDialog(props: {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        {LengthUnits.metre}</InputAdornment>
+                        {LengthUnits.metre}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -152,7 +155,8 @@ export default function PresetDialog(props: {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        {LengthUnits.metre}</InputAdornment>
+                        {LengthUnits.metre}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -169,9 +173,9 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">{
-                        LengthUnits.millimetre
-                      }</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.millimetre}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -187,7 +191,8 @@ export default function PresetDialog(props: {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        {LengthUnits.millimetre}</InputAdornment>
+                        {LengthUnits.millimetre}
+                      </InputAdornment>
                     ),
                   }}
                 />

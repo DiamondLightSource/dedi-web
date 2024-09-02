@@ -71,7 +71,7 @@ export default function DataSideBar(): JSX.Element {
   };
 
   return (
-    <Stack  maxHeight={{ lg:"91vh" }} overflow={{ lg: "scroll"}}>
+    <Stack maxHeight={{ lg: "91vh" }} overflow={{ lg: "scroll" }}>
       <Stack spacing={1}>
         <Card sx={{ p: 2 }} variant="outlined">
           <Stack spacing={1}>
@@ -131,7 +131,7 @@ export default function DataSideBar(): JSX.Element {
               />
             </Stack>
             <Typography>
-              Resolution (hxw): 
+              Resolution (hxw):
               {detectorStore.detector.resolution.height} x{" "}
               {detectorStore.detector.resolution.width}
             </Typography>

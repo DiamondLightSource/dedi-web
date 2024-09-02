@@ -12,8 +12,8 @@
       "horizontalModules": 3,
       "verticalModules": 8,
       "horizontalGap": 7,
-     "verticalGap": 17,
-      "missingModules":[]
+      "verticalGap": 17,
+      "missingModules": []
     }
   },
   "Pilatus P3-2M-DLS (for WAXS)": {
@@ -29,8 +29,8 @@
       "horizontalModules": 3,
       "verticalModules": 8,
       "horizontalGap": 7,
-     "verticalGap": 17,
-      "missingModules":[17,20,23]
+      "verticalGap": 17,
+      "missingModules": [17, 20, 23]
     }
   },
   "Pilatus6m": {
@@ -46,8 +46,8 @@
       "horizontalModules": 12,
       "verticalModules": 5,
       "horizontalGap": 17,
-     "verticalGap": 7,
-      "missingModules":[]
+      "verticalGap": 7,
+      "missingModules": []
     }
   },
   "Pilatus100k": {
@@ -64,10 +64,10 @@
       "verticalModules": 1,
       "horizontalGap": 17,
       "verticalGap": 0,
-      "missingModules":[]
+      "missingModules": []
     }
   },
-  "Pilatus300k-W":{
+  "Pilatus300k-W": {
     "resolution": {
       "width": 195,
       "height": 1495
@@ -80,8 +80,8 @@
       "horizontalModules": 1,
       "verticalModules": 3,
       "horizontalGap": 0,
-     "verticalGap": 7,
-      "missingModules":[]
+      "verticalGap": 7,
+      "missingModules": []
     }
   },
   "Eiger 500k": {
@@ -97,8 +97,8 @@
       "horizontalModules": 3,
       "verticalModules": 8,
       "horizontalGap": 7,
-     "verticalGap": 17,
-      "missingModules":[]
+      "verticalGap": 17,
+      "missingModules": []
     }
   },
   "Eiger 1M": {

@@ -24,16 +24,13 @@ import { MessageDiagram } from "./MessageDiagram";
 import { RangeDiagram } from "./rangeDiagram";
 import RangeTable from "./rangeTable";
 import { ResultStore, ScatteringOptions, useResultStore } from "./resultsStore";
-import {
-  convertFromQtoD,
-  convertFromQToS,
-} from "./scatteringQuantities";
+import { convertFromQtoD, convertFromQToS } from "./scatteringQuantities";
 
 interface VisibilitySettings {
-    textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null,
-    diagramVisible: UnitRange | null,
-    diagramFull: UnitRange | null,
-    diagramRequested: UnitRange | null,
+  textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null;
+  diagramVisible: UnitRange | null;
+  diagramFull: UnitRange | null;
+  diagramRequested: UnitRange | null;
 }
 
 function getVisibilitySettings(
@@ -42,56 +39,56 @@ function getVisibilitySettings(
   requestedRange: NumericRange | null,
   resultStore: ResultStore,
 ): VisibilitySettings {
-
   if (!(visableQRange && fullQrange && requestedRange)) {
-    return { 
+    return {
       textBoxUnits: null,
       diagramVisible: null,
       diagramFull: null,
-      diagramRequested: null};
+      diagramRequested: null,
+    };
   }
 
-  if(resultStore.requested === ScatteringOptions.d){
+  if (resultStore.requested === ScatteringOptions.d) {
     return {
       textBoxUnits: resultStore.dUnits,
-      diagramVisible: 
-        visableQRange
+      diagramVisible: visableQRange
         .apply(convertFromQtoD)
         .to(WavelengthUnits.nanometres),
-      diagramFull: 
-        fullQrange
+      diagramFull: fullQrange
         .apply(convertFromQtoD)
         .to(WavelengthUnits.nanometres),
       diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         resultStore.dUnits as string,
-      ).to(WavelengthUnits.nanometres)
+      ).to(WavelengthUnits.nanometres),
     };
   }
 
-  if(resultStore.requested === ScatteringOptions.s){
+  if (resultStore.requested === ScatteringOptions.s) {
     return {
-      textBoxUnits :resultStore.sUnits,
-      diagramVisible: 
-        visableQRange
-        .apply(convertFromQToS).to(ReciprocalWavelengthUnits.nanometres),
+      textBoxUnits: resultStore.sUnits,
+      diagramVisible: visableQRange
+        .apply(convertFromQToS)
+        .to(ReciprocalWavelengthUnits.nanometres),
       diagramFull: fullQrange
-      .apply(convertFromQToS).to(ReciprocalWavelengthUnits.nanometres),
+        .apply(convertFromQToS)
+        .to(ReciprocalWavelengthUnits.nanometres),
       diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         resultStore.sUnits as string,
-      ).to(ReciprocalWavelengthUnits.nanometres)
-  }
+      ).to(ReciprocalWavelengthUnits.nanometres),
+    };
   }
 
-  return { 
-    textBoxUnits:resultStore.qUnits,
-    diagramVisible:visableQRange.to(ReciprocalWavelengthUnits.nanometres),
-    diagramFull: fullQrange.to(ReciprocalWavelengthUnits.nanometres) ,
+  return {
+    textBoxUnits: resultStore.qUnits,
+    diagramVisible: visableQRange.to(ReciprocalWavelengthUnits.nanometres),
+    diagramFull: fullQrange.to(ReciprocalWavelengthUnits.nanometres),
     diagramRequested: UnitRange.fromNumericRange(
       requestedRange,
       resultStore.qUnits as string,
-    ).to(ReciprocalWavelengthUnits.nanometres)};
+    ).to(ReciprocalWavelengthUnits.nanometres),
+  };
 }
 
 function RangeFormControl({ resultStore }: { resultStore: ResultStore }) {
@@ -133,7 +130,7 @@ const displayUnits = (
     case "angstrom":
       return AngstromSymbol;
     case "angstrom^-1":
-      return AngstromSymbol+"^-1";
+      return AngstromSymbol + "^-1";
     case null:
       return "";
     default:
@@ -189,11 +186,11 @@ export default function ResultsBar({
         <Stack spacing={1}>
           <Typography variant="h6"> Results</Typography>
           <Divider />
-          <Stack 
-            direction={{md: "column", lg:"row"}}
+          <Stack
+            direction={{ md: "column", lg: "row" }}
             spacing={2}
-            sx={{direction:"column"}}
-            >
+            sx={{ direction: "column" }}
+          >
             {/* Range Table */}
             <RangeTable qRange={visableQRange} />
             {/* Requested Range */}

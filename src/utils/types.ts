@@ -14,7 +14,7 @@ export interface SimpleVector2 {
 export interface AppDetector {
   readonly resolution: { height: number; width: number };
   readonly pixelSize: { height: Unit; width: Unit };
-  readonly mask: DetectorMask
+  readonly mask: DetectorMask;
 }
 
 /**
@@ -64,7 +64,7 @@ export interface AppConfig {
 export interface IODetector {
   readonly resolution: { height: number; width: number };
   readonly pixelSize: { height: number; width: number };
-  readonly mask?: DetectorMask
+  readonly mask?: DetectorMask;
 }
 
 /**
@@ -111,7 +111,6 @@ export interface BeamlineConfig {
   cameraLength: number | null;
 }
 
-
 export interface DetectorMask {
   readonly horizontalModules: number;
   readonly verticalModules: number;
@@ -120,14 +119,13 @@ export interface DetectorMask {
   readonly missingModules?: number[];
 }
 
-
 export interface Calibrant {
-  positions: Position[],
+  positions: Position[];
 }
 
 export interface Position {
-  d: number,
-  h: number,
-  k: number,
-  l: number,
+  d: number;
+  h: number;
+  k: number;
+  l: number;
 }
