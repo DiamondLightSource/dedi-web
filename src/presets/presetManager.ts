@@ -9,8 +9,17 @@ import {
   IOBeamline,
   IODetector,
   IOPresetConfig,
+  DetectorMask,
 } from "../utils/types";
 import { LengthUnits, WavelengthUnits } from "../utils/units";
+
+const DefaultDtectorMask: DetectorMask = {
+  horizontalModules: 1,
+  verticalModules: 1,
+  horizontalGap: 0,
+  verticalGap: 0,
+  missingModules: []
+}
 
 
 /**
@@ -20,13 +29,7 @@ import { LengthUnits, WavelengthUnits } from "../utils/units";
  */
 export function createInternalDetector(detectorData: IODetector): AppDetector {
   return {
-    mask: {
-      horizontalModules: 1,
-      verticalModules: 1,
-      horizontalGap: 0,
-      verticalGap: 0,
-      missingModules: []
-    },
+    mask: DefaultDtectorMask,
     ...detectorData,
     pixelSize: {
       height: unit(detectorData.pixelSize.height, LengthUnits.millimetre),

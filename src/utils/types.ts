@@ -111,6 +111,7 @@ export interface BeamlineConfig {
   cameraLength: number | null;
 }
 
+
 export interface DetectorMask {
   readonly horizontalModules: number;
   readonly verticalModules: number;

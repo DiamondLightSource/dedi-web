@@ -4,7 +4,7 @@ import { Vector3 } from 'three';
 
 type Rect = [Vector3, Vector3];
 
-interface Props extends SVGProps<SVGPathElement> {
+export interface SvgMaskProps extends SVGProps<SVGPathElement> {
     coords: Rect;
     strokePosition?: 'inside' | 'outside';
     strokeWidth?: number;
@@ -13,7 +13,7 @@ interface Props extends SVGProps<SVGPathElement> {
     missingSegments: number[]
 }
 
-function SvgMask(props: Props){
+export default function SvgMask(props: SvgMaskProps){
     // check if clone is needed later on
     const [detectorUpper, detectorLower] = props.coords;
 
@@ -35,6 +35,7 @@ function SvgMask(props: Props){
         {/* plot vertical stripes */}
         {[...Array(props.numModules.x -1).keys()].map((i:number) =>         
         <SvgRect
+            {...props}
             key={i}
             coords={
                 generateVerticalStripes(
@@ -49,6 +50,7 @@ function SvgMask(props: Props){
         {/* plot horizontal stripes */}
         {[...Array(props.numModules.y -1).keys()].map((item:number) =>         
         <SvgRect
+            {...props}
             key={item}
             coords={
                 generateHorizontalStripes(
@@ -64,6 +66,7 @@ function SvgMask(props: Props){
         {
             props.missingSegments.map((item: number) => 
             <SvgRect
+            {...props}
             key={item}
             coords={generateMissingModule(
                 props.coords,
@@ -79,9 +82,6 @@ function SvgMask(props: Props){
     </>
     )
 }
-
-export type {Props as SvgMaskProps};
-export default SvgMask;
 
 
 function generateLowerBound(
