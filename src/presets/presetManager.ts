@@ -9,7 +9,17 @@ import {
   IOBeamline,
   IODetector,
   IOPresetConfig,
+  DetectorMask,
 } from "../utils/types";
+import { LengthUnits, WavelengthUnits } from "../utils/units";
+
+const DefaultDetectorMask: DetectorMask = {
+  horizontalModules: 1,
+  verticalModules: 1,
+  horizontalGap: 0,
+  verticalGap: 0,
+  missingModules: [],
+};
 
 /**
  * Creates an internal detector with pixel size units from an IODetector
@@ -18,10 +28,11 @@ import {
  */
 export function createInternalDetector(detectorData: IODetector): AppDetector {
   return {
+    mask: DefaultDetectorMask,
     ...detectorData,
     pixelSize: {
-      height: unit(detectorData.pixelSize.height, "mm"),
-      width: unit(detectorData.pixelSize.height, "mm"),
+      height: unit(detectorData.pixelSize.height, LengthUnits.millimetre),
+      width: unit(detectorData.pixelSize.height, LengthUnits.millimetre),
     },
   };
 }
@@ -45,11 +56,17 @@ export function createInternalBeamline(beamlineData: IOBeamline): AppBeamline {
     cameratubeDiameter: beamlineData.cameratubeDiameter,
     beamstopDiameter: beamlineData.beamstopDiameter,
     // Solution to units not being properly initialised
-    minWavelength: unit(beamlineData.minWavelength, "nm").to("nm"),
-    maxWavelength: unit(beamlineData.maxWavelength, "nm").to("nm"),
-    minCameraLength: unit(beamlineData.minCameraLength, "m"),
-    maxCameraLength: unit(beamlineData.maxCameraLength, "m"),
-    cameraLengthStep: unit(beamlineData.cameraLengthStep, "m"),
+    minWavelength: unit(
+      beamlineData.minWavelength,
+      WavelengthUnits.nanometres,
+    ).to(WavelengthUnits.nanometres),
+    maxWavelength: unit(
+      beamlineData.maxWavelength,
+      WavelengthUnits.nanometres,
+    ).to(WavelengthUnits.nanometres),
+    minCameraLength: unit(beamlineData.minCameraLength, LengthUnits.metre),
+    maxCameraLength: unit(beamlineData.maxCameraLength, LengthUnits.metre),
+    cameraLengthStep: unit(beamlineData.cameraLengthStep, LengthUnits.metre),
   };
 }
 
@@ -72,15 +89,23 @@ function createPresetConfigRecord(preset: IOPresetConfig): AppConfig {
     ...preset,
     beamstop: {
       ...preset.beamstop,
-      diameter: unit(beamlineRecord[preset.beamline].beamstopDiameter, "mm"),
+      diameter: unit(
+        beamlineRecord[preset.beamline].beamstopDiameter,
+        LengthUnits.millimetre,
+      ),
     },
     cameraTube: {
       ...preset.cameraTube,
-      diameter: unit(beamlineRecord[preset.beamline].cameratubeDiameter, "mm"),
+      diameter: unit(
+        beamlineRecord[preset.beamline].cameratubeDiameter,
+        LengthUnits.millimetre,
+      ),
     },
     wavelength: unit(NaN, "nm"),
     angle: unit(90, "deg"),
-    cameraLength: beamlineRecord[preset.beamline].minCameraLength.toNumber("m"),
+    cameraLength: beamlineRecord[preset.beamline].minCameraLength.toNumber(
+      LengthUnits.metre,
+    ),
   };
 }
 

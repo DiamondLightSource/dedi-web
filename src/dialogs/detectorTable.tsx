@@ -1,6 +1,7 @@
 import { AppDetector } from "../utils/types";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useDetectorStore } from "../data-entry/detectorStore";
+import { LengthUnits } from "../utils/units";
 
 interface DetectorTableRow {
   name: string;
@@ -15,8 +16,8 @@ function createData(name: string, detector: AppDetector): DetectorTableRow {
     name: name,
     resolution_height: detector.resolution.height,
     resolution_width: detector.resolution.width,
-    pixel_height: detector.pixelSize.height.toNumber("mm"),
-    pixel_width: detector.pixelSize.width.toNumber("mm"),
+    pixel_height: detector.pixelSize.height.toNumber(LengthUnits.millimetre),
+    pixel_width: detector.pixelSize.width.toNumber(LengthUnits.millimetre),
   };
 }
 

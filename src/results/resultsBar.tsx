@@ -15,6 +15,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import NumericRange from "../calculations/numericRange";
 import UnitRange from "../calculations/unitRange";
 import {
+  AngstromSymbol,
   ReciprocalWavelengthUnits,
   WavelengthUnits,
   parseNumericInput,
@@ -23,56 +24,71 @@ import { MessageDiagram } from "./MessageDiagram";
 import { RangeDiagram } from "./rangeDiagram";
 import RangeTable from "./rangeTable";
 import { ResultStore, ScatteringOptions, useResultStore } from "./resultsStore";
-import {
-  convertBetweenQAndD,
-  convertBetweenQAndS,
-} from "./scatteringQuantities";
+import { convertFromQtoD, convertFromQToS } from "./scatteringQuantities";
+
+interface VisibilitySettings {
+  textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null;
+  diagramVisible: UnitRange | null;
+  diagramFull: UnitRange | null;
+  diagramRequested: UnitRange | null;
+}
 
 function getVisibilitySettings(
   visableQRange: UnitRange,
   fullQrange: UnitRange,
   requestedRange: NumericRange | null,
   resultStore: ResultStore,
-) {
-  let diagramVisible: UnitRange | null = null;
-  let diagramFull: UnitRange | null = null;
-  let diagramRequested: UnitRange | null = null;
-
-  let textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null = null;
-  // NOTE early return pattern , reduces nesting logic
+): VisibilitySettings {
   if (!(visableQRange && fullQrange && requestedRange)) {
-    return { textBoxUnits, diagramVisible, diagramFull, diagramRequested };
+    return {
+      textBoxUnits: null,
+      diagramVisible: null,
+      diagramFull: null,
+      diagramRequested: null,
+    };
   }
 
-  switch (resultStore.requested) {
-    case ScatteringOptions.d:
-      diagramVisible = visableQRange.apply(convertBetweenQAndD).to("nm");
-      diagramFull = fullQrange.apply(convertBetweenQAndD).to("nm");
-      diagramRequested = UnitRange.fromNumericRange(
+  if (resultStore.requested === ScatteringOptions.d) {
+    return {
+      textBoxUnits: resultStore.dUnits,
+      diagramVisible: visableQRange
+        .apply(convertFromQtoD)
+        .to(WavelengthUnits.nanometres),
+      diagramFull: fullQrange
+        .apply(convertFromQtoD)
+        .to(WavelengthUnits.nanometres),
+      diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         resultStore.dUnits as string,
-      ).to("nm");
-      textBoxUnits = resultStore.dUnits;
-      break;
-    case ScatteringOptions.s:
-      diagramVisible = visableQRange.apply(convertBetweenQAndS).to("nm");
-      diagramFull = fullQrange.apply(convertBetweenQAndS).to("nm");
-      diagramRequested = UnitRange.fromNumericRange(
+      ).to(WavelengthUnits.nanometres),
+    };
+  }
+
+  if (resultStore.requested === ScatteringOptions.s) {
+    return {
+      textBoxUnits: resultStore.sUnits,
+      diagramVisible: visableQRange
+        .apply(convertFromQToS)
+        .to(ReciprocalWavelengthUnits.nanometres),
+      diagramFull: fullQrange
+        .apply(convertFromQToS)
+        .to(ReciprocalWavelengthUnits.nanometres),
+      diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         resultStore.sUnits as string,
-      ).to("nm");
-      textBoxUnits = resultStore.sUnits;
-      break;
-    default:
-      diagramVisible = visableQRange.to("nm^-1");
-      diagramFull = fullQrange.to("nm^-1");
-      diagramRequested = UnitRange.fromNumericRange(
-        requestedRange,
-        resultStore.qUnits as string,
-      ).to("nm^-1");
-      textBoxUnits = resultStore.qUnits;
+      ).to(ReciprocalWavelengthUnits.nanometres),
+    };
   }
-  return { textBoxUnits, diagramVisible, diagramFull, diagramRequested };
+
+  return {
+    textBoxUnits: resultStore.qUnits,
+    diagramVisible: visableQRange.to(ReciprocalWavelengthUnits.nanometres),
+    diagramFull: fullQrange.to(ReciprocalWavelengthUnits.nanometres),
+    diagramRequested: UnitRange.fromNumericRange(
+      requestedRange,
+      resultStore.qUnits as string,
+    ).to(ReciprocalWavelengthUnits.nanometres),
+  };
 }
 
 function RangeFormControl({ resultStore }: { resultStore: ResultStore }) {
@@ -112,9 +128,9 @@ const displayUnits = (
 ): string => {
   switch (textBoxUnits as string) {
     case "angstrom":
-      return "\u212B";
+      return AngstromSymbol;
     case "angstrom^-1":
-      return "\u212B^-1";
+      return AngstromSymbol + "^-1";
     case null:
       return "";
     default:
@@ -170,11 +186,11 @@ export default function ResultsBar({
         <Stack spacing={1}>
           <Typography variant="h6"> Results</Typography>
           <Divider />
-          <Stack 
-            direction={{md: "column", lg:"row"}}
+          <Stack
+            direction={{ md: "column", lg: "row" }}
             spacing={2}
-            sx={{direction:"column"}}
-            >
+            sx={{ direction: "column" }}
+          >
             {/* Range Table */}
             <RangeTable qRange={visableQRange} />
             {/* Requested Range */}

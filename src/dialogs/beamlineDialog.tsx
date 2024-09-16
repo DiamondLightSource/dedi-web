@@ -17,6 +17,7 @@ import { IOBeamline } from "../utils/types";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { createInternalBeamline } from "../presets/presetManager";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { formatLogMessage, LengthUnits, WavelengthUnits } from "../utils/units";
 
 const INPUT_PRECISION = 0.000001;
 
@@ -37,6 +38,7 @@ export default function PresetDialog(props: {
       data.name,
       createInternalBeamline(data.beamline),
     );
+    console.info(formatLogMessage(`New detector created : ${data.name} `));
     console.log(data);
     props.handleClose();
     reset();
@@ -62,8 +64,7 @@ export default function PresetDialog(props: {
             <Grid item xs={12} sm={12} md={12} lg={8}>
               <BeamlineTable />
             </Grid>
-            <Grid item md={0} lg={1} >
-            </Grid>
+            <Grid item md={0} lg={1}></Grid>
             <Grid item xs={12} sm={12} md={12} lg={3}>
               <Stack spacing={1}>
                 <Typography>Add New Beamline:</Typography>
@@ -85,7 +86,9 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">nm</InputAdornment>
+                      <InputAdornment position="end">
+                        {WavelengthUnits.nanometres}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -100,7 +103,9 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">nm</InputAdornment>
+                      <InputAdornment position="end">
+                        {WavelengthUnits.nanometres}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -115,7 +120,9 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">m</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.metre}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -130,7 +137,9 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">m</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.metre}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -145,7 +154,9 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">m</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.metre}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -162,7 +173,9 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">mm</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.millimetre}
+                      </InputAdornment>
                     ),
                   }}
                 />
@@ -177,7 +190,9 @@ export default function PresetDialog(props: {
                   }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">mm</InputAdornment>
+                      <InputAdornment position="end">
+                        {LengthUnits.millimetre}
+                      </InputAdornment>
                     ),
                   }}
                 />

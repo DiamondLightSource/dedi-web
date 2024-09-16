@@ -1,6 +1,7 @@
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { AppBeamline } from "../utils/types";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { LengthUnits, WavelengthUnits } from "../utils/units";
 
 interface BeamlineTableRow {
   name: string;
@@ -18,11 +19,11 @@ function createData(name: string, beamline: AppBeamline): BeamlineTableRow {
     name: name,
     cameraTubeDiameter: beamline.cameratubeDiameter,
     beamstopDiameter: beamline.beamstopDiameter,
-    minWavelength: beamline.minWavelength.toNumber("nm"),
-    maxWavelength: beamline.maxWavelength.toNumber("nm"),
-    minCameraLength: beamline.minCameraLength.toNumber("m"),
-    maxCameraLength: beamline.maxCameraLength.toNumber("m"),
-    cameraLengthStep: beamline.cameraLengthStep.toNumber("m"),
+    minWavelength: beamline.minWavelength.toNumber(WavelengthUnits.nanometres),
+    maxWavelength: beamline.maxWavelength.toNumber(WavelengthUnits.nanometres),
+    minCameraLength: beamline.minCameraLength.toNumber(LengthUnits.metre),
+    maxCameraLength: beamline.maxCameraLength.toNumber(LengthUnits.metre),
+    cameraLengthStep: beamline.cameraLengthStep.toNumber(LengthUnits.metre),
   };
 }
 

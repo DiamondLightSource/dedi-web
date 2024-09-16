@@ -10,7 +10,7 @@ import {
   InputAdornment,
   Divider,
 } from "@mui/material";
-import { LengthUnits } from "../utils/units";
+import { LengthUnits, MuSymbol } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 import { AppDetector } from "../utils/types";
@@ -73,9 +73,11 @@ export default function BeamStopDataEntry(): JSX.Element {
               )
             }
           >
-            <MenuItem value={LengthUnits.millimetre as string}>{"mm"}</MenuItem>
+            <MenuItem value={LengthUnits.millimetre as string}>
+              {LengthUnits.millimetre}
+            </MenuItem>
             <MenuItem value={LengthUnits.micrometre as string}>
-              {"\u03bc" + "m"}
+              {MuSymbol + "m"}
             </MenuItem>
           </Select>
         </FormControl>

@@ -45,9 +45,11 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   beamlineName: defaultConfig.beamline,
   beamlineRecord: beamlineRecord,
 
-  energy: wavelength2EnergyConverter(defaultConfig.wavelength).to("keV"),
+  energy: wavelength2EnergyConverter(defaultConfig.wavelength).to(
+    EnergyUnits.kiloElectronVolts,
+  ),
   userEnergy: wavelength2EnergyConverter(defaultConfig.wavelength)
-    .to("keV")
+    .to(EnergyUnits.kiloElectronVolts)
     .toNumber(),
 
   wavelength: defaultConfig.wavelength,

@@ -7,6 +7,13 @@
     "pixelSize": {
       "width": 0.172,
       "height": 0.172
+    },
+    "mask": {
+      "horizontalModules": 3,
+      "verticalModules": 8,
+      "horizontalGap": 7,
+      "verticalGap": 17,
+      "missingModules": []
     }
   },
   "Pilatus P3-2M-DLS (for WAXS)": {
@@ -17,6 +24,13 @@
     "pixelSize": {
       "width": 0.172,
       "height": 0.172
+    },
+    "mask": {
+      "horizontalModules": 3,
+      "verticalModules": 8,
+      "horizontalGap": 7,
+      "verticalGap": 17,
+      "missingModules": [17, 20, 23]
     }
   },
   "Pilatus6m": {
@@ -27,6 +41,13 @@
     "pixelSize": {
       "width": 0.172,
       "height": 0.172
+    },
+    "mask": {
+      "horizontalModules": 12,
+      "verticalModules": 5,
+      "horizontalGap": 17,
+      "verticalGap": 7,
+      "missingModules": []
     }
   },
   "Pilatus100k": {
@@ -37,9 +58,16 @@
     "pixelSize": {
       "width": 0.172,
       "height": 0.172
+    },
+    "mask": {
+      "horizontalModules": 3,
+      "verticalModules": 1,
+      "horizontalGap": 17,
+      "verticalGap": 0,
+      "missingModules": []
     }
   },
-  "Pilatus300k-W":{
+  "Pilatus300k-W": {
     "resolution": {
       "width": 195,
       "height": 1495
@@ -47,6 +75,13 @@
     "pixelSize": {
       "width": 0.172,
       "height": 0.172
+    },
+    "mask": {
+      "horizontalModules": 1,
+      "verticalModules": 3,
+      "horizontalGap": 0,
+      "verticalGap": 7,
+      "missingModules": []
     }
   },
   "Eiger 500k": {
@@ -57,6 +92,13 @@
     "pixelSize": {
       "width": 7.5e-2,
       "height": 7.5e-2
+    },
+    "mask": {
+      "horizontalModules": 3,
+      "verticalModules": 8,
+      "horizontalGap": 7,
+      "verticalGap": 17,
+      "missingModules": []
     }
   },
   "Eiger 1M": {

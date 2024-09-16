@@ -6,11 +6,11 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useCameraTubeStore } from "./cameraTubeStore";
-import { LengthUnits } from "../utils/units";
+import { LengthUnits, MuSymbol } from "../utils/units";
 
 /**
  * Component with inputs for cameratube data entry
@@ -50,8 +50,10 @@ export default function CameraTubeDataEntry(): JSX.Element {
               )
             }
           >
-            <MenuItem value={LengthUnits.millimetre}>{"mm"}</MenuItem>
-            <MenuItem value={LengthUnits.micrometre}>{"\u03bc" + "m"}</MenuItem>
+            <MenuItem value={LengthUnits.millimetre}>
+              {LengthUnits.millimetre}
+            </MenuItem>
+            <MenuItem value={LengthUnits.micrometre}>{MuSymbol + "m"}</MenuItem>
           </Select>
         </FormControl>
       </Stack>

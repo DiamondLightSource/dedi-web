@@ -50,6 +50,7 @@ export class Plotter {
     if (!this.scaleFactor) {
       throw TypeError("reciprocal units need a scaleFactor");
     }
+
     const newcentre = Plotter.convert2QSpace(
       centre,
       this.scaleFactor,

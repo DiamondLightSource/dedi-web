@@ -11,7 +11,7 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-import { LengthUnits } from "../utils/units";
+import { LengthUnits, MuSymbol } from "../utils/units";
 import BeamStopDataEntry from "./beamstop";
 import CameraTubeDataEntry from "./cameraTube";
 import BeampropertiesDataEntry from "./beamProperties";
@@ -71,7 +71,7 @@ export default function DataSideBar(): JSX.Element {
   };
 
   return (
-    <Stack  maxHeight={{ lg:"91vh" }} overflow={{ lg: "scroll"}}>
+    <Stack maxHeight={{ lg: "91vh" }} overflow={{ lg: "scroll" }}>
       <Stack spacing={1}>
         <Card sx={{ p: 2 }} variant="outlined">
           <Stack spacing={1}>
@@ -131,7 +131,7 @@ export default function DataSideBar(): JSX.Element {
               />
             </Stack>
             <Typography>
-              Resolution (hxw): 
+              Resolution (hxw):
               {detectorStore.detector.resolution.height} x{" "}
               {detectorStore.detector.resolution.width}
             </Typography>
@@ -158,7 +158,7 @@ export default function DataSideBar(): JSX.Element {
                     {LengthUnits.millimetre} x {LengthUnits.millimetre}
                   </MenuItem>
                   <MenuItem value={LengthUnits.micrometre}>
-                    {"\u03BC" + "m"} x {"\u03BC" + "m"}
+                    {MuSymbol + "m"} x {MuSymbol + "m"}
                   </MenuItem>
                 </Select>
               </FormControl>

@@ -7,9 +7,20 @@ export enum PlotAxes {
   reciprocal = "nm^-1",
 }
 
+// default colours used in app
+const lilac: RGBColor = { r: 144, g: 19, b: 254, a: 0.4 };
+const black: RGBColor = { r: 0, g: 0, b: 0, a: 1 };
+const blackOpaque: RGBColor = { r: 0, g: 0, b: 0, a: 0.2 };
+const turquoise: RGBColor = { r: 80, g: 227, b: 194, a: 0.4 };
+const mustard: RGBColor = { r: 245, g: 166, b: 35, a: 1 };
+const green: RGBColor = { r: 65, g: 117, b: 5, a: 1 };
+const red: RGBColor = { r: 208, g: 2, b: 27, a: 1 };
+
 export interface PlotConfig {
   detector: boolean;
   detectorColor: RGBColor;
+  mask: boolean;
+  maskColor: RGBColor;
   beamstop: boolean;
   beamstopColor: RGBColor;
   cameraTube: boolean;
@@ -28,19 +39,21 @@ export interface PlotConfig {
 
 export const usePlotStore = create<PlotConfig>((set) => ({
   detector: true,
-  detectorColor: { r: 144, g: 19, b: 254, a: 0.4 },
+  detectorColor: lilac,
+  mask: false,
+  maskColor: black,
   beamstop: true,
-  beamstopColor: { r: 0, g: 0, b: 0, a: 1 },
+  beamstopColor: black,
   cameraTube: true,
-  cameraTubeColor: { r: 80, g: 227, b: 194, a: 0.4 },
+  cameraTubeColor: turquoise,
   visibleRange: true,
-  visibleColor: { r: 245, g: 166, b: 35, a: 1 },
+  visibleColor: mustard,
   requestedRange: true,
-  requestedRangeColor: { r: 65, g: 117, b: 5, a: 1 },
+  requestedRangeColor: green,
   clearance: true,
-  clearanceColor: { r: 0, g: 0, b: 0, a: 0.2 },
+  clearanceColor: blackOpaque,
   inaccessibleRange: true,
-  inaccessibleRangeColor: { r: 208, g: 2, b: 27, a: 1 },
+  inaccessibleRangeColor: red,
   plotAxes: PlotAxes.milimeter,
   update: (newConfig) => {
     set({ ...newConfig });

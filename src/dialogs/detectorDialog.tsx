@@ -28,7 +28,7 @@ export default function DetectorDialog(props: {
   handleOpen: () => void;
 }): JSX.Element {
   const detectorStore = useDetectorStore();
-  const { register, reset, handleSubmit } = useForm<DetectorForm>();
+  const { register, reset, handleSubmit, setValue } = useForm<DetectorForm>();
   const onSubmit: SubmitHandler<DetectorForm> = (data: DetectorForm) => {
     detectorStore.addNewDetector(
       data.name,
@@ -38,6 +38,7 @@ export default function DetectorDialog(props: {
     props.handleClose();
     reset();
   };
+  setValue("detector.mask.missingModules", []);
 
   return (
     <Dialog
@@ -58,9 +59,7 @@ export default function DetectorDialog(props: {
             <Grid item xs={12} sm={12} md={12} lg={8}>
               <DetectorTable />
             </Grid>
-            <Grid item md={0} lg={1} >
-            </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={3}>
+            <Grid item xs={12} sm={12} md={12} lg={4}>
               <Stack spacing={1} width={"100%"}>
                 <Typography>Add new Detector:</Typography>
                 <TextField
@@ -120,6 +119,59 @@ export default function DetectorDialog(props: {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">mm</InputAdornment>
+                    ),
+                  }}
+                />
+                <Typography> Mask: </Typography>
+                <TextField
+                  type="number"
+                  label="Horizontal Modules"
+                  {...register("detector.mask.horizontalModules", {
+                    required: true,
+                  })}
+                  size="small"
+                  inputProps={{
+                    step: 1,
+                  }}
+                />
+                <TextField
+                  type="number"
+                  label="Vertical Modules"
+                  {...register("detector.mask.verticalModules", {
+                    required: true,
+                  })}
+                  size="small"
+                  inputProps={{
+                    step: 1,
+                  }}
+                />
+                <TextField
+                  type="number"
+                  label="Horizontal Gap"
+                  {...register("detector.mask.horizontalGap", {
+                    required: true,
+                  })}
+                  size="small"
+                  inputProps={{
+                    step: 1,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">px</InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  type="number"
+                  label="Vertical Gap"
+                  {...register("detector.mask.verticalGap", { required: true })}
+                  size="small"
+                  inputProps={{
+                    step: 1,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">px</InputAdornment>
                     ),
                   }}
                 />

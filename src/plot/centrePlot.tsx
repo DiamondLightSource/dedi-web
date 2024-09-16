@@ -7,7 +7,7 @@ import {
   SvgRect,
   VisCanvas,
 } from "@h5web/lib";
-import { Card, CardContent, Stack} from "@mui/material";
+import { Card, CardContent, Stack } from "@mui/material";
 import { Unit, MathType, divide, multiply, unit, createUnit } from "mathjs";
 import { Vector2, Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
@@ -24,8 +24,8 @@ import {
   useResultStore,
 } from "../results/resultsStore";
 import {
-  convertBetweenQAndD,
-  convertBetweenQAndS,
+  convertFromDtoQ,
+  convertFromSToQ,
 } from "../results/scatteringQuantities";
 import {
   AppBeamline,
@@ -40,6 +40,12 @@ import { usePlotStore } from "./plotStore";
 import { UnitVector, color2String, getDomains } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import { useMemo } from "react";
+import {
+  formatLogMessage,
+  LengthUnits,
+  ReciprocalWavelengthUnits,
+} from "../utils/units";
+import SvgMask from "./svgMask";
 
 /**
  * A react componenet that plots the items that make up the system
@@ -59,6 +65,7 @@ export default function CentrePlot(): JSX.Element {
   );
 
   const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(() => {
+    console.info(formatLogMessage("Calculating Q range"));
     // todo this might need to be moved elsewhere
     /* eslint-disable */
     // @ts-ignore
@@ -104,10 +111,10 @@ export default function CentrePlot(): JSX.Element {
   const visibleQRangeUnits = UnitRange.fromNumericRange(
     visibleQRange,
     "m^-1",
-  ).to("nm^-1");
-  console.log(visibleQRange);
+  ).to(ReciprocalWavelengthUnits.nanometres);
+
   const fullQRangeUnits = UnitRange.fromNumericRange(fullQRange, "m^-1").to(
-    "nm^-1",
+    ReciprocalWavelengthUnits.nanometres,
   );
 
   const { beamstopCentre, cameraTubeCentre, minPoint, maxPoint } =
@@ -165,12 +172,12 @@ export default function CentrePlot(): JSX.Element {
   }
 
   const domains = getDomains(plotDetector);
-
+  console.info(formatLogMessage("Refreshing plot"));
   return (
     <Stack direction="column" spacing={1} flexGrow={1}>
-    <Stack direction={{ sm: "column", md: "row"}} spacing={1} flexGrow={1}>
-    <Card variant="outlined" sx= {{ aspectRatio : 1.05 / 1}}>
-          <CardContent sx={{ width: "100%", height: "100%"}}>
+      <Stack direction={{ sm: "column", md: "row" }} spacing={1} flexGrow={1}>
+        <Card variant="outlined" sx={{ aspectRatio: 1.07 / 1 }}>
+          <CardContent sx={{ width: "100%", height: "100%" }}>
             <div
               style={{
                 display: "grid",
@@ -246,6 +253,29 @@ export default function CentrePlot(): JSX.Element {
                           id="detector"
                         />
                       )}
+                      {plotConfig.mask && (
+                        <SvgMask
+                          coords={[detectorLower, detectorUpper]}
+                          fill={color2String(plotConfig.maskColor)}
+                          numModules={
+                            new Vector3(
+                              detectorStore.detector.mask.horizontalModules,
+                              detectorStore.detector.mask.verticalModules,
+                            )
+                          }
+                          gapFraction={
+                            new Vector3(
+                              detectorStore.detector.mask.horizontalGap /
+                                detectorStore.detector.resolution.width,
+                              detectorStore.detector.mask.verticalGap /
+                                detectorStore.detector.resolution.height,
+                            )
+                          }
+                          missingSegments={
+                            detectorStore.detector.mask.missingModules ?? []
+                          }
+                        />
+                      )}
                       {plotConfig.inaccessibleRange && (
                         <SvgLine
                           coords={[beamstopCentre, visibleRangeStart]}
@@ -301,13 +331,13 @@ export default function CentrePlot(): JSX.Element {
             </div>
           </CardContent>
         </Card>
-      <LegendBar />
+        <LegendBar />
       </Stack>
       <ResultsBar
         visableQRange={visibleQRangeUnits}
         fullQrange={fullQRangeUnits}
       />
-      </Stack>
+    </Stack>
   );
 }
 
@@ -322,7 +352,10 @@ function getScaleFactor(wavelength: Unit, cameraLength: number | null) {
   if (cameraLength && wavelength) {
     scaleFactor = divide(
       2 * Math.PI,
-      multiply(unit(cameraLength, "m"), wavelength.to("m")),
+      multiply(
+        unit(cameraLength, LengthUnits.metre),
+        wavelength.to(LengthUnits.metre),
+      ),
     );
   }
   if (scaleFactor == null) {
@@ -355,13 +388,13 @@ function getReferencePoints(
   cameraTube: AppCircularDevice,
 ) {
   const minPoint: UnitVector = {
-    x: unit(ptMin.x, "m"),
-    y: unit(ptMin.y, "m"),
+    x: unit(ptMin.x, LengthUnits.metre),
+    y: unit(ptMin.y, LengthUnits.metre),
   };
 
   const maxPoint: UnitVector = {
-    x: unit(ptMax.x, "m"),
-    y: unit(ptMax.y, "m"),
+    x: unit(ptMax.x, LengthUnits.metre),
+    y: unit(ptMax.y, LengthUnits.metre),
   };
 
   const beamstopCentre: UnitVector = {
@@ -434,14 +467,14 @@ function getRequestedRange(
   const requestedMaxPt = getPointForQ(
     requestedRange.max,
     beamlineConfig.angle,
-    unit(beamlineConfig.cameraLength ?? NaN, "m"),
+    unit(beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
     beamlineConfig.wavelength,
     beamstopCentre,
   );
   const requestedMinPt = getPointForQ(
     requestedRange.min,
     beamlineConfig.angle,
-    unit(beamlineConfig.cameraLength ?? NaN, "m"),
+    unit(beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
     beamlineConfig.wavelength,
     beamstopCentre,
   );
@@ -460,18 +493,15 @@ function getRange(): (state: ResultStore) => UnitRange | null {
     }
 
     const getUnit = (value: number): Unit => {
-      let result: Unit;
-      switch (state.requested) {
-        case ScatteringOptions.d:
-          result = convertBetweenQAndD(unit(value, state.dUnits));
-          break;
-        case ScatteringOptions.s:
-          result = convertBetweenQAndS(unit(value, state.sUnits));
-          break;
-        default:
-          result = unit(value, state.qUnits);
+      if (state.requested === ScatteringOptions.d) {
+        return convertFromDtoQ(unit(value, state.dUnits));
       }
-      return result;
+
+      if (state.requested === ScatteringOptions.s) {
+        return convertFromSToQ(unit(value, state.sUnits));
+      }
+
+      return unit(value, state.qUnits);
     };
 
     return new UnitRange(
