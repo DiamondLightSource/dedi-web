@@ -40,7 +40,11 @@ import { usePlotStore } from "./plotStore";
 import { UnitVector, color2String, getDomains } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import { useMemo } from "react";
-import { formatLogMessage, LengthUnits } from "../utils/units";
+import {
+  formatLogMessage,
+  LengthUnits,
+  ReciprocalWavelengthUnits,
+} from "../utils/units";
 import SvgMask from "./svgMask";
 
 /**
@@ -107,10 +111,10 @@ export default function CentrePlot(): JSX.Element {
   const visibleQRangeUnits = UnitRange.fromNumericRange(
     visibleQRange,
     "m^-1",
-  ).to("nm^-1");
+  ).to(ReciprocalWavelengthUnits.nanometres);
 
   const fullQRangeUnits = UnitRange.fromNumericRange(fullQRange, "m^-1").to(
-    "nm^-1",
+    ReciprocalWavelengthUnits.nanometres,
   );
 
   const { beamstopCentre, cameraTubeCentre, minPoint, maxPoint } =

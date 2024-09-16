@@ -21,7 +21,9 @@ export default function SvgMask(props: SvgMaskProps) {
   const fulllength = detectorLower.clone().sub(detectorUpper);
   // Get the length of the horizontal and vertical gaps between modules
   const gaplength = fulllength.clone().multiply(props.gapFraction);
-  // Get the length and width of each module
+  // Get the length and width of each detctor module from the detector length,
+  // number of gaps, gap length, and the number of modules
+  //
   // module length =
   //    (detector length - (number of gaps)*(gap length))/(number of modules)
   const moduleLength = fulllength

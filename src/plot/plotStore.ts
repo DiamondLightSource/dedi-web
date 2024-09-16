@@ -8,13 +8,13 @@ export enum PlotAxes {
 }
 
 // default colours used in app
-const lilac = { r: 144, g: 19, b: 254, a: 0.4 };
-const black = { r: 0, g: 0, b: 0, a: 1 };
-const blackOpaque = { r: 0, g: 0, b: 0, a: 0.2 };
-const turquoise = { r: 80, g: 227, b: 194, a: 0.4 };
-const mustard = { r: 245, g: 166, b: 35, a: 1 };
-const green = { r: 65, g: 117, b: 5, a: 1 };
-const red = { r: 208, g: 2, b: 27, a: 1 };
+const lilac: RGBColor = { r: 144, g: 19, b: 254, a: 0.4 };
+const black: RGBColor = { r: 0, g: 0, b: 0, a: 1 };
+const blackOpaque: RGBColor = { r: 0, g: 0, b: 0, a: 0.2 };
+const turquoise: RGBColor = { r: 80, g: 227, b: 194, a: 0.4 };
+const mustard: RGBColor = { r: 245, g: 166, b: 35, a: 1 };
+const green: RGBColor = { r: 65, g: 117, b: 5, a: 1 };
+const red: RGBColor = { r: 208, g: 2, b: 27, a: 1 };
 
 export interface PlotConfig {
   detector: boolean;

@@ -13,7 +13,7 @@ import {
 } from "../utils/types";
 import { LengthUnits, WavelengthUnits } from "../utils/units";
 
-const DefaultDtectorMask: DetectorMask = {
+const DefaultDetectorMask: DetectorMask = {
   horizontalModules: 1,
   verticalModules: 1,
   horizontalGap: 0,
@@ -28,7 +28,7 @@ const DefaultDtectorMask: DetectorMask = {
  */
 export function createInternalDetector(detectorData: IODetector): AppDetector {
   return {
-    mask: DefaultDtectorMask,
+    mask: DefaultDetectorMask,
     ...detectorData,
     pixelSize: {
       height: unit(detectorData.pixelSize.height, LengthUnits.millimetre),
