@@ -119,9 +119,7 @@ export interface DetectorMask {
   readonly missingModules?: number[];
 }
 
-export interface Calibrant {
-  positions: Position[];
-}
+export type Calibrant = Position[];
 
 export interface Position {
   d: number;

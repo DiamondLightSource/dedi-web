@@ -217,7 +217,32 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
+            {/* Calibrant */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={plotConfig.calibrant}
+                  onChange={(_, checked) =>
+                    plotConfig.update({ calibrant: checked })
+                  }
+                />
+              }
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover
+                    color={plotConfig.calibrantColor}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ calibrantColor: color.rgb })
+                    }
+                  />
+                  <Typography display={"flex"} alignItems={"center"}>
+                    Calibrant [ {plotConfig.currentCalibrant} ]
+                  </Typography>
+                </Stack>
+              }
+            />
           </FormGroup>
+          {/* Axis control */}
           <FormControl>
             <FormLabel id="demo-radio-buttons-group-label">Axes:</FormLabel>
             <RadioGroup

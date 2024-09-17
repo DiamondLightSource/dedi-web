@@ -33,6 +33,7 @@ import {
   AppCircularDevice,
   AppDetector,
   BeamlineConfig,
+  Position,
 } from "../utils/types";
 import { Plotter } from "./Plotter";
 import LegendBar from "./legendBar";
@@ -46,6 +47,7 @@ import {
   ReciprocalWavelengthUnits,
 } from "../utils/units";
 import SvgMask from "./svgMask";
+import SvgCalibrant from "./svgCalibrant";
 
 /**
  * A react componenet that plots the items that make up the system
@@ -171,6 +173,13 @@ export default function CentrePlot(): JSX.Element {
     );
   }
 
+  const calibrant = plotConfig.calibrantRecord[plotConfig.currentCalibrant];
+  const positions = calibrant.map((position: Position) => position.d);
+  const finalPosition = Math.max(...positions);
+  const ringFraction = positions.map(
+    (position: number) => position / finalPosition,
+  );
+
   const domains = getDomains(plotDetector);
   console.info(formatLogMessage("Refreshing plot"));
   return (
@@ -284,6 +293,18 @@ export default function CentrePlot(): JSX.Element {
                           )}
                           strokeWidth={3}
                           id="inaccessible"
+                        />
+                      )}
+                      {plotConfig.calibrant && (
+                        <SvgCalibrant
+                          beamCentre={cameraTubeCentre}
+                          endPointX={cameraTubeEndPointX}
+                          endPointY={cameraTubeEndPointY}
+                          ringFractions={ringFraction}
+                          fill="transparent"
+                          stroke={color2String(plotConfig.calibrantColor)}
+                          strokeWidth="3"
+                          id="calibrant"
                         />
                       )}
                       {plotConfig.clearance && (
