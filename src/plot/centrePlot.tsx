@@ -33,6 +33,7 @@ import {
   AppCircularDevice,
   AppDetector,
   BeamlineConfig,
+  Calibrant,
   Position,
 } from "../utils/types";
 import { Plotter } from "./Plotter";
@@ -173,8 +174,9 @@ export default function CentrePlot(): JSX.Element {
     );
   }
 
-  const calibrant = plotConfig.calibrantRecord[plotConfig.currentCalibrant];
-  const positions = calibrant.map((position: Position) => position.d);
+  const calibrant: Calibrant =
+    plotConfig.calibrantRecord[plotConfig.currentCalibrant];
+  const positions: number[] = calibrant.map((position: Position) => position.d);
   const finalPosition = Math.max(...positions);
   const ringFraction = positions.map(
     (position: number) => position / finalPosition,
