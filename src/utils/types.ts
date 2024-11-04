@@ -119,11 +119,12 @@ export interface DetectorMask {
   readonly missingModules?: number[];
 }
 
-export type Calibrant = Position[];
+export interface AppCalibrant {
+  fractions: number[];
+  finalPosition: number;
+}
 
-export interface Position {
-  d: number;
-  h: number;
-  k: number;
-  l: number;
+// Don't need HKL if you already have d
+export interface Calibrant {
+  d: number[];
 }

@@ -14,7 +14,7 @@ export class Ray {
    * @param initial_point Vector representing the initial point of the ray
    */
   constructor(direction: Vector2, initial_point: Vector2) {
-    if (direction.length() == 0)
+    if (direction.length() === 0)
       throw TypeError(
         "The direction vector of a ray cannot be the zero vector.",
       );
@@ -79,15 +79,17 @@ export class Ray {
     let t1: number;
     let t2: number;
 
-    if (a == 0) {
-      if (b == 0)
-        return c == 0 ? new NumericRange(0, Number.POSITIVE_INFINITY) : null;
-      t1 = -c / b;
-      t2 = -c / b;
-    } else {
+    if (a !== 0) {
       t1 = (0.5 * (-b - Math.sqrt(discriminant))) / a;
       t2 = (0.5 * (-b + Math.sqrt(discriminant))) / a;
+      return Ray.getParameterRange(t1, t2);
     }
+
+    if (b === 0) {
+      return c === 0 ? new NumericRange(0, Number.POSITIVE_INFINITY) : null;
+    }
+    t1 = -c / b;
+    t2 = -c / b;
     return Ray.getParameterRange(t1, t2);
   }
 

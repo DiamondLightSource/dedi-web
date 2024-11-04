@@ -33,8 +33,6 @@ import {
   AppCircularDevice,
   AppDetector,
   BeamlineConfig,
-  Calibrant,
-  Position,
 } from "../utils/types";
 import { Plotter } from "./Plotter";
 import LegendBar from "./legendBar";
@@ -49,6 +47,7 @@ import {
 } from "../utils/units";
 import SvgMask from "./svgMask";
 import SvgCalibrant from "./svgCalibrant";
+import { createLargestRing, createRings } from "../calculations/calibrant";
 
 /**
  * A react componenet that plots the items that make up the system
@@ -128,6 +127,18 @@ export default function CentrePlot(): JSX.Element {
       cameraTubeStore.cameraTube,
     );
 
+  const calibrantRings = createRings(
+    plotConfig.calibrantRecord[plotConfig.currentCalibrant],
+  );
+
+  const largestRing = createLargestRing(
+    calibrantRings.finalPosition,
+    beamlineConfigStore.angle,
+    unit(beamlineConfigStore.cameraLength ?? 0, "m"),
+    beamlineConfigStore.wavelength,
+    beamstopCentre,
+  );
+
   const plotter = new Plotter(plotConfig.plotAxes, scaleFactor);
 
   const {
@@ -136,6 +147,7 @@ export default function CentrePlot(): JSX.Element {
     plotClearance,
     plotCameraTube,
     plotVisibleRange,
+    plotCalibrant,
   } = createPlots(
     plotter,
     beamstopCentre,
@@ -145,6 +157,7 @@ export default function CentrePlot(): JSX.Element {
     detectorStore.detector,
     minPoint,
     maxPoint,
+    largestRing,
   );
 
   // abstracting state logic away from the display logic
@@ -173,14 +186,6 @@ export default function CentrePlot(): JSX.Element {
       plotter,
     );
   }
-
-  const calibrant: Calibrant =
-    plotConfig.calibrantRecord[plotConfig.currentCalibrant];
-  const positions: number[] = calibrant.map((position: Position) => position.d);
-  const finalPosition = Math.max(...positions);
-  const ringFraction = positions.map(
-    (position: number) => position / finalPosition,
-  );
 
   const domains = getDomains(plotDetector);
   console.info(formatLogMessage("Refreshing plot"));
@@ -226,6 +231,7 @@ export default function CentrePlot(): JSX.Element {
                     plotVisibleRange.end,
                     plotRequestedRange.start,
                     plotRequestedRange.end,
+                    plotCalibrant.end,
                   ]}
                 >
                   {(
@@ -244,6 +250,7 @@ export default function CentrePlot(): JSX.Element {
                     visableRangeEnd,
                     requestedRangeStart,
                     requestedRangeEnd,
+                    calibrantLastRing,
                   ) => (
                     <SvgElement>
                       {plotConfig.cameraTube && (
@@ -300,9 +307,9 @@ export default function CentrePlot(): JSX.Element {
                       {plotConfig.calibrant && (
                         <SvgCalibrant
                           beamCentre={cameraTubeCentre}
-                          endPointX={cameraTubeEndPointX}
-                          endPointY={cameraTubeEndPointY}
-                          ringFractions={ringFraction}
+                          endPointX={calibrantLastRing}
+                          endPointY={calibrantLastRing}
+                          ringFractions={calibrantRings.fractions}
                           fill="transparent"
                           stroke={color2String(plotConfig.calibrantColor)}
                           strokeWidth="3"
@@ -441,6 +448,7 @@ function createPlots(
   detector: AppDetector,
   minPoint: UnitVector,
   maxPoint: UnitVector,
+  calibrantRing: UnitVector,
 ) {
   const plotBeamstop = plotter.createPlotEllipse(
     beamstopCentre,
@@ -471,12 +479,20 @@ function createPlots(
     maxPoint,
     beamstopCentre,
   );
+
+  const plotCalibrant = plotter.createPlotRange(
+    minPoint,
+    calibrantRing,
+    beamstopCentre,
+  );
+
   return {
     plotDetector,
     plotBeamstop,
     plotClearance,
     plotCameraTube,
     plotVisibleRange,
+    plotCalibrant,
   };
 }
 
