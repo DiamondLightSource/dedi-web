@@ -64,7 +64,7 @@ export class Ray {
    * @param centre Centre of the circle
    * @returns NumericRange of the intersection scalars
    */
-  public getCircleIntersectionParameterRange(
+  public getCircleIntersectionRange(
     radius: number,
     centre: Vector2,
   ): NumericRange | null {
@@ -100,16 +100,15 @@ export class Ray {
    * @param height Height of the rectangle
    * @returns NumericRange of the scalars
    */
-  public getRectangleIntersectionParameterRange(
+  public getRectangleIntersectionRange(
     topLeftCorner: Vector2,
-    width: number,
-    height: number,
+    dimensions: Vector2,
   ): NumericRange | null {
     let result: NumericRange | null;
-    const xmax = topLeftCorner.x + width;
+    const xmax = topLeftCorner.x + dimensions.x;
     const xmin = topLeftCorner.x;
     const ymax = topLeftCorner.y;
-    const ymin = topLeftCorner.y - height;
+    const ymin = topLeftCorner.y - dimensions.y;
 
     if (this.direction.x === 0) {
       if (!new NumericRange(xmin, xmax).containsValue(this.initial_point.x))

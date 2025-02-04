@@ -139,14 +139,23 @@ const displayUnits = (
 };
 
 interface ResultsBarProps {
-  visableQRange: UnitRange;
-  fullQrange: UnitRange;
+  visibleQRange: NumericRange | null;
+  fullQRange: NumericRange | null;
 }
 
 export default function ResultsBar({
-  visableQRange,
-  fullQrange,
+  visibleQRange,
+  fullQRange,
 }: ResultsBarProps): JSX.Element {
+  const visibleQRangeUnits = UnitRange.fromNumericRange(
+    visibleQRange,
+    "m^-1",
+  ).to(ReciprocalWavelengthUnits.nanometres);
+
+  const fullQRangeUnits = UnitRange.fromNumericRange(fullQRange, "m^-1").to(
+    ReciprocalWavelengthUnits.nanometres,
+  );
+
   const resultStore = useResultStore();
   const requestedRange = useResultStore<NumericRange | null>((state) => {
     return state.requestedMax && state.requestedMin
@@ -168,8 +177,8 @@ export default function ResultsBar({
 
   const { textBoxUnits, diagramVisible, diagramFull, diagramRequested } =
     getVisibilitySettings(
-      visableQRange,
-      fullQrange,
+      visibleQRangeUnits,
+      fullQRangeUnits,
       requestedRange,
       resultStore,
     );
@@ -192,7 +201,7 @@ export default function ResultsBar({
             sx={{ direction: "column" }}
           >
             {/* Range Table */}
-            <RangeTable qRange={visableQRange} />
+            <RangeTable qRange={visibleQRangeUnits} />
             {/* Requested Range */}
             <Stack direction={"column"} spacing={1}>
               <RangeFormControl resultStore={resultStore} />

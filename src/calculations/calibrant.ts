@@ -1,4 +1,4 @@
-import { UnitVector } from "../plot/plotUtils";
+import { UnitVector } from "../calculations/unitVector";
 import { convertFromDtoQ } from "../results/scatteringQuantities";
 import { AppCalibrant, Calibrant } from "../utils/types";
 import { unit, Unit } from "mathjs";

@@ -25,11 +25,6 @@ export interface PlotEllipse {
   endPointY: Vector3;
 }
 
-export interface UnitVector {
-  x: math.Unit;
-  y: math.Unit;
-}
-
 export interface PlotRectangle {
   upperBound: Vector3;
   lowerBound: Vector3;

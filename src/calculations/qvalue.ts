@@ -1,6 +1,6 @@
 import { unit } from "mathjs";
 import { Vector2 } from "three";
-import { UnitVector } from "../plot/plotUtils";
+import { UnitVector } from "../calculations/unitVector";
 import { Ray } from "./ray";
 import { LengthUnits } from "../utils/units";
 
@@ -72,5 +72,5 @@ export const getPointForQ = (
   const result = ray.getPointAtDistance(distance);
   const x = unit(result.x, LengthUnits.metre);
   const y = unit(result.y, LengthUnits.metre);
-  return { x, y };
+  return new UnitVector(x, y);
 };

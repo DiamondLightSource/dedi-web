@@ -125,6 +125,7 @@ export interface AppCalibrant {
 }
 
 // Don't need HKL if you already have d
+// HKL are used to calculate d
 export interface Calibrant {
   d: number[];
 }
