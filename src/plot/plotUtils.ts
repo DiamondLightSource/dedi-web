@@ -3,15 +3,16 @@ import { Vector3 } from "three";
 import NumericRange from "../calculations/numericRange";
 
 // Re think in future
-export const getDomains = (
+export const getDomain = (
   detector: PlotRectangle,
 ): { xAxis: NumericRange; yAxis: NumericRange } => {
   const maxAxis = Math.max(detector.upperBound.x, detector.upperBound.y);
   const minAxis = Math.min(detector.lowerBound.x, detector.lowerBound.y);
   const offset = 0.2 * (maxAxis - minAxis);
-  const min = Math.round(minAxis - offset);
-  const max = Math.round(maxAxis + offset);
-  const range = new NumericRange(min, max);
+  const range = new NumericRange(
+    Math.round(minAxis - offset),
+    Math.round(maxAxis + offset),
+  );
   return { xAxis: range, yAxis: range };
 };
 

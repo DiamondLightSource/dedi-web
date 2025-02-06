@@ -8,11 +8,9 @@ import {
   VisCanvas,
 } from "@h5web/lib";
 import { Card, CardContent, Stack } from "@mui/material";
-import { Unit, MathType, divide, multiply, unit, createUnit } from "mathjs";
+import { Unit, createUnit } from "mathjs";
 import { Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
-import { getPointForQ } from "../calculations/qvalue";
-import UnitRange from "../calculations/unitRange";
 import {
   BeamlineConfigStore,
   useBeamlineConfigStore,
@@ -24,21 +22,14 @@ import {
 } from "../data-entry/cameraTubeStore";
 import { DetectorStore, useDetectorStore } from "../data-entry/detectorStore";
 import ResultsBar from "../results/resultsBar";
-import { ResultStore, ScatteringOptions } from "../results/resultsStore";
-import {
-  convertFromDtoQ,
-  convertFromSToQ,
-} from "../results/scatteringQuantities";
-import { BeamlineConfig } from "../utils/types";
 import LegendBar from "./legendBar";
 import { usePlotStore } from "./plotStore";
-import { UnitVector } from "../calculations/unitVector";
-import { color2String, getDomains } from "./plotUtils";
+import { color2String, getDomain } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import { useMemo } from "react";
-import { formatLogMessage, LengthUnits } from "../utils/units";
+import { formatLogMessage } from "../utils/units";
 import SvgMask from "./svgMask";
-import { MilimeterPlotter } from "./newPlotter";
+import { Plotter } from "./plotter";
 
 // Define Zustand selectors outside of render function for useMemo
 const detectorSelector = (state: DetectorStore) => state.detector;
@@ -65,7 +56,8 @@ export default function CentrePlot(): JSX.Element {
   // Calculate qrange if anything has changed
   const { minPoint, maxPoint, visibleQRange, fullQRange } = useMemo(() => {
     console.info(formatLogMessage("Calculating Q range"));
-    // todo this might need to be moved elsewhere
+
+    // Rethink in future
     /* eslint-disable */
     // @ts-ignore
     if (Unit.UNITS.xpixel) {
@@ -79,18 +71,23 @@ export default function CentrePlot(): JSX.Element {
     }
     /* eslint-enable */
 
+    console.log("help");
+    console.log(detector);
     createUnit("xpixel", detector.pixelSize.width.toString());
     createUnit("ypixel", detector.pixelSize.height.toString());
     return computeQrange(detector, beamstop, cameraTube, beamlineConfig);
   }, [detector, beamstop, cameraTube, beamlineConfig]);
 
   console.log("help");
-  const plotter = new MilimeterPlotter(
+
+  const plotter = new Plotter(
     beamstop,
     cameraTube,
     detector,
+    beamlineConfig,
     minPoint,
     maxPoint,
+    plotConfig.plotAxes,
   );
 
   const plotBeamstop = plotter.createBeamstop();
@@ -99,8 +96,9 @@ export default function CentrePlot(): JSX.Element {
   const plotClearance = plotter.createClearnace();
   const plotVisibleRange = plotter.createVisibleRange();
 
-  const domains = getDomains(plotDetector);
+  const domains = getDomain(plotDetector);
   console.info(formatLogMessage("Refreshing plot"));
+
   return (
     <Stack direction="column" spacing={1} flexGrow={1}>
       <Stack direction={{ sm: "column", md: "row" }} spacing={1} flexGrow={1}>
@@ -271,35 +269,6 @@ export default function CentrePlot(): JSX.Element {
     </Stack>
   );
 }
-
-// /**
-//  * Calculates the scale factor which is used for Plotting in units of Q
-//  * @param wavelength current wave length as a Unit
-//  * @param cameraLength cameralength
-//  * @returns
-//  */
-// function getScaleFactor(wavelength: Unit, cameraLength: number | null) {
-//   let scaleFactor: MathType | null = null;
-//   if (cameraLength && wavelength) {
-//     scaleFactor = divide(
-//       2 * Math.PI,
-//       multiply(
-//         unit(cameraLength, LengthUnits.metre),
-//         wavelength.to(LengthUnits.metre),
-//       ),
-//     );
-//   }
-
-//   if (scaleFactor == null) {
-//     return scaleFactor;
-//   }
-
-//   if (typeof scaleFactor === "number" || !("units" in scaleFactor)) {
-//     throw TypeError("scaleFactor should be a unit not a number");
-//   }
-
-//   return scaleFactor;
-// }
 
 // function getRequestedRange(
 //   requestedRange: UnitRange,
