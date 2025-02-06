@@ -87,12 +87,15 @@ export class Plotter implements IPlotter {
       mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel"),
     );
 
-    const scaleFactor: mathjs.Unit | null = getScaleFactor(
-      beamlineConfig.wavelength,
-      beamlineConfig.cameraLength,
-    );
-
-    if (unitAxes === PlotAxes.reciprocal && scaleFactor !== null) {
+    if (
+      unitAxes === PlotAxes.reciprocal &&
+      beamlineConfig.cameraLength &&
+      beamlineConfig.wavelength
+    ) {
+      const scaleFactor = this._getScaleFactor(
+        beamlineConfig.wavelength,
+        beamlineConfig.cameraLength,
+      );
       this.unitStrategy = new ReciprocalAxis(scaleFactor, this.beamstopCentre);
     } else if (unitAxes === PlotAxes.pixel) {
       this.unitStrategy = new PixelAxis();
@@ -143,6 +146,7 @@ export class Plotter implements IPlotter {
         mathjs.unit(this.beamstop.clearance ?? 0, "ypixel"),
       ),
     );
+
     return {
       centre: this.unitStrategy.convert(
         this.beamstopCentre.x,
@@ -191,24 +195,18 @@ export class Plotter implements IPlotter {
       endPointY,
     };
   }
-}
 
-function getScaleFactor(wavelength: mathjs.Unit, cameraLength: number | null) {
-  let scaleFactor: mathjs.MathType | null = null;
-  if (cameraLength && wavelength) {
-    scaleFactor = mathjs.divide(
+  private _getScaleFactor(wavelength: mathjs.Unit, cameraLength: number) {
+    const scaleFactor = mathjs.divide(
       2 * Math.PI,
       mathjs.multiply(
         mathjs.unit(cameraLength, LengthUnits.metre),
         wavelength.to(LengthUnits.metre),
       ),
     );
-  }
-  if (scaleFactor == null) {
+    if (typeof scaleFactor == "number" || !("units" in scaleFactor)) {
+      throw TypeError("scaleFactor should be a unit not a number");
+    }
     return scaleFactor;
   }
-  if (typeof scaleFactor == "number" || !("units" in scaleFactor)) {
-    throw TypeError("scaleFactor should be a unit not a number");
-  }
-  return scaleFactor;
 }

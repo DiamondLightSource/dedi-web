@@ -71,14 +71,10 @@ export default function CentrePlot(): JSX.Element {
     }
     /* eslint-enable */
 
-    console.log("help");
-    console.log(detector);
     createUnit("xpixel", detector.pixelSize.width.toString());
     createUnit("ypixel", detector.pixelSize.height.toString());
     return computeQrange(detector, beamstop, cameraTube, beamlineConfig);
   }, [detector, beamstop, cameraTube, beamlineConfig]);
-
-  console.log("help");
 
   const plotter = new Plotter(
     beamstop,
@@ -196,16 +192,17 @@ export default function CentrePlot(): JSX.Element {
                           missingSegments={detector.mask.missingModules ?? []}
                         />
                       )}
-                      {plotConfig.inaccessibleRange && (
-                        <SvgLine
-                          coords={[beamstopCentre, visibleRangeStart]}
-                          stroke={color2String(
-                            plotConfig.inaccessibleRangeColor,
-                          )}
-                          strokeWidth={3}
-                          id="inaccessible"
-                        />
-                      )}
+                      {plotConfig.inaccessibleRange &&
+                        plotConfig.visibleRange && (
+                          <SvgLine
+                            coords={[beamstopCentre, visibleRangeStart]}
+                            stroke={color2String(
+                              plotConfig.inaccessibleRangeColor,
+                            )}
+                            strokeWidth={3}
+                            id="inaccessible"
+                          />
+                        )}
                       {/* {plotConfig.calibrant && (
                         <SvgCalibrant
                           beamCentre={cameraTubeCentre}
