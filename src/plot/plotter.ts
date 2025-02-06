@@ -10,24 +10,26 @@ import {
 import { LengthUnits } from "../utils/units";
 import { UnitVector } from "../calculations/unitVector";
 import { PlotAxes } from "./plotStore";
+import UnitRange from "../calculations/unitRange";
+import { getPointForQ } from "../calculations/qvalue";
 
-export interface AxisUnitStrategy {
+interface AxisUnitStrategy {
   convert: (x: mathjs.Unit, y: mathjs.Unit) => Vector3;
 }
 
-export class MilimeterAxis implements AxisUnitStrategy {
+class MilimeterAxis implements AxisUnitStrategy {
   public convert(x: mathjs.Unit, y: mathjs.Unit): Vector3 {
     return new Vector3(x.to("mm").toNumber(), y.to("mm").toNumber());
   }
 }
 
-export class PixelAxis implements AxisUnitStrategy {
+class PixelAxis implements AxisUnitStrategy {
   public convert(x: mathjs.Unit, y: mathjs.Unit): Vector3 {
     return new Vector3(x.to("xpixel").toNumber(), y.to("ypixel").toNumber());
   }
 }
 
-export class ReciprocalAxis implements AxisUnitStrategy {
+class ReciprocalAxis implements AxisUnitStrategy {
   constructor(
     private scaleFactor: mathjs.Unit,
     private centre: UnitVector,
@@ -46,12 +48,13 @@ export class ReciprocalAxis implements AxisUnitStrategy {
   }
 }
 
-export interface IPlotter {
+interface IPlotter {
   createCameratube: () => PlotEllipse;
   createBeamstop: () => PlotEllipse;
   createDetector: () => PlotRectangle;
   createClearnace: () => PlotEllipse;
   createVisibleRange: () => PlotRange;
+  createRequestedRange: () => PlotRange;
 }
 
 export class Plotter implements IPlotter {
@@ -63,6 +66,8 @@ export class Plotter implements IPlotter {
   private startVector: Vector3;
   private endVector: Vector3;
   private unitStrategy: AxisUnitStrategy;
+  private requestedRange: UnitRange | null;
+  private beamlineConfig: BeamlineConfig;
 
   constructor(
     beamstop: AppBeamstop,
@@ -71,11 +76,14 @@ export class Plotter implements IPlotter {
     beamlineConfig: BeamlineConfig,
     minPoint: Vector2,
     maxPoint: Vector2,
+    requestedRange: UnitRange | null,
     unitAxes: PlotAxes,
   ) {
     this.beamstop = beamstop;
     this.cameraTube = cameraTube;
     this.detector = detector;
+    this.beamlineConfig = beamlineConfig;
+    this.requestedRange = requestedRange;
 
     this.beamstopCentre = new UnitVector(
       mathjs.unit(this.beamstop.centre.x ?? NaN, "xpixel"),
@@ -173,6 +181,35 @@ export class Plotter implements IPlotter {
     return {
       start: this.startVector,
       end: this.endVector,
+    };
+  }
+
+  public createRequestedRange(): PlotRange {
+    if (this.requestedRange === null) {
+      return {
+        start: new Vector3(0, 0),
+        end: new Vector3(0, 0),
+      };
+    }
+
+    const maxPoint = getPointForQ(
+      this.requestedRange.max,
+      this.beamlineConfig.angle,
+      mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
+      this.beamlineConfig.wavelength,
+      this.beamstopCentre,
+    );
+    const minPoint = getPointForQ(
+      this.requestedRange.min,
+      this.beamlineConfig.angle,
+      mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
+      this.beamlineConfig.wavelength,
+      this.beamstopCentre,
+    );
+
+    return {
+      start: this.unitStrategy.convert(minPoint.x, minPoint.y),
+      end: this.unitStrategy.convert(maxPoint.x, maxPoint.y),
     };
   }
 

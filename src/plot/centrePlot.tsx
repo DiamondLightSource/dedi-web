@@ -30,6 +30,8 @@ import { useMemo } from "react";
 import { formatLogMessage } from "../utils/units";
 import SvgMask from "./svgMask";
 import { Plotter } from "./plotter";
+import UnitRange from "../calculations/unitRange";
+import { ResultStore, useResultStore } from "../results/resultsStore";
 
 // Define Zustand selectors outside of render function for useMemo
 const detectorSelector = (state: DetectorStore) => state.detector;
@@ -41,6 +43,15 @@ const beamlineConfigSelector = (state: BeamlineConfigStore) => ({
 });
 const beamstopSelector = (state: BeamstopStore) => state.beamstop;
 const cameraTubeSelector = (state: CameraTubeStore) => state.cameraTube;
+const RequestedRangeSelector = (state: ResultStore) => {
+  if (!state.requestedMax || !state.requestedMin) {
+    return null;
+  }
+  return new UnitRange(
+    state.getUnit(state.requestedMin),
+    state.getUnit(state.requestedMax),
+  );
+};
 
 /**
  * A react componenet that plots a diagram of the system
@@ -52,6 +63,7 @@ export default function CentrePlot(): JSX.Element {
   const detector = useDetectorStore(detectorSelector);
   const beamstop = useBeamstopStore(beamstopSelector);
   const cameraTube = useCameraTubeStore(cameraTubeSelector);
+  const requestedRange = useResultStore(RequestedRangeSelector);
 
   // Calculate qrange if anything has changed
   const { minPoint, maxPoint, visibleQRange, fullQRange } = useMemo(() => {
@@ -83,6 +95,7 @@ export default function CentrePlot(): JSX.Element {
     beamlineConfig,
     minPoint,
     maxPoint,
+    requestedRange,
     plotConfig.plotAxes,
   );
 
@@ -91,10 +104,10 @@ export default function CentrePlot(): JSX.Element {
   const plotDetector = plotter.createDetector();
   const plotClearance = plotter.createClearnace();
   const plotVisibleRange = plotter.createVisibleRange();
+  const plotRequestedRange = plotter.createRequestedRange();
 
   const domains = getDomain(plotDetector);
   console.info(formatLogMessage("Refreshing plot"));
-
   return (
     <Stack direction="column" spacing={1} flexGrow={1}>
       <Stack direction={{ sm: "column", md: "row" }} spacing={1} flexGrow={1}>
@@ -135,6 +148,8 @@ export default function CentrePlot(): JSX.Element {
                     plotDetector.upperBound,
                     plotVisibleRange.start,
                     plotVisibleRange.end,
+                    plotRequestedRange.start,
+                    plotRequestedRange.end,
                   ]}
                 >
                   {(
@@ -151,6 +166,8 @@ export default function CentrePlot(): JSX.Element {
                     detectorUpper,
                     visibleRangeStart,
                     visableRangeEnd,
+                    requestedRangeStart,
+                    requestedRangeEnd,
                   ) => (
                     <SvgElement>
                       {plotConfig.cameraTube && (
@@ -234,14 +251,14 @@ export default function CentrePlot(): JSX.Element {
                           id="visible"
                         />
                       )}
-                      {/* {plotConfig.requestedRange && (
+                      {plotConfig.requestedRange && (
                         <SvgLine
                           coords={[requestedRangeStart, requestedRangeEnd]}
                           stroke={color2String(plotConfig.requestedRangeColor)}
                           strokeWidth={3}
                           id="requested"
                         />
-                      )} */}
+                      )}
                       {plotConfig.beamstop && (
                         <SvgAxisAlignedEllipse
                           coords={[
@@ -266,57 +283,3 @@ export default function CentrePlot(): JSX.Element {
     </Stack>
   );
 }
-
-// function getRequestedRange(
-//   requestedRange: UnitRange,
-//   beamlineConfig: BeamlineConfig,
-//   beamstopCentre: UnitVector,
-//   plotRequestedRange: { start: Vector3; end: Vector3 },
-//   plotter: Plotter,
-// ) {
-//   const requestedMaxPt = getPointForQ(
-//     requestedRange.max,
-//     beamlineConfig.angle,
-//     unit(beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
-//     beamlineConfig.wavelength,
-//     beamstopCentre,
-//   );
-//   const requestedMinPt = getPointForQ(
-//     requestedRange.min,
-//     beamlineConfig.angle,
-//     unit(beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
-//     beamlineConfig.wavelength,
-//     beamstopCentre,
-//   );
-//   plotRequestedRange = plotter.createPlotRange(
-//     requestedMinPt,
-//     requestedMaxPt,
-//     beamstopCentre,
-//   );
-//   return plotRequestedRange;
-// }
-
-// function getRange(): (state: ResultStore) => UnitRange | null {
-//   return (state) => {
-//     if (!state.requestedMax || !state.requestedMin) {
-//       return null;
-//     }
-
-//     const getUnit = (value: number): Unit => {
-//       if (state.requested === ScatteringOptions.d) {
-//         return convertFromDtoQ(unit(value, state.dUnits));
-//       }
-
-//       if (state.requested === ScatteringOptions.s) {
-//         return convertFromSToQ(unit(value, state.sUnits));
-//       }
-
-//       return unit(value, state.qUnits);
-//     };
-
-//     return new UnitRange(
-//       getUnit(state.requestedMin),
-//       getUnit(state.requestedMax),
-//     );
-//   };
-// }

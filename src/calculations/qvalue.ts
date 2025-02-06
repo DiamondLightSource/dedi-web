@@ -68,7 +68,6 @@ export const getPointForQ = (
   );
 
   const distance = calculateDistanceFromQValue(q, c, v) ?? 0;
-
   const result = ray.getPointAtDistance(distance);
   const x = unit(result.x, LengthUnits.metre);
   const y = unit(result.y, LengthUnits.metre);
