@@ -32,6 +32,7 @@ import SvgMask from "./svgMask";
 import { Plotter } from "./plotter";
 import UnitRange from "../calculations/unitRange";
 import { ResultStore, useResultStore } from "../results/resultsStore";
+import SvgCalibrant from "./svgCalibrant";
 
 // Define Zustand selectors outside of render function for useMemo
 const detectorSelector = (state: DetectorStore) => state.detector;
@@ -64,6 +65,7 @@ export default function CentrePlot(): JSX.Element {
   const beamstop = useBeamstopStore(beamstopSelector);
   const cameraTube = useCameraTubeStore(cameraTubeSelector);
   const requestedRange = useResultStore(RequestedRangeSelector);
+  const calibrant = plotConfig.calibrantRecord[plotConfig.currentCalibrant];
 
   // Calculate qrange if anything has changed
   const { minPoint, maxPoint, visibleQRange, fullQRange } = useMemo(() => {
@@ -93,6 +95,7 @@ export default function CentrePlot(): JSX.Element {
     cameraTube,
     detector,
     beamlineConfig,
+    calibrant,
     minPoint,
     maxPoint,
     requestedRange,
@@ -105,6 +108,7 @@ export default function CentrePlot(): JSX.Element {
   const plotClearance = plotter.createClearnace();
   const plotVisibleRange = plotter.createVisibleRange();
   const plotRequestedRange = plotter.createRequestedRange();
+  const plotCalibrant = plotter.createCalibrant();
 
   const domains = getDomain(plotDetector);
   console.info(formatLogMessage("Refreshing plot"));
@@ -150,6 +154,8 @@ export default function CentrePlot(): JSX.Element {
                     plotVisibleRange.end,
                     plotRequestedRange.start,
                     plotRequestedRange.end,
+                    plotCalibrant.endPointX,
+                    plotCalibrant.endPointY,
                   ]}
                 >
                   {(
@@ -168,6 +174,8 @@ export default function CentrePlot(): JSX.Element {
                     visableRangeEnd,
                     requestedRangeStart,
                     requestedRangeEnd,
+                    calibrantEndPointX,
+                    calibrantEndPointY,
                   ) => (
                     <SvgElement>
                       {plotConfig.cameraTube && (
@@ -220,18 +228,18 @@ export default function CentrePlot(): JSX.Element {
                             id="inaccessible"
                           />
                         )}
-                      {/* {plotConfig.calibrant && (
+                      {plotConfig.calibrant && (
                         <SvgCalibrant
-                          beamCentre={cameraTubeCentre}
-                          endPointX={calibrantLastRing}
-                          endPointY={calibrantLastRing}
-                          ringFractions={calibrantRings.fractions}
+                          beamCentre={beamstopCentre}
+                          endPointX={calibrantEndPointX}
+                          endPointY={calibrantEndPointY}
+                          ringFractions={plotCalibrant.ringFractions}
                           fill="transparent"
                           stroke={color2String(plotConfig.calibrantColor)}
                           strokeWidth="3"
                           id="calibrant"
                         />
-                      )} */}
+                      )}
                       {plotConfig.clearance && (
                         <SvgAxisAlignedEllipse
                           coords={[

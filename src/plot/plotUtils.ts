@@ -35,3 +35,9 @@ export interface PlotRange {
   start: Vector3;
   end: Vector3;
 }
+
+export interface PlotCalibrant {
+  endPointX: Vector3;
+  endPointY: Vector3;
+  ringFractions: number[];
+}

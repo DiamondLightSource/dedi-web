@@ -1,11 +1,17 @@
 import * as mathjs from "mathjs";
 import { Vector2, Vector3 } from "three";
-import { PlotEllipse, PlotRange, PlotRectangle } from "./plotUtils";
+import {
+  PlotCalibrant,
+  PlotEllipse,
+  PlotRange,
+  PlotRectangle,
+} from "./plotUtils";
 import {
   AppBeamstop,
   AppCircularDevice,
   AppDetector,
   BeamlineConfig,
+  Calibrant,
 } from "../utils/types";
 import { LengthUnits } from "../utils/units";
 import { UnitVector } from "../calculations/unitVector";
@@ -55,6 +61,7 @@ interface IPlotter {
   createClearnace: () => PlotEllipse;
   createVisibleRange: () => PlotRange;
   createRequestedRange: () => PlotRange;
+  createCalibrant: () => PlotCalibrant;
 }
 
 export class Plotter implements IPlotter {
@@ -68,12 +75,14 @@ export class Plotter implements IPlotter {
   private unitStrategy: AxisUnitStrategy;
   private requestedRange: UnitRange | null;
   private beamlineConfig: BeamlineConfig;
+  private calibrant: Calibrant;
 
   constructor(
     beamstop: AppBeamstop,
     cameraTube: AppCircularDevice,
     detector: AppDetector,
     beamlineConfig: BeamlineConfig,
+    calibrant: Calibrant,
     minPoint: Vector2,
     maxPoint: Vector2,
     requestedRange: UnitRange | null,
@@ -84,6 +93,7 @@ export class Plotter implements IPlotter {
     this.detector = detector;
     this.beamlineConfig = beamlineConfig;
     this.requestedRange = requestedRange;
+    this.calibrant = calibrant;
 
     this.beamstopCentre = new UnitVector(
       mathjs.unit(this.beamstop.centre.x ?? NaN, "xpixel"),
@@ -230,6 +240,19 @@ export class Plotter implements IPlotter {
       centre: this.unitStrategy.convert(centre.x, centre.y),
       endPointX,
       endPointY,
+    };
+  }
+
+  public createCalibrant(): PlotCalibrant {
+    const max_ring = Math.max(...this.calibrant.d);
+    const max_ellipse = this._createEllipseAroundCentre(
+      this.beamstopCentre,
+      mathjs.unit(max_ring, "mm"),
+    );
+    return {
+      endPointX: max_ellipse.endPointX,
+      endPointY: max_ellipse.endPointY,
+      ringFractions: this.calibrant.d.map((item) => item / max_ring),
     };
   }
 
