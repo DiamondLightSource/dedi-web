@@ -90,6 +90,9 @@ export default function CentrePlot(): JSX.Element {
     return computeQrange(detector, beamstop, cameraTube, beamlineConfig);
   }, [detector, beamstop, cameraTube, beamlineConfig]);
 
+  console.log(requestedRange);
+  console.log(calibrant);
+
   const plotter = new Plotter(
     beamstop,
     cameraTube,

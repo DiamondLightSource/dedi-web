@@ -18,23 +18,33 @@ import { UnitVector } from "../calculations/unitVector";
 import { PlotAxes } from "./plotStore";
 import UnitRange from "../calculations/unitRange";
 import { getPointForQ } from "../calculations/qvalue";
+import { convertFromDtoQ } from "../results/scatteringQuantities";
 
 interface AxisUnitStrategy {
   convert: (x: mathjs.Unit, y: mathjs.Unit) => Vector3;
 }
 
+/**
+ * Plotting strategy for plotting in mm
+ */
 class MilimeterAxis implements AxisUnitStrategy {
   public convert(x: mathjs.Unit, y: mathjs.Unit): Vector3 {
     return new Vector3(x.to("mm").toNumber(), y.to("mm").toNumber());
   }
 }
 
+/**
+ * Plotting strategy for plotting in detector pixels
+ */
 class PixelAxis implements AxisUnitStrategy {
   public convert(x: mathjs.Unit, y: mathjs.Unit): Vector3 {
     return new Vector3(x.to("xpixel").toNumber(), y.to("ypixel").toNumber());
   }
 }
 
+/**
+ * Plotting strategy for plotting in reciprical units
+ */
 class ReciprocalAxis implements AxisUnitStrategy {
   constructor(
     private scaleFactor: mathjs.Unit,
@@ -54,6 +64,9 @@ class ReciprocalAxis implements AxisUnitStrategy {
   }
 }
 
+/**
+ * The methods a plotter object must expose
+ */
 interface IPlotter {
   createCameratube: () => PlotEllipse;
   createBeamstop: () => PlotEllipse;
@@ -105,6 +118,7 @@ export class Plotter implements IPlotter {
       mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel"),
     );
 
+    // Selects plotting strategy
     if (
       unitAxes === PlotAxes.reciprocal &&
       beamlineConfig.cameraLength &&
@@ -146,6 +160,10 @@ export class Plotter implements IPlotter {
     );
   }
 
+  /**
+   * Creates a PlotEllipse object representing a clearance around the beamstop
+   * @returns
+   */
   public createClearnace(): PlotEllipse {
     const radius = mathjs.divide(this.beamstop.diameter, 2);
 
@@ -175,6 +193,10 @@ export class Plotter implements IPlotter {
     };
   }
 
+  /**
+   * Creates a PlotRectangle object which represents the detector
+   * @returns
+   */
   public createDetector(): PlotRectangle {
     const lowerBound = this.unitStrategy.convert(
       mathjs.unit(0, "xpixel"),
@@ -223,6 +245,33 @@ export class Plotter implements IPlotter {
     };
   }
 
+  public createCalibrant(): PlotCalibrant {
+    // Note the reciprocal relationship between q and d
+    const maxRing = Math.min(...this.calibrant.d);
+    const qValue = convertFromDtoQ(mathjs.unit(maxRing, "nm"));
+
+    const maxPointX = getPointForQ(
+      qValue,
+      mathjs.unit(0, "deg"),
+      mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
+      this.beamlineConfig.wavelength,
+      this.beamstopCentre,
+    );
+    const maxPointY = getPointForQ(
+      qValue,
+      mathjs.unit(90, "deg"),
+      mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
+      this.beamlineConfig.wavelength,
+      this.beamstopCentre,
+    );
+
+    return {
+      endPointX: this.unitStrategy.convert(maxPointX.x, maxPointX.y),
+      endPointY: this.unitStrategy.convert(maxPointY.x, maxPointY.y),
+      ringFractions: this.calibrant.d.map((item) => maxRing / item),
+    };
+  }
+
   private _createEllipseAroundCentre(
     centre: UnitVector,
     diameter: mathjs.Unit,
@@ -240,19 +289,6 @@ export class Plotter implements IPlotter {
       centre: this.unitStrategy.convert(centre.x, centre.y),
       endPointX,
       endPointY,
-    };
-  }
-
-  public createCalibrant(): PlotCalibrant {
-    const max_ring = Math.max(...this.calibrant.d);
-    const max_ellipse = this._createEllipseAroundCentre(
-      this.beamstopCentre,
-      mathjs.unit(max_ring, "mm"),
-    );
-    return {
-      endPointX: max_ellipse.endPointX,
-      endPointY: max_ellipse.endPointY,
-      ringFractions: this.calibrant.d.map((item) => item / max_ring),
     };
   }
 

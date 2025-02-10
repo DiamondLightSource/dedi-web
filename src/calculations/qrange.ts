@@ -70,7 +70,7 @@ export function computeQrange(
 
   // Get the scalar range where the ray intersects with the detector
   const detectorIntersectionRange = ray.getRectangleIntersectionRange(
-    new Vector2(0, detectorDimensions.x.toSI().toNumber()),
+    new Vector2(0, detectorDimensions.y.toSI().toNumber()),
     detectorDimensions.toSI().toVector2(),
   );
 
@@ -112,8 +112,8 @@ export function computeQrange(
   // Assume neam hits detector orthogonally
   const beamVector = new Vector3(0, 0, 1);
 
-  // grou[p together the data needed for detector infomation
-  const detProps: DetectorProperties = { ...detector, origin, beamVector };
+  // group together the data needed for detector infomation
+  const detProps: DetectorProperties = { origin, beamVector };
 
   const qspace = new QSpace(
     detProps,

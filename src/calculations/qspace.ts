@@ -1,7 +1,6 @@
 import { Vector3, Vector2 } from "three";
-import { AppDetector } from "../utils/types";
 
-export interface DetectorProperties extends AppDetector {
+export interface DetectorProperties {
   origin: Vector3;
   beamVector: Vector3;
 }
