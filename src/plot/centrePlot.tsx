@@ -33,6 +33,7 @@ import { Plotter } from "./plotter";
 import UnitRange from "../calculations/unitRange";
 import { ResultStore, useResultStore } from "../results/resultsStore";
 import SvgCalibrant from "./svgCalibrant";
+import { AppDetector } from "../utils/types";
 
 // Define Zustand selectors outside of render function for useMemo
 const detectorSelector = (state: DetectorStore) => state.detector;
@@ -67,31 +68,16 @@ export default function CentrePlot(): JSX.Element {
   const requestedRange = useResultStore(RequestedRangeSelector);
   const calibrant = plotConfig.calibrantRecord[plotConfig.currentCalibrant];
 
+  useMemo(() => {
+    // Update "xpixel" and "ypixel" units each time the detector changes
+    updatePixelUnits(detector);
+  }, [detector]);
+
   // Calculate qrange if anything has changed
   const { minPoint, maxPoint, visibleQRange, fullQRange } = useMemo(() => {
     console.info(formatLogMessage("Calculating Q range"));
-
-    // Rethink in future
-    /* eslint-disable */
-    // @ts-ignore
-    if (Unit.UNITS.xpixel) {
-      // @ts-ignore
-      delete Unit.UNITS.xpixel;
-    }
-    // @ts-ignore
-    if (Unit.UNITS.ypixel) {
-      // @ts-ignore
-      delete Unit.UNITS.ypixel;
-    }
-    /* eslint-enable */
-
-    createUnit("xpixel", detector.pixelSize.width.toString());
-    createUnit("ypixel", detector.pixelSize.height.toString());
     return computeQrange(detector, beamstop, cameraTube, beamlineConfig);
   }, [detector, beamstop, cameraTube, beamlineConfig]);
-
-  console.log(requestedRange);
-  console.log(calibrant);
 
   const plotter = new Plotter(
     beamstop,
@@ -220,17 +206,6 @@ export default function CentrePlot(): JSX.Element {
                           missingSegments={detector.mask.missingModules ?? []}
                         />
                       )}
-                      {plotConfig.inaccessibleRange &&
-                        plotConfig.visibleRange && (
-                          <SvgLine
-                            coords={[beamstopCentre, visibleRangeStart]}
-                            stroke={color2String(
-                              plotConfig.inaccessibleRangeColor,
-                            )}
-                            strokeWidth={3}
-                            id="inaccessible"
-                          />
-                        )}
                       {plotConfig.calibrant && (
                         <SvgCalibrant
                           beamCentre={beamstopCentre}
@@ -241,6 +216,16 @@ export default function CentrePlot(): JSX.Element {
                           stroke={color2String(plotConfig.calibrantColor)}
                           strokeWidth="3"
                           id="calibrant"
+                        />
+                      )}
+                      {plotConfig.inaccessibleRange && (
+                        <SvgLine
+                          coords={[beamstopCentre, visibleRangeStart]}
+                          stroke={color2String(
+                            plotConfig.inaccessibleRangeColor,
+                          )}
+                          strokeWidth={3}
+                          id="inaccessible"
                         />
                       )}
                       {plotConfig.clearance && (
@@ -293,4 +278,21 @@ export default function CentrePlot(): JSX.Element {
       <ResultsBar visibleQRange={visibleQRange} fullQRange={fullQRange} />
     </Stack>
   );
+}
+
+function updatePixelUnits(detector: AppDetector): void {
+  /* eslint-disable */
+  // @ts-ignore
+  if (Unit.UNITS.xpixel) {
+    // @ts-ignore
+      delete Unit.UNITS.xpixel;
+  };
+  // @ts-ignore
+  if (Unit.UNITS.ypixel) {
+    // @ts-ignore
+    delete Unit.UNITS.ypixel;
+  }
+  createUnit("xpixel", detector.pixelSize.width.toString());
+  createUnit("ypixel", detector.pixelSize.height.toString());
+  /* eslint-enable */
 }

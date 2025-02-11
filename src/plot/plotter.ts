@@ -257,6 +257,7 @@ export class Plotter implements IPlotter {
       this.beamlineConfig.wavelength,
       this.beamstopCentre,
     );
+
     const maxPointY = getPointForQ(
       qValue,
       mathjs.unit(90, "deg"),
