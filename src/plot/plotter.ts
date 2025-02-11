@@ -246,6 +246,21 @@ export class Plotter implements IPlotter {
   }
 
   public createCalibrant(): PlotCalibrant {
+    // If no wavelength is given
+    if (isNaN(this.beamlineConfig.wavelength.toNumber())) {
+      return {
+        endPointX: this.unitStrategy.convert(
+          this.beamstopCentre.x,
+          this.beamstopCentre.y,
+        ),
+        endPointY: this.unitStrategy.convert(
+          this.beamstopCentre.x,
+          this.beamstopCentre.y,
+        ),
+        ringFractions: [],
+      };
+    }
+
     // Note the reciprocal relationship between q and d
     const maxRing = Math.min(...this.calibrant.d);
     const qValue = convertFromDtoQ(mathjs.unit(maxRing, "nm"));
