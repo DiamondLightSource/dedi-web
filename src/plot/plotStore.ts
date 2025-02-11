@@ -1,5 +1,7 @@
 import { RGBColor } from "react-color";
 import { create } from "zustand";
+import { Calibrant } from "../utils/types";
+import { calibrantRecord } from "../presets/presetManager";
 
 export enum PlotAxes {
   milimeter = "mm",
@@ -19,6 +21,8 @@ const red: RGBColor = { r: 208, g: 2, b: 27, a: 1 };
 export interface PlotConfig {
   detector: boolean;
   detectorColor: RGBColor;
+  calibrant: boolean;
+  calibrantColor: RGBColor;
   mask: boolean;
   maskColor: RGBColor;
   beamstop: boolean;
@@ -34,12 +38,16 @@ export interface PlotConfig {
   clearance: boolean;
   clearanceColor: RGBColor;
   plotAxes: PlotAxes;
+  currentCalibrant: string;
+  calibrantRecord: Record<string, Calibrant>;
   update: (newConfig: Partial<PlotConfig>) => void;
 }
 
 export const usePlotStore = create<PlotConfig>((set) => ({
   detector: true,
   detectorColor: lilac,
+  calibrant: false,
+  calibrantColor: blackOpaque,
   mask: false,
   maskColor: black,
   beamstop: true,
@@ -55,6 +63,8 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   inaccessibleRange: true,
   inaccessibleRangeColor: red,
   plotAxes: PlotAxes.milimeter,
+  currentCalibrant: Object.keys(calibrantRecord)[1],
+  calibrantRecord: calibrantRecord,
   update: (newConfig) => {
     set({ ...newConfig });
   },

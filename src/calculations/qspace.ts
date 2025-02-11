@@ -1,7 +1,6 @@
 import { Vector3, Vector2 } from "three";
-import { AppDetector } from "../utils/types";
 
-export interface DetectorProperties extends AppDetector {
+export interface DetectorProperties {
   origin: Vector3;
   beamVector: Vector3;
 }
@@ -16,14 +15,10 @@ export default class QSpace {
   qScale: number;
   mki: Vector3;
 
-  constructor(
-    detProps: DetectorProperties,
-    wavelength: number,
-    qScale: number,
-  ) {
+  constructor(detProps: DetectorProperties, wavelength: number) {
     this.detProps = detProps;
     detProps.beamVector.normalize();
-    this.qScale = qScale;
+    this.qScale = 2 * Math.PI;
 
     this.mki = detProps.beamVector.clone().negate();
     this.kmod = this.qScale / wavelength;
@@ -33,8 +28,7 @@ export default class QSpace {
   }
 
   public qFromPixelPosition(vector: Vector2): Vector3 {
-    const q = new Vector3();
-    q.set(-vector.x, -vector.y, 0);
+    const q = new Vector3(-vector.x, -vector.y, 0);
     q.add(this.detProps.origin);
     return this._convertToQ(q);
   }

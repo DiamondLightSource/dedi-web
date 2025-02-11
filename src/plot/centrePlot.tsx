@@ -8,170 +8,99 @@ import {
   VisCanvas,
 } from "@h5web/lib";
 import { Card, CardContent, Stack } from "@mui/material";
-import { Unit, MathType, divide, multiply, unit, createUnit } from "mathjs";
-import { Vector2, Vector3 } from "three";
+// @ts-expect-error Used to update mathjs units
+import { Unit, createUnit } from "mathjs";
+import { Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
-import { getPointForQ } from "../calculations/qvalue";
-import UnitRange from "../calculations/unitRange";
-import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
-import { useBeamstopStore } from "../data-entry/beamstopStore";
-import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
-import { useDetectorStore } from "../data-entry/detectorStore";
+import {
+  BeamlineConfigStore,
+  useBeamlineConfigStore,
+} from "../data-entry/beamlineconfigStore";
+import { BeamstopStore, useBeamstopStore } from "../data-entry/beamstopStore";
+import {
+  CameraTubeStore,
+  useCameraTubeStore,
+} from "../data-entry/cameraTubeStore";
+import { DetectorStore, useDetectorStore } from "../data-entry/detectorStore";
 import ResultsBar from "../results/resultsBar";
-import {
-  ResultStore,
-  ScatteringOptions,
-  useResultStore,
-} from "../results/resultsStore";
-import {
-  convertFromDtoQ,
-  convertFromSToQ,
-} from "../results/scatteringQuantities";
-import {
-  AppBeamline,
-  AppBeamstop,
-  AppCircularDevice,
-  AppDetector,
-  BeamlineConfig,
-} from "../utils/types";
-import { Plotter } from "./Plotter";
 import LegendBar from "./legendBar";
 import { usePlotStore } from "./plotStore";
-import { UnitVector, color2String, getDomains } from "./plotUtils";
+import { color2String, getDomain } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import { useMemo } from "react";
-import {
-  formatLogMessage,
-  LengthUnits,
-  ReciprocalWavelengthUnits,
-} from "../utils/units";
+import { formatLogMessage } from "../utils/units";
 import SvgMask from "./svgMask";
+import { Plotter } from "./plotter";
+import UnitRange from "../calculations/unitRange";
+import { ResultStore, useResultStore } from "../results/resultsStore";
+import SvgCalibrant from "./svgCalibrant";
+import { AppDetector } from "../utils/types";
+
+// Define Zustand selectors outside of render function for useMemo
+const detectorSelector = (state: DetectorStore) => state.detector;
+const beamlineConfigSelector = (state: BeamlineConfigStore) => ({
+  beamline: state.beamline,
+  wavelength: state.wavelength,
+  angle: state.angle,
+  cameraLength: state.cameraLength,
+});
+const beamstopSelector = (state: BeamstopStore) => state.beamstop;
+const cameraTubeSelector = (state: CameraTubeStore) => state.cameraTube;
+const RequestedRangeSelector = (state: ResultStore) => {
+  if (!state.requestedMax || !state.requestedMin) {
+    return null;
+  }
+  return new UnitRange(
+    state.getUnit(state.requestedMin),
+    state.getUnit(state.requestedMax),
+  );
+};
 
 /**
- * A react componenet that plots the items that make up the system
+ * A react componenet that plots a diagram of the system
  * @returns
  */
 export default function CentrePlot(): JSX.Element {
   const plotConfig = usePlotStore();
-  const beamlineConfigStore = useBeamlineConfigStore();
-  const detectorStore = useDetectorStore();
-  const beamstopStore = useBeamstopStore();
-  const cameraTubeStore = useCameraTubeStore();
+  const beamlineConfig = useBeamlineConfigStore(beamlineConfigSelector);
+  const detector = useDetectorStore(detectorSelector);
+  const beamstop = useBeamstopStore(beamstopSelector);
+  const cameraTube = useCameraTubeStore(cameraTubeSelector);
+  const requestedRange = useResultStore(RequestedRangeSelector);
+  const calibrant = plotConfig.calibrantRecord[plotConfig.currentCalibrant];
 
-  // Needed for plotting in q space
-  const scaleFactor: Unit | null = getScaleFactor(
-    beamlineConfigStore.wavelength,
-    beamlineConfigStore.cameraLength,
-  );
+  useMemo(() => {
+    // Update "xpixel" and "ypixel" units each time the detector changes
+    updatePixelUnits(detector);
+  }, [detector]);
 
-  const { ptMin, ptMax, visibleQRange, fullQRange } = useMemo(() => {
+  // Calculate qrange if anything has changed
+  const { minPoint, maxPoint, visibleQRange, fullQRange } = useMemo(() => {
     console.info(formatLogMessage("Calculating Q range"));
-    // todo this might need to be moved elsewhere
-    /* eslint-disable */
-    // @ts-ignore
-    if (Unit.UNITS.xpixel) {
-      // @ts-ignore
-      delete Unit.UNITS.xpixel;
-    }
-    // @ts-ignore
-    if (Unit.UNITS.ypixel) {
-      // @ts-ignore
-      delete Unit.UNITS.ypixel;
-    }
-    /* eslint-enable */
+    return computeQrange(detector, beamstop, cameraTube, beamlineConfig);
+  }, [detector, beamstop, cameraTube, beamlineConfig]);
 
-    createUnit("xpixel", detectorStore.detector.pixelSize.width.toString());
-    createUnit("ypixel", detectorStore.detector.pixelSize.height.toString());
-
-    const beamlineConfig = getBeamlineConfig(
-      beamlineConfigStore.angle,
-      beamlineConfigStore.cameraLength,
-      beamlineConfigStore.wavelength,
-      beamlineConfigStore.beamline,
-    );
-
-    return computeQrange(
-      detectorStore.detector,
-      beamstopStore.beamstop,
-      cameraTubeStore.cameraTube,
-      beamlineConfig,
-    );
-  }, [
-    detectorStore.detector,
-    beamstopStore.beamstop,
-    cameraTubeStore.cameraTube,
-    beamlineConfigStore.angle,
-    beamlineConfigStore.cameraLength,
-    beamlineConfigStore.wavelength,
-    beamlineConfigStore.beamline,
-  ]);
-
-  // todo move these 2 statements into the ResultsBar component
-  //  as that's the only place that uses these
-  const visibleQRangeUnits = UnitRange.fromNumericRange(
-    visibleQRange,
-    "m^-1",
-  ).to(ReciprocalWavelengthUnits.nanometres);
-
-  const fullQRangeUnits = UnitRange.fromNumericRange(fullQRange, "m^-1").to(
-    ReciprocalWavelengthUnits.nanometres,
-  );
-
-  const { beamstopCentre, cameraTubeCentre, minPoint, maxPoint } =
-    getReferencePoints(
-      ptMin,
-      ptMax,
-      beamstopStore.beamstop,
-      cameraTubeStore.cameraTube,
-    );
-
-  const plotter = new Plotter(plotConfig.plotAxes, scaleFactor);
-
-  const {
-    plotDetector,
-    plotBeamstop,
-    plotClearance,
-    plotCameraTube,
-    plotVisibleRange,
-  } = createPlots(
-    plotter,
-    beamstopCentre,
-    beamstopStore.beamstop,
-    cameraTubeCentre,
-    cameraTubeStore.cameraTube,
-    detectorStore.detector,
+  const plotter = new Plotter(
+    beamstop,
+    cameraTube,
+    detector,
+    beamlineConfig,
+    calibrant,
     minPoint,
     maxPoint,
+    requestedRange,
+    plotConfig.plotAxes,
   );
 
-  // abstracting state logic away from the display logic
-  const requestedRange = useResultStore<UnitRange | null>(getRange());
+  const plotBeamstop = plotter.createBeamstop();
+  const plotCameraTube = plotter.createCameratube();
+  const plotDetector = plotter.createDetector();
+  const plotClearance = plotter.createClearnace();
+  const plotVisibleRange = plotter.createVisibleRange();
+  const plotRequestedRange = plotter.createRequestedRange();
+  const plotCalibrant = plotter.createCalibrant();
 
-  let plotRequestedRange = {
-    start: new Vector3(0, 0),
-    end: new Vector3(0, 0),
-  };
-
-  if (
-    requestedRange &&
-    beamlineConfigStore.cameraLength &&
-    beamlineConfigStore.wavelength
-  ) {
-    plotRequestedRange = getRequestedRange(
-      requestedRange,
-      getBeamlineConfig(
-        beamlineConfigStore.angle,
-        beamlineConfigStore.cameraLength,
-        beamlineConfigStore.wavelength,
-        beamlineConfigStore.beamline,
-      ),
-      beamstopCentre,
-      plotRequestedRange,
-      plotter,
-    );
-  }
-
-  const domains = getDomains(plotDetector);
+  const domains = getDomain(plotDetector);
   console.info(formatLogMessage("Refreshing plot"));
   return (
     <Stack direction="column" spacing={1} flexGrow={1}>
@@ -215,6 +144,8 @@ export default function CentrePlot(): JSX.Element {
                     plotVisibleRange.end,
                     plotRequestedRange.start,
                     plotRequestedRange.end,
+                    plotCalibrant.endPointX,
+                    plotCalibrant.endPointY,
                   ]}
                 >
                   {(
@@ -233,6 +164,8 @@ export default function CentrePlot(): JSX.Element {
                     visableRangeEnd,
                     requestedRangeStart,
                     requestedRangeEnd,
+                    calibrantEndPointX,
+                    calibrantEndPointY,
                   ) => (
                     <SvgElement>
                       {plotConfig.cameraTube && (
@@ -259,21 +192,31 @@ export default function CentrePlot(): JSX.Element {
                           fill={color2String(plotConfig.maskColor)}
                           numModules={
                             new Vector3(
-                              detectorStore.detector.mask.horizontalModules,
-                              detectorStore.detector.mask.verticalModules,
+                              detector.mask.horizontalModules,
+                              detector.mask.verticalModules,
                             )
                           }
                           gapFraction={
                             new Vector3(
-                              detectorStore.detector.mask.horizontalGap /
-                                detectorStore.detector.resolution.width,
-                              detectorStore.detector.mask.verticalGap /
-                                detectorStore.detector.resolution.height,
+                              detector.mask.horizontalGap /
+                                detector.resolution.width,
+                              detector.mask.verticalGap /
+                                detector.resolution.height,
                             )
                           }
-                          missingSegments={
-                            detectorStore.detector.mask.missingModules ?? []
-                          }
+                          missingSegments={detector.mask.missingModules ?? []}
+                        />
+                      )}
+                      {plotConfig.calibrant && (
+                        <SvgCalibrant
+                          beamCentre={beamstopCentre}
+                          endPointX={calibrantEndPointX}
+                          endPointY={calibrantEndPointY}
+                          ringFractions={plotCalibrant.ringFractions}
+                          fill="transparent"
+                          stroke={color2String(plotConfig.calibrantColor)}
+                          strokeWidth="3"
+                          id="calibrant"
                         />
                       )}
                       {plotConfig.inaccessibleRange && (
@@ -333,180 +276,24 @@ export default function CentrePlot(): JSX.Element {
         </Card>
         <LegendBar />
       </Stack>
-      <ResultsBar
-        visableQRange={visibleQRangeUnits}
-        fullQrange={fullQRangeUnits}
-      />
+      <ResultsBar visibleQRange={visibleQRange} fullQRange={fullQRange} />
     </Stack>
   );
 }
 
-/**
- * Calculates the scale factor which is used for Plotting in units of Q
- * @param wavelength current wave length as a Unit
- * @param cameraLength cameralength
- * @returns
- */
-function getScaleFactor(wavelength: Unit, cameraLength: number | null) {
-  let scaleFactor: MathType | null = null;
-  if (cameraLength && wavelength) {
-    scaleFactor = divide(
-      2 * Math.PI,
-      multiply(
-        unit(cameraLength, LengthUnits.metre),
-        wavelength.to(LengthUnits.metre),
-      ),
-    );
+function updatePixelUnits(detector: AppDetector): void {
+  /* eslint-disable */
+  // @ts-ignore
+  if (Unit.UNITS.xpixel) {
+    // @ts-ignore
+      delete Unit.UNITS.xpixel;
+  };
+  // @ts-ignore
+  if (Unit.UNITS.ypixel) {
+    // @ts-ignore
+    delete Unit.UNITS.ypixel;
   }
-  if (scaleFactor == null) {
-    return scaleFactor;
-  }
-  if (typeof scaleFactor == "number" || !("units" in scaleFactor)) {
-    throw TypeError("scaleFactor should be a unit not a number");
-  }
-  return scaleFactor;
-}
-
-function getBeamlineConfig(
-  angle: Unit,
-  cameraLength: number | null,
-  wavelength: Unit,
-  beamline: AppBeamline,
-): BeamlineConfig {
-  return {
-    angle: angle,
-    cameraLength: cameraLength,
-    beamline: beamline,
-    wavelength: wavelength,
-  };
-}
-
-function getReferencePoints(
-  ptMin: Vector2,
-  ptMax: Vector2,
-  beamstop: AppBeamstop,
-  cameraTube: AppCircularDevice,
-) {
-  const minPoint: UnitVector = {
-    x: unit(ptMin.x, LengthUnits.metre),
-    y: unit(ptMin.y, LengthUnits.metre),
-  };
-
-  const maxPoint: UnitVector = {
-    x: unit(ptMax.x, LengthUnits.metre),
-    y: unit(ptMax.y, LengthUnits.metre),
-  };
-
-  const beamstopCentre: UnitVector = {
-    x: unit(beamstop.centre.x ?? NaN, "xpixel"),
-    y: unit(beamstop.centre.y ?? NaN, "ypixel"),
-  };
-
-  const cameraTubeCentre: UnitVector = {
-    x: unit(cameraTube.centre.x ?? NaN, "xpixel"),
-    y: unit(cameraTube.centre.y ?? NaN, "ypixel"),
-  };
-  return { beamstopCentre, cameraTubeCentre, minPoint, maxPoint };
-}
-
-function createPlots(
-  plotter: Plotter,
-  beamstopCentre: UnitVector,
-  beamstop: AppBeamstop,
-  cameraTubeCentre: UnitVector,
-  cameraTube: AppCircularDevice,
-  detector: AppDetector,
-  minPoint: UnitVector,
-  maxPoint: UnitVector,
-) {
-  const plotBeamstop = plotter.createPlotEllipse(
-    beamstopCentre,
-    beamstop.diameter,
-    beamstopCentre,
-  );
-
-  const plotCameraTube = plotter.createPlotEllipse(
-    cameraTubeCentre,
-    cameraTube.diameter,
-    beamstopCentre,
-  );
-
-  const plotClearance = plotter.createPlotEllipseClearance(
-    beamstopCentre,
-    beamstop.diameter,
-    beamstop.clearance ?? 0,
-    beamstopCentre,
-  );
-
-  const plotDetector = plotter.createPlotRectangle(
-    detector.resolution,
-    beamstopCentre,
-  );
-
-  const plotVisibleRange = plotter.createPlotRange(
-    minPoint,
-    maxPoint,
-    beamstopCentre,
-  );
-  return {
-    plotDetector,
-    plotBeamstop,
-    plotClearance,
-    plotCameraTube,
-    plotVisibleRange,
-  };
-}
-
-function getRequestedRange(
-  requestedRange: UnitRange,
-  beamlineConfig: BeamlineConfig,
-  beamstopCentre: UnitVector,
-  plotRequestedRange: { start: Vector3; end: Vector3 },
-  plotter: Plotter,
-) {
-  const requestedMaxPt = getPointForQ(
-    requestedRange.max,
-    beamlineConfig.angle,
-    unit(beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
-    beamlineConfig.wavelength,
-    beamstopCentre,
-  );
-  const requestedMinPt = getPointForQ(
-    requestedRange.min,
-    beamlineConfig.angle,
-    unit(beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
-    beamlineConfig.wavelength,
-    beamstopCentre,
-  );
-  plotRequestedRange = plotter.createPlotRange(
-    requestedMinPt,
-    requestedMaxPt,
-    beamstopCentre,
-  );
-  return plotRequestedRange;
-}
-
-function getRange(): (state: ResultStore) => UnitRange | null {
-  return (state) => {
-    if (!state.requestedMax || !state.requestedMin) {
-      return null;
-    }
-
-    const getUnit = (value: number): Unit => {
-      if (state.requested === ScatteringOptions.d) {
-        return convertFromDtoQ(unit(value, state.dUnits));
-      }
-
-      if (state.requested === ScatteringOptions.s) {
-        return convertFromSToQ(unit(value, state.sUnits));
-      }
-
-      return unit(value, state.qUnits);
-    };
-
-    return new UnitRange(
-      getUnit(state.requestedMin),
-      getUnit(state.requestedMax),
-    );
-  };
+  createUnit("xpixel", detector.pixelSize.width.toString());
+  createUnit("ypixel", detector.pixelSize.height.toString());
+  /* eslint-enable */
 }

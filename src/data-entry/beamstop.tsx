@@ -50,7 +50,6 @@ export default function BeamStopDataEntry(): JSX.Element {
   const centreTopEdge = () => {
     beamstopStore.updateCentre({ x: detector.resolution.width / 2, y: 0 });
   };
-
   return (
     <Stack spacing={1}>
       <Typography variant="h6"> Beamstop </Typography>

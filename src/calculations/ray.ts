@@ -14,7 +14,7 @@ export class Ray {
    * @param initial_point Vector representing the initial point of the ray
    */
   constructor(direction: Vector2, initial_point: Vector2) {
-    if (direction.length() == 0)
+    if (direction.length() === 0)
       throw TypeError(
         "The direction vector of a ray cannot be the zero vector.",
       );
@@ -64,7 +64,7 @@ export class Ray {
    * @param centre Centre of the circle
    * @returns NumericRange of the intersection scalars
    */
-  public getCircleIntersectionParameterRange(
+  public getCircleIntersectionRange(
     radius: number,
     centre: Vector2,
   ): NumericRange | null {
@@ -79,56 +79,56 @@ export class Ray {
     let t1: number;
     let t2: number;
 
-    if (a == 0) {
-      if (b == 0)
-        return c == 0 ? new NumericRange(0, Number.POSITIVE_INFINITY) : null;
-      t1 = -c / b;
-      t2 = -c / b;
-    } else {
+    if (a !== 0) {
       t1 = (0.5 * (-b - Math.sqrt(discriminant))) / a;
       t2 = (0.5 * (-b + Math.sqrt(discriminant))) / a;
+      return Ray.getParameterRange(t1, t2);
     }
+
+    if (b === 0) {
+      return c === 0 ? new NumericRange(0, Number.POSITIVE_INFINITY) : null;
+    }
+    t1 = -c / b;
+    t2 = -c / b;
     return Ray.getParameterRange(t1, t2);
   }
 
   /**
    * Get the scalars of the intersection points of a rectangle with the ray.
    * @param topLeftCorner Top left corner of the rectangle
-   * @param width Width of the rectangle
-   * @param height Height of the rectangle
+   * @param dimensions A vector representing the dimensions of the rectangle
    * @returns NumericRange of the scalars
    */
-  public getRectangleIntersectionParameterRange(
+  public getRectangleIntersectionRange(
     topLeftCorner: Vector2,
-    width: number,
-    height: number,
+    dimensions: Vector2,
   ): NumericRange | null {
     let result: NumericRange | null;
-    const xmax = topLeftCorner.x + width;
-    const xmin = topLeftCorner.x;
-    const ymax = topLeftCorner.y;
-    const ymin = topLeftCorner.y - height;
+    const xMax = topLeftCorner.x + dimensions.x;
+    const xMin = topLeftCorner.x;
+    const yMax = topLeftCorner.y;
+    const yMin = topLeftCorner.y - dimensions.y;
 
     if (this.direction.x === 0) {
-      if (!new NumericRange(xmin, xmax).containsValue(this.initial_point.x))
+      if (!new NumericRange(xMin, xMax).containsValue(this.initial_point.x))
         return null;
       result = new NumericRange(0, Number.POSITIVE_INFINITY);
     } else
       result = new NumericRange(
-        (xmin - this.initial_point.x) / this.direction.x,
-        (xmax - this.initial_point.x) / this.direction.x,
+        (xMin - this.initial_point.x) / this.direction.x,
+        (xMax - this.initial_point.x) / this.direction.x,
       );
 
     if (this.direction.y == 0) {
-      if (!new NumericRange(ymin, ymax).containsValue(this.initial_point.y))
+      if (!new NumericRange(yMin, yMax).containsValue(this.initial_point.y))
         return null;
       return Ray.getParameterRange(result.min, result.max);
     }
 
     result = result.intersect(
       new NumericRange(
-        (ymin - this.initial_point.y) / this.direction.y,
-        (ymax - this.initial_point.y) / this.direction.y,
+        (yMin - this.initial_point.y) / this.direction.y,
+        (yMax - this.initial_point.y) / this.direction.y,
       ),
     );
 

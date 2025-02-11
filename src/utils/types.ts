@@ -120,12 +120,5 @@ export interface DetectorMask {
 }
 
 export interface Calibrant {
-  positions: Position[];
-}
-
-export interface Position {
-  d: number;
-  h: number;
-  k: number;
-  l: number;
+  readonly d: number[];
 }

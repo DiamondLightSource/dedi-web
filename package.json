@@ -11,8 +11,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --port 3000",
-    "test": "npx vitest",
-    "arkit": "npx arkit  -c arkit.config.json"
+    "test": "npx vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -27,6 +26,7 @@
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
+    "react-error-boundary": "^5.0.0",
     "react-hook-form": "^7.51.4",
     "three": "^0.158.0",
     "zustand": "^4.4.6"
@@ -38,7 +38,6 @@
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.18.1",
     "@vitejs/plugin-react-swc": "^3.4.1",
-    "arkit": "^1.6.4",
     "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",

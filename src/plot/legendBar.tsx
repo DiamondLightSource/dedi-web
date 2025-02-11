@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Card,
   CardContent,
   Checkbox,
@@ -10,6 +11,7 @@ import {
   Radio,
   RadioGroup,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import { PlotAxes, usePlotStore } from "./plotStore";
@@ -17,6 +19,15 @@ import ColourPickerPopover from "../utils/colourPicker";
 
 export default function LegendBar(): JSX.Element {
   const plotConfig = usePlotStore();
+
+  const handleCalibrantUpdate = (
+    _: React.SyntheticEvent,
+    value: string | null,
+  ) => {
+    if (value) {
+      plotConfig.update({ currentCalibrant: value });
+    }
+  };
 
   return (
     <Card sx={{ flexGrow: 1, overflow: "scroll" }} variant="outlined">
@@ -217,7 +228,43 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
+            {/* Calibrant */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={plotConfig.calibrant}
+                  onChange={(_, checked) =>
+                    plotConfig.update({ calibrant: checked })
+                  }
+                />
+              }
+              label={
+                <Stack direction={"row"}>
+                  <ColourPickerPopover
+                    color={plotConfig.calibrantColor}
+                    onChangeComplete={(color) =>
+                      plotConfig.update({ calibrantColor: color.rgb })
+                    }
+                  />
+                  <Autocomplete
+                    size="small"
+                    options={Object.keys(plotConfig.calibrantRecord)}
+                    value={plotConfig.currentCalibrant}
+                    sx={{ width: 300, color: "white" }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="choose calibrant"
+                        sx={{ color: "white" }}
+                      />
+                    )}
+                    onChange={handleCalibrantUpdate}
+                  />
+                </Stack>
+              }
+            />
           </FormGroup>
+          {/* Axis control */}
           <FormControl>
             <FormLabel id="demo-radio-buttons-group-label">Axes:</FormLabel>
             <RadioGroup

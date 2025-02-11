@@ -2,6 +2,7 @@ import { unit } from "mathjs";
 import detectorData from "./detectors.json";
 import presetConfigData from "./presetConfigs.json";
 import beamlineData from "./beamlines.json";
+import calibrantData from "./calibrant.json";
 import {
   AppBeamline,
   AppDetector,
@@ -10,6 +11,7 @@ import {
   IODetector,
   IOPresetConfig,
   DetectorMask,
+  Calibrant,
 } from "../utils/types";
 import { LengthUnits, WavelengthUnits } from "../utils/units";
 
@@ -123,3 +125,5 @@ export const presetConfigRecord: Record<string, AppConfig> = Object.fromEntries(
  */
 export const defaultConfig =
   presetConfigRecord[Object.keys(presetConfigRecord)[0]];
+
+export const calibrantRecord = calibrantData as Record<string, Calibrant>;
