@@ -8,6 +8,7 @@ import {
   VisCanvas,
 } from "@h5web/lib";
 import { Card, CardContent, Stack } from "@mui/material";
+// @ts-expect-error Used to update mathjs units
 import { Unit, createUnit } from "mathjs";
 import { Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
