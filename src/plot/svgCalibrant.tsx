@@ -13,7 +13,7 @@ export interface SvgCalibrantProps extends SVGProps<SVGEllipseElement> {
 export default function SvgCalibrant(props: SvgCalibrantProps): JSX.Element {
   return (
     <>
-      {[...Array(props.ringFractions.length).keys()].map((item: number) => (
+      {props.ringFractions.map((item: number) => (
         <SvgAxisAlignedEllipse
           {...props}
           key={item}
@@ -22,12 +22,12 @@ export default function SvgCalibrant(props: SvgCalibrantProps): JSX.Element {
             getPointOnRing(
               props.beamCentre,
               props.endPointX,
-              new Vector3(props.ringFractions[item], 1),
+              new Vector3(item, 1),
             ),
             getPointOnRing(
               props.beamCentre,
               props.endPointY,
-              new Vector3(1, props.ringFractions[item]),
+              new Vector3(1, item),
             ),
           ]}
         />
@@ -36,15 +36,16 @@ export default function SvgCalibrant(props: SvgCalibrantProps): JSX.Element {
         strokeWidth={props.strokeWidth}
         stroke={props.stroke}
         coords={[
-          new Vector3(
-            2 * props.beamCentre.x - props.endPointX.x,
-            props.endPointX.y,
-          ),
+          getStartPointX(props.beamCentre, props.endPointX),
           props.endPointX,
         ]}
       />
     </>
   );
+}
+
+function getStartPointX(beamCentre: Vector3, point: Vector3): Vector3 {
+  return new Vector3(2 * beamCentre.x - point.x, point.y);
 }
 
 function getPointOnRing(

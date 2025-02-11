@@ -96,8 +96,7 @@ export class Ray {
   /**
    * Get the scalars of the intersection points of a rectangle with the ray.
    * @param topLeftCorner Top left corner of the rectangle
-   * @param width Width of the rectangle
-   * @param height Height of the rectangle
+   * @param dimensions A vector representing the dimensions of the rectangle
    * @returns NumericRange of the scalars
    */
   public getRectangleIntersectionRange(
@@ -105,31 +104,31 @@ export class Ray {
     dimensions: Vector2,
   ): NumericRange | null {
     let result: NumericRange | null;
-    const xmax = topLeftCorner.x + dimensions.x;
-    const xmin = topLeftCorner.x;
-    const ymax = topLeftCorner.y;
-    const ymin = topLeftCorner.y - dimensions.y;
+    const xMax = topLeftCorner.x + dimensions.x;
+    const xMin = topLeftCorner.x;
+    const yMax = topLeftCorner.y;
+    const yMin = topLeftCorner.y - dimensions.y;
 
     if (this.direction.x === 0) {
-      if (!new NumericRange(xmin, xmax).containsValue(this.initial_point.x))
+      if (!new NumericRange(xMin, xMax).containsValue(this.initial_point.x))
         return null;
       result = new NumericRange(0, Number.POSITIVE_INFINITY);
     } else
       result = new NumericRange(
-        (xmin - this.initial_point.x) / this.direction.x,
-        (xmax - this.initial_point.x) / this.direction.x,
+        (xMin - this.initial_point.x) / this.direction.x,
+        (xMax - this.initial_point.x) / this.direction.x,
       );
 
     if (this.direction.y == 0) {
-      if (!new NumericRange(ymin, ymax).containsValue(this.initial_point.y))
+      if (!new NumericRange(yMin, yMax).containsValue(this.initial_point.y))
         return null;
       return Ray.getParameterRange(result.min, result.max);
     }
 
     result = result.intersect(
       new NumericRange(
-        (ymin - this.initial_point.y) / this.direction.y,
-        (ymax - this.initial_point.y) / this.direction.y,
+        (yMin - this.initial_point.y) / this.direction.y,
+        (yMax - this.initial_point.y) / this.direction.y,
       ),
     );
 

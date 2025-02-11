@@ -118,22 +118,7 @@ export class Plotter implements IPlotter {
       mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel"),
     );
 
-    // Selects plotting strategy
-    if (
-      unitAxes === PlotAxes.reciprocal &&
-      beamlineConfig.cameraLength &&
-      beamlineConfig.wavelength
-    ) {
-      const scaleFactor = this._getScaleFactor(
-        beamlineConfig.wavelength,
-        beamlineConfig.cameraLength,
-      );
-      this.unitStrategy = new ReciprocalAxis(scaleFactor, this.beamstopCentre);
-    } else if (unitAxes === PlotAxes.pixel) {
-      this.unitStrategy = new PixelAxis();
-    } else {
-      this.unitStrategy = new MilimeterAxis();
-    }
+    this.unitStrategy = this._getAxisUnitStrategy(unitAxes);
 
     this.startVector = this.unitStrategy.convert(
       mathjs.unit(minPoint.x, LengthUnits.metre),
@@ -183,11 +168,13 @@ export class Plotter implements IPlotter {
       ),
     );
 
+    const centre = this.unitStrategy.convert(
+      this.beamstopCentre.x,
+      this.beamstopCentre.y,
+    );
+
     return {
-      centre: this.unitStrategy.convert(
-        this.beamstopCentre.x,
-        this.beamstopCentre.y,
-      ),
+      centre: centre,
       endPointX,
       endPointY,
     };
@@ -281,10 +268,12 @@ export class Plotter implements IPlotter {
       this.beamstopCentre,
     );
 
+    const ringFractions = this.calibrant.d.map((item) => maxRing / item);
+
     return {
       endPointX: this.unitStrategy.convert(maxPointX.x, maxPointX.y),
       endPointY: this.unitStrategy.convert(maxPointY.x, maxPointY.y),
-      ringFractions: this.calibrant.d.map((item) => maxRing / item),
+      ringFractions: ringFractions,
     };
   }
 
@@ -320,5 +309,30 @@ export class Plotter implements IPlotter {
       throw TypeError("scaleFactor should be a unit not a number");
     }
     return scaleFactor;
+  }
+
+  /**
+   * Selects plotting strategy
+   * @param unitAxes The selected units of the plot
+   * @returns
+   */
+  private _getAxisUnitStrategy(unitAxes: PlotAxes): AxisUnitStrategy {
+    if (
+      unitAxes === PlotAxes.reciprocal &&
+      this.beamlineConfig.cameraLength &&
+      this.beamlineConfig.wavelength
+    ) {
+      const scaleFactor = this._getScaleFactor(
+        this.beamlineConfig.wavelength,
+        this.beamlineConfig.cameraLength,
+      );
+      return new ReciprocalAxis(scaleFactor, this.beamstopCentre);
+    }
+
+    if (unitAxes === PlotAxes.pixel) {
+      return new PixelAxis();
+    }
+
+    return new MilimeterAxis();
   }
 }

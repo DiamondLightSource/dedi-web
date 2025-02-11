@@ -61,6 +61,7 @@ export class UnitVector {
   toVector2(): Vector2 {
     return new Vector2(this.x.toNumber(), this.y.toNumber());
   }
+
   toVector3(z: number): Vector3 {
     return new Vector3(this.x.toNumber(), this.y.toNumber(), z);
   }

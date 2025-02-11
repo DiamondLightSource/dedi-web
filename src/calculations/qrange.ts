@@ -69,8 +69,9 @@ export function computeQrange(
   const ray = new Ray(rayDirection, initialPosition);
 
   // Get the scalar range where the ray intersects with the detector
+  const topLeftCorner = new Vector2(0, detectorDimensions.y.toSI().toNumber());
   const detectorIntersectionRange = ray.getRectangleIntersectionRange(
-    new Vector2(0, detectorDimensions.y.toSI().toNumber()),
+    topLeftCorner,
     detectorDimensions.toSI().toVector2(),
   );
 
