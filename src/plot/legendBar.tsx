@@ -16,9 +16,13 @@ import {
 } from "@mui/material";
 import { PlotAxes, usePlotStore } from "./plotStore";
 import ColourPickerPopover from "../utils/colourPicker";
+import { useDetectorStore } from "../data-entry/detectorStore";
+import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 
 export default function LegendBar(): JSX.Element {
   const plotConfig = usePlotStore();
+  const detector = useDetectorStore((store) => store.detector);
+  const cameraTube = useCameraTubeStore((store) => store.cameraTube);
 
   const handleCalibrantUpdate = (
     _: React.SyntheticEvent,
@@ -60,30 +64,7 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
-            {/* Camera Tube */}
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={plotConfig.cameraTube}
-                  onChange={(_, checked) =>
-                    plotConfig.update({ cameraTube: checked })
-                  }
-                />
-              }
-              label={
-                <Stack direction={"row"}>
-                  <ColourPickerPopover
-                    color={plotConfig.cameraTubeColor}
-                    onChangeComplete={(color) =>
-                      plotConfig.update({ cameraTubeColor: color.rgb })
-                    }
-                  />
-                  <Typography display={"flex"} alignItems={"center"}>
-                    Camera Tube
-                  </Typography>
-                </Stack>
-              }
-            />
+
             {/* Beamstop */}
             <FormControlLabel
               control={
@@ -204,30 +185,59 @@ export default function LegendBar(): JSX.Element {
                 </Stack>
               }
             />
-            {/* Mask */}
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={plotConfig.mask}
-                  onChange={(_, checked) =>
-                    plotConfig.update({ mask: checked })
-                  }
-                />
-              }
-              label={
-                <Stack direction={"row"}>
-                  <ColourPickerPopover
-                    color={plotConfig.maskColor}
-                    onChangeComplete={(color) =>
-                      plotConfig.update({ maskColor: color.rgb })
+            {/* Camera Tube */}
+            {cameraTube && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={plotConfig.cameraTube}
+                    onChange={(_, checked) =>
+                      plotConfig.update({ cameraTube: checked })
                     }
                   />
-                  <Typography display={"flex"} alignItems={"center"}>
-                    Mask
-                  </Typography>
-                </Stack>
-              }
-            />
+                }
+                label={
+                  <Stack direction={"row"}>
+                    <ColourPickerPopover
+                      color={plotConfig.cameraTubeColor}
+                      onChangeComplete={(color) =>
+                        plotConfig.update({ cameraTubeColor: color.rgb })
+                      }
+                    />
+                    <Typography display={"flex"} alignItems={"center"}>
+                      Camera Tube
+                    </Typography>
+                  </Stack>
+                }
+              />
+            )}
+            {/* Mask */}
+            {detector.mask && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={plotConfig.mask}
+                    onChange={(_, checked) =>
+                      plotConfig.update({ mask: checked })
+                    }
+                  />
+                }
+                label={
+                  <Stack direction={"row"}>
+                    <ColourPickerPopover
+                      color={plotConfig.maskColor}
+                      onChangeComplete={(color) =>
+                        plotConfig.update({ maskColor: color.rgb })
+                      }
+                    />
+                    <Typography display={"flex"} alignItems={"center"}>
+                      Mask
+                    </Typography>
+                  </Stack>
+                }
+              />
+            )}
+
             {/* Calibrant */}
             <FormControlLabel
               control={

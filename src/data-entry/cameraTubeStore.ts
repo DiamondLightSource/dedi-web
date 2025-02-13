@@ -5,39 +5,54 @@ import { defaultConfig } from "../presets/presetManager";
 import { unit } from "mathjs";
 
 export interface CameraTubeStore {
-  cameraTube: AppCircularDevice;
+  cameraTube?: AppCircularDevice;
   updateCentre: (centre: Partial<SimpleVector2>) => void;
   updateDiameterUnits: (newUnits: LengthUnits) => void;
-  updateCameraTube: (presetCameraTube: AppCircularDevice) => void;
+  updateCameraTube: (presetCameraTube?: AppCircularDevice) => void;
   updateDiameter: (newDiameter: number, newUnits: LengthUnits) => void;
 }
 
 /**
  * Zustand store for the camera tube.
  */
-export const useCameraTubeStore = create<CameraTubeStore>((set) => ({
+export const useCameraTubeStore = create<CameraTubeStore>((set, get) => ({
   cameraTube: defaultConfig.cameraTube,
-  updateCentre: (newCentre: Partial<SimpleVector2>) =>
-    set((state) => ({
+  updateCentre: (newCentre: Partial<SimpleVector2>) => {
+    const cameraTube = get().cameraTube;
+    if (!cameraTube) {
+      return;
+    }
+    set(() => ({
       cameraTube: {
-        ...state.cameraTube,
-        centre: { ...state.cameraTube.centre, ...newCentre },
+        ...cameraTube,
+        centre: { ...cameraTube.centre, ...newCentre },
       },
-    })),
-  updateDiameterUnits: (newUnits: LengthUnits) =>
-    set((state) => ({
+    }));
+  },
+  updateDiameterUnits: (newUnits: LengthUnits) => {
+    const cameraTube = get().cameraTube;
+    if (!cameraTube) {
+      return;
+    }
+    set(() => ({
       cameraTube: {
-        ...state.cameraTube,
-        diameter: state.cameraTube.diameter.to(newUnits as string),
+        ...cameraTube,
+        diameter: cameraTube.diameter.to(newUnits as string),
       },
-    })),
-  updateCameraTube: (presetCameraTube: AppCircularDevice) =>
+    }));
+  },
+  updateCameraTube: (presetCameraTube?: AppCircularDevice) =>
     set({ cameraTube: presetCameraTube }),
-  updateDiameter: (newDiameter: number, newUnits: LengthUnits) =>
-    set((state) => ({
+  updateDiameter: (newDiameter: number, newUnits: LengthUnits) => {
+    const cameraTube = get().cameraTube;
+    if (!cameraTube) {
+      return;
+    }
+    set(() => ({
       cameraTube: {
-        ...state.cameraTube,
+        ...cameraTube,
         diameter: unit(newDiameter, newUnits as string),
       },
-    })),
+    }));
+  },
 }));

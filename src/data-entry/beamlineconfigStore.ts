@@ -1,28 +1,16 @@
 import { AppBeamline } from "../utils/types";
 import { create } from "zustand";
 import { AngleUnits, EnergyUnits, WavelengthUnits } from "../utils/units";
-import { beamlineRecord, defaultConfig } from "../presets/presetManager";
+import { defaultConfig } from "../presets/presetManager";
 import { Unit, unit } from "mathjs";
 import { wavelength2EnergyConverter } from "../utils/units";
 
 export interface BeamlineConfigStore {
-  beamlineName: string;
   beamline: AppBeamline;
-  beamlineRecord: Record<string, AppBeamline>;
-
   energy: Unit;
   userEnergy: number | null;
-
-  wavelength: Unit;
   userWavelength: number | null;
-
-  angle: Unit;
   userAngle: number | null;
-
-  cameraLength: number | null;
-
-  updateBeamline: (newBeamline: string) => void;
-  addNewBeamline: (name: string, beamline: AppBeamline) => void;
 
   updateEnergy: (newEnergy: number | null, newUnits: EnergyUnits) => void;
   updateEnergyUnits: (newUnits: EnergyUnits) => void;
@@ -41,75 +29,77 @@ export interface BeamlineConfigStore {
  * Zustand store for information relating to the beamline
  */
 export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
-  beamline: beamlineRecord[defaultConfig.beamline],
+  beamline: defaultConfig.beamline,
   beamlineName: defaultConfig.beamline,
-  beamlineRecord: beamlineRecord,
 
-  energy: wavelength2EnergyConverter(defaultConfig.wavelength).to(
+  energy: wavelength2EnergyConverter(defaultConfig.beamline.wavelength).to(
     EnergyUnits.kiloElectronVolts,
   ),
-  userEnergy: wavelength2EnergyConverter(defaultConfig.wavelength)
+  userEnergy: wavelength2EnergyConverter(defaultConfig.beamline.wavelength)
     .to(EnergyUnits.kiloElectronVolts)
     .toNumber(),
 
-  wavelength: defaultConfig.wavelength,
-  userWavelength: defaultConfig.wavelength.toNumber(),
+  userWavelength: defaultConfig.beamline.wavelength.toNumber(),
 
-  angle: defaultConfig.angle,
-  userAngle: defaultConfig.angle.toNumber(),
-
-  cameraLength: defaultConfig.cameraLength,
-
-  updateBeamline: (newBeamline: string) =>
-    set((state: BeamlineConfigStore) => ({
-      beamline: state.beamlineRecord[newBeamline],
-      beamlineName: newBeamline,
-    })),
-
-  addNewBeamline: (name: string, beamline: AppBeamline) => {
-    {
-      set((state: BeamlineConfigStore) => ({
-        beamlineRecord: { ...state.beamlineRecord, [name]: beamline },
-      }));
-    }
-  },
+  userAngle: defaultConfig.beamline.angle.toNumber(),
 
   updateAngle: (newAngle: number | null, newUnits: string) =>
-    set({
-      angle: unit(newAngle ?? NaN, newUnits),
-      userAngle: newAngle,
-    }),
-
-  updateAngleUnits: (newUnits: AngleUnits) =>
     set((state) => ({
-      angle: state.angle.to(newUnits),
-      userAngle: state.angle.to(newUnits).toNumber(),
+      beamline: {
+        ...state.beamline,
+        angle: unit(newAngle ?? NaN, newUnits),
+      },
+      userAngle: newAngle,
     })),
+
+  updateAngleUnits: (newUnits: AngleUnits) => {
+    set((state) => ({
+      beamline: {
+        ...state.beamline,
+        angle: state.beamline.angle.to(newUnits),
+      },
+      userAngle: state.beamline.angle.to(newUnits).toNumber(),
+    }));
+  },
 
   updateCameraLength: (newLength: number | null) =>
-    set({ cameraLength: newLength }),
-
-  updateWavelength: (newWavelength: number | null, newUnits: WavelengthUnits) =>
     set((state) => ({
-      wavelength: unit(newWavelength ?? NaN, newUnits),
+      beamline: {
+        ...state.beamline,
+        cameraLength: newLength,
+      },
+    })),
+
+  updateWavelength: (
+    newWavelength: number | null,
+    newUnits: WavelengthUnits,
+  ) => {
+    set((state) => ({
+      beamline: {
+        ...state.beamline,
+        wavelength: unit(newWavelength ?? NaN, newUnits),
+        wavelengthLimits: {
+          min: state.beamline.wavelengthLimits.min.to(newUnits),
+          max: state.beamline.wavelengthLimits.max.to(newUnits),
+        },
+      },
       userWavelength: newWavelength,
-      beamline: {
-        ...state.beamline,
-        minWavelength: state.beamline.minWavelength.to(newUnits),
-        maxWavelength: state.beamline.maxWavelength.to(newUnits),
-      },
-    })),
+    }));
+  },
 
-  updateWavelengthUnits: (newUnits: WavelengthUnits) =>
+  updateWavelengthUnits: (newUnits: WavelengthUnits) => {
     set((state) => ({
-      wavelength: state.wavelength.to(newUnits),
-      userWavelength: state.wavelength.to(newUnits).toNumber(),
       beamline: {
         ...state.beamline,
-        minWavelength: state.beamline.minWavelength.to(newUnits),
-        maxWavelength: state.beamline.maxWavelength.to(newUnits),
+        wavelength: state.beamline.wavelength.to(newUnits),
+        wavelengthLimits: {
+          min: state.beamline.wavelengthLimits.min.to(newUnits),
+          max: state.beamline.wavelengthLimits.max.to(newUnits),
+        },
       },
-    })),
+      userWavelength: state.beamline.wavelength.to(newUnits).toNumber(),
+    }));
+  },
 
   updateEnergy: (newEnergy: number | null, newUnits: EnergyUnits) =>
     set({
