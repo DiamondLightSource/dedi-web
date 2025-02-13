@@ -38,12 +38,7 @@ import { AppDetector } from "../utils/types";
 
 // Define Zustand selectors outside of render function for useMemo
 const detectorSelector = (state: DetectorStore) => state.detector;
-const beamlineConfigSelector = (state: BeamlineConfigStore) => ({
-  beamline: state.beamline,
-  wavelength: state.wavelength,
-  angle: state.angle,
-  cameraLength: state.cameraLength,
-});
+const beamlineConfigSelector = (state: BeamlineConfigStore) => state.beamline;
 const beamstopSelector = (state: BeamstopStore) => state.beamstop;
 const cameraTubeSelector = (state: CameraTubeStore) => state.cameraTube;
 const RequestedRangeSelector = (state: ResultStore) => {
@@ -77,12 +72,11 @@ export default function CentrePlot(): JSX.Element {
   // Calculate qrange if anything has changed
   const { minPoint, maxPoint, visibleQRange, fullQRange } = useMemo(() => {
     console.info(formatLogMessage("Calculating Q range"));
-    return computeQrange(detector, beamstop, cameraTube, beamlineConfig);
+    return computeQrange(detector, beamstop, beamlineConfig, cameraTube);
   }, [detector, beamstop, cameraTube, beamlineConfig]);
 
   const plotter = new Plotter(
     beamstop,
-    cameraTube,
     detector,
     beamlineConfig,
     calibrant,
@@ -90,6 +84,7 @@ export default function CentrePlot(): JSX.Element {
     maxPoint,
     requestedRange,
     plotConfig.plotAxes,
+    cameraTube,
   );
 
   const plotBeamstop = plotter.createBeamstop();
@@ -168,7 +163,7 @@ export default function CentrePlot(): JSX.Element {
                     calibrantEndPointY,
                   ) => (
                     <SvgElement>
-                      {plotConfig.cameraTube && (
+                      {plotConfig.cameraTube && cameraTube && (
                         <SvgAxisAlignedEllipse
                           coords={[
                             cameraTubeCentre,
@@ -186,7 +181,7 @@ export default function CentrePlot(): JSX.Element {
                           id="detector"
                         />
                       )}
-                      {plotConfig.mask && (
+                      {plotConfig.mask && detector.mask && (
                         <SvgMask
                           coords={[detectorLower, detectorUpper]}
                           fill={color2String(plotConfig.maskColor)}

@@ -7,10 +7,10 @@ import {
   PlotRectangle,
 } from "./plotUtils";
 import {
+  AppBeamline,
   AppBeamstop,
   AppCircularDevice,
   AppDetector,
-  BeamlineConfig,
   Calibrant,
 } from "../utils/types";
 import { LengthUnits } from "../utils/units";
@@ -87,22 +87,21 @@ export class Plotter implements IPlotter {
   private endVector: Vector3;
   private unitStrategy: AxisUnitStrategy;
   private requestedRange: UnitRange | null;
-  private beamlineConfig: BeamlineConfig;
+  private beamlineConfig: AppBeamline;
   private calibrant: Calibrant;
 
   constructor(
     beamstop: AppBeamstop,
-    cameraTube: AppCircularDevice,
     detector: AppDetector,
-    beamlineConfig: BeamlineConfig,
+    beamlineConfig: AppBeamline,
     calibrant: Calibrant,
     minPoint: Vector2,
     maxPoint: Vector2,
     requestedRange: UnitRange | null,
     unitAxes: PlotAxes,
+    cameraTube?: AppCircularDevice,
   ) {
     this.beamstop = beamstop;
-    this.cameraTube = cameraTube;
     this.detector = detector;
     this.beamlineConfig = beamlineConfig;
     this.requestedRange = requestedRange;
@@ -113,9 +112,16 @@ export class Plotter implements IPlotter {
       mathjs.unit(this.beamstop.centre.y ?? NaN, "ypixel"),
     );
 
+    this.cameraTube = cameraTube
+      ? cameraTube
+      : {
+          centre: { x: 0, y: 0 },
+          diameter: mathjs.unit(0, LengthUnits.millimetre),
+        };
+
     this.cameraTubeCentre = new UnitVector(
-      mathjs.unit(cameraTube.centre.x ?? NaN, "xpixel"),
-      mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel"),
+      mathjs.unit(this.cameraTube.centre.x ?? NaN, "xpixel"),
+      mathjs.unit(this.cameraTube.centre.y ?? NaN, "ypixel"),
     );
 
     this.unitStrategy = this._getAxisUnitStrategy(unitAxes);
@@ -297,13 +303,10 @@ export class Plotter implements IPlotter {
     };
   }
 
-  private _getScaleFactor(wavelength: mathjs.Unit, cameraLength: number) {
+  private _getScaleFactor(wavelength: mathjs.Unit, cameraLength: mathjs.Unit) {
     const scaleFactor = mathjs.divide(
       2 * Math.PI,
-      mathjs.multiply(
-        mathjs.unit(cameraLength, LengthUnits.metre),
-        wavelength.to(LengthUnits.metre),
-      ),
+      mathjs.multiply(cameraLength, wavelength.to(LengthUnits.metre)),
     );
     if (typeof scaleFactor == "number" || !("units" in scaleFactor)) {
       throw TypeError("scaleFactor should be a unit not a number");
@@ -324,7 +327,7 @@ export class Plotter implements IPlotter {
     ) {
       const scaleFactor = this._getScaleFactor(
         this.beamlineConfig.wavelength,
-        this.beamlineConfig.cameraLength,
+        mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
       );
       return new ReciprocalAxis(scaleFactor, this.beamstopCentre);
     }

@@ -3,10 +3,10 @@ import { Vector2, Vector3 } from "three";
 import QSpace, { DetectorProperties } from "../calculations/qspace";
 import { Ray } from "../calculations/ray";
 import {
-  BeamlineConfig,
   AppBeamstop,
   AppCircularDevice,
   AppDetector,
+  AppBeamline,
 } from "../utils/types";
 import NumericRange from "./numericRange";
 import { formatLogMessage } from "../utils/units";
@@ -23,8 +23,6 @@ const defaultReturn = {
   fullQRange: null,
 };
 
-// todo suggestion: this function is quite big.
-// I created blocks in it with comments (not the only way to do this)
 /**
  * Computes the qrange given detector, beamstop, cameraTube, and Beamproperties
  * @param detector
@@ -36,21 +34,16 @@ const defaultReturn = {
 export function computeQrange(
   detector: AppDetector,
   beamstop: AppBeamstop,
-  cameraTube: AppCircularDevice,
-  beamProperties: BeamlineConfig,
+  beamProperties: AppBeamline,
+  cameraTube?: AppCircularDevice,
 ): {
   minPoint: Vector2;
   maxPoint: Vector2;
   visibleQRange: NumericRange | null;
   fullQRange: NumericRange | null;
 } {
-  const {
-    clearanceDimensions,
-    beamcentre,
-    detectorDimensions,
-    cameraTubeDimensions,
-    cameraLength,
-  } = getRightUnits(beamProperties, beamstop, detector, cameraTube);
+  const { clearanceDimensions, beamcentre, detectorDimensions, cameraLength } =
+    getRightUnits(beamProperties, beamstop, detector);
 
   // Use angle to get ray direction
   const rayDirection = new Vector2(
@@ -84,10 +77,13 @@ export function computeQrange(
   // Then the insection of the detector and camera tube ranges
   let intersection: NumericRange | null = detectorIntersectionRange;
 
-  const cameraOk =
-    cameraTube !== null && cameraTube.diameter.toSI().toNumber() !== 0;
+  const cameraOk = cameraTube && cameraTube.diameter.toSI().toNumber() !== 0;
 
   if (cameraOk) {
+    const cameraTubeDimensions = new UnitVector(
+      mathjs.unit(cameraTube.centre.x ?? NaN, "xpixel"),
+      mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel"),
+    );
     const radius = mathjs.divide(cameraTube.diameter, 2).toSI().toNumber();
     const centre = cameraTubeDimensions.toSI().toVector2();
     intersection = detectorIntersectionRange.intersect(
@@ -107,9 +103,8 @@ export function computeQrange(
   // Get the points points for the intersection range
   const minPoint = ray.getPoint(intersection.min);
   const maxPoint = ray.getPoint(intersection.max);
-
   const origin = beamcentre.toSI().toVector3(cameraLength.toSI().toNumber());
-
+  console.log(origin);
   // Assume neam hits detector orthogonally
   const beamVector = new Vector3(0, 0, 1);
 
@@ -126,16 +121,16 @@ export function computeQrange(
   const visibleQMax = qspace.qFromPixelPosition(maxPoint);
 
   // get the min
-  detProps.origin.z = beamProperties.beamline.minCameraLength.toSI().toNumber();
+  detProps.origin.z = beamProperties.cameraLimits.min.toSI().toNumber();
   qspace.setDiffractionCrystalEnviroment(
-    beamProperties.beamline.minWavelength.toSI().toNumber(),
+    beamProperties.wavelengthLimits.min.toSI().toNumber(),
   );
   const fullQMin = qspace.qFromPixelPosition(maxPoint);
 
   // get the max
-  detProps.origin.z = beamProperties.beamline.maxCameraLength.toSI().toNumber();
+  detProps.origin.z = beamProperties.cameraLimits.max.toSI().toNumber();
   qspace.setDiffractionCrystalEnviroment(
-    beamProperties.beamline.maxWavelength.toSI().toNumber(),
+    beamProperties.wavelengthLimits.max.toSI().toNumber(),
   );
   const fullQMax = qspace.qFromPixelPosition(minPoint);
 
@@ -165,15 +160,13 @@ export function computeQrange(
  * @returns Information needed to calculate qrange in correct units.
  */
 function getRightUnits(
-  beamProperties: BeamlineConfig,
+  beamProperties: AppBeamline,
   beamstop: AppBeamstop,
   detector: AppDetector,
-  cameraTube: AppCircularDevice,
 ): {
   clearanceDimensions: UnitVector;
   beamcentre: UnitVector;
   detectorDimensions: UnitVector;
-  cameraTubeDimensions: UnitVector;
   cameraLength: mathjs.Unit;
 } {
   const cameraLength = mathjs.unit(beamProperties.cameraLength ?? NaN, "m");
@@ -195,16 +188,10 @@ function getRightUnits(
     mathjs.unit(detector.resolution.height, "ypixel"),
   );
 
-  const cameraTubeDimensions = new UnitVector(
-    mathjs.unit(cameraTube.centre.x ?? NaN, "xpixel"),
-    mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel"),
-  );
-
   return {
     clearanceDimensions,
     beamcentre,
     detectorDimensions,
-    cameraTubeDimensions,
     cameraLength,
   };
 }

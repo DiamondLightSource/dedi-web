@@ -1,7 +1,6 @@
 import { unit } from "mathjs";
 import detectorData from "./detectors.json";
 import presetConfigData from "./presetConfigs.json";
-import beamlineData from "./beamlines.json";
 import calibrantData from "./calibrant.json";
 import {
   AppBeamline,
@@ -9,28 +8,20 @@ import {
   AppConfig,
   IOBeamline,
   IODetector,
-  IOPresetConfig,
-  DetectorMask,
   Calibrant,
+  IOBeamstop,
+  AppBeamstop,
+  IOCircularDevice,
+  AppCircularDevice,
+  IOWavelengthLimits,
+  AppWavelengthLimits,
+  AppCameraLimits,
+  IOCameraLimits,
 } from "../utils/types";
-import { LengthUnits, WavelengthUnits } from "../utils/units";
+import { AngleUnits, LengthUnits, WavelengthUnits } from "../utils/units";
 
-const DefaultDetectorMask: DetectorMask = {
-  horizontalModules: 1,
-  verticalModules: 1,
-  horizontalGap: 0,
-  verticalGap: 0,
-  missingModules: [],
-};
-
-/**
- * Creates an internal detector with pixel size units from an IODetector
- * @param detectorData IOdetector input
- * @returns AppDetector output
- */
 export function createInternalDetector(detectorData: IODetector): AppDetector {
   return {
-    mask: DefaultDetectorMask,
     ...detectorData,
     pixelSize: {
       height: unit(detectorData.pixelSize.height, LengthUnits.millimetre),
@@ -39,91 +30,80 @@ export function createInternalDetector(detectorData: IODetector): AppDetector {
   };
 }
 
-/**
- * Holds all the preset detectors as AppDetectors
- */
+export function createInternalBeamtop(beamstop: IOBeamstop): AppBeamstop {
+  return {
+    ...beamstop,
+    diameter: unit(beamstop.diameter, LengthUnits.millimetre),
+  };
+}
+
+export function createInternalCameraTube(
+  cameraTube?: IOCircularDevice,
+): AppCircularDevice | undefined {
+  if (!cameraTube) {
+    return cameraTube;
+  }
+  return {
+    ...cameraTube,
+    diameter: unit(cameraTube.diameter, LengthUnits.millimetre),
+  };
+}
+
+export function createInternalWavelengthLimits(
+  limits: IOWavelengthLimits,
+): AppWavelengthLimits {
+  return {
+    min: unit(limits.min, WavelengthUnits.nanometres).to(
+      WavelengthUnits.nanometres,
+    ),
+    max: unit(limits.max, WavelengthUnits.nanometres).to(
+      WavelengthUnits.nanometres,
+    ),
+  };
+}
+
+export function createInternalCameraLimits(
+  limits: IOCameraLimits,
+): AppCameraLimits {
+  return {
+    min: unit(limits.min, LengthUnits.metre),
+    max: unit(limits.max, LengthUnits.metre),
+    step: unit(limits.step, LengthUnits.metre),
+  };
+}
+
+export function createInternalBeamline(beamline: IOBeamline): AppBeamline {
+  return {
+    wavelengthLimits: createInternalWavelengthLimits(beamline.wavelengthLimits),
+    cameraLimits: createInternalCameraLimits(beamline.cameraLengthLimits),
+    wavelength: unit(NaN, WavelengthUnits.nanometres),
+    angle: unit(90, AngleUnits.degrees),
+    cameraLength: beamline.cameraLengthLimits.min,
+  };
+}
+
+export function createAppConfig(beamline: IOBeamline): AppConfig {
+  return {
+    detector: beamline.detector,
+    beamstop: createInternalBeamtop(beamline.beamstop),
+    cameraTube: createInternalCameraTube(beamline.cameraTube),
+    beamline: createInternalBeamline(beamline),
+  };
+}
+
 export const detectorRecord: Record<string, AppDetector> = Object.fromEntries(
   Object.entries(detectorData as Record<string, IODetector>).map(
     ([key, value]) => [key, createInternalDetector(value)],
   ),
 );
 
-/**
- * Creates an internal beamline with units from an IODetector
- * @param beamlineData Input IOBeamline
- * @returns AppBeamline with correct data
- */
-export function createInternalBeamline(beamlineData: IOBeamline): AppBeamline {
-  return {
-    cameratubeDiameter: beamlineData.cameratubeDiameter,
-    beamstopDiameter: beamlineData.beamstopDiameter,
-    // Solution to units not being properly initialised
-    minWavelength: unit(
-      beamlineData.minWavelength,
-      WavelengthUnits.nanometres,
-    ).to(WavelengthUnits.nanometres),
-    maxWavelength: unit(
-      beamlineData.maxWavelength,
-      WavelengthUnits.nanometres,
-    ).to(WavelengthUnits.nanometres),
-    minCameraLength: unit(beamlineData.minCameraLength, LengthUnits.metre),
-    maxCameraLength: unit(beamlineData.maxCameraLength, LengthUnits.metre),
-    cameraLengthStep: unit(beamlineData.cameraLengthStep, LengthUnits.metre),
-  };
-}
+export const presetConfigRecord = presetConfigData as Record<
+  string,
+  IOBeamline
+>;
 
-/**
- * Holds all the preset beamlines as AppBeamlines
- */
-export const beamlineRecord: Record<string, AppBeamline> = Object.fromEntries(
-  Object.entries(beamlineData as Record<string, IOBeamline>).map(
-    ([key, value]) => [key, createInternalBeamline(value)],
-  ),
+export const defaultConfig = createAppConfig(
+  presetConfigRecord[Object.keys(presetConfigRecord)[0]],
 );
-
-/**
- * Creates internal AppConfig from IOPresetConfig
- * @param preset input IOPresetConfig
- * @returns
- */
-function createPresetConfigRecord(preset: IOPresetConfig): AppConfig {
-  return {
-    ...preset,
-    beamstop: {
-      ...preset.beamstop,
-      diameter: unit(
-        beamlineRecord[preset.beamline].beamstopDiameter,
-        LengthUnits.millimetre,
-      ),
-    },
-    cameraTube: {
-      ...preset.cameraTube,
-      diameter: unit(
-        beamlineRecord[preset.beamline].cameratubeDiameter,
-        LengthUnits.millimetre,
-      ),
-    },
-    wavelength: unit(NaN, "nm"),
-    angle: unit(90, "deg"),
-    cameraLength: beamlineRecord[preset.beamline].minCameraLength.toNumber(
-      LengthUnits.metre,
-    ),
-  };
-}
-
-/**
- * Holds the internal app configurations
- */
-export const presetConfigRecord: Record<string, AppConfig> = Object.fromEntries(
-  Object.entries(presetConfigData as Record<string, IOPresetConfig>).map(
-    ([key, value]) => [key, createPresetConfigRecord(value)],
-  ),
-);
-
-/**
- * Sets how the app is configured by default
- */
-export const defaultConfig =
-  presetConfigRecord[Object.keys(presetConfigRecord)[0]];
 
 export const calibrantRecord = calibrantData as Record<string, Calibrant>;

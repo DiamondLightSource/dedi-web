@@ -36,7 +36,7 @@ export default function BeampropertiesDataEntry() {
   const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
     beamlineConfig.updateAngle(
       parseNumericInput(event.target.value),
-      beamlineConfig.angle.formatUnits() as AngleUnits,
+      beamlineConfig.beamline.angle.formatUnits() as AngleUnits,
     );
   };
 
@@ -44,10 +44,13 @@ export default function BeampropertiesDataEntry() {
     const newWavelength = parseNumericInput(event.target.value);
     beamlineConfig.updateWavelength(
       newWavelength,
-      beamlineConfig.wavelength.formatUnits() as WavelengthUnits,
+      beamlineConfig.beamline.wavelength.formatUnits() as WavelengthUnits,
     );
     const newEnergy = wavelength2EnergyConverter(
-      unit(newWavelength ?? NaN, beamlineConfig.wavelength.formatUnits()),
+      unit(
+        newWavelength ?? NaN,
+        beamlineConfig.beamline.wavelength.formatUnits(),
+      ),
     );
     beamlineConfig.updateEnergy(
       newEnergy.to(beamlineConfig.energy.formatUnits()).toNumber(),
@@ -69,8 +72,10 @@ export default function BeampropertiesDataEntry() {
       unit(newEnergy ?? NaN, beamlineConfig.energy.formatUnits()),
     );
     beamlineConfig.updateWavelength(
-      newWavelength.to(beamlineConfig.wavelength.formatUnits()).toNumber(),
-      beamlineConfig.wavelength.formatUnits() as WavelengthUnits,
+      newWavelength
+        .to(beamlineConfig.beamline.wavelength.formatUnits())
+        .toNumber(),
+      beamlineConfig.beamline.wavelength.formatUnits() as WavelengthUnits,
     );
   };
 
@@ -79,6 +84,7 @@ export default function BeampropertiesDataEntry() {
   };
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
     beamlineConfig.updateCameraLength(parseNumericInput(event.target.value));
   };
 
@@ -126,7 +132,10 @@ export default function BeampropertiesDataEntry() {
           <Select
             size="small"
             label="units"
-            value={beamlineConfig.wavelength.formatUnits() as WavelengthUnits}
+            value={
+              // eslint-disable-next-line max-len
+              beamlineConfig.beamline.wavelength.formatUnits() as WavelengthUnits
+            }
             onChange={handleWavelengthUnits}
           >
             <MenuItem value={WavelengthUnits.nanometres}>
@@ -140,23 +149,23 @@ export default function BeampropertiesDataEntry() {
       </Stack>
       <Typography>
         Minimum allowed wavelength:
-        {" " + beamlineConfig.beamline.minWavelength.toString()}
+        {" " + beamlineConfig.beamline.wavelengthLimits.min.toString()}
       </Typography>
       <Typography>
         Maximum allowed wavelength:
-        {" " + beamlineConfig.beamline.maxWavelength.toString()}
+        {" " + beamlineConfig.beamline.wavelengthLimits.max.toString()}
       </Typography>
       <Stack direction="row" spacing={1}>
         <TextField
           type="number"
           size="small"
           label="camera length"
-          value={beamlineConfig.cameraLength ?? ""}
+          value={beamlineConfig.beamline.cameraLength ?? ""}
           InputProps={{
             inputProps: {
-              max: beamlineConfig.beamline.maxCameraLength.toNumber(),
-              min: beamlineConfig.beamline.minCameraLength.toNumber(),
-              step: beamlineConfig.beamline.cameraLengthStep.toNumber(),
+              max: beamlineConfig.beamline.cameraLimits.max.toNumber(),
+              min: beamlineConfig.beamline.cameraLimits.min.toNumber(),
+              step: beamlineConfig.beamline.cameraLimits.step.toNumber(),
             },
             endAdornment: <InputAdornment position="end">m</InputAdornment>,
           }}
@@ -178,7 +187,7 @@ export default function BeampropertiesDataEntry() {
           <Select
             size="small"
             label="units"
-            value={beamlineConfig.angle.formatUnits() as AngleUnits}
+            value={beamlineConfig.beamline.angle.formatUnits() as AngleUnits}
             onChange={handleAngleUnits}
           >
             <MenuItem value={AngleUnits.radians}>{AngleUnits.radians}</MenuItem>

@@ -14,7 +14,7 @@ export interface SimpleVector2 {
 export interface AppDetector {
   readonly resolution: { height: number; width: number };
   readonly pixelSize: { height: Unit; width: Unit };
-  readonly mask: DetectorMask;
+  readonly mask?: DetectorMask;
 }
 
 /**
@@ -33,32 +33,6 @@ export interface AppBeamstop extends AppCircularDevice {
 }
 
 /**
- * Internal Beamline type (contains all immutable information about a beamline)
- */
-export interface AppBeamline {
-  readonly beamstopDiameter: number;
-  readonly cameratubeDiameter: number;
-  readonly minWavelength: Unit;
-  readonly maxWavelength: Unit;
-  readonly minCameraLength: Unit;
-  readonly maxCameraLength: Unit;
-  readonly cameraLengthStep: Unit;
-}
-
-/**
- * Internal Full AppConfig
- */
-export interface AppConfig {
-  detector: string;
-  beamstop: AppBeamstop;
-  cameraTube: AppCircularDevice;
-  beamline: string;
-  wavelength: Unit;
-  angle: Unit;
-  cameraLength: number | null;
-}
-
-/**
  * External Detector type used in IO
  */
 export interface IODetector {
@@ -72,19 +46,7 @@ export interface IODetector {
  */
 export interface IOCircularDevice {
   readonly centre: SimpleVector2;
-}
-
-/**
- * External Beamline type for use in
- */
-export interface IOBeamline {
-  readonly beamstopDiameter: number;
-  readonly cameratubeDiameter: number;
-  readonly minWavelength: number;
-  readonly maxWavelength: number;
-  readonly minCameraLength: number;
-  readonly maxCameraLength: number;
-  readonly cameraLengthStep: number;
+  readonly diameter: number;
 }
 
 /**
@@ -92,23 +54,6 @@ export interface IOBeamline {
  */
 export interface IOBeamstop extends IOCircularDevice {
   readonly clearance: number | null;
-}
-
-/**
- * External Preset Config type
- */
-export interface IOPresetConfig {
-  readonly detector: string;
-  readonly beamline: string;
-  readonly beamstop: IOBeamstop;
-  readonly cameraTube: IOCircularDevice;
-}
-
-export interface BeamlineConfig {
-  beamline: AppBeamline;
-  wavelength: Unit;
-  angle: Unit;
-  cameraLength: number | null;
 }
 
 export interface DetectorMask {
@@ -121,4 +66,49 @@ export interface DetectorMask {
 
 export interface Calibrant {
   readonly d: number[];
+}
+
+export interface IOCameraLimits {
+  readonly min: number;
+  readonly max: number;
+  readonly step: number;
+}
+
+export interface AppCameraLimits {
+  readonly min: Unit;
+  readonly max: Unit;
+  readonly step: Unit;
+}
+
+export interface IOWavelengthLimits {
+  readonly min: number;
+  readonly max: number;
+}
+
+export interface AppWavelengthLimits {
+  readonly min: Unit;
+  readonly max: Unit;
+}
+
+export interface IOBeamline {
+  readonly detector: string;
+  readonly beamstop: IOBeamstop;
+  readonly cameraTube?: IOCircularDevice;
+  readonly wavelengthLimits: IOWavelengthLimits;
+  readonly cameraLengthLimits: IOCameraLimits;
+}
+
+export interface AppBeamline {
+  readonly wavelengthLimits: AppWavelengthLimits;
+  readonly cameraLimits: AppCameraLimits;
+  wavelength: Unit;
+  angle: Unit;
+  cameraLength: number | null;
+}
+
+export interface AppConfig {
+  detector: string;
+  beamstop: AppBeamstop;
+  cameraTube?: AppCircularDevice;
+  beamline: AppBeamline;
 }

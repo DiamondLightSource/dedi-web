@@ -1,36 +1,78 @@
 {
   "I22 SAXS Isotropic": {
     "detector": "Pilatus P3-2M",
-    "beamline": "I22",
     "beamstop": {
       "centre": {
         "x": 738,
         "y": 100
       },
-      "clearance": 10
+      "clearance": 10,
+      "diameter": 4
     },
     "cameraTube": {
       "centre": {
         "x": 738,
         "y": 840
-      }
+      },
+      "diameter": 310
+    },
+    "wavelengthLimits": {
+      "min": 0.062,
+      "max": 0.335
+    },
+    "cameraLengthLimits": {
+      "min": 1.9,
+      "max": 9.9,
+      "step": 0.25
     }
+
   },
   "I22 SAXS Anisotropic": {
     "detector": "Pilatus P3-2M",
-    "beamline": "I22",
     "beamstop": {
       "centre": {
         "x": 738,
         "y": 840
       },
-      "clearance": 10
+      "clearance": 10,
+      "diameter": 4
     },
     "cameraTube": {
       "centre": {
         "x": 738,
         "y": 840
-      }
+      },
+      "diameter": 310
+    },
+    "wavelengthLimits": {
+      "min": 0.062,
+      "max": 0.335
+    },
+    "cameraLengthLimits": {
+      "min": 1.9,
+      "max": 9.9,
+      "step": 0.25
+    }
+
+  },
+  "I22 WAX" :{
+    "detector": "Pilatus P3-2M-DLS (for WAXS)",
+    "beamstop": {
+      "centre": {
+        "x": 1.1e3,
+        "y": 1.08e3
+      },
+      "clearance": 10,
+      "diameter": 4
+    },
+    "wavelengthLimits": {
+      "min": 0.062,
+      "max": 0.335
+    },
+    "cameraLengthLimits": {
+      "min": 0.18,
+      "max": 1,
+      "step": 0.01
     }
   }
 }

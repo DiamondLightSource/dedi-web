@@ -15,13 +15,9 @@ import { LengthUnits, MuSymbol } from "../utils/units";
 import BeamStopDataEntry from "./beamstop";
 import CameraTubeDataEntry from "./cameraTube";
 import BeampropertiesDataEntry from "./beamProperties";
-import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { useDetectorStore } from "./detectorStore";
 import DetectorDialog from "../dialogs/detectorDialog";
 import React from "react";
-import PresetDialog from "../dialogs/beamlineDialog";
-import { useBeamstopStore } from "./beamstopStore";
-import { useCameraTubeStore } from "./cameraTubeStore";
 
 /**
  * React components which represents the whole side bar for data entry.
@@ -29,9 +25,6 @@ import { useCameraTubeStore } from "./cameraTubeStore";
  */
 export default function DataSideBar(): JSX.Element {
   const detectorStore = useDetectorStore();
-  const beamstopStore = useBeamstopStore();
-  const cameraTubeStore = useCameraTubeStore();
-  const beamlineConfigStore = useBeamlineConfigStore();
 
   const [openDetector, setOpenDetector] = React.useState(false);
 
@@ -43,66 +36,9 @@ export default function DataSideBar(): JSX.Element {
     setOpenDetector(false);
   };
 
-  const [openBeamline, setOpenBeamline] = React.useState(false);
-
-  const handleClickOpenPreset = () => {
-    setOpenBeamline(true);
-  };
-
-  const handleClosePreset = () => {
-    setOpenBeamline(false);
-  };
-
-  const handleBeamlineUpdate = (
-    _: React.SyntheticEvent,
-    value: string | null,
-  ) => {
-    if (value) {
-      beamlineConfigStore.updateBeamline(value);
-      beamstopStore.updateDiameter(
-        beamlineConfigStore.beamlineRecord[value].beamstopDiameter,
-        LengthUnits.millimetre,
-      );
-      cameraTubeStore.updateDiameter(
-        beamlineConfigStore.beamlineRecord[value].cameratubeDiameter,
-        LengthUnits.millimetre,
-      );
-    }
-  };
-
   return (
     <Stack maxHeight={{ lg: "91vh" }} overflow={{ lg: "scroll" }}>
       <Stack spacing={1}>
-        <Card sx={{ p: 2 }} variant="outlined">
-          <Stack spacing={1}>
-            <Typography variant="h6">Beamline</Typography>
-            <Divider />
-            <Stack direction={"row"} spacing={1}>
-              <Autocomplete
-                size="small"
-                options={Object.keys(beamlineConfigStore.beamlineRecord)}
-                value={beamlineConfigStore.beamlineName}
-                sx={{ width: 300, color: "white" }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="choose beamline"
-                    sx={{ color: "white" }}
-                  />
-                )}
-                onChange={handleBeamlineUpdate}
-              />
-              <Button variant="outlined" onClick={handleClickOpenPreset}>
-                Beamlines
-              </Button>
-              <PresetDialog
-                open={openBeamline}
-                handleClose={handleClosePreset}
-                handleOpen={handleClickOpenPreset}
-              />
-            </Stack>
-          </Stack>
-        </Card>
         <Card sx={{ p: 2 }} variant="outlined">
           <Stack spacing={1}>
             <Typography variant="h6">Detector</Typography>
@@ -169,10 +105,10 @@ export default function DataSideBar(): JSX.Element {
           <BeamStopDataEntry />
         </Card>
         <Card sx={{ p: 2 }} variant="outlined">
-          <CameraTubeDataEntry />
+          <BeampropertiesDataEntry />
         </Card>
         <Card sx={{ p: 2 }} variant="outlined">
-          <BeampropertiesDataEntry />
+          <CameraTubeDataEntry />
         </Card>
       </Stack>
     </Stack>

@@ -33,51 +33,57 @@ export default function CameraTubeDataEntry(): JSX.Element {
     <Stack spacing={1}>
       <Typography variant="h6"> CameraTube </Typography>
       <Divider />
-      <Stack direction={"row"} alignItems={"center"}>
-        <Typography flexGrow={1}>
-          {" "}
-          Diameter: {cameraTubeStore.cameraTube.diameter.toNumber()}{" "}
-        </Typography>
-        <FormControl>
-          <InputLabel>units </InputLabel>
-          <Select
+      {cameraTubeStore.cameraTube && (
+        <>
+          <Stack direction={"row"} alignItems={"center"}>
+            <Typography flexGrow={1}>
+              {" "}
+              Diameter: {cameraTubeStore.cameraTube.diameter.toNumber()}{" "}
+            </Typography>
+            <FormControl>
+              <InputLabel>units </InputLabel>
+              <Select
+                size="small"
+                label="units"
+                value={cameraTubeStore.cameraTube.diameter.formatUnits()}
+                onChange={(event) =>
+                  cameraTubeStore.updateDiameterUnits(
+                    event.target.value as LengthUnits,
+                  )
+                }
+              >
+                <MenuItem value={LengthUnits.millimetre}>
+                  {LengthUnits.millimetre}
+                </MenuItem>
+                <MenuItem value={LengthUnits.micrometre}>
+                  {MuSymbol + "m"}
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+          <Typography>Position:</Typography>
+          <TextField
+            type="number"
             size="small"
-            label="units"
-            value={cameraTubeStore.cameraTube.diameter.formatUnits()}
-            onChange={(event) =>
-              cameraTubeStore.updateDiameterUnits(
-                event.target.value as LengthUnits,
-              )
-            }
-          >
-            <MenuItem value={LengthUnits.millimetre}>
-              {LengthUnits.millimetre}
-            </MenuItem>
-            <MenuItem value={LengthUnits.micrometre}>{MuSymbol + "m"}</MenuItem>
-          </Select>
-        </FormControl>
-      </Stack>
-      <Typography>Position:</Typography>
-      <TextField
-        type="number"
-        size="small"
-        label="x"
-        value={cameraTubeStore.cameraTube.centre.x}
-        onChange={handleX}
-        InputProps={{
-          endAdornment: <InputAdornment position="end">px</InputAdornment>,
-        }}
-      />
-      <TextField
-        type="number"
-        size="small"
-        label="y"
-        value={cameraTubeStore.cameraTube.centre.y}
-        onChange={handleY}
-        InputProps={{
-          endAdornment: <InputAdornment position="end">px</InputAdornment>,
-        }}
-      />
+            label="x"
+            value={cameraTubeStore.cameraTube.centre.x}
+            onChange={handleX}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            }}
+          />
+          <TextField
+            type="number"
+            size="small"
+            label="y"
+            value={cameraTubeStore.cameraTube.centre.y}
+            onChange={handleY}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            }}
+          />
+        </>
+      )}
     </Stack>
   );
 }

@@ -2,13 +2,12 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useDetectorStore } from "./data-entry/detectorStore";
-import { presetConfigRecord } from "./presets/presetManager";
+import { createAppConfig, presetConfigRecord } from "./presets/presetManager";
 import { Autocomplete, TextField } from "@mui/material";
 import { useBeamlineConfigStore } from "./data-entry/beamlineconfigStore";
 import { useState } from "react";
 import { useBeamstopStore } from "./data-entry/beamstopStore";
 import { useCameraTubeStore } from "./data-entry/cameraTubeStore";
-import { LengthUnits } from "./utils/units";
 
 export default function BasicAppBar(): JSX.Element {
   const [preset, setPreset] = useState<string>(
@@ -20,23 +19,14 @@ export default function BasicAppBar(): JSX.Element {
   const cameraTubeStore = useCameraTubeStore();
 
   const handlePreset = (preset: string) => {
-    const { beamstop, cameraTube, detector, beamline } =
-      presetConfigRecord[preset];
-    detectorStore.updateDetector(detector);
-    beamstopStore.updateBeamstop(beamstop);
-    cameraTubeStore.updateCameraTube(cameraTube);
-    beamlineConfigStore.updateBeamline(beamline);
-    beamstopStore.updateDiameter(
-      beamlineConfigStore.beamlineRecord[beamline].beamstopDiameter,
-      LengthUnits.millimetre,
-    );
-    cameraTubeStore.updateDiameter(
-      beamlineConfigStore.beamlineRecord[beamline].cameratubeDiameter,
-      LengthUnits.millimetre,
-    );
+    console.log("help");
+    const appConfig = createAppConfig(presetConfigRecord[preset]);
+    detectorStore.updateDetector(appConfig.detector);
+    beamstopStore.updateBeamstop(appConfig.beamstop);
+    cameraTubeStore.updateCameraTube(appConfig.cameraTube);
+    beamlineConfigStore.update({ beamline: appConfig.beamline });
     setPreset(preset);
   };
-
   return (
     <AppBar style={{ position: "static", width: "100%" }}>
       <Toolbar>

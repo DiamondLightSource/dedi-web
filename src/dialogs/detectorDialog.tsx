@@ -46,6 +46,7 @@ export default function DetectorDialog(props: {
       keepMounted
       onClose={props.handleClose}
       maxWidth={"xl"}
+      fullWidth={true}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
