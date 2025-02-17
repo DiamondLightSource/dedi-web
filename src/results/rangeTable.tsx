@@ -22,24 +22,21 @@ import UnitRange from "../calculations/unitRange";
 
 export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
   const resultsStore = useResultStore();
-  const updateQUnits = useResultStore((state) => state.updateQUnits);
-  const updateSUnits = useResultStore((state) => state.updateSUnits);
-  const updateDUnits = useResultStore((state) => state.updateDUnits);
 
   const handleQunits = (
     event: SelectChangeEvent<ReciprocalWavelengthUnits>,
   ) => {
-    updateQUnits(event.target.value as ReciprocalWavelengthUnits);
+    resultsStore.updateQUnits(event.target.value as ReciprocalWavelengthUnits);
   };
 
   const handleSunits = (
     event: SelectChangeEvent<ReciprocalWavelengthUnits>,
   ) => {
-    updateSUnits(event.target.value as ReciprocalWavelengthUnits);
+    resultsStore.updateSUnits(event.target.value as ReciprocalWavelengthUnits);
   };
 
   const handleDunits = (event: SelectChangeEvent<WavelengthUnits>) => {
-    updateDUnits(event.target.value as WavelengthUnits);
+    resultsStore.updateDUnits(event.target.value as WavelengthUnits);
   };
   const qRange = props.qRange.to(resultsStore.qUnits as string);
   const sRange = props.qRange
@@ -71,12 +68,12 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
             <TableCell align="center">
               {isNaN(qRange.min.toNumber())
                 ? ""
-                : qRange.min.toNumber().toFixed(4)}
+                : qRange.min.toNumber().toPrecision(4)}
             </TableCell>
             <TableCell align="center">
               {isNaN(qRange.max.toNumber())
                 ? ""
-                : qRange.max.toNumber().toFixed(4)}
+                : qRange.max.toNumber().toPrecision(4)}
             </TableCell>
             <TableCell align="center">
               <FormControl>
@@ -105,12 +102,12 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
             <TableCell align="center">
               {isNaN(sRange.min.toNumber())
                 ? ""
-                : sRange.min.toNumber().toFixed(4)}
+                : sRange.min.toNumber().toPrecision(4)}
             </TableCell>
             <TableCell align="center">
               {isNaN(sRange.max.toNumber())
                 ? ""
-                : sRange.max.toNumber().toFixed(4)}
+                : sRange.max.toNumber().toPrecision(4)}
             </TableCell>
             <TableCell align="center">
               <FormControl>
@@ -139,12 +136,12 @@ export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
             <TableCell align="center">
               {isNaN(dRange.min.toNumber())
                 ? ""
-                : dRange.min.toNumber().toFixed(4)}
+                : dRange.min.toNumber().toPrecision(4)}
             </TableCell>
             <TableCell align="center">
               {isNaN(dRange.max.toNumber())
                 ? ""
-                : dRange.max.toNumber().toFixed(4)}
+                : dRange.max.toNumber().toPrecision(4)}
             </TableCell>
             <TableCell align="center">
               <FormControl>

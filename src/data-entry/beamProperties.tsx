@@ -7,8 +7,8 @@ import {
   MenuItem,
   InputLabel,
   SelectChangeEvent,
-  InputAdornment,
   Divider,
+  InputAdornment,
 } from "@mui/material";
 import {
   AngleUnits,
@@ -53,7 +53,12 @@ export default function BeampropertiesDataEntry() {
       ),
     );
     beamlineConfig.updateEnergy(
-      newEnergy.to(beamlineConfig.energy.formatUnits()).toNumber(),
+      parseFloat(
+        newEnergy
+          .to(beamlineConfig.energy.formatUnits())
+          .toNumber()
+          .toPrecision(4),
+      ),
       beamlineConfig.energy.formatUnits() as EnergyUnits,
     );
   };
@@ -72,9 +77,12 @@ export default function BeampropertiesDataEntry() {
       unit(newEnergy ?? NaN, beamlineConfig.energy.formatUnits()),
     );
     beamlineConfig.updateWavelength(
-      newWavelength
-        .to(beamlineConfig.beamline.wavelength.formatUnits())
-        .toNumber(),
+      parseFloat(
+        newWavelength
+          .to(beamlineConfig.beamline.wavelength.formatUnits())
+          .toNumber()
+          .toPrecision(4),
+      ),
       beamlineConfig.beamline.wavelength.formatUnits() as WavelengthUnits,
     );
   };
@@ -84,7 +92,6 @@ export default function BeampropertiesDataEntry() {
   };
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
     beamlineConfig.updateCameraLength(parseNumericInput(event.target.value));
   };
 
@@ -155,7 +162,7 @@ export default function BeampropertiesDataEntry() {
         Maximum allowed wavelength:
         {" " + beamlineConfig.beamline.wavelengthLimits.max.toString()}
       </Typography>
-      <Stack direction="row" spacing={1}>
+      <Stack direction="row" spacing={1} >
         <TextField
           type="number"
           size="small"

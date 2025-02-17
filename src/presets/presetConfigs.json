@@ -18,7 +18,7 @@
     },
     "wavelengthLimits": {
       "min": 0.062,
-      "max": 0.335
+      "max": 0.3351
     },
     "cameraLengthLimits": {
       "min": 1.9,
@@ -46,7 +46,7 @@
     },
     "wavelengthLimits": {
       "min": 0.062,
-      "max": 0.335
+      "max": 0.3351
     },
     "cameraLengthLimits": {
       "min": 1.9,
@@ -55,7 +55,35 @@
     }
 
   },
-  "I22 WAX" :{
+  "I22 GiSAXS":{
+    "detector":"Pilatus P3-2M",
+    "beamstop": {
+      "centre": {
+        "x": 725,
+        "y": 1400
+      },
+      "diameter": 4,
+      "clearance": 10
+    },
+    "cameraTube": {
+      "centre": {
+        "x":725,
+        "y": 840
+      },
+      "diameter": 310
+    },
+    "wavelengthLimits": {
+      "min": 0.062,
+      "max": 0.3351
+    },
+    "cameraLengthLimits": {
+      "min": 0.18,
+      "max": 9.9,
+      "step": 0.01
+    }
+
+  },
+  "I22 WAXS" :{
     "detector": "Pilatus P3-2M-DLS (for WAXS)",
     "beamstop": {
       "centre": {
@@ -67,7 +95,27 @@
     },
     "wavelengthLimits": {
       "min": 0.062,
-      "max": 0.335
+      "max": 0.3351
+    },
+    "cameraLengthLimits": {
+      "min": 0.18,
+      "max": 1,
+      "step": 0.01
+    }
+  },
+  "I22 GiWAXS" :{
+    "detector": "Pilatus P3-2M-DLS (for WAXS)",
+    "beamstop": {
+      "centre": {
+        "x": 1240,
+        "y": 1600
+      },
+      "clearance": 10,
+      "diameter": 4
+    },
+    "wavelengthLimits": {
+      "min": 0.062,
+      "max": 0.3351
     },
     "cameraLengthLimits": {
       "min": 0.18,

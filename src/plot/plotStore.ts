@@ -63,7 +63,7 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   inaccessibleRange: true,
   inaccessibleRangeColor: red,
   plotAxes: PlotAxes.milimeter,
-  currentCalibrant: Object.keys(calibrantRecord)[1],
+  currentCalibrant: Object.keys(calibrantRecord)[0],
   calibrantRecord: calibrantRecord,
   update: (newConfig) => {
     set({ ...newConfig });

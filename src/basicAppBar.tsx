@@ -8,6 +8,12 @@ import { useBeamlineConfigStore } from "./data-entry/beamlineconfigStore";
 import { useState } from "react";
 import { useBeamstopStore } from "./data-entry/beamstopStore";
 import { useCameraTubeStore } from "./data-entry/cameraTubeStore";
+import {
+  AngleUnits,
+  EnergyUnits,
+  wavelength2EnergyConverter,
+  WavelengthUnits,
+} from "./utils/units";
 
 export default function BasicAppBar(): JSX.Element {
   const [preset, setPreset] = useState<string>(
@@ -19,12 +25,18 @@ export default function BasicAppBar(): JSX.Element {
   const cameraTubeStore = useCameraTubeStore();
 
   const handlePreset = (preset: string) => {
-    console.log("help");
     const appConfig = createAppConfig(presetConfigRecord[preset]);
     detectorStore.updateDetector(appConfig.detector);
     beamstopStore.updateBeamstop(appConfig.beamstop);
     cameraTubeStore.updateCameraTube(appConfig.cameraTube);
     beamlineConfigStore.update({ beamline: appConfig.beamline });
+    beamlineConfigStore.updateWavelengthUnits(WavelengthUnits.nanometres);
+    beamlineConfigStore.updateAngleUnits(AngleUnits.degrees);
+    const newEnergy = wavelength2EnergyConverter(appConfig.beamline.wavelength);
+    beamlineConfigStore.updateEnergy(
+      newEnergy.to(EnergyUnits.kiloElectronVolts).toNumber(),
+      EnergyUnits.kiloElectronVolts,
+    );
     setPreset(preset);
   };
   return (
