@@ -22,6 +22,7 @@ export interface BeamlineConfigStore {
   updateAngle: (newAngle: number | null, newUnits: AngleUnits) => void;
   updateAngleUnits: (newUnits: AngleUnits) => void;
   updateCameraLength: (newLength: number | null) => void;
+  updateBeamline: (beamline: AppBeamline) => void;
   update: (newConfig: Partial<BeamlineConfigStore>) => void;
 }
 
@@ -114,4 +115,8 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     })),
 
   update: (newConfig: Partial<BeamlineConfigStore>) => set({ ...newConfig }),
+  updateBeamline: (beamline: AppBeamline) =>
+    set({
+      beamline: beamline,
+    }),
 }));
