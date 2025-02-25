@@ -101,7 +101,7 @@ export default function CentrePlot(): JSX.Element {
     <Stack
       direction="column"
       spacing={1}
-      maxHeight={"90vh"}
+      maxHeight={"calc(98vh - 70px)"}
       overflow={{ lg: "scroll" }}
     >
       <Stack direction={{ sm: "column", md: "row" }} spacing={1}>
