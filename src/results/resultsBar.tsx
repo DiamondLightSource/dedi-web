@@ -1,14 +1,12 @@
 import {
   Card,
   CardContent,
-  Divider,
   FormControl,
   FormControlLabel,
   FormLabel,
   InputAdornment,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -193,8 +191,6 @@ export default function ResultsBar({
     >
       <CardContent>
         <Stack spacing={1}>
-          <Typography variant="h6"> Results</Typography>
-          <Divider />
           <Stack
             direction={{ md: "column", lg: "row" }}
             spacing={2}

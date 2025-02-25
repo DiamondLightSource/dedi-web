@@ -98,7 +98,7 @@ export default function CentrePlot(): JSX.Element {
   const domains = getDomain(plotDetector);
   console.info(formatLogMessage("Refreshing plot"));
   return (
-    <Stack direction="column" spacing={1} flexGrow={1}>
+    <Stack direction="column" spacing={1} maxHeight={"92vh"}>
       <Stack direction={{ sm: "column", md: "row" }} spacing={1} flexGrow={1}>
         <Card variant="outlined" sx={{ aspectRatio: 1.07 / 1 }}>
           <CardContent sx={{ width: "100%", height: "100%" }}>
