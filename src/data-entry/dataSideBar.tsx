@@ -37,7 +37,7 @@ export default function DataSideBar(): JSX.Element {
   };
 
   return (
-    <Stack maxHeight={"92vh"} overflow={{ lg: "scroll" }}>
+    <Stack maxHeight={"90vh"} overflow={{ lg: "scroll" }}>
       <Stack spacing={1}>
         <Card sx={{ p: 2 }} variant="outlined">
           <Stack spacing={1}>
