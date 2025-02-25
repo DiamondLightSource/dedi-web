@@ -21,12 +21,13 @@ export default function App(): JSX.Element {
     <>
       <CssBaseline>
         <ThemeProvider theme={theme}>
-          <Stack spacing={1}>
+          <Stack spacing={1} overflow={"clip"}>
             <BasicAppBar />
             <Stack
               direction={{ md: "column", lg: "row" }}
               spacing={1}
               justifyContent={"center"}
+              overflow={"clip"}
             >
               <DataSideBar />
               <CentrePlot />

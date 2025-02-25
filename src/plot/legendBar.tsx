@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   Checkbox,
-  Divider,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -34,7 +33,7 @@ export default function LegendBar(): JSX.Element {
   };
 
   return (
-    <Card sx={{ flexGrow: 1, overflow: "scroll" }} variant="outlined">
+    <Card sx={{ flexGrow: 1 }} variant="outlined">
       <CardContent>
         <Stack spacing={1}>
           <FormGroup>
