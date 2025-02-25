@@ -9,6 +9,7 @@ import {
   SelectChangeEvent,
   Divider,
   InputAdornment,
+  Card,
 } from "@mui/material";
 import {
   AngleUnits,
@@ -96,112 +97,118 @@ export default function BeampropertiesDataEntry() {
   };
 
   return (
-    <Stack spacing={2}>
-      <Typography variant="h6">Beam properties</Typography>
-      <Divider />
-      {/* ENERGY */}
-      <Stack direction={"row"} spacing={1}>
-        <TextField
-          type="number"
-          size="small"
-          label="energy"
-          value={beamlineConfig.userEnergy}
-          onChange={handleEnergy}
-        />
-        <FormControl>
-          <InputLabel>units</InputLabel>
-          <Select
+    <Card sx={{ p: 2 }} variant="outlined">
+      <Stack spacing={2}>
+        <Typography variant="h6">Beam properties</Typography>
+        <Divider />
+        {/* ENERGY */}
+        <Stack direction={"row"} spacing={1}>
+          <TextField
+            type="number"
             size="small"
-            label="units"
-            value={beamlineConfig.energy.formatUnits() as EnergyUnits}
-            onChange={handleEnergyUnits}
-          >
-            <MenuItem value={EnergyUnits.electronVolts}>
-              {EnergyUnits.electronVolts}
-            </MenuItem>
-            <MenuItem value={EnergyUnits.kiloElectronVolts}>
-              {EnergyUnits.kiloElectronVolts}
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Stack>
-      {/* WAVELENGTH */}
-      <Stack direction={"row"} spacing={1}>
-        <TextField
-          type="number"
-          size="small"
-          label="wavelength"
-          value={beamlineConfig.userWavelength}
-          onChange={handleWavelength}
-        />
-        <FormControl>
-          <InputLabel>units</InputLabel>
-          <Select
+            label="energy"
+            value={beamlineConfig.userEnergy}
+            onChange={handleEnergy}
+          />
+          <FormControl>
+            <InputLabel>units</InputLabel>
+            <Select
+              size="small"
+              label="units"
+              value={beamlineConfig.energy.formatUnits() as EnergyUnits}
+              onChange={handleEnergyUnits}
+            >
+              <MenuItem value={EnergyUnits.electronVolts}>
+                {EnergyUnits.electronVolts}
+              </MenuItem>
+              <MenuItem value={EnergyUnits.kiloElectronVolts}>
+                {EnergyUnits.kiloElectronVolts}
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
+        {/* WAVELENGTH */}
+        <Stack direction={"row"} spacing={1}>
+          <TextField
+            type="number"
             size="small"
-            label="units"
-            value={
-              // eslint-disable-next-line max-len
-              beamlineConfig.beamline.wavelength.formatUnits() as WavelengthUnits
-            }
-            onChange={handleWavelengthUnits}
-          >
-            <MenuItem value={WavelengthUnits.nanometres}>
-              {WavelengthUnits.nanometres}
-            </MenuItem>
-            <MenuItem value={WavelengthUnits.angstroms}>
-              {AngstromSymbol}
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Stack>
-      <Typography>
-        Minimum allowed wavelength:
-        {" " + beamlineConfig.beamline.wavelengthLimits.min.toString()}
-      </Typography>
-      <Typography>
-        Maximum allowed wavelength:
-        {" " + beamlineConfig.beamline.wavelengthLimits.max.toString()}
-      </Typography>
-      <Stack direction="row" spacing={1} >
-        <TextField
-          type="number"
-          size="small"
-          label="camera length"
-          value={beamlineConfig.beamline.cameraLength ?? ""}
-          InputProps={{
-            inputProps: {
-              max: beamlineConfig.beamline.cameraLimits.max.toNumber(),
-              min: beamlineConfig.beamline.cameraLimits.min.toNumber(),
-              step: beamlineConfig.beamline.cameraLimits.step.toNumber(),
-            },
-            endAdornment: <InputAdornment position="end">m</InputAdornment>,
-          }}
-          onChange={handleCameraLength}
-        />
-      </Stack>
-      {/* ANGLE */}
-      <Stack direction="row" spacing={1}>
-        <TextField
-          type="number"
-          size="small"
-          label="angle"
-          defaultValue={""}
-          value={beamlineConfig.userAngle ?? ""}
-          onChange={handleAngle}
-        />
-        <FormControl>
-          <InputLabel>units</InputLabel>
-          <Select
+            label="wavelength"
+            value={beamlineConfig.userWavelength}
+            onChange={handleWavelength}
+          />
+          <FormControl>
+            <InputLabel>units</InputLabel>
+            <Select
+              size="small"
+              label="units"
+              value={
+                // eslint-disable-next-line max-len
+                beamlineConfig.beamline.wavelength.formatUnits() as WavelengthUnits
+              }
+              onChange={handleWavelengthUnits}
+            >
+              <MenuItem value={WavelengthUnits.nanometres}>
+                {WavelengthUnits.nanometres}
+              </MenuItem>
+              <MenuItem value={WavelengthUnits.angstroms}>
+                {AngstromSymbol}
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
+        <Typography>
+          Minimum allowed wavelength:
+          {" " + beamlineConfig.beamline.wavelengthLimits.min.toString()}
+        </Typography>
+        <Typography>
+          Maximum allowed wavelength:
+          {" " + beamlineConfig.beamline.wavelengthLimits.max.toString()}
+        </Typography>
+        <Stack direction="row" spacing={1}>
+          <TextField
+            type="number"
             size="small"
-            label="units"
-            value={beamlineConfig.beamline.angle.formatUnits() as AngleUnits}
-            onChange={handleAngleUnits}
-          >
-            <MenuItem value={AngleUnits.radians}>{AngleUnits.radians}</MenuItem>
-            <MenuItem value={AngleUnits.degrees}>{AngleUnits.degrees}</MenuItem>
-          </Select>
-        </FormControl>
+            label="camera length"
+            value={beamlineConfig.beamline.cameraLength ?? ""}
+            InputProps={{
+              inputProps: {
+                max: beamlineConfig.beamline.cameraLimits.max.toNumber(),
+                min: beamlineConfig.beamline.cameraLimits.min.toNumber(),
+                step: beamlineConfig.beamline.cameraLimits.step.toNumber(),
+              },
+              endAdornment: <InputAdornment position="end">m</InputAdornment>,
+            }}
+            onChange={handleCameraLength}
+          />
+        </Stack>
+        {/* ANGLE */}
+        <Stack direction="row" spacing={1}>
+          <TextField
+            type="number"
+            size="small"
+            label="angle"
+            defaultValue={""}
+            value={beamlineConfig.userAngle ?? ""}
+            onChange={handleAngle}
+          />
+          <FormControl>
+            <InputLabel>units</InputLabel>
+            <Select
+              size="small"
+              label="units"
+              value={beamlineConfig.beamline.angle.formatUnits() as AngleUnits}
+              onChange={handleAngleUnits}
+            >
+              <MenuItem value={AngleUnits.radians}>
+                {AngleUnits.radians}
+              </MenuItem>
+              <MenuItem value={AngleUnits.degrees}>
+                {AngleUnits.degrees}
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
       </Stack>
-    </Stack>
+    </Card>
   );
 }
