@@ -101,8 +101,8 @@ export default function CentrePlot(): JSX.Element {
     <Stack
       direction="column"
       spacing={1}
-      maxHeight={"calc(98vh - 70px)"}
-      overflow={{ lg: "scroll" }}
+      maxHeight={{ lg: "calc(98vh - 70px)" }}
+      overflow={{ md: "visible", lg: "scroll" }}
     >
       <Stack direction={{ sm: "column", md: "row" }} spacing={1}>
         <Card variant="outlined" sx={{ aspectRatio: 1.07 / 1 }}>
