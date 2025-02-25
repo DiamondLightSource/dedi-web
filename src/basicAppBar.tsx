@@ -40,7 +40,7 @@ export default function BasicAppBar(): JSX.Element {
     setPreset(preset);
   };
   return (
-    <AppBar style={{ position: "static", width: "100%", maxHeight: "9vh" }}>
+    <AppBar style={{ width: "100%" }}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Dedi Web
