@@ -37,8 +37,6 @@ export default function LegendBar(): JSX.Element {
     <Card sx={{ flexGrow: 1, overflow: "scroll" }} variant="outlined">
       <CardContent>
         <Stack spacing={1}>
-          <Typography variant="h6"> Legend</Typography>
-          <Divider />
           <FormGroup>
             {/* Detector */}
             <FormControlLabel
