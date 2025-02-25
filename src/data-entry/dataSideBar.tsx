@@ -101,15 +101,9 @@ export default function DataSideBar(): JSX.Element {
             </Stack>
           </Stack>
         </Card>
-        <Card sx={{ p: 2 }} variant="outlined">
-          <BeamStopDataEntry />
-        </Card>
-        <Card sx={{ p: 2 }} variant="outlined">
-          <BeampropertiesDataEntry />
-        </Card>
-        <Card sx={{ p: 2 }} variant="outlined">
-          <CameraTubeDataEntry />
-        </Card>
+        <BeamStopDataEntry />
+        <BeampropertiesDataEntry />
+        <CameraTubeDataEntry />
       </Stack>
     </Stack>
   );
