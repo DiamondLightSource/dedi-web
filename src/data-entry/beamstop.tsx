@@ -59,10 +59,7 @@ export default function BeamStopDataEntry(): JSX.Element {
         <Stack direction={"row"} alignItems={"center"}>
           {/* Diameter */}
           <Typography flexGrow={1}>
-            {" "}
-            Diameter: {beamstopStore.beamstop.diameter
-              .toNumber()
-              .toFixed(2)}{" "}
+            Diameter: {beamstopStore.beamstop.diameter.toNumber().toFixed(2)}
           </Typography>
           <FormControl>
             <InputLabel>units </InputLabel>

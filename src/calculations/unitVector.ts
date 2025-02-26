@@ -46,7 +46,7 @@ export class UnitVector {
   }
 
   /**
-   * Subtract another UniteVector from this UnitVector
+   * Subtract another UnitVector from this UnitVector
    * @param other another UnitVector
    * @returns
    */
@@ -78,19 +78,10 @@ export class UnitVector {
     return this;
   }
 
-  /**
-   * Create a Vector2 based on this UnitVector
-   * @returns
-   */
   toVector2(): Vector2 {
     return new Vector2(this.x.toNumber(), this.y.toNumber());
   }
 
-  /**
-   * Create a Vector3 based on this UnitVector
-   * @param z the third axis
-   * @returns
-   */
   toVector3(z: number): Vector3 {
     return new Vector3(this.x.toNumber(), this.y.toNumber(), z);
   }
@@ -106,19 +97,10 @@ export class UnitVector {
     return this;
   }
 
-  /**
-   * Convert this UnitVector to SI units
-   * @param unitString units to convert UnitVector to
-   * @returns
-   */
   toSI(): UnitVector {
     return new UnitVector(this.x.toSI(), this.y.toSI());
   }
 
-  /**
-   * Create a copy of the current UnitVector
-   * @returns
-   */
   clone(): UnitVector {
     return new UnitVector(this.x.clone(), this.y.clone());
   }

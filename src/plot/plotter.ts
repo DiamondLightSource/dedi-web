@@ -64,6 +64,11 @@ class ReciprocalAxis implements AxisUnitStrategy {
   }
 }
 
+const defaultCameraTube: AppCircularDevice = {
+  centre: { x: 0, y: 0 },
+  diameter: mathjs.unit(0, LengthUnits.millimetre),
+};
+
 /**
  * The methods a plotter object must expose
  */
@@ -112,12 +117,7 @@ export class Plotter implements IPlotter {
       mathjs.unit(this.beamstop.centre.y ?? NaN, "ypixel"),
     );
 
-    this.cameraTube = cameraTube
-      ? cameraTube
-      : {
-          centre: { x: 0, y: 0 },
-          diameter: mathjs.unit(0, LengthUnits.millimetre),
-        };
+    this.cameraTube = cameraTube ? cameraTube : defaultCameraTube;
 
     this.cameraTubeCentre = new UnitVector(
       mathjs.unit(this.cameraTube.centre.x ?? NaN, "xpixel"),
