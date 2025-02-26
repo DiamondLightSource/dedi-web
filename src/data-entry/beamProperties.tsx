@@ -29,71 +29,75 @@ import { unit } from "mathjs";
  * @returns
  */
 export default function BeampropertiesDataEntry() {
-  const beamlineConfig = useBeamlineConfigStore();
+  const beamlineConfigStore = useBeamlineConfigStore();
 
   const handleAngleUnits = (event: SelectChangeEvent<AngleUnits>) => {
-    beamlineConfig.updateAngleUnits(event.target.value as AngleUnits);
+    beamlineConfigStore.updateAngleUnits(event.target.value as AngleUnits);
   };
   const handleAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    beamlineConfig.updateAngle(
+    beamlineConfigStore.updateAngle(
       parseNumericInput(event.target.value),
-      beamlineConfig.beamline.angle.formatUnits() as AngleUnits,
+      beamlineConfigStore.beamline.angle.formatUnits() as AngleUnits,
     );
   };
 
   const handleWavelength = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newWavelength = parseNumericInput(event.target.value);
-    beamlineConfig.updateWavelength(
+    beamlineConfigStore.updateWavelength(
       newWavelength,
-      beamlineConfig.beamline.wavelength.formatUnits() as WavelengthUnits,
+      beamlineConfigStore.beamline.wavelength.formatUnits() as WavelengthUnits,
     );
     const newEnergy = wavelength2EnergyConverter(
       unit(
         newWavelength ?? NaN,
-        beamlineConfig.beamline.wavelength.formatUnits(),
+        beamlineConfigStore.beamline.wavelength.formatUnits(),
       ),
     );
-    beamlineConfig.updateEnergy(
+    beamlineConfigStore.updateEnergy(
       parseFloat(
         newEnergy
-          .to(beamlineConfig.energy.formatUnits())
+          .to(beamlineConfigStore.energy.formatUnits())
           .toNumber()
           .toPrecision(4),
       ),
-      beamlineConfig.energy.formatUnits() as EnergyUnits,
+      beamlineConfigStore.energy.formatUnits() as EnergyUnits,
     );
   };
 
   const handleWavelengthUnits = (event: SelectChangeEvent<WavelengthUnits>) => {
-    beamlineConfig.updateWavelengthUnits(event.target.value as WavelengthUnits);
+    beamlineConfigStore.updateWavelengthUnits(
+      event.target.value as WavelengthUnits,
+    );
   };
 
   const handleEnergy = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newEnergy = parseNumericInput(event.target.value);
-    beamlineConfig.updateEnergy(
+    beamlineConfigStore.updateEnergy(
       newEnergy,
-      beamlineConfig.energy.formatUnits() as EnergyUnits,
+      beamlineConfigStore.energy.formatUnits() as EnergyUnits,
     );
     const newWavelength = energy2WavelengthConverter(
-      unit(newEnergy ?? NaN, beamlineConfig.energy.formatUnits()),
+      unit(newEnergy ?? NaN, beamlineConfigStore.energy.formatUnits()),
     );
-    beamlineConfig.updateWavelength(
+    beamlineConfigStore.updateWavelength(
       parseFloat(
         newWavelength
-          .to(beamlineConfig.beamline.wavelength.formatUnits())
+          .to(beamlineConfigStore.beamline.wavelength.formatUnits())
           .toNumber()
           .toPrecision(4),
       ),
-      beamlineConfig.beamline.wavelength.formatUnits() as WavelengthUnits,
+      beamlineConfigStore.beamline.wavelength.formatUnits() as WavelengthUnits,
     );
   };
 
   const handleEnergyUnits = (event: SelectChangeEvent<EnergyUnits>) => {
-    beamlineConfig.updateEnergyUnits(event.target.value as EnergyUnits);
+    beamlineConfigStore.updateEnergyUnits(event.target.value as EnergyUnits);
   };
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
-    beamlineConfig.updateCameraLength(parseNumericInput(event.target.value));
+    beamlineConfigStore.updateCameraLength(
+      parseNumericInput(event.target.value),
+    );
   };
 
   return (
@@ -107,7 +111,7 @@ export default function BeampropertiesDataEntry() {
             type="number"
             size="small"
             label="energy"
-            value={beamlineConfig.userEnergy}
+            value={beamlineConfigStore.userEnergy}
             onChange={handleEnergy}
           />
           <FormControl>
@@ -115,7 +119,7 @@ export default function BeampropertiesDataEntry() {
             <Select
               size="small"
               label="units"
-              value={beamlineConfig.energy.formatUnits() as EnergyUnits}
+              value={beamlineConfigStore.energy.formatUnits() as EnergyUnits}
               onChange={handleEnergyUnits}
             >
               <MenuItem value={EnergyUnits.electronVolts}>
@@ -133,7 +137,7 @@ export default function BeampropertiesDataEntry() {
             type="number"
             size="small"
             label="wavelength"
-            value={beamlineConfig.userWavelength}
+            value={beamlineConfigStore.userWavelength}
             onChange={handleWavelength}
           />
           <FormControl>
@@ -143,7 +147,7 @@ export default function BeampropertiesDataEntry() {
               label="units"
               value={
                 // eslint-disable-next-line max-len
-                beamlineConfig.beamline.wavelength.formatUnits() as WavelengthUnits
+                beamlineConfigStore.beamline.wavelength.formatUnits() as WavelengthUnits
               }
               onChange={handleWavelengthUnits}
             >
@@ -158,23 +162,23 @@ export default function BeampropertiesDataEntry() {
         </Stack>
         <Typography>
           Minimum allowed wavelength:
-          {" " + beamlineConfig.beamline.wavelengthLimits.min.toString()}
+          {" " + beamlineConfigStore.beamline.wavelengthLimits.min.toString()}
         </Typography>
         <Typography>
           Maximum allowed wavelength:
-          {" " + beamlineConfig.beamline.wavelengthLimits.max.toString()}
+          {" " + beamlineConfigStore.beamline.wavelengthLimits.max.toString()}
         </Typography>
         <Stack direction="row" spacing={1}>
           <TextField
             type="number"
             size="small"
             label="camera length"
-            value={beamlineConfig.beamline.cameraLength ?? ""}
+            value={beamlineConfigStore.beamline.cameraLength ?? ""}
             InputProps={{
               inputProps: {
-                max: beamlineConfig.beamline.cameraLimits.max.toNumber(),
-                min: beamlineConfig.beamline.cameraLimits.min.toNumber(),
-                step: beamlineConfig.beamline.cameraLimits.step.toNumber(),
+                max: beamlineConfigStore.beamline.cameraLimits.max.toNumber(),
+                min: beamlineConfigStore.beamline.cameraLimits.min.toNumber(),
+                step: beamlineConfigStore.beamline.cameraLimits.step.toNumber(),
               },
               endAdornment: <InputAdornment position="end">m</InputAdornment>,
             }}
@@ -188,7 +192,7 @@ export default function BeampropertiesDataEntry() {
             size="small"
             label="angle"
             defaultValue={""}
-            value={beamlineConfig.userAngle ?? ""}
+            value={beamlineConfigStore.userAngle ?? ""}
             onChange={handleAngle}
           />
           <FormControl>
@@ -196,7 +200,9 @@ export default function BeampropertiesDataEntry() {
             <Select
               size="small"
               label="units"
-              value={beamlineConfig.beamline.angle.formatUnits() as AngleUnits}
+              value={
+                beamlineConfigStore.beamline.angle.formatUnits() as AngleUnits
+              }
               onChange={handleAngleUnits}
             >
               <MenuItem value={AngleUnits.radians}>

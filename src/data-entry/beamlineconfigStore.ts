@@ -7,6 +7,7 @@ import { wavelength2EnergyConverter } from "../utils/units";
 
 export interface BeamlineConfigStore {
   beamline: AppBeamline;
+  // Energy for the benefit of the user.
   energy: Unit;
   userEnergy: number | null;
   userWavelength: number | null;

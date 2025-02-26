@@ -79,19 +79,10 @@ export default class NumericRange {
     return this;
   }
 
-  /**
-   * Returns a string representation of this range.
-   * @returns
-   */
   toString(): string {
     return `(min:${this.min}, max:${this.max})`;
   }
 
-  /**
-   * Check if this range is equal to the input range
-   * @param other Another NumericRange
-   * @returns
-   */
   equals(other: NumericRange): boolean {
     return this.min === other.min && this.max === other.max;
   }
