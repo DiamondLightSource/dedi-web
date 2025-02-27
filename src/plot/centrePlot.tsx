@@ -102,9 +102,9 @@ export default function CentrePlot(): JSX.Element {
       direction="column"
       spacing={1}
       maxHeight={{ lg: "calc(98vh - 70px)" }}
-      overflow={{ md: "visible", lg: "scroll" }}
+      overflow={{ lg: "scroll" }}
     >
-      <Stack direction={{ sm: "column", md: "row" }} spacing={1}>
+      <Stack direction={{ sm: "column", md: "row" }} spacing={1} flexGrow={1}>
         <Card variant="outlined" sx={{ aspectRatio: 1.07 / 1 }}>
           <CardContent sx={{ width: "100%", height: "100%" }}>
             <div
@@ -116,6 +116,7 @@ export default function CentrePlot(): JSX.Element {
               }}
             >
               <VisCanvas
+                aspect={1}
                 abscissaConfig={{
                   visDomain: [domains.xAxis.min, domains.xAxis.max],
                   showGrid: true,
