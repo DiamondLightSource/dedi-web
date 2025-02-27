@@ -117,7 +117,7 @@ export class Plotter implements IPlotter {
       mathjs.unit(this.beamstop.centre.y ?? NaN, "ypixel"),
     );
 
-    this.cameraTube = cameraTube ? cameraTube : defaultCameraTube;
+    this.cameraTube = cameraTube ?? defaultCameraTube;
 
     this.cameraTubeCentre = new UnitVector(
       mathjs.unit(this.cameraTube.centre.x ?? NaN, "xpixel"),
