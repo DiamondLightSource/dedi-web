@@ -186,7 +186,6 @@ export default function ResultsBar({
     <Card
       variant="outlined"
       sx={{
-        flexGrow: 1,
         overflow: "visible",
       }}
     >

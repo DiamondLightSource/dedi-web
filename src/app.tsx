@@ -11,7 +11,7 @@ const theme = createTheme({
       sm: 600,
       md: 900,
       lg: 1500,
-      xl: 1536,
+      xl: 1600,
     },
   },
 });
@@ -23,7 +23,7 @@ export default function App(): JSX.Element {
         <ThemeProvider theme={theme}>
           <BasicAppBar />
           <Stack
-            direction={{ md: "column", lg: "row" }}
+            direction={{ sm: "column", lg: "row" }}
             spacing={1}
             justifyContent={"center"}
             overflow={"clip"}

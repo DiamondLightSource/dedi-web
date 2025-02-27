@@ -33,7 +33,7 @@ export default function LegendBar(): JSX.Element {
   };
 
   return (
-    <Card sx={{ flexGrow: 1 }} variant="outlined">
+    <Card variant="outlined" flexGrow={1}>
       <CardContent>
         <Stack spacing={1}>
           <FormGroup>
