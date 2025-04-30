@@ -109,6 +109,13 @@
     "pixelSize": {
       "width": 7.5e-2,
       "height": 7.5e-2
+    },
+    "mask": {
+      "horizontalModules": 1,
+      "verticalModules": 2,
+      "horizontalGap": 0,
+      "verticalGap": 38,
+      "missingModules": []
     }
   },
   "Eiger 4M": {
