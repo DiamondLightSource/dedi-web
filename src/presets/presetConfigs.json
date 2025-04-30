@@ -122,5 +122,25 @@
       "max": 1,
       "step": 0.01
     }
+  },  
+  "labSAXS" :{
+    "detector": "Eiger 1M",
+    "beamstop": {
+      "centre": {
+        "x": 515,
+        "y": 532
+      },
+      "clearance": 10,
+      "diameter": 4
+    },
+    "wavelengthLimits": {
+      "min": 0.071,
+      "max": 0.134
+    },
+    "cameraLengthLimits": {
+      "min": 0.055,
+      "max": 4.6,
+      "step": 0.01
+    }
   }
 }

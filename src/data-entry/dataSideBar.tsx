@@ -76,10 +76,9 @@ export default function DataSideBar(): JSX.Element {
             </Typography>
             <Stack direction="row" alignItems={"center"}>
               <Typography flexGrow={2}>
-                Pixel size:{" "}
-                {detectorStore.detector.pixelSize.height.toNumber().toFixed(2)}
+                Pixel size: {detectorStore.detector.pixelSize.height.toNumber()}
                 {" x "}
-                {detectorStore.detector.pixelSize.width.toNumber().toFixed(2)}
+                {detectorStore.detector.pixelSize.width.toNumber()}
               </Typography>
               <FormControl>
                 <InputLabel>units</InputLabel>
