@@ -131,7 +131,7 @@
         "y": 532
       },
       "clearance": 10,
-      "diameter": 4
+      "diameter": 1
     },
     "wavelengthLimits": {
       "min": 0.071,
