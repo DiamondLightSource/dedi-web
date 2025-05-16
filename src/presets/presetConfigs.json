@@ -127,11 +127,11 @@
     "detector": "Eiger 1M",
     "beamstop": {
       "centre": {
-        "x": 515,
-        "y": 532
+        "x": 530,
+        "y": 730
       },
       "clearance": 10,
-      "diameter": 1
+      "diameter": 0.5
     },
     "wavelengthLimits": {
       "min": 0.071,
