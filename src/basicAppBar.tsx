@@ -3,7 +3,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useDetectorStore } from "./data-entry/detectorStore";
 import { createAppConfig, presetConfigRecord } from "./presets/presetManager";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { useBeamlineConfigStore } from "./data-entry/beamlineconfigStore";
 import { useState } from "react";
 import { useBeamstopStore } from "./data-entry/beamstopStore";
@@ -14,6 +14,8 @@ import {
   wavelength2EnergyConverter,
   WavelengthUnits,
 } from "./utils/units";
+import React from "react";
+import AppConfigDialog from "./dialogs/preset/appConfigDialog";
 
 export default function BasicAppBar(): JSX.Element {
   const [preset, setPreset] = useState<string>(
@@ -23,6 +25,15 @@ export default function BasicAppBar(): JSX.Element {
   const beamlineConfigStore = useBeamlineConfigStore();
   const beamstopStore = useBeamstopStore();
   const cameraTubeStore = useCameraTubeStore();
+  const [openBeamline, setOpenBeamline] = React.useState(false);
+
+  const handleClickOpenPreset = () => {
+    setOpenBeamline(true);
+  };
+
+  const handleClosePreset = () => {
+    setOpenBeamline(false);
+  };
 
   const handlePreset = (preset: string) => {
     const appConfig = createAppConfig(presetConfigRecord[preset]);
@@ -56,6 +67,14 @@ export default function BasicAppBar(): JSX.Element {
           onChange={(_, value) => {
             value ? handlePreset(value) : {};
           }}
+        />
+        <Button variant="outlined" onClick={handleClickOpenPreset}>
+          Presets
+        </Button>
+        <AppConfigDialog
+          open={openBeamline}
+          handleClose={handleClosePreset}
+          handleOpen={handleClickOpenPreset}
         />
       </Toolbar>
     </AppBar>
