@@ -16,7 +16,7 @@ import BeamStopDataEntry from "./beamstop";
 import CameraTubeDataEntry from "./cameraTube";
 import BeampropertiesDataEntry from "./beamProperties";
 import { useDetectorStore } from "./detectorStore";
-import DetectorDialog from "../dialogs/detectorDialog";
+import DetectorDialog from "../dialogs/detector/detectorDialog";
 import React from "react";
 
 /**

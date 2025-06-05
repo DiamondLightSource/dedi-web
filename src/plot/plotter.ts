@@ -43,7 +43,7 @@ class PixelAxis implements AxisUnitStrategy {
 }
 
 /**
- * Plotting strategy for plotting in reciprical units
+ * Plotting strategy for plotting in reciprocal units
  */
 class ReciprocalAxis implements AxisUnitStrategy {
   constructor(
