@@ -65,7 +65,6 @@ export default function DetectorDialog(props: {
   const [data, setData] = useState<DetectorForm | null>(null);
   const [errors, setErrors] = useState([]);
   const submitHandler = () => {
-    console.log(errors);
     if (errors.length > 0 || !data) {
       return;
     }

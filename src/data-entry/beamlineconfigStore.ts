@@ -1,7 +1,7 @@
-import { AppBeamline } from "../utils/types";
+import { AppBeamline, IOBeamline } from "../utils/types";
 import { create } from "zustand";
 import { AngleUnits, EnergyUnits, WavelengthUnits } from "../utils/units";
-import { defaultConfig } from "../presets/presetManager";
+import { defaultConfig, presetConfigRecord } from "../presets/presetManager";
 import { Unit, unit } from "mathjs";
 import { wavelength2EnergyConverter } from "../utils/units";
 
@@ -12,7 +12,8 @@ export interface BeamlineConfigStore {
   userEnergy: number | null;
   userWavelength: number | null;
   userAngle: number | null;
-
+  presetRecord: Record<string, IOBeamline>;
+  addNewPreset: (name: string, newPreset: IOBeamline) => void;
   updateEnergy: (newEnergy: number | null, newUnits: EnergyUnits) => void;
   updateEnergyUnits: (newUnits: EnergyUnits) => void;
   updateWavelength: (
@@ -33,6 +34,7 @@ export interface BeamlineConfigStore {
 export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   beamline: defaultConfig.beamline,
   beamlineName: defaultConfig.beamline,
+  presetRecord: presetConfigRecord,
 
   energy: wavelength2EnergyConverter(defaultConfig.beamline.wavelength).to(
     EnergyUnits.kiloElectronVolts,
@@ -120,4 +122,9 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
     set({
       beamline: beamline,
     }),
+  addNewPreset: (name: string, newPreset: IOBeamline) => {
+    set((state: BeamlineConfigStore) => ({
+      presetRecord: { ...state.presetRecord, [name]: newPreset },
+    }));
+  },
 }));

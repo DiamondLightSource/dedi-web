@@ -5,6 +5,10 @@
       "type": "string",
       "minLength": 1
     },
+    "detector": {
+      "type": "string",
+      "enum": [" "]
+    },
     "beamstop": {
       "title": "beamstop",
       "type": "object",
@@ -13,9 +17,31 @@
           "label": "diameter",
           "type": "number",
           "minimum": 0
+        },
+        "centre" : {
+          "title": "centre",
+          "type": "object",
+          "properties": {
+            "x": {
+              "label": "x",
+              "type": "number",
+              "minimum": 0
+            },
+            "y": {
+              "label": "y",
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["x", "y"]
+        },
+        "clearance": {
+          "label": "clearance",
+          "type": "number",
+          "minimum": 0
         }
       },
-      "required": ["diameter"]
+      "required": ["diameter", "centre"]
     },
     "cameraTube": {
       "title": "camera tube",
@@ -25,11 +51,28 @@
           "label": "diameter",
           "type": "number",
           "minimum": 0
+        },
+        "centre" : {
+          "title": "centre",
+          "type": "object",
+          "properties": {
+            "x": {
+              "label": "x",
+              "type": "number",
+              "minimum": 0
+            },
+            "y": {
+              "label": "y",
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["x", "y"]
         }
       }
     },
-    "wavelength": {
-      "title": "wavelength",
+    "wavelengthLimits": {
+      "title": "Wavelength limits",
       "type": "object",
       "properties": {
         "min": {
@@ -45,8 +88,8 @@
       },
       "required": ["min", "max"]
     },
-    "cameraLength": {
-      "title": "camera length",
+    "cameraLengthLimits": {
+      "title": "Camera length limits",
       "type": "object",
       "properties": {
         "min": {
@@ -68,5 +111,5 @@
       "required": ["min", "max", "step"]
     }
   },
-  "required": ["name"]
+  "required": ["name", "detector"]
 }

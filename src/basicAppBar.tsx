@@ -2,7 +2,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useDetectorStore } from "./data-entry/detectorStore";
-import { createAppConfig, presetConfigRecord } from "./presets/presetManager";
+import { createAppConfig } from "./presets/presetManager";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import { useBeamlineConfigStore } from "./data-entry/beamlineconfigStore";
 import { useState } from "react";
@@ -18,14 +18,16 @@ import React from "react";
 import AppConfigDialog from "./dialogs/preset/appConfigDialog";
 
 export default function BasicAppBar(): JSX.Element {
-  const [preset, setPreset] = useState<string>(
-    Object.keys(presetConfigRecord)[0],
-  );
   const detectorStore = useDetectorStore();
   const beamlineConfigStore = useBeamlineConfigStore();
+  const presetConfigRecord = beamlineConfigStore.presetRecord;
   const beamstopStore = useBeamstopStore();
   const cameraTubeStore = useCameraTubeStore();
   const [openBeamline, setOpenBeamline] = React.useState(false);
+
+  const [preset, setPreset] = useState<string>(
+    Object.keys(presetConfigRecord)[0],
+  );
 
   const handleClickOpenPreset = () => {
     setOpenBeamline(true);
@@ -68,7 +70,11 @@ export default function BasicAppBar(): JSX.Element {
             value ? handlePreset(value) : {};
           }}
         />
-        <Button variant="outlined" onClick={handleClickOpenPreset}>
+        <Button
+          variant="outlined"
+          sx={{ color: "black" }}
+          onClick={handleClickOpenPreset}
+        >
           Presets
         </Button>
         <AppConfigDialog
