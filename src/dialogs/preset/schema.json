@@ -1,0 +1,72 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "beamstop": {
+      "title": "beamstop",
+      "type": "object",
+      "properties": {
+        "diameter": {
+          "label": "diameter",
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["diameter"]
+    },
+    "cameraTube": {
+      "title": "camera tube",
+      "type": "object",
+      "properties": {
+        "diameter": {
+          "label": "diameter",
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "wavelength": {
+      "title": "wavelength",
+      "type": "object",
+      "properties": {
+        "min": {
+          "label": "min",
+          "type" : "number",
+          "minimum": 0
+        },
+        "max": {
+          "label": "max",
+          "type" : "number",
+          "minimum": 0
+        }
+      },
+      "required": ["min", "max"]
+    },
+    "cameraLength": {
+      "title": "camera length",
+      "type": "object",
+      "properties": {
+        "min": {
+          "label": "min",
+          "type" : "number",
+          "minimum": 0
+        },
+        "max": {
+          "label": "max",
+          "type" : "number",
+          "minimum": 0
+        },
+        "step": {
+          "label": "max",
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["min", "max", "step"]
+    }
+  },
+  "required": ["name"]
+}

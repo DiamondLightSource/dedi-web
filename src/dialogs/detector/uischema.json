@@ -1,0 +1,95 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "name",
+      "scope": "#/properties/name"
+    },
+    {
+      "type": "Group",
+      "label": "Resolution: ",
+      "elements" : [
+        {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "label": "width",
+            "scope": "#/properties/resolution/properties/width"
+          },
+          {
+            "type": "Control",
+            "label": "height",
+            "scope": "#/properties/resolution/properties/height"
+          }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Pixel Size: ",
+      "elements" : [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "width",
+              "scope": "#/properties/pixelSize/properties/width"
+            },
+            {
+              "type": "Control",
+              "label": "height",
+              "scope": "#/properties/pixelSize/properties/height"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Mask Modules: ",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements" :[
+            {
+              "type": "Control",
+              "label": "horizontal",
+              "scope": "#/properties/mask/properties/horizontalModules"
+            },
+            {
+              "type": "Control",
+              "label": "vertical",
+              "scope": "#/properties/mask/properties/verticalModules"
+            }
+          ]
+      }
+    ]
+    },
+    {
+      "type": "Group",
+      "label": "Mask Gap: ",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements" :[
+            {
+              "type": "Control",
+              "label": "horizontal",
+              "scope": "#/properties/mask/properties/horizontalGap"
+            },
+            {
+              "type": "Control",
+              "label": "vertical",
+              "scope": "#/properties/mask/properties/verticalGap"
+            }
+          ]
+        }
+      ]
+    }
+
+  ]
+}
