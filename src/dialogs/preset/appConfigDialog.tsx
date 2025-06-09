@@ -29,6 +29,14 @@ import schema from "./schema.json";
 import uischema from "./uischema.json";
 import { JsonForms } from "@jsonforms/react";
 import { FormUnits, UnitContext } from "../utils";
+import { useDetectorStore } from "../../data-entry/detectorStore";
+import { useBeamlineConfigStore } from "../../data-entry/beamlineconfigStore";
+import {
+  IOBeamstop,
+  IOCameraLimits,
+  IOCircularDevice,
+  IOWavelengthLimits,
+} from "../../utils/types";
 
 const renderers = [
   ...materialRenderers,
@@ -43,13 +51,34 @@ const renderers = [
   { tester: CompactGroupTester, renderer: CompactGroupRenderer },
 ];
 
+interface AppConfigForm {
+  name: string;
+  detector: string;
+  beamstop: IOBeamstop;
+  cameraTube?: IOCircularDevice;
+  wavelengthLimits: IOWavelengthLimits;
+  cameraLengthLimits: IOCameraLimits;
+}
+
 export default function AppConfigDialog(props: {
   open: boolean;
   handleClose: () => void;
   handleOpen: () => void;
 }): JSX.Element {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<AppConfigForm | null>(null);
   const [errors, setErrors] = useState([]);
+  const detectorRecord = useDetectorStore((state) => state.detectorRecord);
+  const beamlineConfigStore = useBeamlineConfigStore();
+  schema.properties.detector.enum = Object.keys(detectorRecord);
+
+  const submitHandler = () => {
+    if (errors.length > 0 || !data) {
+      return;
+    }
+    console.log(data);
+    const { name, ...preset } = data;
+    beamlineConfigStore.addNewPreset(name, preset);
+  };
 
   return (
     <Dialog
@@ -89,7 +118,7 @@ export default function AppConfigDialog(props: {
                   renderers={renderers}
                 />
               </UnitContext.Provider>
-              <Button variant="outlined" type="submit">
+              <Button variant="outlined" type="submit" onClick={submitHandler}>
                 Submit
               </Button>
             </Stack>

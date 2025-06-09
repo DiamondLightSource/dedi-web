@@ -7,30 +7,70 @@
       "scope": "#/properties/name"
     },
     {
+      "type": "Control",
+      "label": "detector",
+      "scope": "#/properties/detector"
+    },
+    {
       "type": "Group",
-      "label": "beamstop: ",
+      "label": "Beamstop: ",
       "elements" : [
           {
             "type": "Control",
             "label": "diameter",
             "scope": "#/properties/beamstop/properties/diameter"
-          }
-        ]
-    },
-    {
-      "type": "Group",
-      "label": "camera tube: ",
-      "elements" : [
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements":[
+              {
+                "type": "Control",
+                "label": "centre x",
+                "scope": "#/properties/beamstop/properties/centre/properties/x"
+              },
+              {
+                "type": "Control",
+                "label": "centre y",
+                "scope": "#/properties/beamstop/properties/centre/properties/y"
+              }
+            ]
+          },
           {
             "type": "Control",
-            "label": "diameter",
-            "scope": "#/properties/cameraTube/properties/diameter"
+            "label": "clearance",
+            "scope": "#/properties/beamstop/properties/clearance"
           }
         ]
     },
     {
       "type": "Group",
-      "label": "wavelength limits",
+      "label": "Camera tube: ",
+      "elements" : [
+        {
+          "type": "Control",
+          "label": "diameter",
+          "scope": "#/properties/cameraTube/properties/diameter"
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements":[
+            {
+              "type": "Control",
+              "label": "centre x",
+              "scope": "#/properties/cameraTube/properties/centre/properties/x"
+            },
+            {
+              "type": "Control",
+              "label": "centre y",
+              "scope": "#/properties/cameraTube/properties/centre/properties/y"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Wavelength limits: ",
       "elements" : [
         {
         "type": "HorizontalLayout",
@@ -38,12 +78,12 @@
           {
             "type": "Control",
             "label": "min",
-            "scope": "#/properties/wavelength/properties/min"
+            "scope": "#/properties/wavelengthLimits/properties/min"
           },
           {
             "type": "Control",
             "label": "max",
-            "scope": "#/properties/wavelength/properties/max"
+            "scope": "#/properties/wavelengthLimits/properties/max"
           }
           ]
         }
@@ -51,7 +91,7 @@
     },
     {
       "type": "Group",
-      "label": "camera length limits",
+      "label": "Camera length limits: ",
       "elements" : [
         {
         "type": "HorizontalLayout",
@@ -59,17 +99,17 @@
           {
             "type": "Control",
             "label": "min",
-            "scope": "#/properties/cameraLength/properties/min"
+            "scope": "#/properties/cameraLengthLimits/properties/min"
           },
           {
             "type": "Control",
             "label": "max",
-            "scope": "#/properties/cameraLength/properties/max"
+            "scope": "#/properties/cameraLengthLimits/properties/max"
           },
           {
             "type": "Control",
             "label": "step",
-            "scope": "#/properties/cameraLength/properties/step"
+            "scope": "#/properties/cameraLengthLimits/properties/step"
           }
           ]
         }

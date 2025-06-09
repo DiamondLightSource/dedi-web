@@ -1,6 +1,6 @@
 import { IOBeamline } from "../../utils/types";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
-import { presetConfigRecord } from "../../presets/presetManager";
+import { useBeamlineConfigStore } from "../../data-entry/beamlineconfigStore";
 
 interface AppConfigTableRow {
   name: string;
@@ -30,6 +30,9 @@ function createData(name: string, appConfig: IOBeamline): AppConfigTableRow {
 
 export default function AppConfigTable() {
   const displayArray: AppConfigTableRow[] = [];
+  const presetConfigRecord = useBeamlineConfigStore(
+    (state) => state.presetRecord,
+  );
   for (const [key, value] of Object.entries(presetConfigRecord)) {
     displayArray.push(createData(key, value));
   }
