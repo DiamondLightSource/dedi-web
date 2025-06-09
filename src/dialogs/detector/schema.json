@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resolution": {
+      "title": "resolution",
+      "type": "object",
+      "properties": {
+        "width": {
+          "label": "width",
+          "type": "number",
+          "minimum": 0
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["height", "width"]
+    },
+    "pixelSize": {
+      "title": "Pixel Size",
+      "type": "object",
+      "properties": {
+          "width": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["height", "width"]
+    },
+    "mask": {
+      "title": "mask",
+      "type": "object",
+      "properties": {
+        "horizontalModules" :{
+          "type": "integer",
+          "minimum": 1
+        },
+        "verticalModules" : {
+          "type": "integer",
+          "minimum": 1
+        },
+        "horizontalGap": {
+          "type": "number",
+          "minimum": 0
+        },
+        "verticalGap": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+
+  },
+  "required": ["name", "resolution", "pixelSize", "mask"]
+}

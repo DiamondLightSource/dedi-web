@@ -1,0 +1,79 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "name",
+      "scope": "#/properties/name"
+    },
+    {
+      "type": "Group",
+      "label": "beamstop: ",
+      "elements" : [
+          {
+            "type": "Control",
+            "label": "diameter",
+            "scope": "#/properties/beamstop/properties/diameter"
+          }
+        ]
+    },
+    {
+      "type": "Group",
+      "label": "camera tube: ",
+      "elements" : [
+          {
+            "type": "Control",
+            "label": "diameter",
+            "scope": "#/properties/cameraTube/properties/diameter"
+          }
+        ]
+    },
+    {
+      "type": "Group",
+      "label": "wavelength limits",
+      "elements" : [
+        {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "label": "min",
+            "scope": "#/properties/wavelength/properties/min"
+          },
+          {
+            "type": "Control",
+            "label": "max",
+            "scope": "#/properties/wavelength/properties/max"
+          }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "camera length limits",
+      "elements" : [
+        {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "label": "min",
+            "scope": "#/properties/cameraLength/properties/min"
+          },
+          {
+            "type": "Control",
+            "label": "max",
+            "scope": "#/properties/cameraLength/properties/max"
+          },
+          {
+            "type": "Control",
+            "label": "step",
+            "scope": "#/properties/cameraLength/properties/step"
+          }
+          ]
+        }
+      ]
+    }
+  ]
+}
