@@ -69,7 +69,18 @@ export default function AppConfigDialog(props: {
   const [errors, setErrors] = useState([]);
   const detectorRecord = useDetectorStore((state) => state.detectorRecord);
   const beamlineConfigStore = useBeamlineConfigStore();
-  schema.properties.detector.enum = Object.keys(detectorRecord);
+  // schema.properties.detector.enum = Object.keys(detectorRecord);
+
+  const newSchema = {
+    ...schema,
+    properties: {
+      ...schema.properties,
+      detector: {
+        ...schema.properties.detector,
+        enum: Object.keys(detectorRecord),
+      },
+    },
+  };
 
   const submitHandler = () => {
     if (errors.length > 0 || !data) {
@@ -113,7 +124,7 @@ export default function AppConfigDialog(props: {
                     setData(data);
                     setErrors(errors);
                   }}
-                  schema={schema}
+                  schema={newSchema}
                   uischema={uischema}
                   renderers={renderers}
                 />
