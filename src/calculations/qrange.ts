@@ -94,18 +94,18 @@ export function computeQrange(
   if (intersection === null) {
     console.warn(
       formatLogMessage(
-        "No intersection between Ray, Camera tube, and Detector",
+        "No intersection between Ray, Camera Tube, and Detector",
       ),
     );
     return defaultReturn;
   }
 
-  // Get the points points for the intersection range
+  // Get the points for the intersection range
   const minPoint = ray.getPoint(intersection.min);
   const maxPoint = ray.getPoint(intersection.max);
   const origin = beamcentre.toSI().toVector3(cameraLength.toSI().toNumber());
   console.log(origin);
-  // Assume neam hits detector orthogonally
+  // Assume beam hits detector orthogonally
   const beamVector = new Vector3(0, 0, 1);
 
   // group together the data needed for detector infomation
