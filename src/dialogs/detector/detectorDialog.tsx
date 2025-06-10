@@ -30,6 +30,7 @@ import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
 import { FormUnits, UnitContext } from "../utils";
+import { ErrorObject } from "ajv";
 
 const renderers = [
   ...materialRenderers,
@@ -63,9 +64,9 @@ export default function DetectorDialog(props: {
 }): JSX.Element {
   const detectorStore = useDetectorStore();
   const [data, setData] = useState<DetectorForm | null>(null);
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<ErrorObject[] | undefined>([]);
   const submitHandler = () => {
-    if (errors.length > 0 || !data) {
+    if (!errors || errors.length > 0 || !data) {
       return;
     }
     const { name, mask, ...rest } = data;
@@ -84,6 +85,7 @@ export default function DetectorDialog(props: {
       detector = { mask: detectorMask, ...rest };
     }
     detectorStore.addNewDetector(name, createInternalDetector(detector));
+    setData(null);
   };
 
   return (
@@ -112,8 +114,8 @@ export default function DetectorDialog(props: {
                 <JsonForms
                   data={data}
                   onChange={({ data, errors }) => {
-                    setData(data);
-                    setErrors(errors);
+                    setData(data as DetectorForm);
+                    setErrors(errors as ErrorObject[] | undefined);
                   }}
                   schema={schema}
                   uischema={uischema}

@@ -37,6 +37,7 @@ import {
   IOCircularDevice,
   IOWavelengthLimits,
 } from "../../utils/types";
+import { ErrorObject } from "ajv";
 
 const renderers = [
   ...materialRenderers,
@@ -66,10 +67,9 @@ export default function AppConfigDialog(props: {
   handleOpen: () => void;
 }): JSX.Element {
   const [data, setData] = useState<AppConfigForm | null>(null);
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<ErrorObject[] | undefined>([]);
   const detectorRecord = useDetectorStore((state) => state.detectorRecord);
   const beamlineConfigStore = useBeamlineConfigStore();
-  // schema.properties.detector.enum = Object.keys(detectorRecord);
 
   const newSchema = {
     ...schema,
@@ -83,12 +83,13 @@ export default function AppConfigDialog(props: {
   };
 
   const submitHandler = () => {
-    if (errors.length > 0 || !data) {
+    if (!errors || errors.length > 0 || !data) {
       return;
     }
     console.log(data);
     const { name, ...preset } = data;
     beamlineConfigStore.addNewPreset(name, preset);
+    setData(null);
   };
 
   return (
@@ -121,8 +122,8 @@ export default function AppConfigDialog(props: {
                 <JsonForms
                   data={data}
                   onChange={({ data, errors }) => {
-                    setData(data);
-                    setErrors(errors);
+                    setData(data as AppConfigForm);
+                    setErrors(errors as ErrorObject[] | undefined);
                   }}
                   schema={newSchema}
                   uischema={uischema}

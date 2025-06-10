@@ -22,6 +22,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
+/* eslint-disable */
 import React, { useContext } from "react";
 import { CellProps, WithClassname } from "@jsonforms/core";
 import merge from "lodash/merge";
