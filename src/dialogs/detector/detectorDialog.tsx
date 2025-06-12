@@ -115,7 +115,7 @@ export default function DetectorDialog(props: {
                   data={data}
                   onChange={({ data, errors }) => {
                     setData(data as DetectorForm);
-                    setErrors(errors as ErrorObject[] | undefined);
+                    setErrors(errors);
                   }}
                   schema={schema}
                   uischema={uischema}
