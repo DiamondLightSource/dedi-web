@@ -8,7 +8,7 @@ import AppErrorFallBack from "./utils/errorComponents.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary
-      fallback={<AppErrorFallBack message="Something went wrong" />}
+      fallback={<AppErrorFallBack message="Something went wrong ..." />}
     >
       <App />
     </ErrorBoundary>
