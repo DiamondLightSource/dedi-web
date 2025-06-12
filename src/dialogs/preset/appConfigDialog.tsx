@@ -123,7 +123,7 @@ export default function AppConfigDialog(props: {
                   data={data}
                   onChange={({ data, errors }) => {
                     setData(data as AppConfigForm);
-                    setErrors(errors as ErrorObject[] | undefined);
+                    setErrors(errors);
                   }}
                   schema={newSchema}
                   uischema={uischema}
