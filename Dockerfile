@@ -1,4 +1,4 @@
-FROM registry.hub.docker.com/library/node:20-alpine as base
+FROM registry.hub.docker.com/library/node:24-alpine as base
 
 ENV APP_DIR /dedi-web
 
