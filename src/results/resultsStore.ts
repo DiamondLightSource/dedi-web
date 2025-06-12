@@ -3,6 +3,7 @@ import { WavelengthUnits, ReciprocalWavelengthUnits } from "../utils/units";
 import * as mathjs from "mathjs";
 import { convertFromDtoQ, convertFromSToQ } from "./scatteringQuantities";
 
+// enum for the scattering values
 export enum ScatteringOptions {
   q = "q",
   s = "s",
