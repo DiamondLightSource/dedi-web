@@ -146,7 +146,6 @@ export default function BeampropertiesDataEntry() {
               size="small"
               label="units"
               value={
-                // eslint-disable-next-line max-len
                 beamlineConfigStore.beamline.wavelength.formatUnits() as WavelengthUnits
               }
               onChange={handleWavelengthUnits}

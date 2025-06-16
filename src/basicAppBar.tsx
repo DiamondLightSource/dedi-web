@@ -17,7 +17,7 @@ import {
 import React from "react";
 import AppConfigDialog from "./dialogs/preset/appConfigDialog";
 
-export default function BasicAppBar(): JSX.Element {
+export default function BasicAppBar() {
   const detectorStore = useDetectorStore();
   const beamlineConfigStore = useBeamlineConfigStore();
   const presetConfigRecord = beamlineConfigStore.presetRecord;
@@ -66,9 +66,7 @@ export default function BasicAppBar(): JSX.Element {
           renderInput={(params) => (
             <TextField {...params} label="preset" sx={{ color: "black" }} />
           )}
-          onChange={(_, value) => {
-            value ? handlePreset(value) : {};
-          }}
+          onChange={(_, value) => (value ? handlePreset(value) : {})}
         />
         <Button
           variant="outlined"

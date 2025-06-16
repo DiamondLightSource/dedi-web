@@ -144,7 +144,7 @@ interface ResultsBarProps {
 export default function ResultsBar({
   visibleQRange,
   fullQRange,
-}: ResultsBarProps): JSX.Element {
+}: ResultsBarProps) {
   const visibleQRangeUnits = UnitRange.fromNumericRange(
     visibleQRange,
     "m^-1",
