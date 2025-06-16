@@ -61,7 +61,7 @@ export default function DetectorDialog(props: {
   open: boolean;
   handleClose: () => void;
   handleOpen: () => void;
-}): JSX.Element {
+}) {
   const detectorStore = useDetectorStore();
   const [data, setData] = useState<DetectorForm | null>(null);
   const [errors, setErrors] = useState<ErrorObject[] | undefined>([]);

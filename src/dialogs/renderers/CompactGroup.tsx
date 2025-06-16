@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { MaterialLayoutRenderer } from "@jsonforms/material-renderers";
 import { Stack, Typography } from "@mui/material";
 

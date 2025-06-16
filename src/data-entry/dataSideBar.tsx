@@ -23,7 +23,7 @@ import React from "react";
  * React components which represents the whole side bar for data entry.
  * @returns
  */
-export default function DataSideBar(): JSX.Element {
+export default function DataSideBar() {
   const detectorStore = useDetectorStore();
 
   const [openDetector, setOpenDetector] = React.useState(false);
@@ -55,9 +55,9 @@ export default function DataSideBar(): JSX.Element {
                   <TextField {...params} label="choose detector" />
                 )}
                 value={detectorStore.name}
-                onChange={(_, value) => {
-                  value ? detectorStore.updateDetector(value) : {};
-                }}
+                onChange={(_, value) =>
+                  value ? detectorStore.updateDetector(value) : {}
+                }
               />
               <Button variant="outlined" onClick={handleClickOpenDetector}>
                 {" "}
