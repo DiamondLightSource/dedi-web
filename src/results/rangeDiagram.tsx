@@ -18,7 +18,7 @@ const getTextAnchor = (requestedValue: number): string => {
 export function RangeDiagram({
   visibleRange,
   requestedRange,
-}: RangeDiagramProps): JSX.Element {
+}: RangeDiagramProps): React.JSX.Element {
   const svgRange = visibleRange.max.toNumber() - visibleRange.min.toNumber();
   const requestedMax = (requestedRange.max.toNumber() / svgRange) * 100;
   const requestedMin = (requestedRange.min.toNumber() / svgRange) * 100;

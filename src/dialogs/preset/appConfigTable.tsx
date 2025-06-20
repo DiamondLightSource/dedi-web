@@ -28,7 +28,7 @@ function createData(name: string, appConfig: IOBeamline): AppConfigTableRow {
   };
 }
 
-export default function AppConfigTable() {
+export default function AppConfigTable(): React.JSX.Element {
   const displayArray: AppConfigTableRow[] = [];
   const presetConfigRecord = useBeamlineConfigStore(
     (state) => state.presetRecord,

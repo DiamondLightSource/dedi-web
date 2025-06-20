@@ -1,49 +1,30 @@
 import js from "@eslint/js";
 import globals from "globals";
-import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
-import reactHooksPlugin from "eslint-plugin-react-hooks";
-import { defineConfig } from "eslint/config";
-import prettierPlugin from "eslint-plugin-prettier";
-import eslintConfigPrettier from "eslint-config-prettier/flat";
+import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import tseslint from "typescript-eslint";
+import eslintConfigPrettier from "eslint-config-prettier";
 
-export default defineConfig([
+export default tseslint.config(
+  { ignores: ["dist", "node_modules", "public"] },
   {
-    ignores: ["node_modules/", "dist/", "build/"],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
+      ecmaVersion: 2020,
       globals: globals.browser,
     },
-  },
-  js.configs.recommended,
-  tseslint.configs.recommended,
-  {
-    files: ["**/*.jsx", "**/*.tsx"],
     plugins: {
-      react: pluginReact,
-      "react-hooks": reactHooksPlugin,
+      "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
     },
-    languageOptions: {
-      parserOptions: {
-        ecmaFeatures: { jsx: true },
-      },
-    },
-    settings: {
-      react: { version: "detect" },
-    },
     rules: {
-      "react/jsx-uses-react": "off",
-      "react/react-in-jsx-scope": "off",
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
-    },
-  },
-  {
-    plugins: { prettier: prettierPlugin },
-    rules: {
-      "prettier/prettier": "error",
+      ...reactHooks.configs.recommended.rules,
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true },
+      ],
     },
   },
   eslintConfigPrettier,
-]);
+);

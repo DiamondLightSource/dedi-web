@@ -20,7 +20,9 @@ import {
 import { convertFromQtoD, convertFromQToS } from "./scatteringQuantities";
 import UnitRange from "../calculations/unitRange";
 
-export default function RangeTable(props: { qRange: UnitRange }): JSX.Element {
+export default function RangeTable(props: {
+  qRange: UnitRange;
+}): React.JSX.Element {
   const resultsStore = useResultStore();
 
   const handleQunits = (

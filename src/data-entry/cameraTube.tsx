@@ -12,12 +12,13 @@ import {
 import { Stack } from "@mui/system";
 import { useCameraTubeStore } from "./cameraTubeStore";
 import { LengthUnits, MuSymbol } from "../utils/units";
+import React from "react";
 
 /**
  * Component with inputs for cameratube data entry
  * @returns
  */
-export default function CameraTubeDataEntry(): JSX.Element {
+export default function CameraTubeDataEntry(): React.JSX.Element {
   const cameraTubeStore = useCameraTubeStore();
   const handleX = (event: React.ChangeEvent<HTMLInputElement>) => {
     cameraTubeStore.updateCentre({

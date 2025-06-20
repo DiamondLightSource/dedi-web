@@ -15,12 +15,13 @@ import { LengthUnits, MuSymbol } from "../utils/units";
 import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 import { AppDetector } from "../utils/types";
+import React from "react";
 
 /**
  * Component with data entry inputs for the Beamstop
  * @returns
  */
-export default function BeamStopDataEntry(): JSX.Element {
+export default function BeamStopDataEntry(): React.JSX.Element {
   const beamstopStore = useBeamstopStore();
 
   const handleX = (event: React.ChangeEvent<HTMLInputElement>) => {
