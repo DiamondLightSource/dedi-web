@@ -7,10 +7,11 @@ import {
   Typography,
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
+import React from "react";
 
 export default function AppErrorFallBack(props: {
   message: string;
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <>
       <CssBaseline>
@@ -33,7 +34,7 @@ export default function AppErrorFallBack(props: {
 
 export function ComponentErrorFallback(props: {
   message: string;
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <Card variant="outlined">
       <CardContent>

@@ -25,7 +25,7 @@
       "title": "Pixel Size",
       "type": "object",
       "properties": {
-          "width": {
+        "width": {
           "type": "integer",
           "minimum": 0
         },
@@ -40,11 +40,11 @@
       "title": "mask",
       "type": "object",
       "properties": {
-        "horizontalModules" :{
+        "horizontalModules": {
           "type": "integer",
           "minimum": 1
         },
-        "verticalModules" : {
+        "verticalModules": {
           "type": "integer",
           "minimum": 1
         },
@@ -58,7 +58,6 @@
         }
       }
     }
-
   },
   "required": ["name", "resolution", "pixelSize", "mask"]
 }

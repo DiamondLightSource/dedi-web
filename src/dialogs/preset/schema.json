@@ -18,7 +18,7 @@
           "type": "number",
           "minimum": 0
         },
-        "centre" : {
+        "centre": {
           "title": "centre",
           "type": "object",
           "properties": {
@@ -52,7 +52,7 @@
           "type": "number",
           "minimum": 0
         },
-        "centre" : {
+        "centre": {
           "title": "centre",
           "type": "object",
           "properties": {
@@ -77,12 +77,12 @@
       "properties": {
         "min": {
           "label": "min",
-          "type" : "number",
+          "type": "number",
           "minimum": 0
         },
         "max": {
           "label": "max",
-          "type" : "number",
+          "type": "number",
           "minimum": 0
         }
       },
@@ -94,12 +94,12 @@
       "properties": {
         "min": {
           "label": "min",
-          "type" : "number",
+          "type": "number",
           "minimum": 0
         },
         "max": {
           "label": "max",
-          "type" : "number",
+          "type": "number",
           "minimum": 0
         },
         "step": {

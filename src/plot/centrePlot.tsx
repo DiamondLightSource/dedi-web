@@ -55,7 +55,7 @@ const RequestedRangeSelector = (state: ResultStore) => {
  * A react componenet that plots a diagram of the system
  * @returns
  */
-export default function CentrePlot(): JSX.Element {
+export default function CentrePlot(): React.JSX.Element {
   const plotConfig = usePlotStore();
   const beamlineConfig = useBeamlineConfigStore(beamlineConfigSelector);
   const detector = useDetectorStore(detectorSelector);
@@ -288,8 +288,8 @@ function updatePixelUnits(detector: AppDetector): void {
   // @ts-ignore
   if (Unit.UNITS.xpixel) {
     // @ts-ignore
-      delete Unit.UNITS.xpixel;
-  };
+    delete Unit.UNITS.xpixel;
+  }
   // @ts-ignore
   if (Unit.UNITS.ypixel) {
     // @ts-ignore

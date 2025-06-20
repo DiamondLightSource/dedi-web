@@ -1,4 +1,6 @@
-export function MessageDiagram(props: { message: string }): JSX.Element {
+import React from "react";
+
+export function MessageDiagram(props: { message: string }): React.JSX.Element {
   return (
     <svg
       style={{

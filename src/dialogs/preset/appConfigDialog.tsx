@@ -38,6 +38,7 @@ import {
   IOWavelengthLimits,
 } from "../../utils/types";
 import { ErrorObject } from "ajv";
+import React from "react";
 
 const renderers = [
   ...materialRenderers,
@@ -65,7 +66,7 @@ export default function AppConfigDialog(props: {
   open: boolean;
   handleClose: () => void;
   handleOpen: () => void;
-}): JSX.Element {
+}): React.JSX.Element {
   const [data, setData] = useState<AppConfigForm | null>(null);
   const [errors, setErrors] = useState<ErrorObject[] | undefined>([]);
   const detectorRecord = useDetectorStore((state) => state.detectorRecord);

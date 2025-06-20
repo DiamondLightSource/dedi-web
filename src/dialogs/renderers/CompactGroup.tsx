@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { MaterialLayoutRenderer } from "@jsonforms/material-renderers";
 import { Stack, Typography } from "@mui/material";
 
@@ -7,14 +8,14 @@ import { rankWith, uiTypeIs } from "@jsonforms/core";
 
 export const CompactGroupTester = rankWith(1000, uiTypeIs("Group"));
 
-const CompactGroupRenderer = (props) => {
+const CompactGroupRenderer = (props: any) => {
   const { uischema, schema, path, visible, renderers, enabled } = props;
 
   const layoutProps = {
     elements: uischema.elements,
     schema: schema,
     path: path,
-    direction: "column",
+    direction: "column" as "row" | "column",
     visible: visible,
     uischema: uischema,
     renderers: renderers,

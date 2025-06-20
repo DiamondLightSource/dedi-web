@@ -89,7 +89,11 @@ function getVisibilitySettings(
   };
 }
 
-function RangeFormControl({ resultStore }: { resultStore: ResultStore }) {
+function RangeFormControl({
+  resultStore,
+}: {
+  resultStore: ResultStore;
+}): React.JSX.Element {
   return (
     <FormControl>
       <FormLabel>Requested Quantiy</FormLabel>

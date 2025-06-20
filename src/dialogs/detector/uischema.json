@@ -9,20 +9,20 @@
     {
       "type": "Group",
       "label": "Resolution: ",
-      "elements" : [
+      "elements": [
         {
-        "type": "HorizontalLayout",
-        "elements": [
-          {
-            "type": "Control",
-            "label": "width",
-            "scope": "#/properties/resolution/properties/width"
-          },
-          {
-            "type": "Control",
-            "label": "height",
-            "scope": "#/properties/resolution/properties/height"
-          }
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "width",
+              "scope": "#/properties/resolution/properties/width"
+            },
+            {
+              "type": "Control",
+              "label": "height",
+              "scope": "#/properties/resolution/properties/height"
+            }
           ]
         }
       ]
@@ -30,7 +30,7 @@
     {
       "type": "Group",
       "label": "Pixel Size: ",
-      "elements" : [
+      "elements": [
         {
           "type": "HorizontalLayout",
           "elements": [
@@ -54,7 +54,7 @@
       "elements": [
         {
           "type": "HorizontalLayout",
-          "elements" :[
+          "elements": [
             {
               "type": "Control",
               "label": "horizontal",
@@ -66,8 +66,8 @@
               "scope": "#/properties/mask/properties/verticalModules"
             }
           ]
-      }
-    ]
+        }
+      ]
     },
     {
       "type": "Group",
@@ -75,7 +75,7 @@
       "elements": [
         {
           "type": "HorizontalLayout",
-          "elements" :[
+          "elements": [
             {
               "type": "Control",
               "label": "horizontal",
@@ -90,6 +90,5 @@
         }
       ]
     }
-
   ]
 }

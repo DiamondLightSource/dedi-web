@@ -17,8 +17,9 @@ import { PlotAxes, usePlotStore } from "./plotStore";
 import ColourPickerPopover from "../utils/colourPicker";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
+import React from "react";
 
-export default function LegendBar(): JSX.Element {
+export default function LegendBar(): React.JSX.Element {
   const plotConfig = usePlotStore();
   const detector = useDetectorStore((store) => store.detector);
   const cameraTube = useCameraTubeStore((store) => store.cameraTube);

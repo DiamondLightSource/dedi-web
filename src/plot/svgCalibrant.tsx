@@ -2,6 +2,7 @@ import type { SVGProps } from "react";
 import { Vector3 } from "three";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import { SvgLine } from "@h5web/lib";
+import React from "react";
 
 export interface SvgCalibrantProps extends SVGProps<SVGEllipseElement> {
   beamCentre: Vector3;
@@ -10,7 +11,9 @@ export interface SvgCalibrantProps extends SVGProps<SVGEllipseElement> {
   ringFractions: number[];
 }
 
-export default function SvgCalibrant(props: SvgCalibrantProps): JSX.Element {
+export default function SvgCalibrant(
+  props: SvgCalibrantProps,
+): React.JSX.Element {
   return (
     <>
       {props.ringFractions.map((item: number) => (
