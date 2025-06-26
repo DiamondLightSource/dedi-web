@@ -1,8 +1,10 @@
 import {
   Button,
+  Card,
   Dialog,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
   IconButton,
   Stack,
@@ -103,13 +105,17 @@ export default function DetectorDialog(props: {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Grid container spacing={4}>
-          <Grid item xs={12} lg={8}>
-            <DetectorTable />
+        <Grid container spacing={1}>
+          <Grid item xs={12} lg={8} style={{display: 'flex'}}>
+            <Card sx={{p:2, flexGrow: 1}} variant="outlined">
+              <DetectorTable />
+            </Card>
           </Grid>
-          <Grid item xs={12} lg={4}>
+          <Grid item xs={12} lg={4} style={{display: 'flex'}} >
+            <Card variant="outlined" sx={{p:2}}>
             <Stack spacing={1} width={"100%"}>
               <Typography variant="h5"> Add new Detector:</Typography>
+              <Divider />
               <UnitContext.Provider value={FormUnits}>
                 <JsonForms
                   data={data}
@@ -126,6 +132,7 @@ export default function DetectorDialog(props: {
                 Submit
               </Button>
             </Stack>
+            </Card>
           </Grid>
         </Grid>
       </DialogContent>

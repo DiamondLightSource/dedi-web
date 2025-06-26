@@ -47,6 +47,7 @@ export default function CameraTubeDataEntry(): React.JSX.Element {
       <Stack spacing={1}>
         <Typography variant="h6"> CameraTube </Typography>
         <Divider />
+        {/** Diameter */}
         <Stack direction={"row"} alignItems={"center"}>
           <Typography flexGrow={1}>
             {" "}
@@ -73,6 +74,7 @@ export default function CameraTubeDataEntry(): React.JSX.Element {
             </Select>
           </FormControl>
         </Stack>
+        {/** Position */}
         <Typography>Position:</Typography>
         <TextField
           type="number"
