@@ -1,6 +1,8 @@
 import { IOBeamline } from "../../utils/types";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useBeamlineConfigStore } from "../../data-entry/beamlineconfigStore";
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 interface AppConfigTableRow {
   name: string;
@@ -61,13 +63,16 @@ export default function AppConfigTable(): React.JSX.Element {
     },
   ];
 
+  const isScreenLarge = useMediaQuery(useTheme().breakpoints.up("lg"));
+
   return (
     <DataGrid
-      autoHeight
+      autoHeight={!isScreenLarge}
       rows={displayArray}
       getRowId={(row: AppConfigTableRow) => row.name}
       columns={columns}
       components={{ Toolbar: GridToolbar }}
+      pageSize={10}
       sx={{ border: 0 }}
       disableSelectionOnClick
     />

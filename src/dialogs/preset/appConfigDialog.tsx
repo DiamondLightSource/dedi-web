@@ -8,6 +8,7 @@ import {
   Grid,
   Button,
   Stack,
+  Card,
 } from "@mui/material";
 import AppConfigTable from "./appConfigTable";
 import CloseIcon from "@mui/icons-material/Close";
@@ -39,6 +40,7 @@ import {
 } from "../../utils/types";
 import { ErrorObject } from "ajv";
 import React from "react";
+
 
 const renderers = [
   ...materialRenderers,
@@ -109,16 +111,20 @@ export default function AppConfigDialog(props: {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Grid container spacing={4}>
-          <Grid item xs={12} lg={8}>
+        <Grid container spacing={1}>
+          <Grid item xs={12} lg={8} style={{display: 'flex'}}>
+            <Card sx={{p:2, flexGrow: 1}} variant="outlined">
             <AppConfigTable />
+            </Card>
           </Grid>
-          <Grid item xs={12} lg={4}>
+          <Grid item xs={12} lg={4} style={{display: 'flex'}}>
+            <Card variant="outlined" sx={{p:2}}>
             <Stack spacing={1} width={"100%"}>
               <Typography variant="h5">
                 {" "}
                 Add new beamline configuration:
               </Typography>
+              <Divider />
               <UnitContext.Provider value={FormUnits}>
                 <JsonForms
                   data={data}
@@ -135,6 +141,7 @@ export default function AppConfigDialog(props: {
                 Submit
               </Button>
             </Stack>
+            </Card>
           </Grid>
         </Grid>
       </DialogContent>
