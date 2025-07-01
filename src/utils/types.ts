@@ -112,3 +112,12 @@ export interface AppConfig {
   cameraTube?: AppCircularDevice;
   beamline: AppBeamline;
 }
+
+export function sanitizeNumber(
+  value: number | null | undefined,
+): string | number {
+  if (value === null || value === undefined || Number.isNaN(value)) {
+    return "";
+  }
+  return value;
+}

@@ -23,6 +23,7 @@ import { RangeDiagram } from "./rangeDiagram";
 import RangeTable from "./rangeTable";
 import { ResultStore, ScatteringOptions, useResultStore } from "./resultsStore";
 import { convertFromQtoD, convertFromQToS } from "./scatteringQuantities";
+import { sanitizeNumber } from "../utils/types";
 
 interface VisibilitySettings {
   textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null;
@@ -209,7 +210,7 @@ export default function ResultsBar({
                 type="number"
                 label={`Requested min ${resultStore.requested} value`}
                 size="small"
-                value={resultStore.requestedMin}
+                value={sanitizeNumber(resultStore.requestedMin)}
                 onChange={handleRequestedMin}
                 InputProps={{
                   endAdornment: (
@@ -221,7 +222,7 @@ export default function ResultsBar({
                 type="number"
                 label={`Requested max ${resultStore.requested} value`}
                 size="small"
-                value={resultStore.requestedMax}
+                value={sanitizeNumber(resultStore.requestedMax)}
                 onChange={handleRequestedMax}
                 InputProps={{
                   endAdornment: (
