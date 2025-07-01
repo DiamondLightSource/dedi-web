@@ -41,7 +41,7 @@
           "minimum": 0
         }
       },
-      "required": ["diameter", "centre"]
+      "required": ["diameter", "centre", "clearance"]
     },
     "cameraTube": {
       "title": "camera tube",
@@ -66,8 +66,7 @@
               "type": "number",
               "minimum": 0
             }
-          },
-          "required": ["x", "y"]
+          }
         }
       }
     },

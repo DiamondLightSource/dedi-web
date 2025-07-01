@@ -17,7 +17,7 @@ import { materialRenderers } from "@jsonforms/material-renderers";
 import schema from "./schema.json";
 import uischema from "./uischema.json";
 import { JsonForms } from "@jsonforms/react";
-import { IODetector } from "../../utils/types";
+import { DetectorMask, IODetector } from "../../utils/types";
 import { useState } from "react";
 import { createInternalDetector } from "../../presets/presetManager";
 
@@ -59,6 +59,14 @@ interface DetectorForm {
   };
 }
 
+const defaultMask: DetectorMask = {
+  horizontalModules: 1,
+  verticalModules: 1,
+  horizontalGap: 0,
+  verticalGap: 0,
+  missingModules: [],
+}
+
 export default function DetectorDialog(props: {
   open: boolean;
   handleClose: () => void;
@@ -76,15 +84,7 @@ export default function DetectorDialog(props: {
     if (!mask) {
       detector = rest;
     } else {
-      const detectorMask = {
-        horizontalModules: 1,
-        verticalModules: 1,
-        horizontalGap: 0,
-        verticalGap: 0,
-        missingModules: [],
-        ...mask,
-      };
-      detector = { mask: detectorMask, ...rest };
+      detector = { mask: {...defaultMask, ...mask}, ...rest };
     }
     detectorStore.addNewDetector(name, createInternalDetector(detector));
     setData(null);
