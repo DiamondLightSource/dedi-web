@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest"]
-        node-version: [22.x, 23.x, 24.x]
+        node-version: [22.x, 24.x]
 
     name: test/${{ matrix.node-version }}/${{ matrix.os }}
     runs-on: ${{ matrix.os }}
