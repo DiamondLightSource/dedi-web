@@ -37,6 +37,7 @@ import {
   IOCameraLimits,
   IOCircularDevice,
   IOWavelengthLimits,
+  SimpleVector2,
 } from "../../utils/types";
 import { ErrorObject } from "ajv";
 import React from "react";
@@ -55,11 +56,16 @@ const renderers = [
   { tester: CompactGroupTester, renderer: CompactGroupRenderer },
 ];
 
+interface CameraTubeForm {
+  centre?: SimpleVector2;
+  diameter?: number;
+}
+
 interface AppConfigForm {
   name: string;
   detector: string;
   beamstop: IOBeamstop;
-  cameraTube?: IOCircularDevice;
+  cameraTube?: CameraTubeForm;
   wavelengthLimits: IOWavelengthLimits;
   cameraLengthLimits: IOCameraLimits;
 }
@@ -89,8 +95,19 @@ export default function AppConfigDialog(props: {
     if (!errors || errors.length > 0 || !data) {
       return;
     }
-    console.log(data);
-    const { name, ...preset } = data;
+    const { name, cameraTube,...rest } = data;
+
+    let newCameraTube: IOCircularDevice | undefined = undefined; 
+
+    if(cameraTube?.diameter){
+      const newCentre = {...data.beamstop.centre, ...cameraTube.centre}
+      newCameraTube = {
+        diameter: cameraTube.diameter,
+        centre: newCentre
+      }
+    }
+    
+    const preset = {cameraTube: newCameraTube, ...rest}
     beamlineConfigStore.addNewPreset(name, preset);
     setData(null);
   };

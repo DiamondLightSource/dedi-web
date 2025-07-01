@@ -72,7 +72,7 @@ export default function AppConfigTable(): React.JSX.Element {
       getRowId={(row: AppConfigTableRow) => row.name}
       columns={columns}
       components={{ Toolbar: GridToolbar }}
-      pageSize={10}
+      pageSize={12}
       sx={{ border: 0 }}
       disableSelectionOnClick
     />
