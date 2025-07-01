@@ -258,7 +258,7 @@ export default function LegendBar(): React.JSX.Element {
                     size="small"
                     options={Object.keys(plotConfig.calibrantRecord)}
                     value={plotConfig.currentCalibrant}
-                    sx={{ width: 300, color: "white" }}
+                    style={{ width: 300, color: "white" }}
                     renderInput={(params) => (
                       <TextField
                         {...params}

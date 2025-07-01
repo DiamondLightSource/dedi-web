@@ -2,8 +2,8 @@ import { AppDetector } from "../../utils/types";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useDetectorStore } from "../../data-entry/detectorStore";
 import { LengthUnits } from "../../utils/units";
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 interface DetectorTableRow {
   name: string;
@@ -42,8 +42,7 @@ export default function DetectorTable() {
     { field: "pixel_width", headerName: "pixel width (mm)", flex: 1 },
   ];
 
-  const isScreenLarge = useMediaQuery(useTheme().breakpoints.up("lg"))
-
+  const isScreenLarge = useMediaQuery(useTheme().breakpoints.up("lg"));
 
   return (
     <DataGrid
@@ -52,7 +51,7 @@ export default function DetectorTable() {
       getRowId={(row: DetectorTableRow) => row.name}
       columns={columns}
       components={{ Toolbar: GridToolbar }}
-      pageSize={10} 
+      rowsPerPageOptions={[5, 10, 20, 100]}
       sx={{ border: 0 }}
       disableSelectionOnClick
     />

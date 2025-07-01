@@ -110,5 +110,11 @@
       "required": ["min", "max", "step"]
     }
   },
-  "required": ["name", "detector", "cameraLengthLimits", "wavelengthLimits", "beamstop"]
+  "required": [
+    "name",
+    "detector",
+    "cameraLengthLimits",
+    "wavelengthLimits",
+    "beamstop"
+  ]
 }

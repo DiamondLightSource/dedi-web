@@ -14,13 +14,15 @@ export interface SvgMaskProps extends SVGProps<SVGPathElement> {
 }
 
 export default function SvgMask(props: SvgMaskProps) {
+  const { gapFraction, missingSegments, numModules, ...rest } = props;
+
   // check if clone is needed later on
-  const [detectorUpper, detectorLower] = props.coords;
+  const [detectorUpper, detectorLower] = rest.coords;
 
   // Get full length and width of detector
   const fulllength = detectorLower.clone().sub(detectorUpper);
   // Get the length of the horizontal and vertical gaps between modules
-  const gaplength = fulllength.clone().multiply(props.gapFraction);
+  const gaplength = fulllength.clone().multiply(gapFraction);
   // Get the length and width of each detctor module from the detector length,
   // number of gaps, gap length, and the number of modules
   //
@@ -28,52 +30,52 @@ export default function SvgMask(props: SvgMaskProps) {
   //    (detector length - (number of gaps)*(gap length))/(number of modules)
   const moduleLength = fulllength
     .clone()
-    .sub(gaplength.clone().multiply(props.numModules.clone().subScalar(1)))
-    .divide(props.numModules);
+    .sub(gaplength.clone().multiply(numModules.clone().subScalar(1)))
+    .divide(numModules);
 
   return (
     <>
       {/* plot vertical stripes */}
-      {[...Array(props.numModules.x - 1).keys()].map((i: number) => (
+      {[...Array(numModules.x - 1).keys()].map((i: number) => (
         <SvgRect
-          {...props}
+          {...rest}
           key={i}
           coords={generateVerticalStripes(
-            props.coords,
+            rest.coords,
             moduleLength.x,
             gaplength.x,
             i + 1,
           )}
-          fill={props.fill}
+          fill={rest.fill}
         />
       ))}
       {/* plot horizontal stripes */}
-      {[...Array(props.numModules.y - 1).keys()].map((item: number) => (
+      {[...Array(numModules.y - 1).keys()].map((item: number) => (
         <SvgRect
-          {...props}
+          {...rest}
           key={item}
           coords={generateHorizontalStripes(
-            props.coords,
+            rest.coords,
             moduleLength.y,
             gaplength.y,
             item + 1,
           )}
-          fill={props.fill}
+          fill={rest.fill}
         />
       ))}
       {/* plot missing sections*/}
-      {props.missingSegments.map((item: number) => (
+      {missingSegments.map((item: number) => (
         <SvgRect
-          {...props}
+          {...rest}
           key={item}
           coords={generateMissingModule(
-            props.coords,
-            props.numModules,
+            rest.coords,
+            numModules,
             moduleLength,
             gaplength,
             item,
           )}
-          fill={props.fill}
+          fill={rest.fill}
         />
       ))}
     </>

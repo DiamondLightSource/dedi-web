@@ -42,7 +42,6 @@ import {
 import { ErrorObject } from "ajv";
 import React from "react";
 
-
 const renderers = [
   ...materialRenderers,
   {
@@ -95,19 +94,19 @@ export default function AppConfigDialog(props: {
     if (!errors || errors.length > 0 || !data) {
       return;
     }
-    const { name, cameraTube,...rest } = data;
+    const { name, cameraTube, ...rest } = data;
 
-    let newCameraTube: IOCircularDevice | undefined = undefined; 
+    let newCameraTube: IOCircularDevice | undefined = undefined;
 
-    if(cameraTube?.diameter){
-      const newCentre = {...data.beamstop.centre, ...cameraTube.centre}
+    if (cameraTube?.diameter) {
+      const newCentre = { ...data.beamstop.centre, ...cameraTube.centre };
       newCameraTube = {
         diameter: cameraTube.diameter,
-        centre: newCentre
-      }
+        centre: newCentre,
+      };
     }
-    
-    const preset = {cameraTube: newCameraTube, ...rest}
+
+    const preset = { cameraTube: newCameraTube, ...rest };
     beamlineConfigStore.addNewPreset(name, preset);
     setData(null);
   };
@@ -120,44 +119,46 @@ export default function AppConfigDialog(props: {
       keepMounted
       onClose={props.handleClose}
     >
-      <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
-        <Typography variant="h4"> Beamline Configurations </Typography>
-        <Divider />
+      <DialogTitle variant="h4" sx={{ display: "flex", alignItems: "center" }}>
+        Beamline Configurations
         <IconButton onClick={props.handleClose} sx={{ ml: "auto" }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={1}>
-          <Grid item xs={12} lg={8} style={{display: 'flex'}}>
-            <Card sx={{p:2, flexGrow: 1}} variant="outlined">
-            <AppConfigTable />
+          <Grid item xs={12} lg={8} style={{ display: "flex" }}>
+            <Card sx={{ p: 2, flexGrow: 1 }} variant="outlined">
+              <AppConfigTable />
             </Card>
           </Grid>
-          <Grid item xs={12} lg={4} style={{display: 'flex'}}>
-            <Card variant="outlined" sx={{p:2}}>
-            <Stack spacing={1} width={"100%"}>
-              <Typography variant="h5">
-                {" "}
-                Add new beamline configuration:
-              </Typography>
-              <Divider />
-              <UnitContext.Provider value={FormUnits}>
-                <JsonForms
-                  data={data}
-                  onChange={({ data, errors }) => {
-                    setData(data as AppConfigForm);
-                    setErrors(errors);
-                  }}
-                  schema={newSchema}
-                  uischema={uischema}
-                  renderers={renderers}
-                />
-              </UnitContext.Provider>
-              <Button variant="outlined" type="submit" onClick={submitHandler}>
-                Submit
-              </Button>
-            </Stack>
+          <Grid item xs={12} lg={4} style={{ display: "flex" }}>
+            <Card variant="outlined" sx={{ p: 2 }}>
+              <Stack spacing={1} width={"100%"}>
+                <Typography variant="h5">
+                  Add new beamline configuration:
+                </Typography>
+                <Divider />
+                <UnitContext.Provider value={FormUnits}>
+                  <JsonForms
+                    data={data}
+                    onChange={({ data, errors }) => {
+                      setData(data as AppConfigForm);
+                      setErrors(errors);
+                    }}
+                    schema={newSchema}
+                    uischema={uischema}
+                    renderers={renderers}
+                  />
+                </UnitContext.Provider>
+                <Button
+                  variant="outlined"
+                  type="submit"
+                  onClick={submitHandler}
+                >
+                  Submit
+                </Button>
+              </Stack>
             </Card>
           </Grid>
         </Grid>

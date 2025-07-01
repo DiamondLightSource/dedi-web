@@ -22,6 +22,7 @@ import {
 } from "../utils/units";
 import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import { unit } from "mathjs";
+import { sanitizeNumber } from "../utils/types";
 
 // todo consider splitting this into components
 /**
@@ -111,7 +112,7 @@ export default function BeampropertiesDataEntry() {
             type="number"
             size="small"
             label="energy"
-            value={beamlineConfigStore.userEnergy}
+            value={sanitizeNumber(beamlineConfigStore.userEnergy)}
             onChange={handleEnergy}
           />
           <FormControl>
@@ -137,7 +138,7 @@ export default function BeampropertiesDataEntry() {
             type="number"
             size="small"
             label="wavelength"
-            value={beamlineConfigStore.userWavelength}
+            value={sanitizeNumber(beamlineConfigStore.userWavelength)}
             onChange={handleWavelength}
           />
           <FormControl>
@@ -172,7 +173,7 @@ export default function BeampropertiesDataEntry() {
             type="number"
             size="small"
             label="camera length"
-            value={beamlineConfigStore.beamline.cameraLength ?? ""}
+            value={sanitizeNumber(beamlineConfigStore.beamline.cameraLength)}
             InputProps={{
               inputProps: {
                 max: beamlineConfigStore.beamline.cameraLimits.max.toNumber(),
@@ -190,8 +191,7 @@ export default function BeampropertiesDataEntry() {
             type="number"
             size="small"
             label="angle"
-            defaultValue={""}
-            value={beamlineConfigStore.userAngle ?? ""}
+            value={sanitizeNumber(beamlineConfigStore.userAngle)}
             onChange={handleAngle}
           />
           <FormControl>

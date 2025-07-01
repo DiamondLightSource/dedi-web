@@ -6,6 +6,7 @@ import {
   Select,
   SelectChangeEvent,
   Table,
+  TableBody,
   TableCell,
   TableContainer,
   TableHead,
@@ -62,108 +63,110 @@ export default function RangeTable(props: {
             </TableRow>
           </TableHead>
           {/* TABLE BODY */}
-          <TableRow key={"q"}>
-            {/* Q RANGE ROW */}
-            <TableCell component="th" scope="row" align="center">
-              {ScatteringOptions.q}
-            </TableCell>
-            <TableCell align="center">
-              {isNaN(qRange.min.toNumber())
-                ? ""
-                : qRange.min.toNumber().toPrecision(4)}
-            </TableCell>
-            <TableCell align="center">
-              {isNaN(qRange.max.toNumber())
-                ? ""
-                : qRange.max.toNumber().toPrecision(4)}
-            </TableCell>
-            <TableCell align="center">
-              <FormControl>
-                <InputLabel>q</InputLabel>
-                <Select
-                  size="small"
-                  label="units"
-                  value={resultsStore.qUnits}
-                  onChange={handleQunits}
-                >
-                  <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
-                    {"1 / nm"}
-                  </MenuItem>
-                  <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
-                    {"1 / " + AngstromSymbol}
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </TableCell>
-          </TableRow>
-          <TableRow key={"s"}>
-            {/* S RANGE ROW*/}
-            <TableCell component="th" scope="row" align="center">
-              {ScatteringOptions.s}
-            </TableCell>
-            <TableCell align="center">
-              {isNaN(sRange.min.toNumber())
-                ? ""
-                : sRange.min.toNumber().toPrecision(4)}
-            </TableCell>
-            <TableCell align="center">
-              {isNaN(sRange.max.toNumber())
-                ? ""
-                : sRange.max.toNumber().toPrecision(4)}
-            </TableCell>
-            <TableCell align="center">
-              <FormControl>
-                <InputLabel>s</InputLabel>
-                <Select
-                  size="small"
-                  label="units"
-                  value={resultsStore.sUnits}
-                  onChange={handleSunits}
-                >
-                  <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
-                    {"1 / nm"}
-                  </MenuItem>
-                  <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
-                    {"1 / " + AngstromSymbol}
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </TableCell>
-          </TableRow>
-          <TableRow key={"d"}>
-            {/* D RANGE ROW*/}
-            <TableCell component="th" scope="row" align="center">
-              {ScatteringOptions.d}
-            </TableCell>
-            <TableCell align="center">
-              {isNaN(dRange.min.toNumber())
-                ? ""
-                : dRange.min.toNumber().toPrecision(4)}
-            </TableCell>
-            <TableCell align="center">
-              {isNaN(dRange.max.toNumber())
-                ? ""
-                : dRange.max.toNumber().toPrecision(4)}
-            </TableCell>
-            <TableCell align="center">
-              <FormControl>
-                <InputLabel>d</InputLabel>
-                <Select
-                  size="small"
-                  label="units"
-                  value={resultsStore.dUnits}
-                  onChange={handleDunits}
-                >
-                  <MenuItem value={WavelengthUnits.nanometres}>
-                    {WavelengthUnits.nanometres}
-                  </MenuItem>
-                  <MenuItem value={WavelengthUnits.angstroms}>
-                    {AngstromSymbol}
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </TableCell>
-          </TableRow>
+          <TableBody>
+            <TableRow key={"q"}>
+              {/* Q RANGE ROW */}
+              <TableCell component="th" scope="row" align="center">
+                {ScatteringOptions.q}
+              </TableCell>
+              <TableCell align="center">
+                {isNaN(qRange.min.toNumber())
+                  ? ""
+                  : qRange.min.toNumber().toPrecision(4)}
+              </TableCell>
+              <TableCell align="center">
+                {isNaN(qRange.max.toNumber())
+                  ? ""
+                  : qRange.max.toNumber().toPrecision(4)}
+              </TableCell>
+              <TableCell align="center">
+                <FormControl>
+                  <InputLabel>q</InputLabel>
+                  <Select
+                    size="small"
+                    label="units"
+                    value={resultsStore.qUnits}
+                    onChange={handleQunits}
+                  >
+                    <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
+                      {"1 / nm"}
+                    </MenuItem>
+                    <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
+                      {"1 / " + AngstromSymbol}
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </TableCell>
+            </TableRow>
+            <TableRow key={"s"}>
+              {/* S RANGE ROW*/}
+              <TableCell component="th" scope="row" align="center">
+                {ScatteringOptions.s}
+              </TableCell>
+              <TableCell align="center">
+                {isNaN(sRange.min.toNumber())
+                  ? ""
+                  : sRange.min.toNumber().toPrecision(4)}
+              </TableCell>
+              <TableCell align="center">
+                {isNaN(sRange.max.toNumber())
+                  ? ""
+                  : sRange.max.toNumber().toPrecision(4)}
+              </TableCell>
+              <TableCell align="center">
+                <FormControl>
+                  <InputLabel>s</InputLabel>
+                  <Select
+                    size="small"
+                    label="units"
+                    value={resultsStore.sUnits}
+                    onChange={handleSunits}
+                  >
+                    <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
+                      {"1 / nm"}
+                    </MenuItem>
+                    <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
+                      {"1 / " + AngstromSymbol}
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </TableCell>
+            </TableRow>
+            <TableRow key={"d"}>
+              {/* D RANGE ROW*/}
+              <TableCell component="th" scope="row" align="center">
+                {ScatteringOptions.d}
+              </TableCell>
+              <TableCell align="center">
+                {isNaN(dRange.min.toNumber())
+                  ? ""
+                  : dRange.min.toNumber().toPrecision(4)}
+              </TableCell>
+              <TableCell align="center">
+                {isNaN(dRange.max.toNumber())
+                  ? ""
+                  : dRange.max.toNumber().toPrecision(4)}
+              </TableCell>
+              <TableCell align="center">
+                <FormControl>
+                  <InputLabel>d</InputLabel>
+                  <Select
+                    size="small"
+                    label="units"
+                    value={resultsStore.dUnits}
+                    onChange={handleDunits}
+                  >
+                    <MenuItem value={WavelengthUnits.nanometres}>
+                      {WavelengthUnits.nanometres}
+                    </MenuItem>
+                    <MenuItem value={WavelengthUnits.angstroms}>
+                      {AngstromSymbol}
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </TableCell>
+            </TableRow>
+          </TableBody>
         </Table>
       </TableContainer>
     </Card>

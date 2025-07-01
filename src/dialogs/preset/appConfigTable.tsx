@@ -1,8 +1,8 @@
 import { IOBeamline } from "../../utils/types";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useBeamlineConfigStore } from "../../data-entry/beamlineconfigStore";
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 interface AppConfigTableRow {
   name: string;
@@ -72,7 +72,7 @@ export default function AppConfigTable(): React.JSX.Element {
       getRowId={(row: AppConfigTableRow) => row.name}
       columns={columns}
       components={{ Toolbar: GridToolbar }}
-      pageSize={12}
+      rowsPerPageOptions={[5, 10, 20, 100]}
       sx={{ border: 0 }}
       disableSelectionOnClick
     />
