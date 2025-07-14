@@ -29,7 +29,7 @@ import { useState } from "react";
 import schema from "./schema.json";
 import uischema from "./uischema.json";
 import { JsonForms } from "@jsonforms/react";
-import { FormUnits, UnitContext } from "../utils";
+import { FormUnits, UnitProvider } from "../utils";
 import { useDetectorStore } from "../../data-entry/detectorStore";
 import { useBeamlineConfigStore } from "../../data-entry/beamlineconfigStore";
 import {
@@ -139,7 +139,7 @@ export default function AppConfigDialog(props: {
                   Add new beamline configuration:
                 </Typography>
                 <Divider />
-                <UnitContext.Provider value={FormUnits}>
+                <UnitProvider value={FormUnits}>
                   <JsonForms
                     data={data}
                     onChange={({ data, errors }) => {
@@ -150,7 +150,7 @@ export default function AppConfigDialog(props: {
                     uischema={uischema}
                     renderers={renderers}
                   />
-                </UnitContext.Provider>
+                </UnitProvider>
                 <Button
                   variant="outlined"
                   type="submit"
