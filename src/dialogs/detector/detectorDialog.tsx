@@ -31,7 +31,7 @@ import MaterialIntegerUnitControl, {
 import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
-import { FormUnits, UnitContext } from "../utils";
+import { FormUnits, UnitProvider } from "../utils";
 import { ErrorObject } from "ajv";
 
 const renderers = [
@@ -116,7 +116,7 @@ export default function DetectorDialog(props: {
               <Stack spacing={1} width={"100%"}>
                 <Typography variant="h5"> Add new Detector:</Typography>
                 <Divider />
-                <UnitContext.Provider value={FormUnits}>
+                <UnitProvider value={FormUnits}>
                   <JsonForms
                     data={data}
                     onChange={({ data, errors }) => {
@@ -127,7 +127,7 @@ export default function DetectorDialog(props: {
                     uischema={uischema}
                     renderers={renderers}
                   />
-                </UnitContext.Provider>
+                </UnitProvider>
                 <Button
                   variant="outlined"
                   type="submit"
