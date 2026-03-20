@@ -4,7 +4,7 @@ import { Calibrant } from "../utils/types";
 import { calibrantRecord } from "../presets/presetManager";
 
 export enum PlotAxes {
-  milimeter = "mm",
+  millimetre = "mm",
   pixel = "pixel",
   reciprocal = "nm^-1",
 }
@@ -62,7 +62,7 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   clearanceColor: blackOpaque,
   inaccessibleRange: true,
   inaccessibleRangeColor: red,
-  plotAxes: PlotAxes.milimeter,
+  plotAxes: PlotAxes.millimetre,
   currentCalibrant: Object.keys(calibrantRecord)[0],
   calibrantRecord: calibrantRecord,
   update: (newConfig) => {

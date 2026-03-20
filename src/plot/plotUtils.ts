@@ -2,18 +2,27 @@ import { RGBColor } from "react-color";
 import { Vector3 } from "three";
 import NumericRange from "../calculations/numericRange";
 
-// Re think in future
+/**
+ * Computes the plot domain from a set of points, returning separate x and y
+ * ranges with a 20% padding on each axis. Pass all geometrically significant
+ * points (detector corners, beamstop endpoints, etc.) to guarantee everything
+ * stays within the visible domain.
+ */
 export const getDomain = (
-  detector: PlotRectangle,
+  ...points: Vector3[]
 ): { xAxis: NumericRange; yAxis: NumericRange } => {
-  const maxAxis = Math.max(detector.upperBound.x, detector.upperBound.y);
-  const minAxis = Math.min(detector.lowerBound.x, detector.lowerBound.y);
-  const offset = 0.2 * (maxAxis - minAxis);
-  const range = new NumericRange(
-    Math.round(minAxis - offset),
-    Math.round(maxAxis + offset),
-  );
-  return { xAxis: range, yAxis: range };
+  const xs = points.map((p) => p.x);
+  const ys = points.map((p) => p.y);
+  const xMin = Math.min(...xs);
+  const xMax = Math.max(...xs);
+  const yMin = Math.min(...ys);
+  const yMax = Math.max(...ys);
+  const xPad = 0.2 * (xMax - xMin);
+  const yPad = 0.2 * (yMax - yMin);
+  return {
+    xAxis: new NumericRange(Math.round(xMin - xPad), Math.round(xMax + xPad)),
+    yAxis: new NumericRange(Math.round(yMin - yPad), Math.round(yMax + yPad)),
+  };
 };
 
 export const color2String = (color: RGBColor) => {

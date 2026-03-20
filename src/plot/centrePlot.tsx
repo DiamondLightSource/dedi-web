@@ -20,7 +20,7 @@ import LegendBar from "./legendBar";
 import { usePlotStore } from "./plotStore";
 import { color2String, getDomain } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
   ReciprocalWavelengthUnits,
   WavelengthUnits,
@@ -87,13 +87,11 @@ export default function CentrePlot(): React.JSX.Element {
   );
   const calibrant = plotConfig.calibrantRecord[plotConfig.currentCalibrant];
 
-  useEffect(() => {
-    // Update "xpixel" and "ypixel" units each time the detector changes
-    updatePixelUnits(detector);
-  }, [detector]);
-
-  // Calculate qrange if anything has changed
+  // Update pixel units and calculate qrange together — updatePixelUnits must
+  // run before computeQrange since both the Plotter and qrange calculation
+  // depend on the "xpixel"/"ypixel" mathjs units being registered first.
   const { minPoint, maxPoint, visibleQRange, fullQRange } = useMemo(() => {
+    updatePixelUnits(detector);
     console.info(formatLogMessage("Calculating Q range"));
     return computeQrange(detector, beamstop, beamlineConfig, cameraTube);
   }, [detector, beamstop, cameraTube, beamlineConfig]);
@@ -119,15 +117,23 @@ export default function CentrePlot(): React.JSX.Element {
       plotConfig.plotAxes,
       cameraTube,
     );
+    const plotBeamstop = plotter.createBeamstop();
+    const plotDetector = plotter.createDetector();
     return {
-      plotBeamstop: plotter.createBeamstop(),
+      plotBeamstop,
       plotCameraTube: plotter.createCameratube(),
-      plotDetector: plotter.createDetector(),
+      plotDetector,
       plotClearance: plotter.createClearance(),
       plotVisibleRange: plotter.createVisibleRange(),
       plotRequestedRange: plotter.createRequestedRange(),
       plotCalibrant: plotter.createCalibrant(),
-      domains: getDomain(plotter.createDetector()),
+      domains: getDomain(
+        plotDetector.lowerBound,
+        plotDetector.upperBound,
+        plotBeamstop.centre,
+        plotBeamstop.endPointX,
+        plotBeamstop.endPointY,
+      ),
     };
   }, [
     beamstop,
