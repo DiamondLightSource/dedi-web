@@ -274,9 +274,9 @@ export default function LegendBar(): React.JSX.Element {
           </FormGroup>
           {/* Axis control */}
           <FormControl>
-            <FormLabel id="demo-radio-buttons-group-label">Axes:</FormLabel>
+            <FormLabel id="plot-axes-label">Axes:</FormLabel>
             <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
+              aria-labelledby="plot-axes-label"
               value={plotConfig.plotAxes}
               name="radio-buttons-group"
               onChange={(event) =>
@@ -284,7 +284,7 @@ export default function LegendBar(): React.JSX.Element {
               }
             >
               <FormControlLabel
-                value={PlotAxes.milimeter}
+                value={PlotAxes.millimetre}
                 control={<Radio />}
                 label="Axes in mm"
               />
@@ -300,7 +300,6 @@ export default function LegendBar(): React.JSX.Element {
               />
             </RadioGroup>
           </FormControl>
-          <Stack direction={"row"} spacing={1}></Stack>
         </Stack>
       </CardContent>
     </Card>
