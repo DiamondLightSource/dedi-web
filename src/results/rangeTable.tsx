@@ -12,7 +12,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { ScatteringOptions, useResultStore } from "./resultsStore";
+import { ScatteringOptions } from "./scatteringQuantities";
+import { ResultsConfig } from "./resultsBar";
 import {
   AngstromSymbol,
   ReciprocalWavelengthUnits,
@@ -23,31 +24,33 @@ import UnitRange from "../calculations/unitRange";
 
 export default function RangeTable(props: {
   qRange: UnitRange;
+  config: ResultsConfig;
+  updateConfig: (partial: Partial<ResultsConfig>) => void;
 }): React.JSX.Element {
-  const resultsStore = useResultStore();
+  const { config, updateConfig } = props;
 
   const handleQunits = (
     event: SelectChangeEvent<ReciprocalWavelengthUnits>,
   ) => {
-    resultsStore.updateQUnits(event.target.value as ReciprocalWavelengthUnits);
+    updateConfig({ qUnits: event.target.value as ReciprocalWavelengthUnits });
   };
 
   const handleSunits = (
     event: SelectChangeEvent<ReciprocalWavelengthUnits>,
   ) => {
-    resultsStore.updateSUnits(event.target.value as ReciprocalWavelengthUnits);
+    updateConfig({ sUnits: event.target.value as ReciprocalWavelengthUnits });
   };
 
   const handleDunits = (event: SelectChangeEvent<WavelengthUnits>) => {
-    resultsStore.updateDUnits(event.target.value as WavelengthUnits);
+    updateConfig({ dUnits: event.target.value as WavelengthUnits });
   };
-  const qRange = props.qRange.to(resultsStore.qUnits as string);
+  const qRange = props.qRange.to(config.qUnits as string);
   const sRange = props.qRange
     .apply(convertFromQToS)
-    .to(resultsStore.sUnits as string);
+    .to(config.sUnits as string);
   const dRange = props.qRange
     .apply(convertFromQtoD)
-    .to(resultsStore.dUnits as string);
+    .to(config.dUnits as string);
 
   return (
     <Card variant="outlined">
@@ -85,7 +88,7 @@ export default function RangeTable(props: {
                   <Select
                     size="small"
                     label="units"
-                    value={resultsStore.qUnits}
+                    value={config.qUnits}
                     onChange={handleQunits}
                   >
                     <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
@@ -119,7 +122,7 @@ export default function RangeTable(props: {
                   <Select
                     size="small"
                     label="units"
-                    value={resultsStore.sUnits}
+                    value={config.sUnits}
                     onChange={handleSunits}
                   >
                     <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
@@ -153,7 +156,7 @@ export default function RangeTable(props: {
                   <Select
                     size="small"
                     label="units"
-                    value={resultsStore.dUnits}
+                    value={config.dUnits}
                     onChange={handleDunits}
                   >
                     <MenuItem value={WavelengthUnits.nanometres}>

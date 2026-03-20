@@ -76,7 +76,7 @@ interface IPlotter {
   createCameratube: () => PlotEllipse;
   createBeamstop: () => PlotEllipse;
   createDetector: () => PlotRectangle;
-  createClearnace: () => PlotEllipse;
+  createClearance: () => PlotEllipse;
   createVisibleRange: () => PlotRange;
   createRequestedRange: () => PlotRange;
   createCalibrant: () => PlotCalibrant;
@@ -155,7 +155,7 @@ export class Plotter implements IPlotter {
    * Creates a PlotEllipse object representing a clearance around the beamstop
    * @returns
    */
-  public createClearnace(): PlotEllipse {
+  public createClearance(): PlotEllipse {
     const radius = mathjs.divide(this.beamstop.diameter, 2);
 
     const endPointX = this.unitStrategy.convert(

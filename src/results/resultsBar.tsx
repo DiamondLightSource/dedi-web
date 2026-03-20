@@ -21,9 +21,18 @@ import {
 import { MessageDiagram } from "./MessageDiagram";
 import { RangeDiagram } from "./rangeDiagram";
 import RangeTable from "./rangeTable";
-import { ResultStore, ScatteringOptions, useResultStore } from "./resultsStore";
+import { ScatteringOptions } from "./scatteringQuantities";
 import { convertFromQtoD, convertFromQToS } from "./scatteringQuantities";
 import { sanitizeNumber } from "../utils/types";
+
+export interface ResultsConfig {
+  requested: ScatteringOptions;
+  qUnits: ReciprocalWavelengthUnits;
+  sUnits: ReciprocalWavelengthUnits;
+  dUnits: WavelengthUnits;
+  requestedMin: number | null;
+  requestedMax: number | null;
+}
 
 interface VisibilitySettings {
   textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null;
@@ -36,7 +45,7 @@ function getVisibilitySettings(
   visableQRange: UnitRange,
   fullQrange: UnitRange,
   requestedRange: NumericRange | null,
-  resultStore: ResultStore,
+  config: ResultsConfig,
 ): VisibilitySettings {
   if (!(visableQRange && fullQrange && requestedRange)) {
     return {
@@ -47,9 +56,9 @@ function getVisibilitySettings(
     };
   }
 
-  if (resultStore.requested === ScatteringOptions.d) {
+  if (config.requested === ScatteringOptions.d) {
     return {
-      textBoxUnits: resultStore.dUnits,
+      textBoxUnits: config.dUnits,
       diagramVisible: visableQRange
         .apply(convertFromQtoD)
         .to(WavelengthUnits.nanometres),
@@ -58,14 +67,14 @@ function getVisibilitySettings(
         .to(WavelengthUnits.nanometres),
       diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
-        resultStore.dUnits as string,
+        config.dUnits as string,
       ).to(WavelengthUnits.nanometres),
     };
   }
 
-  if (resultStore.requested === ScatteringOptions.s) {
+  if (config.requested === ScatteringOptions.s) {
     return {
-      textBoxUnits: resultStore.sUnits,
+      textBoxUnits: config.sUnits,
       diagramVisible: visableQRange
         .apply(convertFromQToS)
         .to(ReciprocalWavelengthUnits.nanometres),
@@ -74,35 +83,37 @@ function getVisibilitySettings(
         .to(ReciprocalWavelengthUnits.nanometres),
       diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
-        resultStore.sUnits as string,
+        config.sUnits as string,
       ).to(ReciprocalWavelengthUnits.nanometres),
     };
   }
 
   return {
-    textBoxUnits: resultStore.qUnits,
+    textBoxUnits: config.qUnits,
     diagramVisible: visableQRange.to(ReciprocalWavelengthUnits.nanometres),
     diagramFull: fullQrange.to(ReciprocalWavelengthUnits.nanometres),
     diagramRequested: UnitRange.fromNumericRange(
       requestedRange,
-      resultStore.qUnits as string,
+      config.qUnits as string,
     ).to(ReciprocalWavelengthUnits.nanometres),
   };
 }
 
 function RangeFormControl({
-  resultStore,
+  config,
+  updateConfig,
 }: {
-  resultStore: ResultStore;
+  config: ResultsConfig;
+  updateConfig: (partial: Partial<ResultsConfig>) => void;
 }): React.JSX.Element {
   return (
     <FormControl>
       <FormLabel>Requested Quantiy</FormLabel>
       <RadioGroup
         row
-        value={resultStore.requested}
+        value={config.requested}
         onChange={(event) =>
-          resultStore.updateRequested(event.target.value as ScatteringOptions)
+          updateConfig({ requested: event.target.value as ScatteringOptions })
         }
       >
         <FormControlLabel
@@ -144,11 +155,15 @@ const displayUnits = (
 interface ResultsBarProps {
   visibleQRange: NumericRange | null;
   fullQRange: NumericRange | null;
+  config: ResultsConfig;
+  updateConfig: (partial: Partial<ResultsConfig>) => void;
 }
 
 export default function ResultsBar({
   visibleQRange,
   fullQRange,
+  config,
+  updateConfig,
 }: ResultsBarProps) {
   const visibleQRangeUnits = UnitRange.fromNumericRange(
     visibleQRange,
@@ -159,23 +174,17 @@ export default function ResultsBar({
     ReciprocalWavelengthUnits.nanometres,
   );
 
-  const resultStore = useResultStore();
-  const requestedRange = useResultStore<NumericRange | null>((state) => {
-    return state.requestedMax && state.requestedMin
-      ? new NumericRange(state.requestedMin, state.requestedMax)
+  const requestedRange =
+    config.requestedMax != null && config.requestedMin != null
+      ? new NumericRange(config.requestedMin, config.requestedMax)
       : null;
-  });
 
   const handleRequestedMax = (event: React.ChangeEvent<HTMLInputElement>) => {
-    resultStore.updateRequestedRange({
-      requestedMax: parseNumericInput(event.target.value),
-    });
+    updateConfig({ requestedMax: parseNumericInput(event.target.value) });
   };
 
   const handleRequestedMin = (event: React.ChangeEvent<HTMLInputElement>) => {
-    resultStore.updateRequestedRange({
-      requestedMin: parseNumericInput(event.target.value),
-    });
+    updateConfig({ requestedMin: parseNumericInput(event.target.value) });
   };
 
   const { textBoxUnits, diagramVisible, diagramFull, diagramRequested } =
@@ -183,7 +192,7 @@ export default function ResultsBar({
       visibleQRangeUnits,
       fullQRangeUnits,
       requestedRange,
-      resultStore,
+      config,
     );
 
   const units = displayUnits(textBoxUnits);
@@ -202,15 +211,15 @@ export default function ResultsBar({
             sx={{ direction: "column" }}
           >
             {/* Range Table */}
-            <RangeTable qRange={visibleQRangeUnits} />
+            <RangeTable qRange={visibleQRangeUnits} config={config} updateConfig={updateConfig} />
             {/* Requested Range */}
             <Stack direction={"column"} spacing={1}>
-              <RangeFormControl resultStore={resultStore} />
+              <RangeFormControl config={config} updateConfig={updateConfig} />
               <TextField
                 type="number"
-                label={`Requested min ${resultStore.requested} value`}
+                label={`Requested min ${config.requested} value`}
                 size="small"
-                value={sanitizeNumber(resultStore.requestedMin)}
+                value={sanitizeNumber(config.requestedMin)}
                 onChange={handleRequestedMin}
                 InputProps={{
                   endAdornment: (
@@ -220,9 +229,9 @@ export default function ResultsBar({
               />
               <TextField
                 type="number"
-                label={`Requested max ${resultStore.requested} value`}
+                label={`Requested max ${config.requested} value`}
                 size="small"
-                value={sanitizeNumber(resultStore.requestedMax)}
+                value={sanitizeNumber(config.requestedMax)}
                 onChange={handleRequestedMax}
                 InputProps={{
                   endAdornment: (
