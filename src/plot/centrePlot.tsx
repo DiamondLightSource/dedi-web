@@ -258,7 +258,7 @@ export default function CentrePlot(): React.JSX.Element {
                           id="requested"
                         />
                       )}
-                      {plotConfig.beamstop && (
+                      {plotConfig.beamstop &&  (
                         <SvgAxisAlignedEllipse
                           coords={[
                             beamstopCentre,

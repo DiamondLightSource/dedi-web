@@ -20,45 +20,43 @@ import {
 } from "../utils/types";
 import { AngleUnits, LengthUnits, WavelengthUnits } from "../utils/units";
 
+/** Convert a serialised detector into the internal representation with mathjs units. */
 export function createInternalDetector(detectorData: IODetector): AppDetector {
   return {
     ...detectorData,
     pixelSize: {
       height: unit(detectorData.pixelSize.height, LengthUnits.millimetre),
-      width: unit(detectorData.pixelSize.height, LengthUnits.millimetre),
+      width: unit(detectorData.pixelSize.width, LengthUnits.millimetre),
     },
   };
 }
 
-export function createInternalBeamtop(beamstop: IOBeamstop): AppBeamstop {
+/** Convert a serialised beamstop into the internal representation with mathjs units. */
+export function createInternalBeamstop(beamstop: IOBeamstop): AppBeamstop {
   return {
     ...beamstop,
     diameter: unit(beamstop.diameter, LengthUnits.millimetre),
   };
 }
 
+/** Convert a serialised camera tube into the internal representation, returning undefined if absent. */
 export function createInternalCameraTube(
   cameraTube?: IOCircularDevice,
 ): AppCircularDevice | undefined {
-  if (!cameraTube) {
-    return cameraTube;
-  }
+  if (!cameraTube) return undefined;
   return {
     ...cameraTube,
     diameter: unit(cameraTube.diameter, LengthUnits.millimetre),
   };
 }
 
+/** Convert serialised wavelength limits (nm) into mathjs Unit pairs. */
 export function createInternalWavelengthLimits(
   limits: IOWavelengthLimits,
 ): AppWavelengthLimits {
   return {
-    min: unit(limits.min, WavelengthUnits.nanometres).to(
-      WavelengthUnits.nanometres,
-    ),
-    max: unit(limits.max, WavelengthUnits.nanometres).to(
-      WavelengthUnits.nanometres,
-    ),
+    min: unit(limits.min, WavelengthUnits.nanometres),
+    max: unit(limits.max, WavelengthUnits.nanometres),
   };
 }
 
@@ -72,6 +70,10 @@ export function createInternalCameraLimits(
   };
 }
 
+/**
+ * Convert a serialised beamline preset into an AppBeamline.
+ * Wavelength starts as NaN (not yet set by user) and angle defaults to 90°.
+ */
 export function createInternalBeamline(beamline: IOBeamline): AppBeamline {
   return {
     wavelengthLimits: createInternalWavelengthLimits(beamline.wavelengthLimits),
@@ -82,10 +84,11 @@ export function createInternalBeamline(beamline: IOBeamline): AppBeamline {
   };
 }
 
+/** Build a full AppConfig from a serialised beamline preset. */
 export function createAppConfig(beamline: IOBeamline): AppConfig {
   return {
     detector: beamline.detector,
-    beamstop: createInternalBeamtop(beamline.beamstop),
+    beamstop: createInternalBeamstop(beamline.beamstop),
     cameraTube: createInternalCameraTube(beamline.cameraTube),
     beamline: createInternalBeamline(beamline),
   };

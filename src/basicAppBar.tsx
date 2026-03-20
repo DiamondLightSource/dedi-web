@@ -1,85 +1,75 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { useDetectorStore } from "./data-entry/detectorStore";
-import { createAppConfig } from "./presets/presetManager";
-import { Autocomplete, Button, TextField } from "@mui/material";
+import { Chip } from "@mui/material";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useBeamlineConfigStore } from "./data-entry/beamlineconfigStore";
-import { useState } from "react";
 import { useBeamstopStore } from "./data-entry/beamstopStore";
 import { useCameraTubeStore } from "./data-entry/cameraTubeStore";
-import {
-  AngleUnits,
-  EnergyUnits,
-  wavelength2EnergyConverter,
-  WavelengthUnits,
-} from "./utils/units";
-import React from "react";
-import AppConfigDialog from "./dialogs/preset/appConfigDialog";
+import { LengthUnits } from "./utils/units";
+import { createAppConfig } from "./presets/presetManager";
 
 export default function BasicAppBar() {
-  const detectorStore = useDetectorStore();
   const beamlineConfigStore = useBeamlineConfigStore();
-  const presetConfigRecord = beamlineConfigStore.presetRecord;
+  const { presetRecord, currentPresetName, userWavelength } = beamlineConfigStore;
   const beamstopStore = useBeamstopStore();
   const cameraTubeStore = useCameraTubeStore();
-  const [openBeamline, setOpenBeamline] = React.useState(false);
 
-  const [preset, setPreset] = useState<string>(
-    Object.keys(presetConfigRecord)[0],
-  );
+  const beamstop = beamstopStore.beamstop;
+  const cameraTube = cameraTubeStore.cameraTube;
+  const preset = presetRecord[currentPresetName];
 
-  const handleClickOpenPreset = () => {
-    setOpenBeamline(true);
-  };
+  const isDirtyBeamstop = preset
+    ? Math.abs(beamstop.diameter.toNumber(LengthUnits.millimetre) - preset.beamstop.diameter) > 1e-9
+    : false;
+  const isDirtyCameraTube = preset
+    ? (preset.cameraTube == null) !== (cameraTube == null) ||
+      (preset.cameraTube != null && cameraTube != null &&
+        Math.abs(cameraTube.diameter.toNumber(LengthUnits.millimetre) - preset.cameraTube.diameter) > 1e-9)
+    : false;
+  const isWavelengthUnset = userWavelength === null || isNaN(userWavelength);
 
-  const handleClosePreset = () => {
-    setOpenBeamline(false);
-  };
+  const handleResetBeamstop = () => beamstopStore.setBeamstop(createAppConfig(preset).beamstop);
+  const handleResetCameraTube = () => cameraTubeStore.updateCameraTube(createAppConfig(preset).cameraTube);
 
-  const handlePreset = (preset: string) => {
-    const appConfig = createAppConfig(presetConfigRecord[preset]);
-    detectorStore.updateDetector(appConfig.detector);
-    beamstopStore.updateBeamstop(appConfig.beamstop);
-    cameraTubeStore.updateCameraTube(appConfig.cameraTube);
-    beamlineConfigStore.update({ beamline: appConfig.beamline });
-    beamlineConfigStore.updateWavelengthUnits(WavelengthUnits.nanometres);
-    beamlineConfigStore.updateAngleUnits(AngleUnits.degrees);
-    const newEnergy = wavelength2EnergyConverter(appConfig.beamline.wavelength);
-    beamlineConfigStore.updateEnergy(
-      newEnergy.to(EnergyUnits.kiloElectronVolts).toNumber(),
-      EnergyUnits.kiloElectronVolts,
-    );
-    setPreset(preset);
-  };
   return (
     <AppBar style={{ width: "100%" }}>
-      <Toolbar>
+      <Toolbar sx={{ gap: 1 }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Dedi Web
         </Typography>
-        <Autocomplete
-          size="small"
-          options={Object.keys(presetConfigRecord)}
-          value={preset}
-          sx={{ width: 250, color: "white" }}
-          renderInput={(params) => (
-            <TextField {...params} label="preset" sx={{ color: "black" }} />
-          )}
-          onChange={(_, value) => (value ? handlePreset(value) : {})}
-        />
-        <Button
-          variant="outlined"
-          sx={{ color: "black" }}
-          onClick={handleClickOpenPreset}
-        >
-          Presets
-        </Button>
-        <AppConfigDialog
-          open={openBeamline}
-          handleClose={handleClosePreset}
-          handleOpen={handleClickOpenPreset}
-        />
+        {isWavelengthUnset && (
+          <Chip
+            icon={<WarningAmberIcon />}
+            label="Wavelength not set"
+            color="warning"
+            size="small"
+            sx={{ fontFamily: "monospace" }}
+          />
+        )}
+        {isDirtyBeamstop && (
+          <Chip
+            icon={<WarningAmberIcon />}
+            label="Beamstop ⌀ mismatch"
+            deleteIcon={<RestartAltIcon />}
+            onDelete={handleResetBeamstop}
+            color="warning"
+            size="small"
+            sx={{ fontFamily: "monospace" }}
+          />
+        )}
+        {isDirtyCameraTube && (
+          <Chip
+            icon={<WarningAmberIcon />}
+            label="Camera tube ⌀ mismatch"
+            deleteIcon={<RestartAltIcon />}
+            onDelete={handleResetCameraTube}
+            color="warning"
+            size="small"
+            sx={{ fontFamily: "monospace" }}
+          />
+        )}
       </Toolbar>
     </AppBar>
   );

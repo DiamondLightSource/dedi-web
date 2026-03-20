@@ -31,15 +31,31 @@ export default function DetectorTable() {
   }
 
   const columns: GridColDef[] = [
-    { field: "name", headerName: "name", flex: 1 },
+    { field: "name", headerName: "Name", flex: 1 },
     {
       field: "resolution_height",
-      headerName: "resolution height (px)",
+      headerName: "Res. H (px)",
+      description: "Resolution height (px)",
       flex: 1,
     },
-    { field: "resolution_width", headerName: "resolution width (px)", flex: 1 },
-    { field: "pixel_height", headerName: "pixel height (mm)", flex: 1 },
-    { field: "pixel_width", headerName: "pixel width (mm)", flex: 1 },
+    {
+      field: "resolution_width",
+      headerName: "Res. W (px)",
+      description: "Resolution width (px)",
+      flex: 1,
+    },
+    {
+      field: "pixel_height",
+      headerName: "Px H (mm)",
+      description: "Pixel height (mm)",
+      flex: 1,
+    },
+    {
+      field: "pixel_width",
+      headerName: "Px W (mm)",
+      description: "Pixel width (mm)",
+      flex: 1,
+    },
   ];
 
   const isScreenLarge = useMediaQuery(useTheme().breakpoints.up("lg"));
