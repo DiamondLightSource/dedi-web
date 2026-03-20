@@ -10,6 +10,10 @@ export interface CameraTubeStore {
   updateDiameterUnits: (newUnits: LengthUnits) => void;
   updateCameraTube: (presetCameraTube?: AppCircularDevice) => void;
   updateDiameter: (newDiameter: number, newUnits: LengthUnits) => void;
+  /** Remove the camera tube from the calculation. */
+  removeCameraTube: () => void;
+  /** Restore the camera tube to the default preset values. */
+  restoreCameraTube: () => void;
 }
 
 /**
@@ -43,6 +47,8 @@ export const useCameraTubeStore = create<CameraTubeStore>((set, get) => ({
   },
   updateCameraTube: (presetCameraTube?: AppCircularDevice) =>
     set({ cameraTube: presetCameraTube }),
+  removeCameraTube: () => set({ cameraTube: undefined }),
+  restoreCameraTube: () => set({ cameraTube: defaultConfig.cameraTube }),
   updateDiameter: (newDiameter: number, newUnits: LengthUnits) => {
     const cameraTube = get().cameraTube;
     if (!cameraTube) {

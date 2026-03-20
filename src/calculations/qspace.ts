@@ -6,48 +6,50 @@ export interface DetectorProperties {
 }
 
 /**
- * Collection of useful methods for finding the q range.
- * todo suggestion: more descriptive property names (mki? kmod?)
+ * Computes q-vectors from pixel positions on a flat, orthogonal detector.
+ *
+ * Uses the standard crystallographic definition:  q = k_f − k_i
+ * where |k| = 2π / λ.  Each pixel position (x, y) and the camera length
+ * (stored in detProps.origin.z) define the scattered wavevector k_f.
  */
 export default class QSpace {
   detProps: DetectorProperties;
-  kmod: number;
-  qScale: number;
-  mki: Vector3;
+  /** Wavevector magnitude: k = 2π / λ */
+  private kMag: number;
+  /** Negative incident wavevector: −k_i */
+  private negKi: Vector3;
 
   constructor(detProps: DetectorProperties, wavelength: number) {
     this.detProps = detProps;
     detProps.beamVector.normalize();
-    this.qScale = 2 * Math.PI;
-
-    this.mki = detProps.beamVector.clone().negate();
-    this.kmod = this.qScale / wavelength;
-    const ki = this.detProps.beamVector.clone();
-    ki.multiplyScalar(this.kmod);
-    this.mki = ki.negate();
+    this.kMag = (2 * Math.PI) / wavelength;
+    this.negKi = detProps.beamVector.clone().multiplyScalar(-this.kMag);
   }
 
-  public qFromPixelPosition(vector: Vector2): Vector3 {
-    const q = new Vector3(-vector.x, -vector.y, 0);
-    q.add(this.detProps.origin);
-    return this._convertToQ(q);
+  /** Compute the q-vector for a pixel at position (x, y) on the detector. */
+  public qFromPixelPosition(pixel: Vector2): Vector3 {
+    // Displacement from pixel to beam centre in 3D detector coordinates
+    const displacement = new Vector3(-pixel.x, -pixel.y, 0);
+    displacement.add(this.detProps.origin);
+    return this.convertToQ(displacement);
   }
 
-  public setDiffractionCrystalEnviroment(wavelength: number): void {
-    this.kmod = this.qScale / wavelength;
-    const ki = this.detProps.beamVector.clone();
-    ki.multiplyScalar(this.kmod);
-    this.mki = ki.negate();
+  /** Update the wavevector magnitude for a new wavelength. */
+  public setWavelength(wavelength: number): void {
+    this.kMag = (2 * Math.PI) / wavelength;
+    this.negKi = this.detProps.beamVector.clone().multiplyScalar(-this.kMag);
   }
 
-  private _convertToQ(q: Vector3): Vector3 {
-    const qLength = q.length();
-    if (qLength > 0) {
-      q.multiplyScalar(this.kmod / qLength);
-      q.add(this.mki);
-    } else {
-      q.add(this.mki);
+  /**
+   * Project the displacement vector onto the Ewald sphere to obtain k_f,
+   * then subtract k_i to get q.
+   */
+  private convertToQ(displacement: Vector3): Vector3 {
+    const length = displacement.length();
+    if (length > 0) {
+      displacement.multiplyScalar(this.kMag / length);
     }
-    return q;
+    displacement.add(this.negKi);
+    return displacement;
   }
 }
