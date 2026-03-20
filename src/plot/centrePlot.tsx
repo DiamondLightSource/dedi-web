@@ -8,48 +8,48 @@ import {
   VisCanvas,
 } from "@h5web/lib";
 import { Card, CardContent, Stack } from "@mui/material";
-// @ts-expect-error Used to update mathjs units
-import { Unit, createUnit } from "mathjs";
+import { Unit, createUnit, unit } from "mathjs";
 import { Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
-import {
-  BeamlineConfigStore,
-  useBeamlineConfigStore,
-} from "../data-entry/beamlineconfigStore";
-import { BeamstopStore, useBeamstopStore } from "../data-entry/beamstopStore";
-import {
-  CameraTubeStore,
-  useCameraTubeStore,
-} from "../data-entry/cameraTubeStore";
-import { DetectorStore, useDetectorStore } from "../data-entry/detectorStore";
-import ResultsBar from "../results/resultsBar";
+import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
+import { useBeamstopStore } from "../data-entry/beamstopStore";
+import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
+import { useDetectorStore } from "../data-entry/detectorStore";
+import ResultsBar, { ResultsConfig } from "../results/resultsBar";
 import LegendBar from "./legendBar";
 import { usePlotStore } from "./plotStore";
 import { color2String, getDomain } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
-import { useMemo } from "react";
-import { formatLogMessage } from "../utils/units";
+import { useMemo, useState, useCallback, useEffect } from "react";
+import {
+  ReciprocalWavelengthUnits,
+  WavelengthUnits,
+  formatLogMessage,
+} from "../utils/units";
 import SvgMask from "./svgMask";
 import { Plotter } from "./plotter";
 import UnitRange from "../calculations/unitRange";
-import { ResultStore, useResultStore } from "../results/resultsStore";
+import {
+  ScatteringOptions,
+  convertFromDtoQ,
+  convertFromSToQ,
+} from "../results/scatteringQuantities";
 import SvgCalibrant from "./svgCalibrant";
 import { AppDetector } from "../utils/types";
 
-// Define Zustand selectors outside of render function for useMemo
-const detectorSelector = (state: DetectorStore) => state.detector;
-const beamlineConfigSelector = (state: BeamlineConfigStore) => state.beamline;
-const beamstopSelector = (state: BeamstopStore) => state.beamstop;
-const cameraTubeSelector = (state: CameraTubeStore) => state.cameraTube;
-const RequestedRangeSelector = (state: ResultStore) => {
-  if (!state.requestedMax || !state.requestedMin) {
-    return null;
+// Stable selector defined outside the component so its reference never changes
+const detectorSelector = (state: { detector: AppDetector }) => state.detector;
+
+/** Converts a scalar value to a mathjs Unit in q-space based on the current display config. */
+function getUnit(value: number, config: ResultsConfig): Unit {
+  if (config.requested === ScatteringOptions.d) {
+    return convertFromDtoQ(unit(value, config.dUnits));
   }
-  return new UnitRange(
-    state.getUnit(state.requestedMin),
-    state.getUnit(state.requestedMax),
-  );
-};
+  if (config.requested === ScatteringOptions.s) {
+    return convertFromSToQ(unit(value, config.sUnits));
+  }
+  return unit(value, config.qUnits);
+}
 
 /**
  * A react componenet that plots a diagram of the system
@@ -57,14 +57,37 @@ const RequestedRangeSelector = (state: ResultStore) => {
  */
 export default function CentrePlot(): React.JSX.Element {
   const plotConfig = usePlotStore();
-  const beamlineConfig = useBeamlineConfigStore(beamlineConfigSelector);
+  const beamlineConfig = useBeamlineConfigStore((s) => s.beamline);
   const detector = useDetectorStore(detectorSelector);
-  const beamstop = useBeamstopStore(beamstopSelector);
-  const cameraTube = useCameraTubeStore(cameraTubeSelector);
-  const requestedRange = useResultStore(RequestedRangeSelector);
+  const beamstop = useBeamstopStore((s) => s.beamstop);
+  const cameraTube = useCameraTubeStore((s) => s.cameraTube);
+  const [resultsConfig, setResultsConfig] = useState<ResultsConfig>({
+    requested: ScatteringOptions.q,
+    qUnits: ReciprocalWavelengthUnits.nanometres,
+    sUnits: ReciprocalWavelengthUnits.nanometres,
+    dUnits: WavelengthUnits.nanometres,
+    requestedMin: null,
+    requestedMax: null,
+  });
+  const updateResultsConfig = useCallback(
+    (partial: Partial<ResultsConfig>) =>
+      setResultsConfig((prev) => ({ ...prev, ...partial })),
+    [],
+  );
+  const requestedRange = useMemo<UnitRange | null>(
+    () =>
+      resultsConfig.requestedMin != null && resultsConfig.requestedMax != null
+        ? new UnitRange(
+            getUnit(resultsConfig.requestedMin, resultsConfig),
+            getUnit(resultsConfig.requestedMax, resultsConfig),
+          )
+        : null,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [resultsConfig.requestedMin, resultsConfig.requestedMax, resultsConfig.requested, resultsConfig.qUnits, resultsConfig.sUnits, resultsConfig.dUnits],
+  );
   const calibrant = plotConfig.calibrantRecord[plotConfig.currentCalibrant];
 
-  useMemo(() => {
+  useEffect(() => {
     // Update "xpixel" and "ypixel" units each time the detector changes
     updatePixelUnits(detector);
   }, [detector]);
@@ -75,7 +98,38 @@ export default function CentrePlot(): React.JSX.Element {
     return computeQrange(detector, beamstop, beamlineConfig, cameraTube);
   }, [detector, beamstop, cameraTube, beamlineConfig]);
 
-  const plotter = new Plotter(
+  const {
+    plotBeamstop,
+    plotCameraTube,
+    plotDetector,
+    plotClearance,
+    plotVisibleRange,
+    plotRequestedRange,
+    plotCalibrant,
+    domains,
+  } = useMemo(() => {
+    const plotter = new Plotter(
+      beamstop,
+      detector,
+      beamlineConfig,
+      calibrant,
+      minPoint,
+      maxPoint,
+      requestedRange,
+      plotConfig.plotAxes,
+      cameraTube,
+    );
+    return {
+      plotBeamstop: plotter.createBeamstop(),
+      plotCameraTube: plotter.createCameratube(),
+      plotDetector: plotter.createDetector(),
+      plotClearance: plotter.createClearance(),
+      plotVisibleRange: plotter.createVisibleRange(),
+      plotRequestedRange: plotter.createRequestedRange(),
+      plotCalibrant: plotter.createCalibrant(),
+      domains: getDomain(plotter.createDetector()),
+    };
+  }, [
     beamstop,
     detector,
     beamlineConfig,
@@ -85,18 +139,7 @@ export default function CentrePlot(): React.JSX.Element {
     requestedRange,
     plotConfig.plotAxes,
     cameraTube,
-  );
-
-  const plotBeamstop = plotter.createBeamstop();
-  const plotCameraTube = plotter.createCameratube();
-  const plotDetector = plotter.createDetector();
-  const plotClearance = plotter.createClearnace();
-  const plotVisibleRange = plotter.createVisibleRange();
-  const plotRequestedRange = plotter.createRequestedRange();
-  const plotCalibrant = plotter.createCalibrant();
-
-  const domains = getDomain(plotDetector);
-  console.info(formatLogMessage("Refreshing plot"));
+  ]);
   return (
     <Stack
       direction="column"
@@ -155,15 +198,15 @@ export default function CentrePlot(): React.JSX.Element {
                     beamstopEndPointX,
                     beamstopEndPointY,
                     clearanceCentre,
-                    clearnaceEndPointX,
-                    clearenaceEndPointY,
+                    clearanceEndPointX,
+                    clearanceEndPointY,
                     cameraTubeCentre,
                     cameraTubeEndPointX,
                     cameraTubeEndPointY,
                     detectorLower,
                     detectorUpper,
                     visibleRangeStart,
-                    visableRangeEnd,
+                    visibleRangeEnd,
                     requestedRangeStart,
                     requestedRangeEnd,
                     calibrantEndPointX,
@@ -235,8 +278,8 @@ export default function CentrePlot(): React.JSX.Element {
                         <SvgAxisAlignedEllipse
                           coords={[
                             clearanceCentre,
-                            clearnaceEndPointX,
-                            clearenaceEndPointY,
+                            clearanceEndPointX,
+                            clearanceEndPointY,
                           ]}
                           fill={color2String(plotConfig.clearanceColor)}
                           id="clearance"
@@ -244,7 +287,7 @@ export default function CentrePlot(): React.JSX.Element {
                       )}
                       {plotConfig.visibleRange && (
                         <SvgLine
-                          coords={[visibleRangeStart, visableRangeEnd]}
+                          coords={[visibleRangeStart, visibleRangeEnd]}
                           stroke={color2String(plotConfig.visibleColor)}
                           strokeWidth={3}
                           id="visible"
@@ -278,7 +321,12 @@ export default function CentrePlot(): React.JSX.Element {
         </Card>
         <LegendBar />
       </Stack>
-      <ResultsBar visibleQRange={visibleQRange} fullQRange={fullQRange} />
+      <ResultsBar
+        visibleQRange={visibleQRange}
+        fullQRange={fullQRange}
+        config={resultsConfig}
+        updateConfig={updateResultsConfig}
+      />
     </Stack>
   );
 }
