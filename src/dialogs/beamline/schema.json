@@ -1,0 +1,120 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "detector": {
+      "type": "string",
+      "enum": [" "]
+    },
+    "beamstop": {
+      "title": "beamstop",
+      "type": "object",
+      "properties": {
+        "diameter": {
+          "label": "diameter",
+          "type": "number",
+          "minimum": 0
+        },
+        "centre": {
+          "title": "centre",
+          "type": "object",
+          "properties": {
+            "x": {
+              "label": "x",
+              "type": "number",
+              "minimum": 0
+            },
+            "y": {
+              "label": "y",
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["x", "y"]
+        },
+        "clearance": {
+          "label": "clearance",
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["diameter", "centre", "clearance"]
+    },
+    "cameraTube": {
+      "title": "camera tube",
+      "type": "object",
+      "properties": {
+        "diameter": {
+          "label": "diameter",
+          "type": "number",
+          "minimum": 0
+        },
+        "centre": {
+          "title": "centre",
+          "type": "object",
+          "properties": {
+            "x": {
+              "label": "x",
+              "type": "number",
+              "minimum": 0
+            },
+            "y": {
+              "label": "y",
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "wavelengthLimits": {
+      "title": "Wavelength limits",
+      "type": "object",
+      "properties": {
+        "min": {
+          "label": "min",
+          "type": "number",
+          "minimum": 0
+        },
+        "max": {
+          "label": "max",
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["min", "max"]
+    },
+    "cameraLengthLimits": {
+      "title": "Camera length limits",
+      "type": "object",
+      "properties": {
+        "min": {
+          "label": "min",
+          "type": "number",
+          "minimum": 0
+        },
+        "max": {
+          "label": "max",
+          "type": "number",
+          "minimum": 0
+        },
+        "step": {
+          "label": "max",
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["min", "max", "step"]
+    }
+  },
+  "required": [
+    "name",
+    "detector",
+    "cameraLengthLimits",
+    "wavelengthLimits",
+    "beamstop"
+  ]
+}
