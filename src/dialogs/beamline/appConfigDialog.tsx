@@ -171,7 +171,7 @@ export function AddAppConfigDialog({ open, handleClose }: DialogProps): React.JS
               sx={secondaryButtonSx}
               onClick={submitHandler}
             >
-              Submit
+              Add beamline
             </Button>
           </Stack>
       </DialogContent>

@@ -160,7 +160,7 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
               sx={secondaryButtonSx}
               onClick={submitHandler}
             >
-              Submit
+              Add detector
             </Button>
           </Stack>
       </DialogContent>

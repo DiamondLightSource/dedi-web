@@ -64,13 +64,13 @@ export default function BeamStopDataEntry(): React.JSX.Element {
       <Box
         sx={{
           px: 2,
-          py: 1.5,
+          py: 0.75,
           bgcolor: "grey.100",
           borderBottom: 1,
           borderColor: "divider",
         }}
       >
-        <Typography variant="h6" fontWeight={600}>
+        <Typography variant="subtitle1" fontWeight={600}>
           Beamstop
         </Typography>
       </Box>

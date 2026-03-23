@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Box,
   Card,
   CardContent,
   Checkbox,
@@ -34,14 +35,28 @@ export default function LegendBar(): React.JSX.Element {
   };
 
   return (
-    <Card variant="outlined" sx={{ flexGrow: 1, overflow: "scroll" }}>
-      <CardContent>
+    <Card variant="outlined" sx={{ flexGrow: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <Box
+        sx={{
+          px: 2,
+          py: 0.75,
+          bgcolor: "grey.100",
+          borderBottom: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Typography variant="subtitle1" fontWeight={600}>
+          Plot Controls
+        </Typography>
+      </Box>
+      <CardContent sx={{ overflow: "auto" }}>
         <Stack spacing={1}>
           <FormGroup>
             {/* Detector */}
             <FormControlLabel
               control={
                 <Checkbox
+                  size="small"
                   checked={plotConfig.detector}
                   onChange={(_, checked) =>
                     plotConfig.update({ detector: checked })
@@ -56,7 +71,7 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ detectorColor: color.rgb })
                     }
                   />
-                  <Typography display={"flex"} alignItems={"center"}>
+                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
                     Detector
                   </Typography>
                 </Stack>
@@ -67,6 +82,7 @@ export default function LegendBar(): React.JSX.Element {
             <FormControlLabel
               control={
                 <Checkbox
+                  size="small"
                   checked={plotConfig.beamstop}
                   onChange={(_, checked) => {
                     plotConfig.update({ beamstop: checked });
@@ -81,7 +97,7 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ beamstopColor: color.rgb })
                     }
                   />
-                  <Typography display={"flex"} alignItems={"center"}>
+                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
                     Beamstop
                   </Typography>
                 </Stack>
@@ -91,6 +107,7 @@ export default function LegendBar(): React.JSX.Element {
             <FormControlLabel
               control={
                 <Checkbox
+                  size="small"
                   checked={plotConfig.clearance}
                   onChange={(_, checked) => {
                     plotConfig.update({ clearance: checked });
@@ -105,7 +122,7 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ clearanceColor: color.rgb })
                     }
                   />
-                  <Typography display={"flex"} alignItems={"center"}>
+                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
                     Clearance
                   </Typography>
                 </Stack>
@@ -115,6 +132,7 @@ export default function LegendBar(): React.JSX.Element {
             <FormControlLabel
               control={
                 <Checkbox
+                  size="small"
                   checked={plotConfig.visibleRange}
                   onChange={(_, checked) =>
                     plotConfig.update({ visibleRange: checked })
@@ -129,7 +147,7 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ visibleColor: color.rgb })
                     }
                   />
-                  <Typography display={"flex"} alignItems={"center"}>
+                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
                     Visible Range
                   </Typography>
                 </Stack>
@@ -139,6 +157,7 @@ export default function LegendBar(): React.JSX.Element {
             <FormControlLabel
               control={
                 <Checkbox
+                  size="small"
                   checked={plotConfig.requestedRange}
                   onChange={(_, checked) =>
                     plotConfig.update({ requestedRange: checked })
@@ -153,7 +172,7 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ requestedRangeColor: color.rgb })
                     }
                   />
-                  <Typography display={"flex"} alignItems={"center"}>
+                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
                     Requested Range
                   </Typography>
                 </Stack>
@@ -163,6 +182,7 @@ export default function LegendBar(): React.JSX.Element {
             <FormControlLabel
               control={
                 <Checkbox
+                  size="small"
                   checked={plotConfig.inaccessibleRange}
                   onChange={(_, checked) =>
                     plotConfig.update({ inaccessibleRange: checked })
@@ -177,7 +197,7 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ inaccessibleRangeColor: color.rgb })
                     }
                   />
-                  <Typography display={"flex"} alignItems={"center"}>
+                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
                     Inaccessible Range
                   </Typography>
                 </Stack>
@@ -188,6 +208,7 @@ export default function LegendBar(): React.JSX.Element {
               <FormControlLabel
                 control={
                   <Checkbox
+                    size="small"
                     checked={plotConfig.cameraTube}
                     onChange={(_, checked) =>
                       plotConfig.update({ cameraTube: checked })
@@ -202,7 +223,7 @@ export default function LegendBar(): React.JSX.Element {
                         plotConfig.update({ cameraTubeColor: color.rgb })
                       }
                     />
-                    <Typography display={"flex"} alignItems={"center"}>
+                    <Typography variant="body2" display={"flex"} alignItems={"center"}>
                       Camera Tube
                     </Typography>
                   </Stack>
@@ -214,6 +235,7 @@ export default function LegendBar(): React.JSX.Element {
               <FormControlLabel
                 control={
                   <Checkbox
+                    size="small"
                     checked={plotConfig.mask}
                     onChange={(_, checked) =>
                       plotConfig.update({ mask: checked })
@@ -228,7 +250,7 @@ export default function LegendBar(): React.JSX.Element {
                         plotConfig.update({ maskColor: color.rgb })
                       }
                     />
-                    <Typography display={"flex"} alignItems={"center"}>
+                    <Typography variant="body2" display={"flex"} alignItems={"center"}>
                       Mask
                     </Typography>
                   </Stack>
@@ -240,6 +262,7 @@ export default function LegendBar(): React.JSX.Element {
             <FormControlLabel
               control={
                 <Checkbox
+                  size="small"
                   checked={plotConfig.calibrant}
                   onChange={(_, checked) =>
                     plotConfig.update({ calibrant: checked })
@@ -274,8 +297,9 @@ export default function LegendBar(): React.JSX.Element {
           </FormGroup>
           {/* Axis control */}
           <FormControl>
-            <FormLabel id="plot-axes-label">Axes:</FormLabel>
+            <FormLabel id="plot-axes-label" sx={{ typography: "body2", mb: 0.5 }}>Axes</FormLabel>
             <RadioGroup
+              row
               aria-labelledby="plot-axes-label"
               value={plotConfig.plotAxes}
               name="radio-buttons-group"
@@ -285,18 +309,18 @@ export default function LegendBar(): React.JSX.Element {
             >
               <FormControlLabel
                 value={PlotAxes.millimetre}
-                control={<Radio />}
-                label="Axes in mm"
+                control={<Radio size="small" />}
+                label="mm"
               />
               <FormControlLabel
                 value={PlotAxes.pixel}
-                control={<Radio />}
-                label="Axes in pixels"
+                control={<Radio size="small" />}
+                label="pixels"
               />
               <FormControlLabel
                 value={PlotAxes.reciprocal}
-                control={<Radio />}
-                label="Axes in q(nm^-1)"
+                control={<Radio size="small" />}
+                label="q (nm⁻¹)"
               />
             </RadioGroup>
           </FormControl>

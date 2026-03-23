@@ -1,4 +1,5 @@
 import {
+  Box,
   Card,
   FormControl,
   InputLabel,
@@ -11,6 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { ScatteringOptions } from "./scatteringQuantities";
 import { ResultsConfig } from "./resultsBar";
@@ -53,15 +55,28 @@ export default function RangeTable(props: {
     .to(config.dUnits as string);
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ p: 0, overflow: "hidden" }}>
+      <Box
+        sx={{
+          px: 2,
+          py: 0.75,
+          bgcolor: "grey.100",
+          borderBottom: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Typography variant="subtitle1" fontWeight={600}>
+          Visible Range
+        </Typography>
+      </Box>
       <TableContainer>
         <Table sx={{ minWidth: 50 }} aria-label="simple table" size="small">
           {/* TABLE HEAD */}
           <TableHead>
             <TableRow>
               <TableCell align="center">Values</TableCell>
-              <TableCell align="center">Min</TableCell>
-              <TableCell align="center">Max</TableCell>
+              <TableCell align="center" sx={{ width: 90 }}>Min</TableCell>
+              <TableCell align="center" sx={{ width: 90 }}>Max</TableCell>
               <TableCell align="center">Units</TableCell>
             </TableRow>
           </TableHead>
@@ -75,15 +90,15 @@ export default function RangeTable(props: {
               <TableCell align="center">
                 {isNaN(qRange.min.toNumber())
                   ? ""
-                  : qRange.min.toNumber().toPrecision(4)}
+                  : qRange.min.toNumber().toExponential(3)}
               </TableCell>
               <TableCell align="center">
                 {isNaN(qRange.max.toNumber())
                   ? ""
-                  : qRange.max.toNumber().toPrecision(4)}
+                  : qRange.max.toNumber().toExponential(3)}
               </TableCell>
               <TableCell align="center">
-                <FormControl>
+                <FormControl sx={{ minWidth: 120 }}>
                   <InputLabel>q</InputLabel>
                   <Select
                     size="small"
@@ -109,15 +124,15 @@ export default function RangeTable(props: {
               <TableCell align="center">
                 {isNaN(sRange.min.toNumber())
                   ? ""
-                  : sRange.min.toNumber().toPrecision(4)}
+                  : sRange.min.toNumber().toExponential(3)}
               </TableCell>
               <TableCell align="center">
                 {isNaN(sRange.max.toNumber())
                   ? ""
-                  : sRange.max.toNumber().toPrecision(4)}
+                  : sRange.max.toNumber().toExponential(3)}
               </TableCell>
               <TableCell align="center">
-                <FormControl>
+                <FormControl sx={{ minWidth: 120 }}>
                   <InputLabel>s</InputLabel>
                   <Select
                     size="small"
@@ -143,15 +158,15 @@ export default function RangeTable(props: {
               <TableCell align="center">
                 {isNaN(dRange.min.toNumber())
                   ? ""
-                  : dRange.min.toNumber().toPrecision(4)}
+                  : dRange.min.toNumber().toExponential(3)}
               </TableCell>
               <TableCell align="center">
                 {isNaN(dRange.max.toNumber())
                   ? ""
-                  : dRange.max.toNumber().toPrecision(4)}
+                  : dRange.max.toNumber().toExponential(3)}
               </TableCell>
               <TableCell align="center">
-                <FormControl>
+                <FormControl sx={{ minWidth: 120 }}>
                   <InputLabel>d</InputLabel>
                   <Select
                     size="small"
