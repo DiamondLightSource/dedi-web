@@ -1,4 +1,5 @@
 import {
+  Box,
   Card,
   CardContent,
   FormControl,
@@ -7,6 +8,7 @@ import {
   InputAdornment,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -37,21 +39,18 @@ export interface ResultsConfig {
 interface VisibilitySettings {
   textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null;
   diagramVisible: UnitRange | null;
-  diagramFull: UnitRange | null;
   diagramRequested: UnitRange | null;
 }
 
 function getVisibilitySettings(
   visableQRange: UnitRange,
-  fullQrange: UnitRange,
   requestedRange: NumericRange | null,
   config: ResultsConfig,
 ): VisibilitySettings {
-  if (!(visableQRange && fullQrange && requestedRange)) {
+  if (!(visableQRange && requestedRange)) {
     return {
       textBoxUnits: null,
       diagramVisible: null,
-      diagramFull: null,
       diagramRequested: null,
     };
   }
@@ -60,9 +59,6 @@ function getVisibilitySettings(
     return {
       textBoxUnits: config.dUnits,
       diagramVisible: visableQRange
-        .apply(convertFromQtoD)
-        .to(WavelengthUnits.nanometres),
-      diagramFull: fullQrange
         .apply(convertFromQtoD)
         .to(WavelengthUnits.nanometres),
       diagramRequested: UnitRange.fromNumericRange(
@@ -78,9 +74,6 @@ function getVisibilitySettings(
       diagramVisible: visableQRange
         .apply(convertFromQToS)
         .to(ReciprocalWavelengthUnits.nanometres),
-      diagramFull: fullQrange
-        .apply(convertFromQToS)
-        .to(ReciprocalWavelengthUnits.nanometres),
       diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         config.sUnits as string,
@@ -91,7 +84,6 @@ function getVisibilitySettings(
   return {
     textBoxUnits: config.qUnits,
     diagramVisible: visableQRange.to(ReciprocalWavelengthUnits.nanometres),
-    diagramFull: fullQrange.to(ReciprocalWavelengthUnits.nanometres),
     diagramRequested: UnitRange.fromNumericRange(
       requestedRange,
       config.qUnits as string,
@@ -108,7 +100,7 @@ function RangeFormControl({
 }): React.JSX.Element {
   return (
     <FormControl>
-      <FormLabel>Requested Quantiy</FormLabel>
+      <FormLabel>Requested Quantity</FormLabel>
       <RadioGroup
         row
         value={config.requested}
@@ -140,13 +132,12 @@ function RangeFormControl({
 const displayUnits = (
   textBoxUnits: WavelengthUnits | ReciprocalWavelengthUnits | null,
 ): string => {
+  if (textBoxUnits === null) return "";
   switch (textBoxUnits as string) {
     case "angstrom":
       return AngstromSymbol;
     case "angstrom^-1":
       return AngstromSymbol + "^-1";
-    case null:
-      return "";
     default:
       return textBoxUnits as string;
   }
@@ -154,14 +145,12 @@ const displayUnits = (
 
 interface ResultsBarProps {
   visibleQRange: NumericRange | null;
-  fullQRange: NumericRange | null;
   config: ResultsConfig;
   updateConfig: (partial: Partial<ResultsConfig>) => void;
 }
 
 export default function ResultsBar({
   visibleQRange,
-  fullQRange,
   config,
   updateConfig,
 }: ResultsBarProps) {
@@ -169,10 +158,6 @@ export default function ResultsBar({
     visibleQRange,
     "m^-1",
   ).to(ReciprocalWavelengthUnits.nanometres);
-
-  const fullQRangeUnits = UnitRange.fromNumericRange(fullQRange, "m^-1").to(
-    ReciprocalWavelengthUnits.nanometres,
-  );
 
   const requestedRange =
     config.requestedMax != null && config.requestedMin != null
@@ -187,37 +172,43 @@ export default function ResultsBar({
     updateConfig({ requestedMin: parseNumericInput(event.target.value) });
   };
 
-  const { textBoxUnits, diagramVisible, diagramFull, diagramRequested } =
+  const { textBoxUnits, diagramVisible, diagramRequested } =
     getVisibilitySettings(
       visibleQRangeUnits,
-      fullQRangeUnits,
       requestedRange,
       config,
     );
 
   const units = displayUnits(textBoxUnits);
   return (
-    <Card
-      variant="outlined"
-      sx={{
-        overflow: "visible",
-      }}
+    <Stack
+      direction={{ md: "column", lg: "row" }}
+      spacing={2}
     >
-      <CardContent>
-        <Stack spacing={1}>
-          <Stack
-            direction={{ md: "column", lg: "row" }}
-            spacing={2}
-            sx={{ direction: "column" }}
-          >
-            {/* Range Table */}
-            <RangeTable qRange={visibleQRangeUnits} config={config} updateConfig={updateConfig} />
-            {/* Requested Range */}
+      {/* Range Table */}
+      <RangeTable qRange={visibleQRangeUnits} config={config} updateConfig={updateConfig} />
+      {/* Requested Range + Diagram */}
+      <Card variant="outlined" sx={{ p: 0, overflow: "hidden", flexGrow: 2 }}>
+        <Box
+          sx={{
+            px: 2,
+            py: 0.75,
+            bgcolor: "grey.100",
+            borderBottom: 1,
+            borderColor: "divider",
+          }}
+        >
+          <Typography variant="subtitle1" fontWeight={600}>
+            Requested Range
+          </Typography>
+        </Box>
+        <CardContent>
+          <Stack direction={{ md: "column", lg: "row" }} spacing={2} alignItems="center">
             <Stack direction={"column"} spacing={1}>
               <RangeFormControl config={config} updateConfig={updateConfig} />
               <TextField
                 type="number"
-                label={`Requested min ${config.requested} value`}
+                label={`Requested min`}
                 size="small"
                 value={sanitizeNumber(config.requestedMin)}
                 onChange={handleRequestedMin}
@@ -229,7 +220,7 @@ export default function ResultsBar({
               />
               <TextField
                 type="number"
-                label={`Requested max ${config.requested} value`}
+                label={`Requested max`}
                 size="small"
                 value={sanitizeNumber(config.requestedMax)}
                 onChange={handleRequestedMax}
@@ -240,9 +231,8 @@ export default function ResultsBar({
                 }}
               />
             </Stack>
-            {/* Range Diagram */}
-            <Stack flexGrow={2} sx={{ alignItems: "center" }}>
-              {diagramVisible && diagramFull && diagramRequested ? (
+            <Stack flexGrow={1} sx={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
+              {diagramVisible && diagramRequested ? (
                 <RangeDiagram
                   visibleRange={diagramVisible satisfies UnitRange}
                   requestedRange={diagramRequested}
@@ -252,8 +242,8 @@ export default function ResultsBar({
               )}
             </Stack>
           </Stack>
-        </Stack>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Stack>
   );
 }

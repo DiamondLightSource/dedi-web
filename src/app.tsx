@@ -40,7 +40,7 @@ export default function App(): React.JSX.Element {
                   maxWidth={{ lg: 500 }}
                   overflow={{ md: "visible", lg: "scroll" }} 
                 >
-                  <Stack spacing={1} sx={{ mt:1, mb:1 }}>
+                  <Stack spacing={1} sx={{ mb:1 }}>
                     <BeamlineSelector />
                     <DetectorDataEntry />
                     <BeamStopDataEntry />

@@ -8,6 +8,7 @@ import {
   VisCanvas,
 } from "@h5web/lib";
 import { Card, CardContent, Stack } from "@mui/material";
+import Box from "@mui/material/Box";
 import { Unit, createUnit, unit } from "mathjs";
 import { Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
@@ -90,7 +91,7 @@ export default function CentrePlot(): React.JSX.Element {
   // Update pixel units and calculate qrange together — updatePixelUnits must
   // run before computeQrange since both the Plotter and qrange calculation
   // depend on the "xpixel"/"ypixel" mathjs units being registered first.
-  const { minPoint, maxPoint, visibleQRange, fullQRange } = useMemo(() => {
+  const { minPoint, maxPoint, visibleQRange } = useMemo(() => {
     updatePixelUnits(detector);
     console.info(formatLogMessage("Calculating Q range"));
     return computeQrange(detector, beamstop, beamlineConfig, cameraTube);
@@ -157,12 +158,15 @@ export default function CentrePlot(): React.JSX.Element {
       <Stack direction={{ sm: "column", md: "row" }} spacing={1} flexGrow={1}>
         <Card variant="outlined" sx={{ aspectRatio: 1.07 / 1 }}>
           <CardContent sx={{ width: "100%", height: "100%" }}>
-            <div
-              style={{
+            <Box
+              sx={{
                 display: "grid",
                 width: "100%",
                 height: "100%",
-                border: "solid black",
+                border: 1,
+                borderColor: "divider",
+                borderRadius: 1,
+                overflow: "hidden",
               }}
             >
               <VisCanvas
@@ -322,14 +326,13 @@ export default function CentrePlot(): React.JSX.Element {
                   )}
                 </DataToHtml>
               </VisCanvas>
-            </div>
+            </Box>
           </CardContent>
         </Card>
         <LegendBar />
       </Stack>
       <ResultsBar
         visibleQRange={visibleQRange}
-        fullQRange={fullQRange}
         config={resultsConfig}
         updateConfig={updateResultsConfig}
       />
