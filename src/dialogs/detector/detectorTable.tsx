@@ -11,15 +11,25 @@ interface DetectorTableRow {
   resolution_width: number;
   pixel_height: number;
   pixel_width: number;
+  modules: string;
 }
 
 function createData(name: string, detector: AppDetector): DetectorTableRow {
+  const mask = detector.mask;
+  let modules = "—";
+  if (mask) {
+    const missing = mask.missingModules?.length ?? 0;
+    modules =
+      `${mask.horizontalModules} × ${mask.verticalModules}` +
+      (missing > 0 ? ` (${missing} missing)` : "");
+  }
   return {
-    name: name,
+    name,
     resolution_height: detector.resolution.height,
     resolution_width: detector.resolution.width,
     pixel_height: detector.pixelSize.height.toNumber(LengthUnits.millimetre),
     pixel_width: detector.pixelSize.width.toNumber(LengthUnits.millimetre),
+    modules,
   };
 }
 
@@ -54,6 +64,12 @@ export default function DetectorTable() {
       field: "pixel_width",
       headerName: "Px W (mm)",
       description: "Pixel width (mm)",
+      flex: 1,
+    },
+    {
+      field: "modules",
+      headerName: "Modules",
+      description: "Module grid (H × V) and number of missing modules",
       flex: 1,
     },
   ];

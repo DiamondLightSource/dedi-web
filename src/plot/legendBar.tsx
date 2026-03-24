@@ -12,18 +12,32 @@ import {
   RadioGroup,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { PlotAxes, usePlotStore } from "./plotStore";
 import ColourPickerPopover from "../utils/colourPicker";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
-import React from "react";
+import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
+import React, { useEffect } from "react";
 
 export default function LegendBar(): React.JSX.Element {
   const plotConfig = usePlotStore();
   const detector = useDetectorStore((store) => store.detector);
   const cameraTube = useCameraTubeStore((store) => store.cameraTube);
+  const beamlineConfig = useBeamlineConfigStore((s) => s.beamline);
+
+  const canUseReciprocal =
+    !isNaN(beamlineConfig.wavelength.toNumber()) &&
+    beamlineConfig.cameraLength != null;
+
+  // If reciprocal was selected but is no longer computable, fall back to mm.
+  useEffect(() => {
+    if (!canUseReciprocal && plotConfig.plotAxes === PlotAxes.reciprocal) {
+      plotConfig.update({ plotAxes: PlotAxes.millimetre });
+    }
+  }, [canUseReciprocal, plotConfig]);
 
   const handleCalibrantUpdate = (
     _: React.SyntheticEvent,
@@ -317,11 +331,23 @@ export default function LegendBar(): React.JSX.Element {
                 control={<Radio size="small" />}
                 label="pixels"
               />
-              <FormControlLabel
-                value={PlotAxes.reciprocal}
-                control={<Radio size="small" />}
-                label="q (nm⁻¹)"
-              />
+              <Tooltip
+                title={
+                  canUseReciprocal
+                    ? ""
+                    : "Wavelength and camera length must both be set to plot in reciprocal units"
+                }
+                placement="right"
+              >
+                <span>
+                  <FormControlLabel
+                    value={PlotAxes.reciprocal}
+                    control={<Radio size="small" />}
+                    label="q (nm⁻¹)"
+                    disabled={!canUseReciprocal}
+                  />
+                </span>
+              </Tooltip>
             </RadioGroup>
           </FormControl>
         </Stack>
