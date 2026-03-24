@@ -28,7 +28,7 @@ import {
   formatLogMessage,
 } from "../utils/units";
 import SvgMask from "./svgMask";
-import { Plotter } from "./plotter";
+import { createPlots } from "./plotter";
 import UnitRange from "../calculations/unitRange";
 import {
   ScatteringOptions,
@@ -107,7 +107,15 @@ export default function CentrePlot(): React.JSX.Element {
     plotCalibrant,
     domains,
   } = useMemo(() => {
-    const plotter = new Plotter(
+    const {
+      plotBeamstop,
+      plotCameraTube,
+      plotDetector,
+      plotClearance,
+      plotVisibleRange,
+      plotRequestedRange,
+      plotCalibrant,
+    } = createPlots(
       beamstop,
       detector,
       beamlineConfig,
@@ -118,16 +126,14 @@ export default function CentrePlot(): React.JSX.Element {
       plotConfig.plotAxes,
       cameraTube,
     );
-    const plotBeamstop = plotter.createBeamstop();
-    const plotDetector = plotter.createDetector();
     return {
       plotBeamstop,
-      plotCameraTube: plotter.createCameratube(),
+      plotCameraTube,
       plotDetector,
-      plotClearance: plotter.createClearance(),
-      plotVisibleRange: plotter.createVisibleRange(),
-      plotRequestedRange: plotter.createRequestedRange(),
-      plotCalibrant: plotter.createCalibrant(),
+      plotClearance,
+      plotVisibleRange,
+      plotRequestedRange,
+      plotCalibrant,
       domains: getDomain(
         plotDetector.lowerBound,
         plotDetector.upperBound,

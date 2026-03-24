@@ -20,48 +20,33 @@ import UnitRange from "../calculations/unitRange";
 import { getPointForQ } from "../calculations/qvalue";
 import { convertFromDtoQ } from "../results/scatteringQuantities";
 
-interface AxisUnitStrategy {
-  convert: (x: mathjs.Unit, y: mathjs.Unit) => Vector3;
-}
+/** Maps a pair of mathjs Units (x, y) to a plot-space Vector3. */
+type CoordinateTransform = (x: mathjs.Unit, y: mathjs.Unit) => Vector3;
 
-/**
- * Plotting strategy for plotting in mm
- */
-class MilimeterAxis implements AxisUnitStrategy {
-  public convert(x: mathjs.Unit, y: mathjs.Unit): Vector3 {
-    return new Vector3(x.to("mm").toNumber(), y.to("mm").toNumber());
-  }
-}
+/** Plots in physical millimetres. */
+const millimetreTransform: CoordinateTransform = (x, y) =>
+  new Vector3(x.to("mm").toNumber(), y.to("mm").toNumber());
 
-/**
- * Plotting strategy for plotting in detector pixels
- */
-class PixelAxis implements AxisUnitStrategy {
-  public convert(x: mathjs.Unit, y: mathjs.Unit): Vector3 {
-    return new Vector3(x.to("xpixel").toNumber(), y.to("ypixel").toNumber());
-  }
-}
+/** Plots in detector pixel coordinates. */
+const pixelTransform: CoordinateTransform = (x, y) =>
+  new Vector3(x.to("xpixel").toNumber(), y.to("ypixel").toNumber());
 
-/**
- * Plotting strategy for plotting in reciprocal units
- */
-class ReciprocalAxis implements AxisUnitStrategy {
-  constructor(
-    private scaleFactor: mathjs.Unit,
-    private centre: UnitVector,
-  ) {}
-  public convert(x: mathjs.Unit, y: mathjs.Unit): Vector3 {
-    return new Vector3(
+/** Plots in reciprocal space (nm⁻¹), centred on the beamstop. */
+function makeReciprocalTransform(
+  scaleFactor: mathjs.Unit,
+  centre: UnitVector,
+): CoordinateTransform {
+  return (x, y) =>
+    new Vector3(
       mathjs
-        .multiply(this.scaleFactor, mathjs.subtract(x, this.centre.x))
+        .multiply(scaleFactor, mathjs.subtract(x, centre.x))
         .to("nm^-1")
         .toNumber(),
       mathjs
-        .multiply(this.scaleFactor, mathjs.subtract(y, this.centre.y))
+        .multiply(scaleFactor, mathjs.subtract(y, centre.y))
         .to("nm^-1")
         .toNumber(),
     );
-  }
 }
 
 const defaultCameraTube: AppCircularDevice = {
@@ -69,273 +54,263 @@ const defaultCameraTube: AppCircularDevice = {
   diameter: mathjs.unit(0, LengthUnits.millimetre),
 };
 
-/**
- * The methods a plotter object must expose
- */
-interface IPlotter {
-  createCameratube: () => PlotEllipse;
-  createBeamstop: () => PlotEllipse;
-  createDetector: () => PlotRectangle;
-  createClearance: () => PlotEllipse;
-  createVisibleRange: () => PlotRange;
-  createRequestedRange: () => PlotRange;
-  createCalibrant: () => PlotCalibrant;
+export interface PlotObjects {
+  plotBeamstop: PlotEllipse;
+  plotCameraTube: PlotEllipse;
+  plotDetector: PlotRectangle;
+  plotClearance: PlotEllipse;
+  plotVisibleRange: PlotRange;
+  plotRequestedRange: PlotRange;
+  plotCalibrant: PlotCalibrant;
 }
 
-export class Plotter implements IPlotter {
-  private beamstop: AppBeamstop;
-  private cameraTube: AppCircularDevice;
-  private detector: AppDetector;
-  private beamstopCentre: UnitVector;
-  private cameraTubeCentre: UnitVector;
-  private startVector: Vector3;
-  private endVector: Vector3;
-  private unitStrategy: AxisUnitStrategy;
-  private requestedRange: UnitRange | null;
-  private beamlineConfig: AppBeamline;
-  private calibrant: Calibrant;
+/**
+ * Computes all plot geometry objects from the current instrument state.
+ * Returns a plain object — no class instantiation or method calls required
+ * at the call site.
+ */
+export function createPlots(
+  beamstop: AppBeamstop,
+  detector: AppDetector,
+  beamlineConfig: AppBeamline,
+  calibrant: Calibrant,
+  minPoint: Vector2,
+  maxPoint: Vector2,
+  requestedRange: UnitRange | null,
+  unitAxes: PlotAxes,
+  cameraTube?: AppCircularDevice,
+): PlotObjects {
+  const resolvedCameraTube = cameraTube ?? defaultCameraTube;
 
-  constructor(
-    beamstop: AppBeamstop,
-    detector: AppDetector,
-    beamlineConfig: AppBeamline,
-    calibrant: Calibrant,
-    minPoint: Vector2,
-    maxPoint: Vector2,
-    requestedRange: UnitRange | null,
-    unitAxes: PlotAxes,
-    cameraTube?: AppCircularDevice,
-  ) {
-    this.beamstop = beamstop;
-    this.detector = detector;
-    this.beamlineConfig = beamlineConfig;
-    this.requestedRange = requestedRange;
-    this.calibrant = calibrant;
+  const beamstopCentre = new UnitVector(
+    mathjs.unit(beamstop.centre.x ?? NaN, "xpixel"),
+    mathjs.unit(beamstop.centre.y ?? NaN, "ypixel"),
+  );
 
-    this.beamstopCentre = new UnitVector(
-      mathjs.unit(this.beamstop.centre.x ?? NaN, "xpixel"),
-      mathjs.unit(this.beamstop.centre.y ?? NaN, "ypixel"),
-    );
+  const cameraTubeCentre = new UnitVector(
+    mathjs.unit(resolvedCameraTube.centre.x ?? NaN, "xpixel"),
+    mathjs.unit(resolvedCameraTube.centre.y ?? NaN, "ypixel"),
+  );
 
-    this.cameraTube = cameraTube ?? defaultCameraTube;
+  const transform = getCoordinateTransform(
+    unitAxes,
+    beamlineConfig,
+    beamstopCentre,
+  );
 
-    this.cameraTubeCentre = new UnitVector(
-      mathjs.unit(this.cameraTube.centre.x ?? NaN, "xpixel"),
-      mathjs.unit(this.cameraTube.centre.y ?? NaN, "ypixel"),
-    );
+  const startVector = transform(
+    mathjs.unit(minPoint.x, LengthUnits.metre),
+    mathjs.unit(minPoint.y, LengthUnits.metre),
+  );
 
-    this.unitStrategy = this._getAxisUnitStrategy(unitAxes);
+  const endVector = transform(
+    mathjs.unit(maxPoint.x, LengthUnits.metre),
+    mathjs.unit(maxPoint.y, LengthUnits.metre),
+  );
 
-    this.startVector = this.unitStrategy.convert(
-      mathjs.unit(minPoint.x, LengthUnits.metre),
-      mathjs.unit(minPoint.y, LengthUnits.metre),
-    );
+  return {
+    plotBeamstop: createEllipseAroundCentre(
+      transform,
+      beamstopCentre,
+      beamstop.diameter,
+    ),
+    plotCameraTube: createEllipseAroundCentre(
+      transform,
+      cameraTubeCentre,
+      resolvedCameraTube.diameter,
+    ),
+    plotDetector: createDetector(transform, detector),
+    plotClearance: createClearance(transform, beamstopCentre, beamstop),
+    plotVisibleRange: { start: startVector, end: endVector },
+    plotRequestedRange: createRequestedRange(
+      transform,
+      requestedRange,
+      beamlineConfig,
+      beamstopCentre,
+    ),
+    plotCalibrant: createCalibrant(
+      transform,
+      calibrant,
+      beamlineConfig,
+      beamstopCentre,
+    ),
+  };
+}
 
-    this.endVector = this.unitStrategy.convert(
-      mathjs.unit(maxPoint.x, LengthUnits.metre),
-      mathjs.unit(maxPoint.y, LengthUnits.metre),
-    );
-  }
+// ---------------------------------------------------------------------------
+// Private helpers
+// ---------------------------------------------------------------------------
 
-  public createBeamstop(): PlotEllipse {
-    return this._createEllipseAroundCentre(
-      this.beamstopCentre,
-      this.beamstop.diameter,
-    );
-  }
+function createEllipseAroundCentre(
+  transform: CoordinateTransform,
+  centre: UnitVector,
+  diameter: mathjs.Unit,
+): PlotEllipse {
+  const radius = mathjs.divide(diameter, 2);
+  return {
+    centre: transform(centre.x, centre.y),
+    endPointX: transform(mathjs.add(centre.x, radius), centre.y),
+    endPointY: transform(centre.x, mathjs.add(centre.y, radius)),
+  };
+}
 
-  public createCameratube(): PlotEllipse {
-    return this._createEllipseAroundCentre(
-      this.cameraTubeCentre,
-      this.cameraTube.diameter,
-    );
-  }
-
-  /**
-   * Creates a PlotEllipse object representing a clearance around the beamstop
-   * @returns
-   */
-  public createClearance(): PlotEllipse {
-    const radius = mathjs.divide(this.beamstop.diameter, 2);
-
-    const endPointX = this.unitStrategy.convert(
-      mathjs.add(
-        mathjs.add(this.beamstopCentre.x, radius),
-        mathjs.unit(this.beamstop.clearance ?? 0, "xpixel"),
-      ),
-      this.beamstopCentre.y,
-    );
-
-    const endPointY = this.unitStrategy.convert(
-      this.beamstopCentre.x,
-      mathjs.add(
-        mathjs.add(this.beamstopCentre.y, radius),
-        mathjs.unit(this.beamstop.clearance ?? 0, "ypixel"),
-      ),
-    );
-
-    const centre = this.unitStrategy.convert(
-      this.beamstopCentre.x,
-      this.beamstopCentre.y,
-    );
-
-    return {
-      centre: centre,
-      endPointX,
-      endPointY,
-    };
-  }
-
-  /**
-   * Creates a PlotRectangle object which represents the detector
-   * @returns
-   */
-  public createDetector(): PlotRectangle {
-    const lowerBound = this.unitStrategy.convert(
+function createDetector(
+  transform: CoordinateTransform,
+  detector: AppDetector,
+): PlotRectangle {
+  return {
+    lowerBound: transform(
       mathjs.unit(0, "xpixel"),
       mathjs.unit(0, "ypixel"),
-    );
-    const upperBound = this.unitStrategy.convert(
-      mathjs.unit(this.detector.resolution.width, "xpixel"),
-      mathjs.unit(this.detector.resolution.height, "ypixel"),
-    );
-    return { lowerBound, upperBound };
+    ),
+    upperBound: transform(
+      mathjs.unit(detector.resolution.width, "xpixel"),
+      mathjs.unit(detector.resolution.height, "ypixel"),
+    ),
+  };
+}
+
+function createClearance(
+  transform: CoordinateTransform,
+  beamstopCentre: UnitVector,
+  beamstop: AppBeamstop,
+): PlotEllipse {
+  const radius = mathjs.divide(beamstop.diameter, 2);
+  const clearancePx = beamstop.clearance ?? 0;
+  return {
+    centre: transform(beamstopCentre.x, beamstopCentre.y),
+    endPointX: transform(
+      mathjs.add(
+        mathjs.add(beamstopCentre.x, radius),
+        mathjs.unit(clearancePx, "xpixel"),
+      ),
+      beamstopCentre.y,
+    ),
+    endPointY: transform(
+      beamstopCentre.x,
+      mathjs.add(
+        mathjs.add(beamstopCentre.y, radius),
+        mathjs.unit(clearancePx, "ypixel"),
+      ),
+    ),
+  };
+}
+
+function createRequestedRange(
+  transform: CoordinateTransform,
+  requestedRange: UnitRange | null,
+  beamlineConfig: AppBeamline,
+  beamstopCentre: UnitVector,
+): PlotRange {
+  if (requestedRange === null) {
+    return { start: new Vector3(0, 0), end: new Vector3(0, 0) };
+  }
+  const camLen = mathjs.unit(
+    beamlineConfig.cameraLength ?? NaN,
+    LengthUnits.metre,
+  );
+  const minPt = getPointForQ(
+    requestedRange.min,
+    beamlineConfig.angle,
+    camLen,
+    beamlineConfig.wavelength,
+    beamstopCentre,
+  );
+  const maxPt = getPointForQ(
+    requestedRange.max,
+    beamlineConfig.angle,
+    camLen,
+    beamlineConfig.wavelength,
+    beamstopCentre,
+  );
+  return {
+    start: transform(minPt.x, minPt.y),
+    end: transform(maxPt.x, maxPt.y),
+  };
+}
+
+function createCalibrant(
+  transform: CoordinateTransform,
+  calibrant: Calibrant,
+  beamlineConfig: AppBeamline,
+  beamstopCentre: UnitVector,
+): PlotCalibrant {
+  const zeroCalibrant = {
+    endPointX: transform(beamstopCentre.x, beamstopCentre.y),
+    endPointY: transform(beamstopCentre.x, beamstopCentre.y),
+    ringFractions: [],
+  };
+
+  if (
+    isNaN(beamlineConfig.wavelength.toNumber()) ||
+    calibrant.d.length === 0
+  ) {
+    return zeroCalibrant;
   }
 
-  public createVisibleRange(): PlotRange {
-    return {
-      start: this.startVector,
-      end: this.endVector,
-    };
+  const camLen = mathjs.unit(
+    beamlineConfig.cameraLength ?? NaN,
+    LengthUnits.metre,
+  );
+  const maxRing = Math.min(...calibrant.d);
+  const qValue = convertFromDtoQ(mathjs.unit(maxRing, "nm"));
+
+  const ptX = getPointForQ(
+    qValue,
+    mathjs.unit(0, "deg"),
+    camLen,
+    beamlineConfig.wavelength,
+    beamstopCentre,
+  );
+  const ptY = getPointForQ(
+    qValue,
+    mathjs.unit(90, "deg"),
+    camLen,
+    beamlineConfig.wavelength,
+    beamstopCentre,
+  );
+
+  return {
+    endPointX: transform(ptX.x, ptX.y),
+    endPointY: transform(ptY.x, ptY.y),
+    ringFractions: calibrant.d.map((d) => maxRing / d),
+  };
+}
+
+function getScaleFactor(
+  wavelength: mathjs.Unit,
+  cameraLength: mathjs.Unit,
+): mathjs.Unit {
+  const scaleFactor = mathjs.divide(
+    2 * Math.PI,
+    mathjs.multiply(cameraLength, wavelength.to(LengthUnits.metre)),
+  );
+  if (typeof scaleFactor === "number" || !("units" in scaleFactor)) {
+    throw new TypeError("scaleFactor should be a Unit not a number");
   }
+  return scaleFactor;
+}
 
-  public createRequestedRange(): PlotRange {
-    if (this.requestedRange === null) {
-      return {
-        start: new Vector3(0, 0),
-        end: new Vector3(0, 0),
-      };
-    }
-
-    const maxPoint = getPointForQ(
-      this.requestedRange.max,
-      this.beamlineConfig.angle,
-      mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
-      this.beamlineConfig.wavelength,
-      this.beamstopCentre,
+function getCoordinateTransform(
+  unitAxes: PlotAxes,
+  beamlineConfig: AppBeamline,
+  beamstopCentre: UnitVector,
+): CoordinateTransform {
+  if (
+    unitAxes === PlotAxes.reciprocal &&
+    beamlineConfig.cameraLength != null &&
+    !isNaN(beamlineConfig.wavelength.toNumber())
+  ) {
+    return makeReciprocalTransform(
+      getScaleFactor(
+        beamlineConfig.wavelength,
+        mathjs.unit(beamlineConfig.cameraLength, LengthUnits.metre),
+      ),
+      beamstopCentre,
     );
-    const minPoint = getPointForQ(
-      this.requestedRange.min,
-      this.beamlineConfig.angle,
-      mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
-      this.beamlineConfig.wavelength,
-      this.beamstopCentre,
-    );
-
-    return {
-      start: this.unitStrategy.convert(minPoint.x, minPoint.y),
-      end: this.unitStrategy.convert(maxPoint.x, maxPoint.y),
-    };
   }
-
-  public createCalibrant(): PlotCalibrant {
-    // If no wavelength is given
-    if (isNaN(this.beamlineConfig.wavelength.toNumber())) {
-      return {
-        endPointX: this.unitStrategy.convert(
-          this.beamstopCentre.x,
-          this.beamstopCentre.y,
-        ),
-        endPointY: this.unitStrategy.convert(
-          this.beamstopCentre.x,
-          this.beamstopCentre.y,
-        ),
-        ringFractions: [],
-      };
-    }
-
-    // Note the reciprocal relationship between q and d
-    const maxRing = Math.min(...this.calibrant.d);
-    const qValue = convertFromDtoQ(mathjs.unit(maxRing, "nm"));
-
-    const maxPointX = getPointForQ(
-      qValue,
-      mathjs.unit(0, "deg"),
-      mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
-      this.beamlineConfig.wavelength,
-      this.beamstopCentre,
-    );
-
-    const maxPointY = getPointForQ(
-      qValue,
-      mathjs.unit(90, "deg"),
-      mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
-      this.beamlineConfig.wavelength,
-      this.beamstopCentre,
-    );
-
-    const ringFractions = this.calibrant.d.map((item) => maxRing / item);
-
-    return {
-      endPointX: this.unitStrategy.convert(maxPointX.x, maxPointX.y),
-      endPointY: this.unitStrategy.convert(maxPointY.x, maxPointY.y),
-      ringFractions: ringFractions,
-    };
+  if (unitAxes === PlotAxes.pixel) {
+    return pixelTransform;
   }
-
-  private _createEllipseAroundCentre(
-    centre: UnitVector,
-    diameter: mathjs.Unit,
-  ): PlotEllipse {
-    const radius = mathjs.divide(diameter, 2);
-    const endPointX = this.unitStrategy.convert(
-      mathjs.add(centre.x, radius),
-      centre.y,
-    );
-    const endPointY = this.unitStrategy.convert(
-      centre.x,
-      mathjs.add(centre.y, radius),
-    );
-    return {
-      centre: this.unitStrategy.convert(centre.x, centre.y),
-      endPointX,
-      endPointY,
-    };
-  }
-
-  private _getScaleFactor(wavelength: mathjs.Unit, cameraLength: mathjs.Unit) {
-    const scaleFactor = mathjs.divide(
-      2 * Math.PI,
-      mathjs.multiply(cameraLength, wavelength.to(LengthUnits.metre)),
-    );
-    if (typeof scaleFactor == "number" || !("units" in scaleFactor)) {
-      throw TypeError("scaleFactor should be a unit not a number");
-    }
-    return scaleFactor;
-  }
-
-  /**
-   * Selects plotting strategy
-   * @param unitAxes The selected units of the plot
-   * @returns
-   */
-  private _getAxisUnitStrategy(unitAxes: PlotAxes): AxisUnitStrategy {
-    if (
-      unitAxes === PlotAxes.reciprocal &&
-      this.beamlineConfig.cameraLength &&
-      this.beamlineConfig.wavelength
-    ) {
-      const scaleFactor = this._getScaleFactor(
-        this.beamlineConfig.wavelength,
-        mathjs.unit(this.beamlineConfig.cameraLength ?? NaN, LengthUnits.metre),
-      );
-      return new ReciprocalAxis(scaleFactor, this.beamstopCentre);
-    }
-
-    if (unitAxes === PlotAxes.pixel) {
-      return new PixelAxis();
-    }
-
-    return new MilimeterAxis();
-  }
+  return millimetreTransform;
 }
