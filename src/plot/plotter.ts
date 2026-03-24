@@ -17,7 +17,10 @@ import { LengthUnits } from "../utils/units";
 import { UnitVector } from "../calculations/unitVector";
 import { PlotAxes } from "./plotStore";
 import UnitRange from "../calculations/unitRange";
-import { getPointForQ, calculateDistanceFromQValue } from "../calculations/qvalue";
+import {
+  getPointForQ,
+  calculateDistanceFromQValue,
+} from "../calculations/qvalue";
 import { convertFromDtoQ } from "../results/scatteringQuantities";
 
 /** Maps a pair of mathjs Units (x, y) to a plot-space Vector3. */
@@ -159,10 +162,7 @@ function createDetector(
   detector: AppDetector,
 ): PlotRectangle {
   return {
-    lowerBound: transform(
-      mathjs.unit(0, "xpixel"),
-      mathjs.unit(0, "ypixel"),
-    ),
+    lowerBound: transform(mathjs.unit(0, "xpixel"), mathjs.unit(0, "ypixel")),
     upperBound: transform(
       mathjs.unit(detector.resolution.width, "xpixel"),
       mathjs.unit(detector.resolution.height, "ypixel"),
@@ -241,10 +241,7 @@ function createCalibrant(
     ringFractions: [],
   };
 
-  if (
-    isNaN(beamlineConfig.wavelength.toNumber()) ||
-    calibrant.d.length === 0
-  ) {
+  if (isNaN(beamlineConfig.wavelength.toNumber()) || calibrant.d.length === 0) {
     return zeroCalibrant;
   }
 
@@ -272,11 +269,9 @@ function createCalibrant(
 
   const camLenSI = camLen.toSI().toNumber();
   const waveSI = beamlineConfig.wavelength.toSI().toNumber();
-  const maxDist = calculateDistanceFromQValue(
-    qValue.toSI().toNumber(),
-    camLenSI,
-    waveSI,
-  ) ?? 1;
+  const maxDist =
+    calculateDistanceFromQValue(qValue.toSI().toNumber(), camLenSI, waveSI) ??
+    1;
 
   return {
     endPointX: transform(ptX.x, ptX.y),

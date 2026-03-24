@@ -28,7 +28,10 @@ export interface BeamlineConfigStore {
   /** Convert the stored energy to a different unit. */
   updateEnergyUnits: (newUnits: EnergyUnits) => void;
   /** Set the wavelength to a new value in the given units. */
-  updateWavelength: (newWavelength: number | null, newUnits: WavelengthUnits) => void;
+  updateWavelength: (
+    newWavelength: number | null,
+    newUnits: WavelengthUnits,
+  ) => void;
   /** Convert the stored wavelength (and wavelength limits) to a different unit. */
   updateWavelengthUnits: (newUnits: WavelengthUnits) => void;
   /** Set the scatter angle to a new value in the given units. */

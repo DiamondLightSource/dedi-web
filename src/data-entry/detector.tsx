@@ -13,7 +13,10 @@ import {
 } from "@mui/material";
 import { LengthUnits, MuSymbol } from "../utils/units";
 import { useDetectorStore } from "./detectorStore";
-import { DetectorTableDialog, AddDetectorDialog } from "../dialogs/detector/detectorDialog";
+import {
+  DetectorTableDialog,
+  AddDetectorDialog,
+} from "../dialogs/detector/detectorDialog";
 import { InfoRow } from "../utils/InfoRow";
 import { secondaryButtonSx } from "../utils/styles";
 import React from "react";
@@ -92,13 +95,20 @@ export default function DetectorDataEntry(): React.JSX.Element {
         {/* Info rows */}
         <Stack spacing={0.75}>
           <InfoRow label="Resolution">
-            <Typography variant="body2" sx={{ fontFamily: "monospace", flexGrow: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{ fontFamily: "monospace", flexGrow: 1 }}
+            >
               {detector.resolution.height} × {detector.resolution.width} px
             </Typography>
           </InfoRow>
           <InfoRow label="Pixel size">
-            <Typography variant="body2" sx={{ fontFamily: "monospace", flexGrow: 1 }}>
-              {detector.pixelSize.height.toNumber()} × {detector.pixelSize.width.toNumber()}
+            <Typography
+              variant="body2"
+              sx={{ fontFamily: "monospace", flexGrow: 1 }}
+            >
+              {detector.pixelSize.height.toNumber()} ×{" "}
+              {detector.pixelSize.width.toNumber()}
             </Typography>
             <FormControl size="small">
               <InputLabel>units</InputLabel>
@@ -114,9 +124,7 @@ export default function DetectorDataEntry(): React.JSX.Element {
                 <MenuItem value={LengthUnits.millimetre}>
                   {LengthUnits.millimetre}
                 </MenuItem>
-                <MenuItem value={LengthUnits.micrometre}>
-                  {MuSymbol}m
-                </MenuItem>
+                <MenuItem value={LengthUnits.micrometre}>{MuSymbol}m</MenuItem>
               </Select>
             </FormControl>
           </InfoRow>
@@ -125,4 +133,3 @@ export default function DetectorDataEntry(): React.JSX.Element {
     </Card>
   );
 }
-

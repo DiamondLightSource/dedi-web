@@ -33,20 +33,20 @@ export default function App(): React.JSX.Element {
             spacing={1}
             justifyContent={"center"}
             overflow={"clip"}
-            sx={{ pt: "70px" , mr:1, ml:1 }}
+            sx={{ pt: "70px", mr: 1, ml: 1 }}
           >
             <Box
-                  maxHeight={{ lg: "calc(100vh - 70px)" }}
-                  maxWidth={{ lg: 500 }}
-                  overflow={{ md: "visible", lg: "scroll" }} 
-                >
-                  <Stack spacing={1} sx={{ mb:1 }}>
-                    <BeamlineSelector />
-                    <DetectorDataEntry />
-                    <BeamStopDataEntry />
-                    <CameraTubeDataEntry />
-                  </Stack>
-                </Box>
+              maxHeight={{ lg: "calc(100vh - 70px)" }}
+              maxWidth={{ lg: 500 }}
+              overflow={{ md: "visible", lg: "scroll" }}
+            >
+              <Stack spacing={1} sx={{ mb: 1 }}>
+                <BeamlineSelector />
+                <DetectorDataEntry />
+                <BeamStopDataEntry />
+                <CameraTubeDataEntry />
+              </Stack>
+            </Box>
             <CentrePlot />
           </Stack>
         </ThemeProvider>

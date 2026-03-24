@@ -164,12 +164,18 @@ export default function ResultsBar({
   // Convert accessible sub-ranges to the same unit space as diagramVisible
   // so dead zone positions align correctly on the diagram.
   const diagramAccessible = accessibleQRanges
-    .map((r) => UnitRange.fromNumericRange(r, "m^-1").to(ReciprocalWavelengthUnits.nanometres))
+    .map((r) =>
+      UnitRange.fromNumericRange(r, "m^-1").to(
+        ReciprocalWavelengthUnits.nanometres,
+      ),
+    )
     .map((r) => {
       if (config.requested === ScatteringOptions.d)
         return r.apply(convertFromQtoD).to(WavelengthUnits.nanometres);
       if (config.requested === ScatteringOptions.s)
-        return r.apply(convertFromQToS).to(ReciprocalWavelengthUnits.nanometres);
+        return r
+          .apply(convertFromQToS)
+          .to(ReciprocalWavelengthUnits.nanometres);
       return r.to(ReciprocalWavelengthUnits.nanometres);
     });
 
@@ -187,20 +193,17 @@ export default function ResultsBar({
   };
 
   const { textBoxUnits, diagramVisible, diagramRequested } =
-    getVisibilitySettings(
-      visibleQRangeUnits,
-      requestedRange,
-      config,
-    );
+    getVisibilitySettings(visibleQRangeUnits, requestedRange, config);
 
   const units = displayUnits(textBoxUnits);
   return (
-    <Stack
-      direction={{ md: "column", lg: "row" }}
-      spacing={2}
-    >
+    <Stack direction={{ md: "column", lg: "row" }} spacing={2}>
       {/* Range Table */}
-      <RangeTable qRange={visibleQRangeUnits} config={config} updateConfig={updateConfig} />
+      <RangeTable
+        qRange={visibleQRangeUnits}
+        config={config}
+        updateConfig={updateConfig}
+      />
       {/* Requested Range + Diagram */}
       <Card variant="outlined" sx={{ p: 0, overflow: "hidden", flexGrow: 2 }}>
         <Box
@@ -217,7 +220,11 @@ export default function ResultsBar({
           </Typography>
         </Box>
         <CardContent>
-          <Stack direction={{ md: "column", lg: "row" }} spacing={2} alignItems="center">
+          <Stack
+            direction={{ md: "column", lg: "row" }}
+            spacing={2}
+            alignItems="center"
+          >
             <Stack direction={"column"} spacing={1}>
               <RangeFormControl config={config} updateConfig={updateConfig} />
               <TextField
@@ -229,7 +236,10 @@ export default function ResultsBar({
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Typography variant="body2" sx={{ minWidth: "4.5em", textAlign: "right" }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ minWidth: "4.5em", textAlign: "right" }}
+                      >
                         {units}
                       </Typography>
                     </InputAdornment>
@@ -245,7 +255,10 @@ export default function ResultsBar({
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Typography variant="body2" sx={{ minWidth: "4.5em", textAlign: "right" }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ minWidth: "4.5em", textAlign: "right" }}
+                      >
                         {units}
                       </Typography>
                     </InputAdornment>
@@ -253,7 +266,14 @@ export default function ResultsBar({
                 }}
               />
             </Stack>
-            <Stack flexGrow={1} sx={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
+            <Stack
+              flexGrow={1}
+              sx={{
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
               {diagramVisible && diagramRequested ? (
                 <RangeDiagram
                   visibleRange={diagramVisible satisfies UnitRange}

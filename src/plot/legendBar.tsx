@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Box,
+  Button,
   Card,
   CardContent,
   Checkbox,
@@ -20,7 +21,12 @@ import ColourPickerPopover from "../utils/colourPicker";
 import { useDetectorStore } from "../data-entry/detectorStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  CalibrantDialog,
+  AddCalibrantDialog,
+} from "../dialogs/calibrant/calibrantDialog";
+import { secondaryButtonSx } from "../utils/styles";
 
 export default function LegendBar(): React.JSX.Element {
   const plotConfig = usePlotStore();
@@ -48,8 +54,19 @@ export default function LegendBar(): React.JSX.Element {
     }
   };
 
+  const [calibrantDialogOpen, setCalibrantDialogOpen] = useState(false);
+  const [addCalibrantDialogOpen, setAddCalibrantDialogOpen] = useState(false);
+
   return (
-    <Card variant="outlined" sx={{ flexGrow: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+    <Card
+      variant="outlined"
+      sx={{
+        flexGrow: 1,
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Box
         sx={{
           px: 2,
@@ -85,7 +102,11 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ detectorColor: color.rgb })
                     }
                   />
-                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
+                  <Typography
+                    variant="body2"
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
                     Detector
                   </Typography>
                 </Stack>
@@ -111,7 +132,11 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ beamstopColor: color.rgb })
                     }
                   />
-                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
+                  <Typography
+                    variant="body2"
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
                     Beamstop
                   </Typography>
                 </Stack>
@@ -136,7 +161,11 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ clearanceColor: color.rgb })
                     }
                   />
-                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
+                  <Typography
+                    variant="body2"
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
                     Clearance
                   </Typography>
                 </Stack>
@@ -161,7 +190,11 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ visibleColor: color.rgb })
                     }
                   />
-                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
+                  <Typography
+                    variant="body2"
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
                     Visible Range
                   </Typography>
                 </Stack>
@@ -186,7 +219,11 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ requestedRangeColor: color.rgb })
                     }
                   />
-                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
+                  <Typography
+                    variant="body2"
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
                     Requested Range
                   </Typography>
                 </Stack>
@@ -211,7 +248,11 @@ export default function LegendBar(): React.JSX.Element {
                       plotConfig.update({ inaccessibleRangeColor: color.rgb })
                     }
                   />
-                  <Typography variant="body2" display={"flex"} alignItems={"center"}>
+                  <Typography
+                    variant="body2"
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
                     Inaccessible Range
                   </Typography>
                 </Stack>
@@ -237,7 +278,11 @@ export default function LegendBar(): React.JSX.Element {
                         plotConfig.update({ cameraTubeColor: color.rgb })
                       }
                     />
-                    <Typography variant="body2" display={"flex"} alignItems={"center"}>
+                    <Typography
+                      variant="body2"
+                      display={"flex"}
+                      alignItems={"center"}
+                    >
                       Camera Tube
                     </Typography>
                   </Stack>
@@ -264,7 +309,11 @@ export default function LegendBar(): React.JSX.Element {
                         plotConfig.update({ maskColor: color.rgb })
                       }
                     />
-                    <Typography variant="body2" display={"flex"} alignItems={"center"}>
+                    <Typography
+                      variant="body2"
+                      display={"flex"}
+                      alignItems={"center"}
+                    >
                       Mask
                     </Typography>
                   </Stack>
@@ -284,7 +333,7 @@ export default function LegendBar(): React.JSX.Element {
                 />
               }
               label={
-                <Stack direction={"row"}>
+                <Stack direction={"row"} spacing={1} alignItems="center">
                   <ColourPickerPopover
                     color={plotConfig.calibrantColor}
                     onChangeComplete={(color) =>
@@ -295,7 +344,7 @@ export default function LegendBar(): React.JSX.Element {
                     size="small"
                     options={Object.keys(plotConfig.calibrantRecord)}
                     value={plotConfig.currentCalibrant}
-                    style={{ width: 300, color: "white" }}
+                    style={{ width: 240, color: "white" }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -305,13 +354,56 @@ export default function LegendBar(): React.JSX.Element {
                     )}
                     onChange={handleCalibrantUpdate}
                   />
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      ...secondaryButtonSx,
+                      fontSize: "0.7rem",
+                      whiteSpace: "nowrap",
+                      height: 40,
+                    }}
+                    onClick={() => setCalibrantDialogOpen(true)}
+                  >
+                    Show all
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      ...secondaryButtonSx,
+                      fontSize: "0.7rem",
+                      whiteSpace: "nowrap",
+                      height: 40,
+                    }}
+                    onClick={() => setAddCalibrantDialogOpen(true)}
+                  >
+                    Add
+                  </Button>
                 </Stack>
               }
             />
           </FormGroup>
+          <CalibrantDialog
+            open={calibrantDialogOpen}
+            handleClose={() => setCalibrantDialogOpen(false)}
+            calibrantRecord={plotConfig.calibrantRecord}
+          />
+          <AddCalibrantDialog
+            open={addCalibrantDialogOpen}
+            handleClose={() => setAddCalibrantDialogOpen(false)}
+            onAdd={(name, calibrant) =>
+              plotConfig.addCalibrant(name, calibrant)
+            }
+          />
           {/* Axis control */}
           <FormControl>
-            <FormLabel id="plot-axes-label" sx={{ typography: "body2", mb: 0.5 }}>Axes</FormLabel>
+            <FormLabel
+              id="plot-axes-label"
+              sx={{ typography: "body2", mb: 0.5 }}
+            >
+              Axes
+            </FormLabel>
             <RadioGroup
               row
               aria-labelledby="plot-axes-label"

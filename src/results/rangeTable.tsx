@@ -75,8 +75,12 @@ export default function RangeTable(props: {
           <TableHead>
             <TableRow>
               <TableCell align="center">Values</TableCell>
-              <TableCell align="center" sx={{ width: 90 }}>Min</TableCell>
-              <TableCell align="center" sx={{ width: 90 }}>Max</TableCell>
+              <TableCell align="center" sx={{ width: 90 }}>
+                Min
+              </TableCell>
+              <TableCell align="center" sx={{ width: 90 }}>
+                Max
+              </TableCell>
               <TableCell align="center">Units</TableCell>
             </TableRow>
           </TableHead>
