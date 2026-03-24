@@ -147,22 +147,5 @@
       "width": 7.5e-2,
       "height": 7.5e-2
     }
-  },
-  "Creeper 5M": {
-    "resolution": {
-      "width": 1475,
-      "height": 1475
-    },
-    "pixelSize": {
-      "width": 0.172,
-      "height": 0.172
-    },
-    "mask": {
-      "horizontalModules": 5,
-      "verticalModules": 5,
-      "horizontalGap": 7,
-      "verticalGap": 7,
-      "missingModules": [6, 8, 12, 16, 17, 18, 21, 23]
-    }
   }
 }
