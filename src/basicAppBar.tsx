@@ -12,7 +12,8 @@ import { createAppConfig } from "./presets/presetManager";
 
 export default function BasicAppBar() {
   const beamlineConfigStore = useBeamlineConfigStore();
-  const { presetRecord, currentPresetName, userWavelength } = beamlineConfigStore;
+  const { presetRecord, currentPresetName, userWavelength } =
+    beamlineConfigStore;
   const beamstopStore = useBeamstopStore();
   const cameraTubeStore = useCameraTubeStore();
 
@@ -21,17 +22,26 @@ export default function BasicAppBar() {
   const preset = presetRecord[currentPresetName];
 
   const isDirtyBeamstop = preset
-    ? Math.abs(beamstop.diameter.toNumber(LengthUnits.millimetre) - preset.beamstop.diameter) > 1e-9
+    ? Math.abs(
+        beamstop.diameter.toNumber(LengthUnits.millimetre) -
+          preset.beamstop.diameter,
+      ) > 1e-9
     : false;
   const isDirtyCameraTube = preset
     ? (preset.cameraTube == null) !== (cameraTube == null) ||
-      (preset.cameraTube != null && cameraTube != null &&
-        Math.abs(cameraTube.diameter.toNumber(LengthUnits.millimetre) - preset.cameraTube.diameter) > 1e-9)
+      (preset.cameraTube != null &&
+        cameraTube != null &&
+        Math.abs(
+          cameraTube.diameter.toNumber(LengthUnits.millimetre) -
+            preset.cameraTube.diameter,
+        ) > 1e-9)
     : false;
   const isWavelengthUnset = userWavelength === null || isNaN(userWavelength);
 
-  const handleResetBeamstop = () => beamstopStore.setBeamstop(createAppConfig(preset).beamstop);
-  const handleResetCameraTube = () => cameraTubeStore.updateCameraTube(createAppConfig(preset).cameraTube);
+  const handleResetBeamstop = () =>
+    beamstopStore.setBeamstop(createAppConfig(preset).beamstop);
+  const handleResetCameraTube = () =>
+    cameraTubeStore.updateCameraTube(createAppConfig(preset).cameraTube);
 
   return (
     <AppBar style={{ width: "100%" }}>

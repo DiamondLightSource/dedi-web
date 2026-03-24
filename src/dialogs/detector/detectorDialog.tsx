@@ -124,7 +124,13 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
   };
 
   return (
-    <Dialog open={open} keepMounted onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      keepMounted
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+    >
       <DialogTitle
         variant="h5"
         fontWeight={600}
@@ -143,55 +149,56 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-          <Stack spacing={1} sx={{ p: 2 , mt:1}}>
-            <UnitProvider value={FormUnits}>
-              <JsonForms
-                data={data}
-                onChange={({ data: newData, errors }) => {
-                  const prev = data as DetectorForm | null;
-                  const next = newData as DetectorForm | null;
-                  // Reset missing modules when module grid dimensions change
-                  if (
-                    next?.mask &&
-                    (prev?.mask?.horizontalModules !== next.mask.horizontalModules ||
-                      prev?.mask?.verticalModules !== next.mask.verticalModules)
-                  ) {
-                    next.mask.missingModules = [];
-                  }
-                  setData(next);
-                  setErrors(errors);
-                }}
-                schema={schema}
-                uischema={uischema}
-                renderers={renderers}
+        <Stack spacing={1} sx={{ p: 2, mt: 1 }}>
+          <UnitProvider value={FormUnits}>
+            <JsonForms
+              data={data}
+              onChange={({ data: newData, errors }) => {
+                const prev = data as DetectorForm | null;
+                const next = newData as DetectorForm | null;
+                // Reset missing modules when module grid dimensions change
+                if (
+                  next?.mask &&
+                  (prev?.mask?.horizontalModules !==
+                    next.mask.horizontalModules ||
+                    prev?.mask?.verticalModules !== next.mask.verticalModules)
+                ) {
+                  next.mask.missingModules = [];
+                }
+                setData(next);
+                setErrors(errors);
+              }}
+              schema={schema}
+              uischema={uischema}
+              renderers={renderers}
+            />
+          </UnitProvider>
+          {data?.mask?.horizontalModules != null &&
+            data.mask.horizontalModules >= 1 &&
+            data?.mask?.verticalModules != null &&
+            data.mask.verticalModules >= 1 && (
+              <MissingModulesSelector
+                horizontalModules={data.mask.horizontalModules}
+                verticalModules={data.mask.verticalModules}
+                missingModules={data.mask.missingModules ?? []}
+                onChange={(missingModules) =>
+                  setData((prev) =>
+                    prev
+                      ? { ...prev, mask: { ...prev.mask, missingModules } }
+                      : prev,
+                  )
+                }
               />
-            </UnitProvider>
-            {data?.mask?.horizontalModules != null &&
-              data.mask.horizontalModules >= 1 &&
-              data?.mask?.verticalModules != null &&
-              data.mask.verticalModules >= 1 && (
-                <MissingModulesSelector
-                  horizontalModules={data.mask.horizontalModules}
-                  verticalModules={data.mask.verticalModules}
-                  missingModules={data.mask.missingModules ?? []}
-                  onChange={(missingModules) =>
-                    setData((prev) =>
-                      prev
-                        ? { ...prev, mask: { ...prev.mask, missingModules } }
-                        : prev,
-                    )
-                  }
-                />
-              )}
-            <Button
-              variant="outlined"
-              type="submit"
-              sx={secondaryButtonSx}
-              onClick={submitHandler}
-            >
-              Add detector
-            </Button>
-          </Stack>
+            )}
+          <Button
+            variant="outlined"
+            type="submit"
+            sx={secondaryButtonSx}
+            onClick={submitHandler}
+          >
+            Add detector
+          </Button>
+        </Stack>
       </DialogContent>
     </Dialog>
   );

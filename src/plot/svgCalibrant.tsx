@@ -17,10 +17,10 @@ export default function SvgCalibrant(
   const { beamCentre, ringFractions, endPointX, endPointY, ...rest } = props;
   return (
     <>
-      {ringFractions.map((item: number) => (
+      {ringFractions.map((item: number, i: number) => (
         <SvgAxisAlignedEllipse
           {...rest}
-          key={item}
+          key={i}
           coords={[
             beamCentre,
             getPointOnRing(beamCentre, endPointX, new Vector3(item, 1)),

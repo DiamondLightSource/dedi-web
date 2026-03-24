@@ -40,31 +40,38 @@ export default function MissingModulesSelector({
           justifyContent: "center",
         }}
       >
-        {Array.from({ length: verticalModules * horizontalModules }, (_, idx) => {
-          const isMissing = missingModules.includes(idx);
-          return (
-            <Box
-              key={idx}
-              onClick={() => toggle(idx)}
-              title={`Module ${idx} (col ${idx % horizontalModules}, row ${Math.floor(idx / horizontalModules)})`}
-              sx={{
-                aspectRatio: "1",
-                borderRadius: 0.5,
-                cursor: "pointer",
-                bgcolor: isMissing ? "primary.main" : "grey.300",
-                border: "1px solid",
-                borderColor: isMissing ? "primary.dark" : "grey.400",
-                transition: "background-color 0.15s",
-                "&:hover": {
-                  bgcolor: isMissing ? "primary.light" : "grey.400",
-                },
-              }}
-            />
-          );
-        })}
+        {Array.from(
+          { length: verticalModules * horizontalModules },
+          (_, idx) => {
+            const isMissing = missingModules.includes(idx);
+            return (
+              <Box
+                key={idx}
+                onClick={() => toggle(idx)}
+                title={`Module ${idx} (col ${idx % horizontalModules}, row ${Math.floor(idx / horizontalModules)})`}
+                sx={{
+                  aspectRatio: "1",
+                  borderRadius: 0.5,
+                  cursor: "pointer",
+                  bgcolor: isMissing ? "primary.main" : "grey.300",
+                  border: "1px solid",
+                  borderColor: isMissing ? "primary.dark" : "grey.400",
+                  transition: "background-color 0.15s",
+                  "&:hover": {
+                    bgcolor: isMissing ? "primary.light" : "grey.400",
+                  },
+                }}
+              />
+            );
+          },
+        )}
       </Box>
       {missingModules.length > 0 && (
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block" }}>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ mt: 0.5, display: "block" }}
+        >
           Missing: [{missingModules.join(", ")}]
         </Typography>
       )}

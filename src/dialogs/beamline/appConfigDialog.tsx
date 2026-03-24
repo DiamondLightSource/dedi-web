@@ -72,9 +72,18 @@ interface DialogProps {
 }
 
 /** Read-only dialog showing the full table of saved beamline configurations. */
-export function AppConfigTableDialog({ open, handleClose }: DialogProps): React.JSX.Element {
+export function AppConfigTableDialog({
+  open,
+  handleClose,
+}: DialogProps): React.JSX.Element {
   return (
-    <Dialog fullWidth maxWidth="lg" open={open} keepMounted onClose={handleClose}>
+    <Dialog
+      fullWidth
+      maxWidth="lg"
+      open={open}
+      keepMounted
+      onClose={handleClose}
+    >
       <DialogTitle
         variant="h5"
         fontWeight={600}
@@ -100,7 +109,10 @@ export function AppConfigTableDialog({ open, handleClose }: DialogProps): React.
 }
 
 /** Form dialog for adding a new beamline configuration. */
-export function AddAppConfigDialog({ open, handleClose }: DialogProps): React.JSX.Element {
+export function AddAppConfigDialog({
+  open,
+  handleClose,
+}: DialogProps): React.JSX.Element {
   const [data, setData] = useState<AppConfigForm | null>(null);
   const [errors, setErrors] = useState<ErrorObject[] | undefined>([]);
   const detectorRecord = useDetectorStore((state) => state.detectorRecord);
@@ -127,13 +139,22 @@ export function AddAppConfigDialog({ open, handleClose }: DialogProps): React.JS
       newCameraTube = { diameter: cameraTube.diameter, centre: newCentre };
     }
 
-    beamlineConfigStore.addNewPreset(name, { cameraTube: newCameraTube, ...rest });
+    beamlineConfigStore.addNewPreset(name, {
+      cameraTube: newCameraTube,
+      ...rest,
+    });
     setData(null);
     handleClose();
   };
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} keepMounted onClose={handleClose}>
+    <Dialog
+      fullWidth
+      maxWidth="sm"
+      open={open}
+      keepMounted
+      onClose={handleClose}
+    >
       <DialogTitle
         variant="h5"
         fontWeight={600}
@@ -152,28 +173,28 @@ export function AddAppConfigDialog({ open, handleClose }: DialogProps): React.JS
         </IconButton>
       </DialogTitle>
       <DialogContent>
-          <Stack spacing={1} sx={{ p: 2, mt:1,mb:1 }}>
-            <UnitProvider value={FormUnits}>
-              <JsonForms
-                data={data}
-                onChange={({ data, errors }) => {
-                  setData(data as AppConfigForm);
-                  setErrors(errors);
-                }}
-                schema={newSchema}
-                uischema={uischema}
-                renderers={renderers}
-              />
-            </UnitProvider>
-            <Button
-              variant="outlined"
-              type="submit"
-              sx={secondaryButtonSx}
-              onClick={submitHandler}
-            >
-              Add beamline
-            </Button>
-          </Stack>
+        <Stack spacing={1} sx={{ p: 2, mt: 1, mb: 1 }}>
+          <UnitProvider value={FormUnits}>
+            <JsonForms
+              data={data}
+              onChange={({ data, errors }) => {
+                setData(data as AppConfigForm);
+                setErrors(errors);
+              }}
+              schema={newSchema}
+              uischema={uischema}
+              renderers={renderers}
+            />
+          </UnitProvider>
+          <Button
+            variant="outlined"
+            type="submit"
+            sx={secondaryButtonSx}
+            onClick={submitHandler}
+          >
+            Add beamline
+          </Button>
+        </Stack>
       </DialogContent>
     </Dialog>
   );

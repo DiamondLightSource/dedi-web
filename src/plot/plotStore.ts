@@ -41,6 +41,8 @@ export interface PlotConfig {
   currentCalibrant: string;
   calibrantRecord: Record<string, Calibrant>;
   update: (newConfig: Partial<PlotConfig>) => void;
+  /** Add a custom calibrant to the record at runtime. */
+  addCalibrant: (name: string, calibrant: Calibrant) => void;
 }
 
 export const usePlotStore = create<PlotConfig>((set) => ({
@@ -48,7 +50,7 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   detectorColor: lilac,
   calibrant: false,
   calibrantColor: blackOpaque,
-  mask: false,
+  mask: true,
   maskColor: black,
   beamstop: true,
   beamstopColor: black,
@@ -68,4 +70,9 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   update: (newConfig) => {
     set({ ...newConfig });
   },
+  addCalibrant: (name, calibrant) =>
+    set((state) => ({
+      calibrantRecord: { ...state.calibrantRecord, [name]: calibrant },
+      currentCalibrant: name,
+    })),
 }));

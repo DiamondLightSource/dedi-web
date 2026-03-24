@@ -248,12 +248,16 @@ export default function BeamlineSelector(): React.JSX.Element {
         <Stack spacing={0.5}>
           <InfoRow label="λ min">
             <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
-              {beamline.wavelengthLimits.min.to(beamline.wavelength.formatUnits()).toString()}
+              {beamline.wavelengthLimits.min
+                .to(beamline.wavelength.formatUnits())
+                .toString()}
             </Typography>
           </InfoRow>
           <InfoRow label="λ max">
             <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
-              {beamline.wavelengthLimits.max.to(beamline.wavelength.formatUnits()).toString()}
+              {beamline.wavelengthLimits.max
+                .to(beamline.wavelength.formatUnits())
+                .toString()}
             </Typography>
           </InfoRow>
         </Stack>
@@ -314,8 +318,12 @@ export default function BeamlineSelector(): React.JSX.Element {
               value={beamline.angle.formatUnits() as AngleUnits}
               onChange={handleAngleUnits}
             >
-              <MenuItem value={AngleUnits.radians}>{AngleUnits.radians}</MenuItem>
-              <MenuItem value={AngleUnits.degrees}>{AngleUnits.degrees}</MenuItem>
+              <MenuItem value={AngleUnits.radians}>
+                {AngleUnits.radians}
+              </MenuItem>
+              <MenuItem value={AngleUnits.degrees}>
+                {AngleUnits.degrees}
+              </MenuItem>
             </Select>
           </FormControl>
         </InfoRow>

@@ -55,11 +55,14 @@ export function computeQrange(
    * with dead zones regardless of scattering angle. */
   accessibleSegments: [number, number][];
 } {
-  const { clearance, centre, detectorSize, cameraLength, pixelSizeX, pixelSizeY } = convertToSIUnits(
-    beamline,
-    beamstop,
-    detector,
-  );
+  const {
+    clearance,
+    centre,
+    detectorSize,
+    cameraLength,
+    pixelSizeX,
+    pixelSizeY,
+  } = convertToSIUnits(beamline, beamstop, detector);
 
   // Ray direction from the beamline angle
   const direction = new Vector2(
@@ -88,14 +91,18 @@ export function computeQrange(
     const tubeCentre = new UnitVector(
       mathjs.unit(cameraTube.centre.x ?? NaN, "xpixel"),
       mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel"),
-    ).toSI().toVector2();
+    )
+      .toSI()
+      .toVector2();
     const tubeRadius = mathjs.divide(cameraTube.diameter, 2).toSI().toNumber();
     const cameraIntersection = detectorRange.intersect(
       ray.getCircleIntersectionRange(tubeRadius, tubeCentre),
     );
     if (!cameraIntersection) {
       console.warn(
-        formatLogMessage("No intersection between Ray, Camera Tube, and Detector"),
+        formatLogMessage(
+          "No intersection between Ray, Camera Tube, and Detector",
+        ),
       );
       return defaultReturn;
     }
@@ -166,12 +173,24 @@ export function computeQrange(
     beamline.cameraLimits.max,
     beamline.wavelengthLimits.max,
   ).qFromPixelPosition(minPoint);
-  const fullQRange = new NumericRange(qAtShortCam.length(), qAtLongCam.length());
+  const fullQRange = new NumericRange(
+    qAtShortCam.length(),
+    qAtLongCam.length(),
+  );
 
-  console.info(formatLogMessage(`Visible q range: ${visibleQRange.toString()}`));
+  console.info(
+    formatLogMessage(`Visible q range: ${visibleQRange.toString()}`),
+  );
   console.info(formatLogMessage(`Full q range: ${fullQRange.toString()}`));
 
-  return { minPoint, maxPoint, visibleQRange, fullQRange, accessibleQRanges, accessibleSegments };
+  return {
+    minPoint,
+    maxPoint,
+    visibleQRange,
+    fullQRange,
+    accessibleQRanges,
+    accessibleSegments,
+  };
 }
 
 /**
@@ -204,9 +223,18 @@ function convertToSIUnits(
     mathjs.unit(detector.resolution.width, "xpixel"),
     mathjs.unit(detector.resolution.height, "ypixel"),
   );
-  const pixelSizeX = detectorSize.x.toSI().toNumber() / detector.resolution.width;
-  const pixelSizeY = detectorSize.y.toSI().toNumber() / detector.resolution.height;
-  return { clearance, centre, detectorSize, cameraLength, pixelSizeX, pixelSizeY };
+  const pixelSizeX =
+    detectorSize.x.toSI().toNumber() / detector.resolution.width;
+  const pixelSizeY =
+    detectorSize.y.toSI().toNumber() / detector.resolution.height;
+  return {
+    clearance,
+    centre,
+    detectorSize,
+    cameraLength,
+    pixelSizeX,
+    pixelSizeY,
+  };
 }
 
 /**
@@ -231,7 +259,13 @@ function computeDeadZones(
 ): { topLeft: Vector2; dimensions: Vector2 }[] {
   if (!detector.mask) return [];
 
-  const { horizontalModules: nH, verticalModules: nV, horizontalGap: gx, verticalGap: gy, missingModules } = detector.mask;
+  const {
+    horizontalModules: nH,
+    verticalModules: nV,
+    horizontalGap: gx,
+    verticalGap: gy,
+    missingModules,
+  } = detector.mask;
   const W = detector.resolution.width;
   const H = detector.resolution.height;
 
@@ -280,7 +314,10 @@ function subtractIntervals(
 ): NumericRange[] {
   const sorted = blocked
     .filter((b) => b.max > full.min && b.min < full.max)
-    .map((b) => new NumericRange(Math.max(b.min, full.min), Math.min(b.max, full.max)))
+    .map(
+      (b) =>
+        new NumericRange(Math.max(b.min, full.min), Math.min(b.max, full.max)),
+    )
     .sort((a, b) => a.min - b.min);
 
   const result: NumericRange[] = [];

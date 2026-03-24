@@ -100,9 +100,7 @@ export default function BeamStopDataEntry(): React.JSX.Element {
               <MenuItem value={LengthUnits.millimetre}>
                 {LengthUnits.millimetre}
               </MenuItem>
-              <MenuItem value={LengthUnits.micrometre}>
-                {MuSymbol}m
-              </MenuItem>
+              <MenuItem value={LengthUnits.micrometre}>{MuSymbol}m</MenuItem>
             </Select>
           </FormControl>
         </InfoRow>
@@ -133,7 +131,9 @@ export default function BeamStopDataEntry(): React.JSX.Element {
               onChange={handleX}
               sx={{ flexGrow: 1 }}
               InputProps={{
-                endAdornment: <InputAdornment position="end">px</InputAdornment>,
+                endAdornment: (
+                  <InputAdornment position="end">px</InputAdornment>
+                ),
               }}
             />
             <TextField
@@ -144,7 +144,9 @@ export default function BeamStopDataEntry(): React.JSX.Element {
               onChange={handleY}
               sx={{ flexGrow: 1 }}
               InputProps={{
-                endAdornment: <InputAdornment position="end">px</InputAdornment>,
+                endAdornment: (
+                  <InputAdornment position="end">px</InputAdornment>
+                ),
               }}
             />
           </InfoRow>

@@ -55,7 +55,8 @@ export function RangeDiagram({
     for (const r of sorted) {
       const rStart = clamp(r.min.toNumber());
       const rEnd = clamp(r.max.toNumber());
-      if (rStart > cursor) deadZoneRects.push({ x: cursor, width: rStart - cursor });
+      if (rStart > cursor)
+        deadZoneRects.push({ x: cursor, width: rStart - cursor });
       cursor = rEnd;
     }
     if (cursor < 1000) deadZoneRects.push({ x: cursor, width: 1000 - cursor });
@@ -76,8 +77,15 @@ export function RangeDiagram({
       <rect y="0" x="0" width="1000" height="80" fill={rectColour} />
       {/* Grey dead zone patches overlaid on the bar */}
       {deadZoneRects.map(({ x, width }, i) => (
-        <rect key={i} y="0" x={x} width={width} height="80"
-          fill={theme.palette.grey[700]} opacity={0.55} />
+        <rect
+          key={i}
+          y="0"
+          x={x}
+          width={width}
+          height="80"
+          fill={theme.palette.grey[700]}
+          opacity={0.55}
+        />
       ))}
       <line
         x1={requestedMin}

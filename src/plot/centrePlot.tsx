@@ -88,14 +88,27 @@ export default function CentrePlot(): React.JSX.Element {
           )
         : null,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [resultsConfig.requestedMin, resultsConfig.requestedMax, resultsConfig.requested, resultsConfig.qUnits, resultsConfig.sUnits, resultsConfig.dUnits],
+    [
+      resultsConfig.requestedMin,
+      resultsConfig.requestedMax,
+      resultsConfig.requested,
+      resultsConfig.qUnits,
+      resultsConfig.sUnits,
+      resultsConfig.dUnits,
+    ],
   );
   const calibrant = plotConfig.calibrantRecord[plotConfig.currentCalibrant];
 
   // Update pixel units and calculate qrange together — updatePixelUnits must
   // run before computeQrange since both the Plotter and qrange calculation
   // depend on the "xpixel"/"ypixel" mathjs units being registered first.
-  const { minPoint, maxPoint, visibleQRange, accessibleQRanges, accessibleSegments } = useMemo(() => {
+  const {
+    minPoint,
+    maxPoint,
+    visibleQRange,
+    accessibleQRanges,
+    accessibleSegments,
+  } = useMemo(() => {
     updatePixelUnits(detector);
     console.info(formatLogMessage("Calculating Q range"));
     return computeQrange(detector, beamstop, beamlineConfig, cameraTube);
@@ -116,24 +129,37 @@ export default function CentrePlot(): React.JSX.Element {
       camLen,
       beamlineConfig.wavelength,
       beamstopCentre,
-    ).toSI().toVector2();
+    )
+      .toSI()
+      .toVector2();
     const reqMaxSI = getPointForQ(
       requestedRange.max,
       beamlineConfig.angle,
       camLen,
       beamlineConfig.wavelength,
       beamstopCentre,
-    ).toSI().toVector2();
+    )
+      .toSI()
+      .toVector2();
     // Project requested endpoints onto the visible-range direction vector to
     // obtain fractions within the visible range.
     const dx = maxPoint.x - minPoint.x;
     const dy = maxPoint.y - minPoint.y;
     const len2 = dx * dx + dy * dy;
     if (len2 === 0) return [];
-    const reqMinFrac = ((reqMinSI.x - minPoint.x) * dx + (reqMinSI.y - minPoint.y) * dy) / len2;
-    const reqMaxFrac = ((reqMaxSI.x - minPoint.x) * dx + (reqMaxSI.y - minPoint.y) * dy) / len2;
+    const reqMinFrac =
+      ((reqMinSI.x - minPoint.x) * dx + (reqMinSI.y - minPoint.y) * dy) / len2;
+    const reqMaxFrac =
+      ((reqMaxSI.x - minPoint.x) * dx + (reqMaxSI.y - minPoint.y) * dy) / len2;
     return remapSegmentsToSubRange(accessibleSegments, reqMinFrac, reqMaxFrac);
-  }, [requestedRange, accessibleSegments, minPoint, maxPoint, beamstop, beamlineConfig]);
+  }, [
+    requestedRange,
+    accessibleSegments,
+    minPoint,
+    maxPoint,
+    beamstop,
+    beamlineConfig,
+  ]);
 
   const {
     plotBeamstop,
@@ -359,17 +385,21 @@ export default function CentrePlot(): React.JSX.Element {
                           id="visible"
                         />
                       )}
-                      {plotConfig.requestedRange && requestedRange && visibleQRange && (
-                        <SvgSegmentedLine
-                          startPoint={requestedRangeStart}
-                          endPoint={requestedRangeEnd}
-                          segments={requestedSegments}
-                          stroke={color2String(plotConfig.requestedRangeColor)}
-                          strokeWidth={3}
-                          id="requested"
-                        />
-                      )}
-                      {plotConfig.beamstop &&  (
+                      {plotConfig.requestedRange &&
+                        requestedRange &&
+                        visibleQRange && (
+                          <SvgSegmentedLine
+                            startPoint={requestedRangeStart}
+                            endPoint={requestedRangeEnd}
+                            segments={requestedSegments}
+                            stroke={color2String(
+                              plotConfig.requestedRangeColor,
+                            )}
+                            strokeWidth={3}
+                            id="requested"
+                          />
+                        )}
+                      {plotConfig.beamstop && (
                         <SvgAxisAlignedEllipse
                           coords={[
                             beamstopCentre,
