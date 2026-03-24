@@ -12,6 +12,7 @@ import Box from "@mui/material/Box";
 import { Unit, createUnit, unit } from "mathjs";
 import { Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
+import NumericRange from "../calculations/numericRange";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
@@ -21,6 +22,8 @@ import LegendBar from "./legendBar";
 import { usePlotStore } from "./plotStore";
 import { color2String, getDomain } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
+import SvgSegmentedLine from "./svgSegmentedLine";
+import { toSegments } from "./segmentUtils";
 import { useMemo, useState, useCallback } from "react";
 import {
   ReciprocalWavelengthUnits,
@@ -91,7 +94,7 @@ export default function CentrePlot(): React.JSX.Element {
   // Update pixel units and calculate qrange together — updatePixelUnits must
   // run before computeQrange since both the Plotter and qrange calculation
   // depend on the "xpixel"/"ypixel" mathjs units being registered first.
-  const { minPoint, maxPoint, visibleQRange } = useMemo(() => {
+  const { minPoint, maxPoint, visibleQRange, accessibleQRanges, accessibleSegments } = useMemo(() => {
     updatePixelUnits(detector);
     console.info(formatLogMessage("Calculating Q range"));
     return computeQrange(detector, beamstop, beamlineConfig, cameraTube);
@@ -311,17 +314,26 @@ export default function CentrePlot(): React.JSX.Element {
                           id="clearance"
                         />
                       )}
-                      {plotConfig.visibleRange && (
-                        <SvgLine
-                          coords={[visibleRangeStart, visibleRangeEnd]}
+                      {plotConfig.visibleRange && visibleQRange && (
+                        <SvgSegmentedLine
+                          startPoint={visibleRangeStart}
+                          endPoint={visibleRangeEnd}
+                          segments={accessibleSegments}
                           stroke={color2String(plotConfig.visibleColor)}
                           strokeWidth={3}
                           id="visible"
                         />
                       )}
-                      {plotConfig.requestedRange && (
-                        <SvgLine
-                          coords={[requestedRangeStart, requestedRangeEnd]}
+                      {plotConfig.requestedRange && requestedRange && visibleQRange && (
+                        <SvgSegmentedLine
+                          startPoint={requestedRangeStart}
+                          endPoint={requestedRangeEnd}
+                          segments={toSegments(
+                            accessibleQRanges
+                              .map((r) => new NumericRange(requestedRange.min.toSI().toNumber(), requestedRange.max.toSI().toNumber()).intersect(r))
+                              .filter((r): r is NumericRange => r !== null),
+                            new NumericRange(requestedRange.min.toSI().toNumber(), requestedRange.max.toSI().toNumber()),
+                          )}
                           stroke={color2String(plotConfig.requestedRangeColor)}
                           strokeWidth={3}
                           id="requested"
@@ -349,6 +361,7 @@ export default function CentrePlot(): React.JSX.Element {
       </Stack>
       <ResultsBar
         visibleQRange={visibleQRange}
+        accessibleQRanges={accessibleQRanges}
         config={resultsConfig}
         updateConfig={updateResultsConfig}
       />
