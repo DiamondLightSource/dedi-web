@@ -12,7 +12,8 @@ import Box from "@mui/material/Box";
 import { Unit, createUnit, unit } from "mathjs";
 import { Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
-import NumericRange from "../calculations/numericRange";
+import { getPointForQ } from "../calculations/qvalue";
+import { UnitVector } from "../calculations/unitVector";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
@@ -23,7 +24,7 @@ import { usePlotStore } from "./plotStore";
 import { color2String, getDomain } from "./plotUtils";
 import SvgAxisAlignedEllipse from "./svgEllipse";
 import SvgSegmentedLine from "./svgSegmentedLine";
-import { toSegments } from "./segmentUtils";
+import { remapSegmentsToSubRange } from "./segmentUtils";
 import { useMemo, useState, useCallback } from "react";
 import {
   ReciprocalWavelengthUnits,
@@ -99,6 +100,40 @@ export default function CentrePlot(): React.JSX.Element {
     console.info(formatLogMessage("Calculating Q range"));
     return computeQrange(detector, beamstop, beamlineConfig, cameraTube);
   }, [detector, beamstop, cameraTube, beamlineConfig]);
+
+  // Compute gap segments for the requested range in detector-position space so
+  // that gaps align with the mask regardless of the nonlinear q(r) mapping.
+  const requestedSegments = useMemo((): [number, number][] => {
+    if (!requestedRange) return [[0, 1]];
+    const camLen = unit(beamlineConfig.cameraLength ?? NaN, "m");
+    const beamstopCentre = new UnitVector(
+      unit(beamstop.centre.x ?? NaN, "xpixel"),
+      unit(beamstop.centre.y ?? NaN, "ypixel"),
+    );
+    const reqMinSI = getPointForQ(
+      requestedRange.min,
+      beamlineConfig.angle,
+      camLen,
+      beamlineConfig.wavelength,
+      beamstopCentre,
+    ).toSI().toVector2();
+    const reqMaxSI = getPointForQ(
+      requestedRange.max,
+      beamlineConfig.angle,
+      camLen,
+      beamlineConfig.wavelength,
+      beamstopCentre,
+    ).toSI().toVector2();
+    // Project requested endpoints onto the visible-range direction vector to
+    // obtain fractions within the visible range.
+    const dx = maxPoint.x - minPoint.x;
+    const dy = maxPoint.y - minPoint.y;
+    const len2 = dx * dx + dy * dy;
+    if (len2 === 0) return [];
+    const reqMinFrac = ((reqMinSI.x - minPoint.x) * dx + (reqMinSI.y - minPoint.y) * dy) / len2;
+    const reqMaxFrac = ((reqMaxSI.x - minPoint.x) * dx + (reqMaxSI.y - minPoint.y) * dy) / len2;
+    return remapSegmentsToSubRange(accessibleSegments, reqMinFrac, reqMaxFrac);
+  }, [requestedRange, accessibleSegments, minPoint, maxPoint, beamstop, beamlineConfig]);
 
   const {
     plotBeamstop,
@@ -328,12 +363,7 @@ export default function CentrePlot(): React.JSX.Element {
                         <SvgSegmentedLine
                           startPoint={requestedRangeStart}
                           endPoint={requestedRangeEnd}
-                          segments={toSegments(
-                            accessibleQRanges
-                              .map((r) => new NumericRange(requestedRange.min.toSI().toNumber(), requestedRange.max.toSI().toNumber()).intersect(r))
-                              .filter((r): r is NumericRange => r !== null),
-                            new NumericRange(requestedRange.min.toSI().toNumber(), requestedRange.max.toSI().toNumber()),
-                          )}
+                          segments={requestedSegments}
                           stroke={color2String(plotConfig.requestedRangeColor)}
                           strokeWidth={3}
                           id="requested"

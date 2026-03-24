@@ -20,3 +20,27 @@ export function toSegments(
     .filter(([t0, t1]) => t1 > 0 && t0 < 1)
     .map(([t0, t1]) => [Math.max(0, t0), Math.min(1, t1)]);
 }
+
+/**
+ * Re-expresses `segments` (fractions of a full visible range [0, 1]) as
+ * fractions of a sub-range `[reqMinFrac, reqMaxFrac]` (also in visible-range
+ * fractions).  Only the portions of segments that overlap the sub-range are
+ * returned, clamped to [0, 1].
+ *
+ * This keeps requested-range gap positions aligned with the detector mask in
+ * detector-position space rather than in q-space (q is nonlinear in position).
+ */
+export function remapSegmentsToSubRange(
+  segments: [number, number][],
+  reqMinFrac: number,
+  reqMaxFrac: number,
+): [number, number][] {
+  const span = reqMaxFrac - reqMinFrac;
+  if (span <= 0) return [];
+  return segments
+    .map(([t0, t1]): [number, number] => [
+      Math.max(0, (Math.max(t0, reqMinFrac) - reqMinFrac) / span),
+      Math.min(1, (Math.min(t1, reqMaxFrac) - reqMinFrac) / span),
+    ])
+    .filter(([t0, t1]) => t0 < t1);
+}
