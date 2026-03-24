@@ -55,7 +55,7 @@ export function computeQrange(
    * with dead zones regardless of scattering angle. */
   accessibleSegments: [number, number][];
 } {
-  const { clearance, centre, detectorSize, cameraLength, pixelSizeX, pixelSizeY, detectorHeightSI } = convertToSIUnits(
+  const { clearance, centre, detectorSize, cameraLength, pixelSizeX, pixelSizeY } = convertToSIUnits(
     beamline,
     beamstop,
     detector,
@@ -130,7 +130,7 @@ export function computeQrange(
   // accessibleSegments uses raw t-fractions (linear in detector position) so
   // that SVG line gaps align exactly with dead zones at any scattering angle.
   // accessibleQRanges converts the same t-ranges to q-values for the diagram.
-  const deadZones = computeDeadZones(detector, pixelSizeX, pixelSizeY, detectorHeightSI);
+  const deadZones = computeDeadZones(detector, pixelSizeX, pixelSizeY);
   const blockedTRanges = deadZones
     .map(({ topLeft, dimensions }) =>
       ray.getRectangleIntersectionRange(topLeft, dimensions),
@@ -189,7 +189,6 @@ function convertToSIUnits(
   cameraLength: mathjs.Unit;
   pixelSizeX: number;
   pixelSizeY: number;
-  detectorHeightSI: number;
 } {
   const cameraLength = mathjs.unit(beamline.cameraLength ?? NaN, "m");
   const beamstopRadius = mathjs.divide(beamstop.diameter, 2);
@@ -205,16 +204,20 @@ function convertToSIUnits(
     mathjs.unit(detector.resolution.width, "xpixel"),
     mathjs.unit(detector.resolution.height, "ypixel"),
   );
-  const detectorHeightSI = detectorSize.y.toSI().toNumber();
   const pixelSizeX = detectorSize.x.toSI().toNumber() / detector.resolution.width;
   const pixelSizeY = detectorSize.y.toSI().toNumber() / detector.resolution.height;
-  return { clearance, centre, detectorSize, cameraLength, pixelSizeX, pixelSizeY, detectorHeightSI };
+  return { clearance, centre, detectorSize, cameraLength, pixelSizeX, pixelSizeY };
 }
 
 /**
  * Returns an axis-aligned bounding box for each dead pixel region of the
- * detector mask, expressed in SI metres and using the same coordinate system
- * as the scatter ray (x right, y up, origin at detector bottom-left).
+ * detector mask, expressed in SI metres in the same coordinate system as the
+ * scatter ray (x right, y downward, origin at detector top-left — matching
+ * image/screen coordinates where pixel row 0 is at the top).
+ *
+ * Each bounding box is expressed as the pair (topLeft, dimensions) where
+ * topLeft.y is the BOTTOM edge of the zone (maximum y, since y increases
+ * downward), matching the convention of getRectangleIntersectionRange.
  *
  * Three types of dead region are enumerated:
  *   - Vertical gap strips between column modules (nH − 1 of them)
@@ -225,7 +228,6 @@ function computeDeadZones(
   detector: AppDetector,
   pixelSizeX: number,
   pixelSizeY: number,
-  detectorHeightSI: number,
 ): { topLeft: Vector2; dimensions: Vector2 }[] {
   if (!detector.mask) return [];
 
@@ -237,10 +239,12 @@ function computeDeadZones(
   const mW = (W - (nH - 1) * gx) / nH;
   const mH = (H - (nV - 1) * gy) / nV;
 
-  // Convert a pixel-space rectangle (col, row from top-left) to the SI
-  // coordinate system used by the ray (y increases upward).
+  // Convert a pixel-space rectangle (col, row from top-left, y increases
+  // downward) to the SI bounding box expected by getRectangleIntersectionRange.
+  // topLeft.y is the MAXIMUM y in that function (i.e. the bottom edge of the
+  // zone in screen/image space, since y increases downward).
   const toZone = (colPx: number, rowPx: number, wPx: number, hPx: number) => ({
-    topLeft: new Vector2(colPx * pixelSizeX, detectorHeightSI - rowPx * pixelSizeY),
+    topLeft: new Vector2(colPx * pixelSizeX, (rowPx + hPx) * pixelSizeY),
     dimensions: new Vector2(wPx * pixelSizeX, hPx * pixelSizeY),
   });
 
