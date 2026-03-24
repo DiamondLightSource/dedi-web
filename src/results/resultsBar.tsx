@@ -208,25 +208,33 @@ export default function ResultsBar({
               <RangeFormControl config={config} updateConfig={updateConfig} />
               <TextField
                 type="number"
-                label={`Requested min`}
+                label={`Min`}
                 size="small"
                 value={sanitizeNumber(config.requestedMin)}
                 onChange={handleRequestedMin}
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position="end">{units}</InputAdornment>
+                    <InputAdornment position="end">
+                      <Typography variant="body2" sx={{ minWidth: "4.5em", textAlign: "right" }}>
+                        {units}
+                      </Typography>
+                    </InputAdornment>
                   ),
                 }}
               />
               <TextField
                 type="number"
-                label={`Requested max`}
+                label={`Max`}
                 size="small"
                 value={sanitizeNumber(config.requestedMax)}
                 onChange={handleRequestedMax}
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position="end">{units}</InputAdornment>
+                    <InputAdornment position="end">
+                      <Typography variant="body2" sx={{ minWidth: "4.5em", textAlign: "right" }}>
+                        {units}
+                      </Typography>
+                    </InputAdornment>
                   ),
                 }}
               />
