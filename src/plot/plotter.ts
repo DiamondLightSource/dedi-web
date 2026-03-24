@@ -17,7 +17,7 @@ import { LengthUnits } from "../utils/units";
 import { UnitVector } from "../calculations/unitVector";
 import { PlotAxes } from "./plotStore";
 import UnitRange from "../calculations/unitRange";
-import { getPointForQ } from "../calculations/qvalue";
+import { getPointForQ, calculateDistanceFromQValue } from "../calculations/qvalue";
 import { convertFromDtoQ } from "../results/scatteringQuantities";
 
 /** Maps a pair of mathjs Units (x, y) to a plot-space Vector3. */
@@ -270,10 +270,22 @@ function createCalibrant(
     beamstopCentre,
   );
 
+  const camLenSI = camLen.toSI().toNumber();
+  const waveSI = beamlineConfig.wavelength.toSI().toNumber();
+  const maxDist = calculateDistanceFromQValue(
+    qValue.toSI().toNumber(),
+    camLenSI,
+    waveSI,
+  ) ?? 1;
+
   return {
     endPointX: transform(ptX.x, ptX.y),
     endPointY: transform(ptY.x, ptY.y),
-    ringFractions: calibrant.d.map((d) => maxRing / d),
+    ringFractions: calibrant.d.map((d) => {
+      const q = convertFromDtoQ(mathjs.unit(d, "nm")).toSI().toNumber();
+      const dist = calculateDistanceFromQValue(q, camLenSI, waveSI) ?? 0;
+      return dist / maxDist;
+    }),
   };
 }
 
