@@ -26,11 +26,11 @@
       "type": "object",
       "properties": {
         "width": {
-          "type": "integer",
+          "type": "number",
           "minimum": 0
         },
         "height": {
-          "type": "integer",
+          "type": "number",
           "minimum": 0
         }
       },
@@ -55,6 +55,10 @@
         "verticalGap": {
           "type": "number",
           "minimum": 0
+        },
+        "missingModules": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 }
         }
       }
     }

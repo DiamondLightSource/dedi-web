@@ -28,6 +28,7 @@ import CompactGroupRenderer, {
 import { FormUnits, UnitProvider } from "../utils";
 import { secondaryButtonSx } from "../../utils/styles";
 import { ErrorObject } from "ajv";
+import MissingModulesSelector from "./MissingModulesSelector";
 
 const renderers = [
   ...materialRenderers,
@@ -51,6 +52,7 @@ interface DetectorForm {
     verticalModules?: number;
     horizontalGap?: number;
     verticalGap?: number;
+    missingModules?: number[];
   };
 }
 
@@ -145,8 +147,18 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
             <UnitProvider value={FormUnits}>
               <JsonForms
                 data={data}
-                onChange={({ data, errors }) => {
-                  setData(data as DetectorForm);
+                onChange={({ data: newData, errors }) => {
+                  const prev = data as DetectorForm | null;
+                  const next = newData as DetectorForm | null;
+                  // Reset missing modules when module grid dimensions change
+                  if (
+                    next?.mask &&
+                    (prev?.mask?.horizontalModules !== next.mask.horizontalModules ||
+                      prev?.mask?.verticalModules !== next.mask.verticalModules)
+                  ) {
+                    next.mask.missingModules = [];
+                  }
+                  setData(next);
                   setErrors(errors);
                 }}
                 schema={schema}
@@ -154,6 +166,23 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
                 renderers={renderers}
               />
             </UnitProvider>
+            {data?.mask?.horizontalModules != null &&
+              data.mask.horizontalModules >= 1 &&
+              data?.mask?.verticalModules != null &&
+              data.mask.verticalModules >= 1 && (
+                <MissingModulesSelector
+                  horizontalModules={data.mask.horizontalModules}
+                  verticalModules={data.mask.verticalModules}
+                  missingModules={data.mask.missingModules ?? []}
+                  onChange={(missingModules) =>
+                    setData((prev) =>
+                      prev
+                        ? { ...prev, mask: { ...prev.mask, missingModules } }
+                        : prev,
+                    )
+                  }
+                />
+              )}
             <Button
               variant="outlined"
               type="submit"
