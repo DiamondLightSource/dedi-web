@@ -21,6 +21,8 @@ const defaultReturn = {
   maxPoint: new Vector2(0, 0),
   visibleQRange: null,
   fullQRange: null,
+  accessibleQRanges: [] as NumericRange[],
+  accessibleSegments: [] as [number, number][],
 };
 
 /**
@@ -46,8 +48,14 @@ export function computeQrange(
   maxPoint: Vector2;
   visibleQRange: NumericRange | null;
   fullQRange: NumericRange | null;
+  accessibleQRanges: NumericRange[];
+  /** Position fractions [t0, t1] along the visible range line for each
+   * accessible sub-range. Derived from the ray t-parameter (linear in
+   * detector position) — not from q-values — so gaps align correctly
+   * with dead zones regardless of scattering angle. */
+  accessibleSegments: [number, number][];
 } {
-  const { clearance, centre, detectorSize, cameraLength } = convertToSIUnits(
+  const { clearance, centre, detectorSize, cameraLength, pixelSizeX, pixelSizeY, detectorHeightSI } = convertToSIUnits(
     beamline,
     beamstop,
     detector,
@@ -115,6 +123,37 @@ export function computeQrange(
     qspaceVisible.qFromPixelPosition(maxPoint).length(),
   );
 
+  // Accessible q-sub-ranges — the visible range with mask dead zones subtracted.
+  // Each dead zone rectangle is intersected with the ray; blocked t-intervals
+  // are subtracted from the full intersection range.
+  //
+  // accessibleSegments uses raw t-fractions (linear in detector position) so
+  // that SVG line gaps align exactly with dead zones at any scattering angle.
+  // accessibleQRanges converts the same t-ranges to q-values for the diagram.
+  const deadZones = computeDeadZones(detector, pixelSizeX, pixelSizeY, detectorHeightSI);
+  const blockedTRanges = deadZones
+    .map(({ topLeft, dimensions }) =>
+      ray.getRectangleIntersectionRange(topLeft, dimensions),
+    )
+    .filter((r): r is NumericRange => r !== null)
+    .map((r) => intersection.intersect(r))
+    .filter((r): r is NumericRange => r !== null);
+  const accessibleTRanges = subtractIntervals(intersection, blockedTRanges);
+  const tSpan = intersection.max - intersection.min;
+  const accessibleSegments: [number, number][] = accessibleTRanges.map(
+    (r): [number, number] => [
+      (r.min - intersection.min) / tSpan,
+      (r.max - intersection.min) / tSpan,
+    ],
+  );
+  const accessibleQRanges = accessibleTRanges.map(
+    (tRange) =>
+      new NumericRange(
+        qspaceVisible.qFromPixelPosition(ray.getPoint(tRange.min)).length(),
+        qspaceVisible.qFromPixelPosition(ray.getPoint(tRange.max)).length(),
+      ),
+  );
+
   // Full q-range: evaluate at the two extreme (L, λ) corners.
   // NumericRange auto-sorts, so the order of arguments does not matter.
   // max q corner — short camera, short wavelength, far pixel
@@ -132,7 +171,7 @@ export function computeQrange(
   console.info(formatLogMessage(`Visible q range: ${visibleQRange.toString()}`));
   console.info(formatLogMessage(`Full q range: ${fullQRange.toString()}`));
 
-  return { minPoint, maxPoint, visibleQRange, fullQRange };
+  return { minPoint, maxPoint, visibleQRange, fullQRange, accessibleQRanges, accessibleSegments };
 }
 
 /**
@@ -148,6 +187,9 @@ function convertToSIUnits(
   centre: UnitVector;
   detectorSize: UnitVector;
   cameraLength: mathjs.Unit;
+  pixelSizeX: number;
+  pixelSizeY: number;
+  detectorHeightSI: number;
 } {
   const cameraLength = mathjs.unit(beamline.cameraLength ?? NaN, "m");
   const beamstopRadius = mathjs.divide(beamstop.diameter, 2);
@@ -163,5 +205,93 @@ function convertToSIUnits(
     mathjs.unit(detector.resolution.width, "xpixel"),
     mathjs.unit(detector.resolution.height, "ypixel"),
   );
-  return { clearance, centre, detectorSize, cameraLength };
+  const detectorHeightSI = detectorSize.y.toSI().toNumber();
+  const pixelSizeX = detectorSize.x.toSI().toNumber() / detector.resolution.width;
+  const pixelSizeY = detectorSize.y.toSI().toNumber() / detector.resolution.height;
+  return { clearance, centre, detectorSize, cameraLength, pixelSizeX, pixelSizeY, detectorHeightSI };
+}
+
+/**
+ * Returns an axis-aligned bounding box for each dead pixel region of the
+ * detector mask, expressed in SI metres and using the same coordinate system
+ * as the scatter ray (x right, y up, origin at detector bottom-left).
+ *
+ * Three types of dead region are enumerated:
+ *   - Vertical gap strips between column modules (nH − 1 of them)
+ *   - Horizontal gap strips between row modules  (nV − 1 of them)
+ *   - Missing modules referenced by row-major index
+ */
+function computeDeadZones(
+  detector: AppDetector,
+  pixelSizeX: number,
+  pixelSizeY: number,
+  detectorHeightSI: number,
+): { topLeft: Vector2; dimensions: Vector2 }[] {
+  if (!detector.mask) return [];
+
+  const { horizontalModules: nH, verticalModules: nV, horizontalGap: gx, verticalGap: gy, missingModules } = detector.mask;
+  const W = detector.resolution.width;
+  const H = detector.resolution.height;
+
+  // Module dimensions in pixels (gaps are not part of a module)
+  const mW = (W - (nH - 1) * gx) / nH;
+  const mH = (H - (nV - 1) * gy) / nV;
+
+  // Convert a pixel-space rectangle (col, row from top-left) to the SI
+  // coordinate system used by the ray (y increases upward).
+  const toZone = (colPx: number, rowPx: number, wPx: number, hPx: number) => ({
+    topLeft: new Vector2(colPx * pixelSizeX, detectorHeightSI - rowPx * pixelSizeY),
+    dimensions: new Vector2(wPx * pixelSizeX, hPx * pixelSizeY),
+  });
+
+  const zones: { topLeft: Vector2; dimensions: Vector2 }[] = [];
+
+  // Vertical gap strips — one per inter-column boundary
+  for (let i = 0; i < nH - 1; i++) {
+    zones.push(toZone((i + 1) * mW + i * gx, 0, gx, H));
+  }
+
+  // Horizontal gap strips — one per inter-row boundary
+  for (let j = 0; j < nV - 1; j++) {
+    zones.push(toZone(0, (j + 1) * mH + j * gy, W, gy));
+  }
+
+  // Missing modules — row-major index k → (row, col)
+  for (const k of missingModules ?? []) {
+    const row = Math.floor(k / nH);
+    const col = k % nH;
+    zones.push(toZone(col * (mW + gx), row * (mH + gy), mW, mH));
+  }
+
+  return zones;
+}
+
+/**
+ * Subtracts a set of blocked intervals from a full range, returning
+ * the remaining accessible sub-intervals in ascending order.
+ */
+function subtractIntervals(
+  full: NumericRange,
+  blocked: NumericRange[],
+): NumericRange[] {
+  const sorted = blocked
+    .filter((b) => b.max > full.min && b.min < full.max)
+    .map((b) => new NumericRange(Math.max(b.min, full.min), Math.min(b.max, full.max)))
+    .sort((a, b) => a.min - b.min);
+
+  const result: NumericRange[] = [];
+  let cursor = full.min;
+
+  for (const interval of sorted) {
+    if (interval.min > cursor) {
+      result.push(new NumericRange(cursor, interval.min));
+    }
+    cursor = Math.max(cursor, interval.max);
+  }
+
+  if (cursor < full.max) {
+    result.push(new NumericRange(cursor, full.max));
+  }
+
+  return result;
 }

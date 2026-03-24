@@ -145,12 +145,14 @@ const displayUnits = (
 
 interface ResultsBarProps {
   visibleQRange: NumericRange | null;
+  accessibleQRanges: NumericRange[];
   config: ResultsConfig;
   updateConfig: (partial: Partial<ResultsConfig>) => void;
 }
 
 export default function ResultsBar({
   visibleQRange,
+  accessibleQRanges,
   config,
   updateConfig,
 }: ResultsBarProps) {
@@ -158,6 +160,18 @@ export default function ResultsBar({
     visibleQRange,
     "m^-1",
   ).to(ReciprocalWavelengthUnits.nanometres);
+
+  // Convert accessible sub-ranges to the same unit space as diagramVisible
+  // so dead zone positions align correctly on the diagram.
+  const diagramAccessible = accessibleQRanges
+    .map((r) => UnitRange.fromNumericRange(r, "m^-1").to(ReciprocalWavelengthUnits.nanometres))
+    .map((r) => {
+      if (config.requested === ScatteringOptions.d)
+        return r.apply(convertFromQtoD).to(WavelengthUnits.nanometres);
+      if (config.requested === ScatteringOptions.s)
+        return r.apply(convertFromQToS).to(ReciprocalWavelengthUnits.nanometres);
+      return r.to(ReciprocalWavelengthUnits.nanometres);
+    });
 
   const requestedRange =
     config.requestedMax != null && config.requestedMin != null
@@ -244,6 +258,7 @@ export default function ResultsBar({
                 <RangeDiagram
                   visibleRange={diagramVisible satisfies UnitRange}
                   requestedRange={diagramRequested}
+                  accessibleRanges={diagramAccessible}
                 />
               ) : (
                 <MessageDiagram message="No solution" />
