@@ -248,12 +248,12 @@ export default function BeamlineSelector(): React.JSX.Element {
         <Stack spacing={0.5}>
           <InfoRow label="λ min">
             <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
-              {beamline.wavelengthLimits.min.toString()}
+              {beamline.wavelengthLimits.min.to(beamline.wavelength.formatUnits()).toString()}
             </Typography>
           </InfoRow>
           <InfoRow label="λ max">
             <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
-              {beamline.wavelengthLimits.max.toString()}
+              {beamline.wavelengthLimits.max.to(beamline.wavelength.formatUnits()).toString()}
             </Typography>
           </InfoRow>
         </Stack>

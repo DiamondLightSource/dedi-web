@@ -135,11 +135,21 @@ export default function CentrePlot(): React.JSX.Element {
       plotRequestedRange,
       plotCalibrant,
       domains: getDomain(
-        plotDetector.lowerBound,
-        plotDetector.upperBound,
-        plotBeamstop.centre,
-        plotBeamstop.endPointX,
-        plotBeamstop.endPointY,
+        [
+          plotDetector.lowerBound,
+          plotDetector.upperBound,
+          plotBeamstop.centre,
+          plotBeamstop.endPointX,
+          plotBeamstop.endPointY,
+        ],
+        [
+          plotClearance.endPointX,
+          plotClearance.endPointY,
+          plotVisibleRange.start,
+          plotVisibleRange.end,
+          plotRequestedRange.start,
+          plotRequestedRange.end,
+        ],
       ),
     };
   }, [
