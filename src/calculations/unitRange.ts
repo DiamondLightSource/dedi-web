@@ -40,21 +40,7 @@ export default class UnitRange {
   }
 
   /**
-   * Checks if the range contains the input Unit.
-   * @param value Input Unit
-   * @returns
-   */
-  containsValue(value: mathjs.Unit): boolean {
-    const result =
-      mathjs.largerEq(value, this.min) && mathjs.largerEq(value, this.max);
-    if (!(typeof result == "boolean")) {
-      throw TypeError("Can only check one value at a time");
-    }
-    return result;
-  }
-
-  /**
-   * Checks if the this UnitRange contains the Input UnitRange
+   * Checks if this UnitRange contains the input UnitRange.
    * @param other Input UnitRange
    * @returns
    */
@@ -63,54 +49,9 @@ export default class UnitRange {
       mathjs.smallerEq(this.min, other.min) &&
       mathjs.largerEq(this.max, other.max);
     if (!(typeof result == "boolean")) {
-      throw TypeError("Can only check one value at a time");
+      throw TypeError("Can only check one range at a time");
     }
     return result;
-  }
-
-  /**
-   * Finds the intersection of this range the input range.
-   * @param other Input UnitRange
-   * @returns
-   */
-  intersect(other: UnitRange): UnitRange | null {
-    if (
-      mathjs.larger(other.min, this.max) ||
-      mathjs.larger(this.min, other.max)
-    )
-      return null;
-
-    return new UnitRange(
-      mathjs.max(other.min, this.min),
-      mathjs.min(other.max, this.max),
-    );
-  }
-
-  /**
-   * Creates a new UnitRange by applying the function func to min and max.
-   * @param func A function to apply to the min and max value
-   * @returns The New unit range
-   */
-  apply(func: (value: mathjs.Unit) => mathjs.Unit): UnitRange {
-    return new UnitRange(func(this.min), func(this.max));
-  }
-
-  /**
-   * Applies the function func to min and max members of UnitRange inplace.
-   * @param func A function to apply to the min and max value
-   * @returns
-   */
-  applyInPlace(func: (value: mathjs.Unit) => mathjs.Unit): UnitRange {
-    this.min = func(this.min);
-    this.max = func(this.max);
-
-    if (mathjs.larger(this.min, this.max)) {
-      const temp = this.max;
-      this.max = this.min;
-      this.min = temp;
-    }
-
-    return this;
   }
 
   /**
@@ -134,24 +75,12 @@ export default class UnitRange {
   }
 
   /**
-   * Returns a string representation of this UnitRange.
-   * @returns
+   * Creates a new UnitRange by applying the function func to min and max.
+   * @param func A function to apply to the min and max value
+   * @returns The new UnitRange
    */
-  toString(): string {
-    return `(min:${this.min.toString()}, max:${this.max.toString()})`;
+  apply(func: (value: mathjs.Unit) => mathjs.Unit): UnitRange {
+    return new UnitRange(func(this.min), func(this.max));
   }
 
-  /**
-   * Check if this range is equal to the input range
-   * @param other Another UnitRange
-   * @returns
-   */
-  equals(other: UnitRange): boolean {
-    const result =
-      mathjs.equal(this.min, other.min) && mathjs.equal(this.max, other.max);
-    if (!(typeof result == "boolean")) {
-      throw TypeError("write this later");
-    }
-    return result;
-  }
 }

@@ -209,10 +209,10 @@ export default function CentrePlot(): React.JSX.Element {
         [
           plotClearance.endPointX,
           plotClearance.endPointY,
-          plotVisibleRange.start,
-          plotVisibleRange.end,
-          plotRequestedRange.start,
-          plotRequestedRange.end,
+          // plotVisibleRange.start,
+          // plotVisibleRange.end,
+          // plotRequestedRange.start,
+          // plotRequestedRange.end,
         ],
       ),
     };
