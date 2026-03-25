@@ -151,7 +151,7 @@ export function RangeDiagram({
         x={requestedMin}
         y={205}
         textAnchor={getTextAnchor(requestedMinSVG) as "start" | "end"}
-        style={axisTextStyle}
+        style={{ ...axisTextStyle, fill: theme.palette.text.primary }}
       >
         {reqMinLabel}
       </text>
