@@ -236,7 +236,7 @@ export function AddAppConfigDialog({
                 schema={newSchema}
                 uischema={displayUischema}
                 renderers={renderers}
-                config={{ restrict: true, trim: true }}
+                config={{ restrict: true }}
               />
             </UnitProvider>
           </ThemeProvider>
