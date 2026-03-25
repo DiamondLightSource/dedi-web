@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Checkbox,
   createTheme,
@@ -127,17 +128,32 @@ export function AddAppConfigDialog({
   handleClose,
 }: DialogProps): React.JSX.Element {
   const [data, setData] = useState<AppConfigForm | null>(null);
-  const [errors, setErrors] = useState<ErrorObject[] | undefined>([]);
+  const [errors, setErrors] = useState<ErrorObject[] | undefined>(undefined);
   const [hasCameraTube, setHasCameraTube] = useState(false);
   const detectorRecord = useDetectorStore((state) => state.detectorRecord);
   const beamlineConfigStore = useBeamlineConfigStore();
   const parentTheme = useTheme();
-  const denseTheme = createTheme(parentTheme, {
-    components: {
-      MuiFormControl: { defaultProps: { size: "small", fullWidth: true } },
-      MuiInputBase: { defaultProps: { size: "small" } },
-    },
-  });
+  const denseTheme = useMemo(
+    () =>
+      createTheme(parentTheme, {
+        components: {
+          MuiFormControl: { defaultProps: { size: "small", fullWidth: true } },
+          MuiInputBase: { defaultProps: { size: "small" } },
+        },
+      }),
+    [parentTheme],
+  );
+
+  const resetForm = () => {
+    setData(null);
+    setHasCameraTube(false);
+    setErrors(undefined);
+  };
+
+  const handleCancelOrClose = () => {
+    resetForm();
+    handleClose();
+  };
 
   const displayUischema = useMemo(
     () => ({
@@ -163,6 +179,7 @@ export function AddAppConfigDialog({
   const submitHandler = () => {
     if (!errors || errors.length > 0 || !data) return;
     const { name, cameraTube, ...rest } = data;
+    if (name in beamlineConfigStore.presetRecord) return;
 
     let newCameraTube: IOCircularDevice | undefined = undefined;
     if (cameraTube?.diameter && cameraTube.centre) {
@@ -176,8 +193,7 @@ export function AddAppConfigDialog({
       cameraTube: newCameraTube,
       ...rest,
     });
-    setData(null);
-    setHasCameraTube(false);
+    resetForm();
     handleClose();
   };
 
@@ -187,7 +203,7 @@ export function AddAppConfigDialog({
       maxWidth="sm"
       open={open}
       keepMounted
-      onClose={handleClose}
+      onClose={handleCancelOrClose}
     >
       <DialogTitle
         variant="h5"
@@ -202,7 +218,7 @@ export function AddAppConfigDialog({
         }}
       >
         Add beamline configuration
-        <IconButton onClick={handleClose} sx={{ ml: "auto" }}>
+        <IconButton onClick={handleCancelOrClose} sx={{ ml: "auto" }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -240,6 +256,11 @@ export function AddAppConfigDialog({
               />
             </UnitProvider>
           </ThemeProvider>
+          {data?.name && data.name in beamlineConfigStore.presetRecord && (
+            <Alert severity="error" sx={{ py: 0 }}>
+              A beamline named &ldquo;{data.name}&rdquo; already exists.
+            </Alert>
+          )}
           <Button
             variant="outlined"
             type="submit"

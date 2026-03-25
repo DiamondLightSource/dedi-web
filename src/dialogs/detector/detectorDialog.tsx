@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   createTheme,
   Dialog,
@@ -17,7 +18,7 @@ import schema from "./schema.json";
 import uischema from "./uischema.json";
 import { JsonForms } from "@jsonforms/react";
 import { DetectorMask, IODetector } from "../../utils/types";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { createInternalDetector } from "../../presets/presetManager";
 import MaterialNumberUnitControl, {
   materialNumberUnitControlTester,
@@ -110,18 +111,29 @@ export function DetectorTableDialog({ open, handleClose }: DialogProps) {
 export function AddDetectorDialog({ open, handleClose }: DialogProps) {
   const detectorStore = useDetectorStore();
   const [data, setData] = useState<DetectorForm | null>(null);
-  const [errors, setErrors] = useState<ErrorObject[] | undefined>([]);
+  const [errors, setErrors] = useState<ErrorObject[] | undefined>(undefined);
   const parentTheme = useTheme();
-  const denseTheme = createTheme(parentTheme, {
-    components: {
-      MuiFormControl: { defaultProps: { size: "small", fullWidth: true } },
-      MuiInputBase: { defaultProps: { size: "small" } },
-    },
-  });
+  const denseTheme = useMemo(
+    () =>
+      createTheme(parentTheme, {
+        components: {
+          MuiFormControl: { defaultProps: { size: "small", fullWidth: true } },
+          MuiInputBase: { defaultProps: { size: "small" } },
+        },
+      }),
+    [parentTheme],
+  );
+
+  const handleCancelOrClose = () => {
+    setData(null);
+    setErrors(undefined);
+    handleClose();
+  };
 
   const submitHandler = () => {
     if (!errors || errors.length > 0 || !data) return;
     const { name, mask, ...rest } = data;
+    if (name in detectorStore.detectorRecord) return;
     let detector: IODetector;
     if (!mask) {
       detector = rest;
@@ -137,7 +149,7 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
     <Dialog
       open={open}
       keepMounted
-      onClose={handleClose}
+      onClose={handleCancelOrClose}
       maxWidth="sm"
       fullWidth
     >
@@ -154,7 +166,7 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
         }}
       >
         Add new detector
-        <IconButton onClick={handleClose} sx={{ ml: "auto" }}>
+        <IconButton onClick={handleCancelOrClose} sx={{ ml: "auto" }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -186,6 +198,11 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
               />
             </UnitProvider>
           </ThemeProvider>
+          {data?.name && data.name in detectorStore.detectorRecord && (
+            <Alert severity="error" sx={{ py: 0 }}>
+              A detector named &ldquo;{data.name}&rdquo; already exists.
+            </Alert>
+          )}
           {data?.mask?.horizontalModules != null &&
             data.mask.horizontalModules >= 1 &&
             data?.mask?.verticalModules != null &&

@@ -153,6 +153,7 @@ interface AddCalibrantDialogProps {
   open: boolean;
   handleClose: () => void;
   onAdd: (name: string, calibrant: Calibrant) => void;
+  existingNames: Set<string>;
 }
 
 /**
@@ -174,12 +175,18 @@ export function AddCalibrantDialog({
   open,
   handleClose,
   onAdd,
+  existingNames,
 }: AddCalibrantDialogProps) {
   const [name, setName] = useState("");
   const [dRaw, setDRaw] = useState("");
 
   const dValues = parseDSpacings(dRaw);
-  const nameError = name.trim() === "" ? "Name is required" : null;
+  const nameError =
+    name.trim() === ""
+      ? "Name is required"
+      : existingNames.has(name.trim())
+        ? "A calibrant with this name already exists"
+        : null;
   const dError =
     dRaw.trim() === ""
       ? "At least one d-spacing is required"

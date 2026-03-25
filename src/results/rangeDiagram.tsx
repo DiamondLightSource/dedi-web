@@ -5,7 +5,8 @@ import { AngstromSymbol } from "../utils/units";
 const formatUnit = (u: import("mathjs").Unit): string =>
   u.format({ precision: 3 })
     .replace("angstrom^-1", `${AngstromSymbol}⁻¹`)
-    .replace("angstrom", AngstromSymbol);
+    .replace("angstrom", AngstromSymbol)
+    .replace("nm^-1", "nm⁻¹");
 
 interface RangeDiagramProps {
   visibleRange: UnitRange;
@@ -80,35 +81,35 @@ export function RangeDiagram({
 
   return (
     <svg
-      viewBox="0 0 1000 260"
+      viewBox="0 0 1000 220"
       style={{
         display: "block",
-        maxHeight: "195px",
+        maxHeight: "160px",
         width: "100%",
         border: `1px solid ${theme.palette.divider}`,
         borderRadius: theme.shape.borderRadius,
       }}
     >
       {/* Full bar */}
-      <rect y="50" x="0" width="1000" height="80" fill={rectColour} />
+      <rect y="40" x="0" width="1000" height="70" fill={rectColour} />
       {/* Grey dead zone patches */}
       {deadZoneRects.map(({ x, width }, i) => (
         <rect
           key={i}
-          y="50"
+          y="40"
           x={x}
           width={width}
-          height="80"
+          height="70"
           fill={theme.palette.grey[700]}
           opacity={0.55}
         />
       ))}
 
       {/* Requested min marker — line + label above bar */}
-      <line x1={requestedMin} y1={10} x2={requestedMin} y2={154} style={lineStyle} />
+      <line x1={requestedMin} y1={8} x2={requestedMin} y2={124} style={lineStyle} />
       <text
         x={requestedMin}
-        y={38}
+        y={30}
         textAnchor={getTextAnchor(requestedMinSVG) as "start" | "end"}
         style={textStyle}
       >
@@ -116,10 +117,10 @@ export function RangeDiagram({
       </text>
 
       {/* Requested max marker — line + label above bar */}
-      <line x1={requestedMax} y1={10} x2={requestedMax} y2={154} style={lineStyle} />
+      <line x1={requestedMax} y1={8} x2={requestedMax} y2={124} style={lineStyle} />
       <text
         x={requestedMax}
-        y={38}
+        y={30}
         textAnchor={getTextAnchor(requestedMaxSVG) as "start" | "end"}
         style={textStyle}
       >
@@ -128,27 +129,27 @@ export function RangeDiagram({
 
       {/* Axis baseline */}
       <line
-        x1={0} y1={154} x2={1000} y2={154}
+        x1={0} y1={124} x2={1000} y2={124}
         style={{ stroke: theme.palette.text.disabled, strokeWidth: 2 }}
       />
       {/* Visible range endpoint ticks */}
-      <line x1={0} y1={154} x2={0} y2={174}
+      <line x1={0} y1={124} x2={0} y2={140}
         style={{ stroke: theme.palette.text.disabled, strokeWidth: 2 }} />
-      <line x1={1000} y1={154} x2={1000} y2={174}
+      <line x1={1000} y1={124} x2={1000} y2={140}
         style={{ stroke: theme.palette.text.disabled, strokeWidth: 2 }} />
 
       {/* Visible range scale labels */}
-      <text x={8} y={210} textAnchor="start" style={axisTextStyle}>
+      <text x={8} y={168} textAnchor="start" style={axisTextStyle}>
         {visMinLabel}
       </text>
-      <text x={992} y={210} textAnchor="end" style={axisTextStyle}>
+      <text x={992} y={168} textAnchor="end" style={axisTextStyle}>
         {visMaxLabel}
       </text>
 
       {/* Requested range formatted values */}
       <text
         x={requestedMin}
-        y={245}
+        y={205}
         textAnchor={getTextAnchor(requestedMinSVG) as "start" | "end"}
         style={axisTextStyle}
       >
@@ -156,7 +157,7 @@ export function RangeDiagram({
       </text>
       <text
         x={requestedMax}
-        y={245}
+        y={205}
         textAnchor={getTextAnchor(requestedMaxSVG) as "start" | "end"}
         style={{ ...axisTextStyle, fill: theme.palette.text.primary }}
       >

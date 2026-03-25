@@ -136,8 +136,11 @@ export default function BeamlineSelector(): React.JSX.Element {
     const step = cameraLimits.step.toNumber();
     const min = cameraLimits.min.toNumber();
     const max = cameraLimits.max.toNumber();
-    const current = cameraLength ?? min;
-    const next = Math.round((current + direction * step) * 1e9) / 1e9;
+    if (cameraLength == null) {
+      beamlineConfigStore.updateCameraLength(min);
+      return;
+    }
+    const next = Math.round((cameraLength + direction * step) * 1e9) / 1e9;
     beamlineConfigStore.updateCameraLength(Math.min(max, Math.max(min, next)));
   };
 

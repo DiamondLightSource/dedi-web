@@ -137,7 +137,9 @@ const displayUnits = (
     case "angstrom":
       return AngstromSymbol;
     case "angstrom^-1":
-      return AngstromSymbol + "^-1";
+      return AngstromSymbol + "\u207b\u00b9";
+    case "nm^-1":
+      return "nm\u207b\u00b9";
     default:
       return textBoxUnits as string;
   }
