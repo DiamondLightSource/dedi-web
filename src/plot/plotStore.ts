@@ -2,6 +2,17 @@ import { RGBColor } from "react-color";
 import { create } from "zustand";
 import { Calibrant } from "../utils/types";
 import { calibrantRecord } from "../presets/presetManager";
+import {
+  loadUserCalibrants,
+  saveUserCalibrants,
+  deleteUserCalibrant,
+} from "../utils/persistedStorage";
+
+const persistedUserCalibrants = loadUserCalibrants();
+const initialCalibrantRecord: Record<string, Calibrant> = {
+  ...calibrantRecord,
+  ...persistedUserCalibrants,
+};
 
 export enum PlotAxes {
   millimetre = "mm",
@@ -40,9 +51,13 @@ export interface PlotConfig {
   plotAxes: PlotAxes;
   currentCalibrant: string;
   calibrantRecord: Record<string, Calibrant>;
+  /** Only the user-added calibrants, persisted to localStorage. */
+  userCalibrantRecord: Record<string, Calibrant>;
   update: (newConfig: Partial<PlotConfig>) => void;
-  /** Add a custom calibrant to the record at runtime. */
+  /** Add a custom calibrant to the record at runtime and persist it. */
   addCalibrant: (name: string, calibrant: Calibrant) => void;
+  /** Delete a user-added calibrant by name. Built-in calibrants cannot be deleted. */
+  deleteCalibrant: (name: string) => void;
 }
 
 export const usePlotStore = create<PlotConfig>((set) => ({
@@ -65,14 +80,43 @@ export const usePlotStore = create<PlotConfig>((set) => ({
   inaccessibleRange: true,
   inaccessibleRangeColor: red,
   plotAxes: PlotAxes.millimetre,
-  currentCalibrant: Object.keys(calibrantRecord)[0],
-  calibrantRecord: calibrantRecord,
+  currentCalibrant: Object.keys(initialCalibrantRecord)[0],
+  calibrantRecord: initialCalibrantRecord,
+  userCalibrantRecord: persistedUserCalibrants,
   update: (newConfig) => {
     set({ ...newConfig });
   },
   addCalibrant: (name, calibrant) =>
-    set((state) => ({
-      calibrantRecord: { ...state.calibrantRecord, [name]: calibrant },
-      currentCalibrant: name,
-    })),
+    set((state) => {
+      const updatedUserRecord = {
+        ...state.userCalibrantRecord,
+        [name]: calibrant,
+      };
+      saveUserCalibrants(updatedUserRecord);
+      return {
+        calibrantRecord: { ...state.calibrantRecord, [name]: calibrant },
+        userCalibrantRecord: updatedUserRecord,
+        currentCalibrant: name,
+      };
+    }),
+  deleteCalibrant: (name: string) =>
+    set((state) => {
+      if (!(name in state.userCalibrantRecord)) return state;
+      const updatedUserRecord = deleteUserCalibrant(
+        name,
+        state.userCalibrantRecord,
+      );
+      const updatedCalibrantRecord = Object.fromEntries(
+        Object.entries(state.calibrantRecord).filter(([k]) => k !== name),
+      );
+      const fallbackName =
+        state.currentCalibrant === name
+          ? Object.keys(updatedCalibrantRecord)[0]
+          : state.currentCalibrant;
+      return {
+        calibrantRecord: updatedCalibrantRecord,
+        userCalibrantRecord: updatedUserRecord,
+        currentCalibrant: fallbackName,
+      };
+    }),
 }));

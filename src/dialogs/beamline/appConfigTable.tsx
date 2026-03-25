@@ -1,8 +1,11 @@
 import { IOBeamline } from "../../utils/types";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from "@mui/x-data-grid";
 import { useBeamlineConfigStore } from "../../data-entry/beamlineconfigStore";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { IconButton, Tooltip } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import React from "react";
 
 interface AppConfigTableRow {
   name: string;
@@ -32,12 +35,13 @@ function createData(name: string, appConfig: IOBeamline): AppConfigTableRow {
 
 export default function AppConfigTable(): React.JSX.Element {
   const displayArray: AppConfigTableRow[] = [];
-  const presetConfigRecord = useBeamlineConfigStore(
-    (state) => state.presetRecord,
-  );
+  const beamlineConfigStore = useBeamlineConfigStore();
+  const presetConfigRecord = beamlineConfigStore.presetRecord;
   for (const [key, value] of Object.entries(presetConfigRecord)) {
     displayArray.push(createData(key, value));
   }
+
+  const userNames = new Set(Object.keys(beamlineConfigStore.userPresetRecord));
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "Name", flex: 1 },
@@ -84,6 +88,23 @@ export default function AppConfigTable(): React.JSX.Element {
       description: "Camera length step size (m)",
       flex: 1,
     },
+    {
+      field: "actions",
+      headerName: "",
+      width: 48,
+      sortable: false,
+      renderCell: (params: GridRenderCellParams<AppConfigTableRow>) =>
+        userNames.has(params.row.name) ? (
+          <Tooltip title="Delete" placement="left">
+            <IconButton
+              size="small"
+              onClick={() => beamlineConfigStore.deletePreset(params.row.name)}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ) : null,
+    },
   ];
 
   const isScreenLarge = useMediaQuery(useTheme().breakpoints.up("lg"));
@@ -91,6 +112,7 @@ export default function AppConfigTable(): React.JSX.Element {
   return (
     <DataGrid
       autoHeight={!isScreenLarge}
+      density="compact"
       rows={displayArray}
       getRowId={(row: AppConfigTableRow) => row.name}
       columns={columns}

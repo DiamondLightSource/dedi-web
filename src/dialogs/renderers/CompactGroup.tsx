@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { MaterialLayoutRenderer } from "@jsonforms/material-renderers";
-import { Stack, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 
 import { withJsonFormsLayoutProps } from "@jsonforms/react";
 
@@ -22,11 +22,20 @@ const CompactGroupRenderer = (props: any) => {
     enabled: enabled,
   };
   return (
-    <Stack spacing="10px">
-      <Typography>{uischema.label}</Typography>
+    <Box>
+      <Divider textAlign="left" sx={{ mb: 1.5, mt: 0.5 }}>
+        <Typography
+          variant="overline"
+          color="text.secondary"
+          sx={{ fontWeight: 600, letterSpacing: 1, lineHeight: 1 }}
+        >
+          {uischema.label}
+        </Typography>
+      </Divider>
       <MaterialLayoutRenderer {...layoutProps} />
-    </Stack>
+    </Box>
   );
 };
 
 export default withJsonFormsLayoutProps(CompactGroupRenderer);
+

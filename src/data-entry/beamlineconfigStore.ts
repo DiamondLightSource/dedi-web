@@ -4,6 +4,17 @@ import { AngleUnits, EnergyUnits, WavelengthUnits } from "../utils/units";
 import { defaultConfig, presetConfigRecord } from "../presets/presetManager";
 import { Unit, unit } from "mathjs";
 import { wavelength2EnergyConverter } from "../utils/units";
+import {
+  loadUserBeamlines,
+  saveUserBeamlines,
+  deleteUserBeamline,
+} from "../utils/persistedStorage";
+
+const persistedUserBeamlines = loadUserBeamlines();
+const initialPresetRecord: Record<string, IOBeamline> = {
+  ...presetConfigRecord,
+  ...persistedUserBeamlines,
+};
 
 export interface BeamlineConfigStore {
   beamline: AppBeamline;
@@ -19,10 +30,14 @@ export interface BeamlineConfigStore {
   currentPresetName: string;
   /** Record which preset is currently active. */
   setCurrentPresetName: (name: string) => void;
-  /** All available beamline presets loaded from JSON. */
+  /** All available beamline presets (built-in + user-added). */
   presetRecord: Record<string, IOBeamline>;
+  /** Only the user-added presets, persisted to localStorage. */
+  userPresetRecord: Record<string, IOBeamline>;
   /** Add a new beamline preset at runtime (e.g. from the config dialog). */
   addNewPreset: (name: string, newPreset: IOBeamline) => void;
+  /** Delete a user-added beamline preset by name. Built-in presets cannot be deleted. */
+  deletePreset: (name: string) => void;
   /** Set a new energy value; does not update wavelength — caller must keep in sync. */
   updateEnergy: (newEnergy: number | null, newUnits: EnergyUnits) => void;
   /** Convert the stored energy to a different unit. */
@@ -54,7 +69,8 @@ export interface BeamlineConfigStore {
  */
 export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   beamline: defaultConfig.beamline,
-  presetRecord: presetConfigRecord,
+  presetRecord: initialPresetRecord,
+  userPresetRecord: persistedUserBeamlines,
   currentPresetName: Object.keys(presetConfigRecord)[0],
   setCurrentPresetName: (name) => set({ currentPresetName: name }),
 
@@ -130,7 +146,35 @@ export const useBeamlineConfigStore = create<BeamlineConfigStore>((set) => ({
   updateBeamline: (beamline: AppBeamline) => set({ beamline }),
 
   addNewPreset: (name: string, newPreset: IOBeamline) =>
-    set((state) => ({
-      presetRecord: { ...state.presetRecord, [name]: newPreset },
-    })),
+    set((state) => {
+      const updatedUserRecord = {
+        ...state.userPresetRecord,
+        [name]: newPreset,
+      };
+      saveUserBeamlines(updatedUserRecord);
+      return {
+        presetRecord: { ...state.presetRecord, [name]: newPreset },
+        userPresetRecord: updatedUserRecord,
+      };
+    }),
+  deletePreset: (name: string) =>
+    set((state) => {
+      if (!(name in state.userPresetRecord)) return state;
+      const updatedUserRecord = deleteUserBeamline(
+        name,
+        state.userPresetRecord,
+      );
+      const updatedPresetRecord = Object.fromEntries(
+        Object.entries(state.presetRecord).filter(([k]) => k !== name),
+      );
+      const fallbackName =
+        state.currentPresetName === name
+          ? Object.keys(updatedPresetRecord)[0]
+          : state.currentPresetName;
+      return {
+        presetRecord: updatedPresetRecord,
+        userPresetRecord: updatedUserRecord,
+        currentPresetName: fallbackName,
+      };
+    }),
 }));
