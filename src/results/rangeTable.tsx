@@ -111,10 +111,10 @@ export default function RangeTable(props: {
                     onChange={handleQunits}
                   >
                     <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
-                      {"1 / nm"}
+                      {"nm\u207b\u00b9"}
                     </MenuItem>
                     <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
-                      {"1 / " + AngstromSymbol}
+                      {AngstromSymbol + "\u207b\u00b9"}
                     </MenuItem>
                   </Select>
                 </FormControl>
@@ -145,10 +145,10 @@ export default function RangeTable(props: {
                     onChange={handleSunits}
                   >
                     <MenuItem value={ReciprocalWavelengthUnits.nanometres}>
-                      {"1 / nm"}
+                      {"nm\u207b\u00b9"}
                     </MenuItem>
                     <MenuItem value={ReciprocalWavelengthUnits.angstroms}>
-                      {"1 / " + AngstromSymbol}
+                      {AngstromSymbol + "\u207b\u00b9"}
                     </MenuItem>
                   </Select>
                 </FormControl>

@@ -69,7 +69,8 @@
           },
           "required": ["x", "y"]
         }
-      }
+      },
+      "required": ["diameter", "centre"]
     },
     "wavelengthLimits": {
       "title": "Wavelength limits",
