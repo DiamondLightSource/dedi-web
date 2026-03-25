@@ -37,7 +37,7 @@ export default function App(): React.JSX.Element {
           >
             <Box
               maxHeight={{ lg: "calc(100vh - 70px)" }}
-              maxWidth={{ lg: 500 }}
+              maxWidth={{ lg: 450 }}
               overflow={{ md: "visible", lg: "scroll" }}
             >
               <Stack spacing={1} sx={{ mb: 1 }}>
