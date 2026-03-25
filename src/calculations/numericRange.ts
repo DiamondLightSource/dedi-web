@@ -52,38 +52,4 @@ export default class NumericRange {
     );
   }
 
-  /**
-   * Creates a new Numeric Range by applying the function func to min and max
-   * @param func A function to apply to the min and max value
-   * @returns The output range
-   */
-  apply(func: (value: number) => number): NumericRange {
-    return new NumericRange(func(this.min), func(this.max));
-  }
-
-  /**
-   * Applies the function func to min and max members of NumericRange inplace
-   * @param func - A function to apply to the min and max value
-   * @returns The output range
-   */
-  applyInPlace(func: (value: number) => number): NumericRange {
-    this.min = func(this.min);
-    this.max = func(this.max);
-
-    if (this.min > this.max) {
-      const temp = this.max;
-      this.max = this.min;
-      this.min = temp;
-    }
-
-    return this;
-  }
-
-  toString(): string {
-    return `(min:${this.min}, max:${this.max})`;
-  }
-
-  equals(other: NumericRange): boolean {
-    return this.min === other.min && this.max === other.max;
-  }
 }

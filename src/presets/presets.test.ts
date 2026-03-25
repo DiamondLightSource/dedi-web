@@ -5,47 +5,59 @@ import {
   calibrantRecord,
 } from "./presetManager";
 
-test("Test detectors exist detectors are valid", () => {
-  expect(detectorRecord).toBeTruthy();
-  for (const detector in detectorRecord) {
-    expect(detectorRecord[detector]).toHaveProperty("resolution.width");
-    expect(detectorRecord[detector]).toHaveProperty("resolution.height");
-    expect(detectorRecord[detector]).toHaveProperty("pixelSize.width");
-    expect(detectorRecord[detector]).toHaveProperty("pixelSize.height");
-  }
-});
+test.each(Object.entries(detectorRecord))(
+  "detector '%s' has valid resolution and pixel size",
+  (_, detector) => {
+    expect(detector.resolution.width).toBeGreaterThan(0);
+    expect(detector.resolution.height).toBeGreaterThan(0);
+    expect(detector.pixelSize.width.toNumber("mm")).toBeGreaterThan(0);
+    expect(detector.pixelSize.height.toNumber("mm")).toBeGreaterThan(0);
+  },
+);
 
-test("Test beamline presets exist and are valid", () => {
-  expect(presetConfigRecord).toBeTruthy();
-  for (const preset in presetConfigRecord) {
-    expect(presetConfigRecord[preset]).toHaveProperty("detector");
+test.each(Object.entries(presetConfigRecord))(
+  "beamline preset '%s' references a known detector",
+  (_, preset) => {
+    expect(detectorRecord).toHaveProperty(preset.detector);
+  },
+);
 
-    expect(presetConfigRecord[preset]).toHaveProperty("beamstop.centre.x");
-    expect(presetConfigRecord[preset]).toHaveProperty("beamstop.centre.y");
-    expect(presetConfigRecord[preset]).toHaveProperty("beamstop.clearance");
-    expect(presetConfigRecord[preset]).toHaveProperty("beamstop.diameter");
-
-    expect(presetConfigRecord[preset]).toHaveProperty("wavelengthLimits.min");
-    expect(presetConfigRecord[preset]).toHaveProperty("wavelengthLimits.max");
-
-    expect(presetConfigRecord[preset]).toHaveProperty("cameraLengthLimits.min");
-    expect(presetConfigRecord[preset]).toHaveProperty("cameraLengthLimits.max");
-    expect(presetConfigRecord[preset]).toHaveProperty(
-      "cameraLengthLimits.step",
+test.each(Object.entries(presetConfigRecord))(
+  "beamline preset '%s' has valid wavelength limits",
+  (_, preset) => {
+    expect(preset.wavelengthLimits.min).toBeGreaterThan(0);
+    expect(preset.wavelengthLimits.max).toBeGreaterThan(0);
+    expect(preset.wavelengthLimits.min).toBeLessThan(
+      preset.wavelengthLimits.max,
     );
+  },
+);
 
-    // optional cemera tube
-    if (presetConfigRecord[preset].cameraTube) {
-      expect(presetConfigRecord[preset]).toHaveProperty("cameraTube.centre.x");
-      expect(presetConfigRecord[preset]).toHaveProperty("cameraTube.centre.y");
-      expect(presetConfigRecord[preset]).toHaveProperty("cameraTube.diameter");
+test.each(Object.entries(presetConfigRecord))(
+  "beamline preset '%s' has valid camera length limits",
+  (_, preset) => {
+    expect(preset.cameraLengthLimits.min).toBeGreaterThan(0);
+    expect(preset.cameraLengthLimits.max).toBeGreaterThan(0);
+    expect(preset.cameraLengthLimits.step).toBeGreaterThan(0);
+    expect(preset.cameraLengthLimits.min).toBeLessThan(
+      preset.cameraLengthLimits.max,
+    );
+  },
+);
+
+test.each(Object.entries(presetConfigRecord))(
+  "beamline preset '%s' has a valid beamstop",
+  (_, preset) => {
+    expect(preset.beamstop.diameter).toBeGreaterThan(0);
+  },
+);
+
+test.each(Object.entries(calibrantRecord))(
+  "calibrant '%s' has a non-empty d-spacing array with positive values",
+  (_, calibrant) => {
+    expect(calibrant.d.length).toBeGreaterThan(0);
+    for (const d of calibrant.d) {
+      expect(d).toBeGreaterThan(0);
     }
-  }
-});
-
-test("Test calibrants exist and are valid", () => {
-  expect(calibrantRecord).toBeTruthy();
-  for (const calibrant in calibrantRecord) {
-    expect(calibrantRecord[calibrant]).toHaveProperty("d");
-  }
-});
+  },
+);

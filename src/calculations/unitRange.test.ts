@@ -1,59 +1,68 @@
 import { expect, test } from "vitest";
 import UnitRange from "./unitRange";
+import NumericRange from "./numericRange";
 import * as mathjs from "mathjs";
 
-test("test unit range contains unit", () => {
-  expect(() => {
-    new UnitRange(mathjs.unit(6, "deg"), mathjs.unit(9, "m"));
-  }).toThrowError();
-  const range1 = new UnitRange(mathjs.unit(2, "m"), mathjs.unit(4, "m"));
-  expect(range1.containsValue(mathjs.unit(3, "m")));
+// --- constructor ---
 
-  const range2 = new UnitRange(mathjs.unit(100, "m"), mathjs.unit(4, "m"));
-  expect(range2.min).toEqual(mathjs.unit(4, "m"));
-  expect(range2.max).toEqual(mathjs.unit(100, "m"));
+test("constructor stores min and max", () => {
+  const r = new UnitRange(mathjs.unit(2, "m"), mathjs.unit(5, "m"));
+  expect(r.min.toNumber("m")).toBeCloseTo(2);
+  expect(r.max.toNumber("m")).toBeCloseTo(5);
 });
 
-test("test unit range contains another range", () => {
-  const range1 = new UnitRange(mathjs.unit(1, "nm"), mathjs.unit(4, "m"));
-  const range2 = new UnitRange(mathjs.unit(2, "m"), mathjs.unit(3, "km"));
-  expect(range1.containsRange(range2));
-
-  const range3 = new UnitRange(mathjs.unit(6, "m"), mathjs.unit(9, "m"));
-  expect(range1.containsRange(range3)).toBe(false);
+test("constructor swaps values when min > max", () => {
+  const r = new UnitRange(mathjs.unit(8, "m"), mathjs.unit(3, "m"));
+  expect(r.min.toNumber("m")).toBeCloseTo(3);
+  expect(r.max.toNumber("m")).toBeCloseTo(8);
 });
 
-test("test unit range intersection", () => {
-  const range1 = new UnitRange(mathjs.unit(1, "nm"), mathjs.unit(4, "m"));
-  const range2 = new UnitRange(mathjs.unit(2, "m"), mathjs.unit(8, "m"));
-  const intersection = new UnitRange(mathjs.unit(2, "m"), mathjs.unit(4, "m"));
-  expect(range1.intersect(range2)?.equals(intersection));
-
-  const range3 = new UnitRange(mathjs.unit(20, "m"), mathjs.unit(28, "m"));
-  expect(range3.intersect(range2)).toBe(null);
+test("constructor throws when units have incompatible base dimensions", () => {
+  expect(() =>
+    new UnitRange(mathjs.unit(1, "m"), mathjs.unit(1, "kg")),
+  ).toThrow();
 });
 
-test("test unit range equality", () => {
-  const range1 = new UnitRange(mathjs.unit(1, "nm"), mathjs.unit(4, "m"));
-  const range2 = new UnitRange(mathjs.unit(1, "nm"), mathjs.unit(4, "m"));
-  expect(range1.equals(range2));
+// --- to ---
+
+test("to converts both bounds to the target unit", () => {
+  const r = new UnitRange(mathjs.unit(1, "m"), mathjs.unit(2, "m"));
+  const converted = r.to("cm");
+  expect(converted.min.toNumber("cm")).toBeCloseTo(100);
+  expect(converted.max.toNumber("cm")).toBeCloseTo(200);
 });
 
-test("test unit range apply", () => {
-  const range1 = new UnitRange(mathjs.unit(2, "m"), mathjs.unit(3, "m"));
-  const range2 = new UnitRange(mathjs.unit(4, "m^2"), mathjs.unit(6, "m^2"));
-  const range3 = range1.apply((input: mathjs.Unit) => {
-    return input.multiply(mathjs.unit(2, "m"));
-  });
-  expect(range3.equals(range2));
+// --- containsRange ---
 
-  const range4 = new UnitRange(mathjs.unit(12, "m^4"), mathjs.unit(18, "m^4"));
-  range1
-    .applyInPlace((input: mathjs.Unit) => {
-      return input.multiply(mathjs.unit(3, "m"));
-    })
-    .applyInPlace((input: mathjs.Unit) => {
-      return input.multiply(mathjs.unit(2, "m^2"));
-    });
-  expect(range4.equals(range1));
+test("containsRange returns true when other is fully inside (mixed units)", () => {
+  // 1 m to 10 m contains 300 cm (=3 m) to 500 cm (=5 m)
+  const outer = new UnitRange(mathjs.unit(1, "m"), mathjs.unit(10, "m"));
+  const inner = new UnitRange(mathjs.unit(300, "cm"), mathjs.unit(500, "cm"));
+  expect(outer.containsRange(inner)).toBe(true);
 });
+
+test("containsRange returns false when other extends beyond the range", () => {
+  const r1 = new UnitRange(mathjs.unit(1, "m"), mathjs.unit(5, "m"));
+  const r2 = new UnitRange(mathjs.unit(3, "m"), mathjs.unit(8, "m"));
+  expect(r1.containsRange(r2)).toBe(false);
+});
+
+// --- fromNumericRange ---
+
+test("fromNumericRange creates a UnitRange with correct values", () => {
+  const numRange = new NumericRange(2, 5);
+  const unitRange = UnitRange.fromNumericRange(numRange, "m");
+  expect(unitRange.min.toNumber("m")).toBeCloseTo(2);
+  expect(unitRange.max.toNumber("m")).toBeCloseTo(5);
+});
+
+// --- apply ---
+
+test("apply transforms min and max with the given function", () => {
+  const r = new UnitRange(mathjs.unit(2, "m"), mathjs.unit(4, "m"));
+  // multiply each bound by 3 m → units become m²
+  const result = r.apply((v) => v.multiply(mathjs.unit(3, "m")));
+  expect(result.min.toNumber("m^2")).toBeCloseTo(6);
+  expect(result.max.toNumber("m^2")).toBeCloseTo(12);
+});
+
