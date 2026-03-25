@@ -60,11 +60,11 @@ function getVisibilitySettings(
       textBoxUnits: config.dUnits,
       diagramVisible: visableQRange
         .apply(convertFromQtoD)
-        .to(WavelengthUnits.nanometres),
+        .to(config.dUnits as string),
       diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         config.dUnits as string,
-      ).to(WavelengthUnits.nanometres),
+      ),
     };
   }
 
@@ -73,21 +73,21 @@ function getVisibilitySettings(
       textBoxUnits: config.sUnits,
       diagramVisible: visableQRange
         .apply(convertFromQToS)
-        .to(ReciprocalWavelengthUnits.nanometres),
+        .to(config.sUnits as string),
       diagramRequested: UnitRange.fromNumericRange(
         requestedRange,
         config.sUnits as string,
-      ).to(ReciprocalWavelengthUnits.nanometres),
+      ),
     };
   }
 
   return {
     textBoxUnits: config.qUnits,
-    diagramVisible: visableQRange.to(ReciprocalWavelengthUnits.nanometres),
+    diagramVisible: visableQRange.to(config.qUnits as string),
     diagramRequested: UnitRange.fromNumericRange(
       requestedRange,
       config.qUnits as string,
-    ).to(ReciprocalWavelengthUnits.nanometres),
+    ),
   };
 }
 
@@ -164,19 +164,13 @@ export default function ResultsBar({
   // Convert accessible sub-ranges to the same unit space as diagramVisible
   // so dead zone positions align correctly on the diagram.
   const diagramAccessible = accessibleQRanges
-    .map((r) =>
-      UnitRange.fromNumericRange(r, "m^-1").to(
-        ReciprocalWavelengthUnits.nanometres,
-      ),
-    )
+    .map((r) => UnitRange.fromNumericRange(r, "m^-1"))
     .map((r) => {
       if (config.requested === ScatteringOptions.d)
-        return r.apply(convertFromQtoD).to(WavelengthUnits.nanometres);
+        return r.apply(convertFromQtoD).to(config.dUnits as string);
       if (config.requested === ScatteringOptions.s)
-        return r
-          .apply(convertFromQToS)
-          .to(ReciprocalWavelengthUnits.nanometres);
-      return r.to(ReciprocalWavelengthUnits.nanometres);
+        return r.apply(convertFromQToS).to(config.sUnits as string);
+      return r.to(config.qUnits as string);
     });
 
   const requestedRange =
