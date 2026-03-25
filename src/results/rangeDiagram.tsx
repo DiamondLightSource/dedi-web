@@ -30,11 +30,14 @@ export function RangeDiagram({
   visibleRange,
   requestedRange,
   accessibleRanges,
-}: RangeDiagramProps): React.JSX.Element {
+}: RangeDiagramProps): React.JSX.Element | null {
   const theme = useTheme();
   const visMin = visibleRange.min.toNumber();
   const visMax = visibleRange.max.toNumber();
   const svgRange = visMax - visMin;
+
+  if (!isFinite(visMin) || !isFinite(visMax) || svgRange <= 0) return null;
+
   // Map a value in the same unit space as visibleRange to SVG x in [0, 1000].
   const toSVG = (v: number) => ((v - visMin) / svgRange) * 1000;
   const clamp = (v: number) => Math.max(0, Math.min(1000, toSVG(v)));
