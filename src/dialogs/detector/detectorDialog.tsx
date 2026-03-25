@@ -182,7 +182,7 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
                 schema={schema}
                 uischema={uischema}
                 renderers={renderers}
-                config={{ restrict: true, trim: true }}
+                config={{ restrict: true }}
               />
             </UnitProvider>
           </ThemeProvider>
