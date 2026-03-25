@@ -1,9 +1,11 @@
 import { AppDetector } from "../../utils/types";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from "@mui/x-data-grid";
 import { useDetectorStore } from "../../data-entry/detectorStore";
 import { LengthUnits } from "../../utils/units";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { IconButton, Tooltip } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface DetectorTableRow {
   name: string;
@@ -40,6 +42,8 @@ export default function DetectorTable() {
     displayArray.push(createData(key, value));
   }
 
+  const userNames = new Set(Object.keys(detectorStore.userDetectorRecord));
+
   const columns: GridColDef[] = [
     { field: "name", headerName: "Name", flex: 1 },
     {
@@ -72,6 +76,23 @@ export default function DetectorTable() {
       description: "Module grid (H × V) and number of missing modules",
       flex: 1,
     },
+    {
+      field: "actions",
+      headerName: "",
+      width: 48,
+      sortable: false,
+      renderCell: (params: GridRenderCellParams<DetectorTableRow>) =>
+        userNames.has(params.row.name) ? (
+          <Tooltip title="Delete" placement="left">
+            <IconButton
+              size="small"
+              onClick={() => detectorStore.deleteDetector(params.row.name)}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ) : null,
+    },
   ];
 
   const isScreenLarge = useMediaQuery(useTheme().breakpoints.up("lg"));
@@ -79,6 +100,7 @@ export default function DetectorTable() {
   return (
     <DataGrid
       autoHeight={!isScreenLarge}
+      density="compact"
       rows={displayArray}
       getRowId={(row: DetectorTableRow) => row.name}
       columns={columns}

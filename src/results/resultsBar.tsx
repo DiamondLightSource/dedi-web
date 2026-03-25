@@ -197,7 +197,7 @@ export default function ResultsBar({
 
   const units = displayUnits(textBoxUnits);
   return (
-    <Stack direction={{ md: "column", lg: "row" }} spacing={2}>
+    <Stack direction={{ md: "column", lg: "row" }} spacing={1}>
       {/* Range Table */}
       <RangeTable
         qRange={visibleQRangeUnits}

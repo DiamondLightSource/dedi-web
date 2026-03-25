@@ -388,6 +388,8 @@ export default function LegendBar(): React.JSX.Element {
             open={calibrantDialogOpen}
             handleClose={() => setCalibrantDialogOpen(false)}
             calibrantRecord={plotConfig.calibrantRecord}
+            userCalibrantNames={new Set(Object.keys(plotConfig.userCalibrantRecord))}
+            onDelete={(name) => plotConfig.deleteCalibrant(name)}
           />
           <AddCalibrantDialog
             open={addCalibrantDialogOpen}

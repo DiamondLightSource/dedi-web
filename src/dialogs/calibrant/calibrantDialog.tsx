@@ -17,6 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import { Calibrant } from "../../utils/types";
 import { secondaryButtonSx } from "../../utils/styles";
@@ -25,6 +26,8 @@ interface CalibrantDialogProps {
   open: boolean;
   handleClose: () => void;
   calibrantRecord: Record<string, Calibrant>;
+  userCalibrantNames: Set<string>;
+  onDelete: (name: string) => void;
 }
 
 /**
@@ -34,6 +37,8 @@ export function CalibrantDialog({
   open,
   handleClose,
   calibrantRecord,
+  userCalibrantNames,
+  onDelete,
 }: CalibrantDialogProps) {
   return (
     <Dialog
@@ -76,6 +81,7 @@ export function CalibrantDialog({
                   d max (nm)
                 </TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>d-spacings (nm)</TableCell>
+                <TableCell sx={{ width: 40 }} />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -119,6 +125,18 @@ export function CalibrantDialog({
                           {allD}
                         </Typography>
                       </Tooltip>
+                    </TableCell>
+                    <TableCell sx={{ p: 0.5 }}>
+                      {userCalibrantNames.has(name) && (
+                        <Tooltip title="Delete" placement="left">
+                          <IconButton
+                            size="small"
+                            onClick={() => onDelete(name)}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </TableCell>
                   </TableRow>
                 );

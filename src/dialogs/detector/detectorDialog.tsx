@@ -1,10 +1,13 @@
 import {
   Button,
+  createTheme,
   Dialog,
   DialogContent,
   DialogTitle,
   IconButton,
   Stack,
+  ThemeProvider,
+  useTheme,
 } from "@mui/material";
 import { useDetectorStore } from "../../data-entry/detectorStore";
 import DetectorTable from "./detectorTable";
@@ -108,6 +111,13 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
   const detectorStore = useDetectorStore();
   const [data, setData] = useState<DetectorForm | null>(null);
   const [errors, setErrors] = useState<ErrorObject[] | undefined>([]);
+  const parentTheme = useTheme();
+  const denseTheme = createTheme(parentTheme, {
+    components: {
+      MuiFormControl: { defaultProps: { size: "small", fullWidth: true } },
+      MuiInputBase: { defaultProps: { size: "small" } },
+    },
+  });
 
   const submitHandler = () => {
     if (!errors || errors.length > 0 || !data) return;
@@ -150,29 +160,32 @@ export function AddDetectorDialog({ open, handleClose }: DialogProps) {
       </DialogTitle>
       <DialogContent>
         <Stack spacing={1} sx={{ p: 2, mt: 1 }}>
-          <UnitProvider value={FormUnits}>
-            <JsonForms
-              data={data}
-              onChange={({ data: newData, errors }) => {
-                const prev = data as DetectorForm | null;
-                const next = newData as DetectorForm | null;
-                // Reset missing modules when module grid dimensions change
-                if (
-                  next?.mask &&
-                  (prev?.mask?.horizontalModules !==
-                    next.mask.horizontalModules ||
-                    prev?.mask?.verticalModules !== next.mask.verticalModules)
-                ) {
-                  next.mask.missingModules = [];
-                }
-                setData(next);
-                setErrors(errors);
-              }}
-              schema={schema}
-              uischema={uischema}
-              renderers={renderers}
-            />
-          </UnitProvider>
+          <ThemeProvider theme={denseTheme}>
+            <UnitProvider value={FormUnits}>
+              <JsonForms
+                data={data}
+                onChange={({ data: newData, errors }) => {
+                  const prev = data as DetectorForm | null;
+                  const next = newData as DetectorForm | null;
+                  // Reset missing modules when module grid dimensions change
+                  if (
+                    next?.mask &&
+                    (prev?.mask?.horizontalModules !==
+                      next.mask.horizontalModules ||
+                      prev?.mask?.verticalModules !== next.mask.verticalModules)
+                  ) {
+                    next.mask.missingModules = [];
+                  }
+                  setData(next);
+                  setErrors(errors);
+                }}
+                schema={schema}
+                uischema={uischema}
+                renderers={renderers}
+                config={{ restrict: true, trim: true }}
+              />
+            </UnitProvider>
+          </ThemeProvider>
           {data?.mask?.horizontalModules != null &&
             data.mask.horizontalModules >= 1 &&
             data?.mask?.verticalModules != null &&

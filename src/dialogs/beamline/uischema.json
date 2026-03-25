@@ -2,53 +2,63 @@
   "type": "VerticalLayout",
   "elements": [
     {
-      "type": "Control",
-      "label": "name",
-      "scope": "#/properties/name"
-    },
-    {
-      "type": "Control",
-      "label": "detector",
-      "scope": "#/properties/detector"
-    },
-    {
-      "type": "Group",
-      "label": "Beamstop: ",
+      "type": "HorizontalLayout",
       "elements": [
         {
           "type": "Control",
-          "label": "diameter",
-          "scope": "#/properties/beamstop/properties/diameter"
+          "label": "Name",
+          "scope": "#/properties/name"
+        },
+        {
+          "type": "Control",
+          "label": "Detector",
+          "scope": "#/properties/detector"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Beamstop",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Diameter",
+              "scope": "#/properties/beamstop/properties/diameter"
+            },
+            {
+              "type": "Control",
+              "label": "Clearance",
+              "scope": "#/properties/beamstop/properties/clearance"
+            }
+          ]
         },
         {
           "type": "HorizontalLayout",
           "elements": [
             {
               "type": "Control",
-              "label": "centre x",
+              "label": "Centre X",
               "scope": "#/properties/beamstop/properties/centre/properties/x"
             },
             {
               "type": "Control",
-              "label": "centre y",
+              "label": "Centre Y",
               "scope": "#/properties/beamstop/properties/centre/properties/y"
             }
           ]
-        },
-        {
-          "type": "Control",
-          "label": "clearance",
-          "scope": "#/properties/beamstop/properties/clearance"
         }
       ]
     },
     {
       "type": "Group",
-      "label": "Camera tube: ",
+      "label": "Camera tube",
       "elements": [
         {
           "type": "Control",
-          "label": "diameter",
+          "label": "Diameter",
           "scope": "#/properties/cameraTube/properties/diameter"
         },
         {
@@ -56,12 +66,12 @@
           "elements": [
             {
               "type": "Control",
-              "label": "centre x",
+              "label": "Centre X",
               "scope": "#/properties/cameraTube/properties/centre/properties/x"
             },
             {
               "type": "Control",
-              "label": "centre y",
+              "label": "Centre Y",
               "scope": "#/properties/cameraTube/properties/centre/properties/y"
             }
           ]
@@ -70,19 +80,19 @@
     },
     {
       "type": "Group",
-      "label": "Wavelength limits: ",
+      "label": "Wavelength limits",
       "elements": [
         {
           "type": "HorizontalLayout",
           "elements": [
             {
               "type": "Control",
-              "label": "min",
+              "label": "Min",
               "scope": "#/properties/wavelengthLimits/properties/min"
             },
             {
               "type": "Control",
-              "label": "max",
+              "label": "Max",
               "scope": "#/properties/wavelengthLimits/properties/max"
             }
           ]
@@ -91,24 +101,24 @@
     },
     {
       "type": "Group",
-      "label": "Camera length limits: ",
+      "label": "Camera length limits",
       "elements": [
         {
           "type": "HorizontalLayout",
           "elements": [
             {
               "type": "Control",
-              "label": "min",
+              "label": "Min",
               "scope": "#/properties/cameraLengthLimits/properties/min"
             },
             {
               "type": "Control",
-              "label": "max",
+              "label": "Max",
               "scope": "#/properties/cameraLengthLimits/properties/max"
             },
             {
               "type": "Control",
-              "label": "step",
+              "label": "Step",
               "scope": "#/properties/cameraLengthLimits/properties/step"
             }
           ]

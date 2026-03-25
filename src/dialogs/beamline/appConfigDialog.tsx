@@ -1,10 +1,15 @@
 import {
   Button,
+  Checkbox,
+  createTheme,
   Dialog,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   IconButton,
   Stack,
+  ThemeProvider,
+  useTheme,
 } from "@mui/material";
 import AppConfigTable from "./appConfigTable";
 import CloseIcon from "@mui/icons-material/Close";
@@ -20,7 +25,7 @@ import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
 import { materialRenderers } from "@jsonforms/material-renderers";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import schema from "./schema.json";
 import uischema from "./uischema.json";
@@ -38,6 +43,14 @@ import {
 } from "../../utils/types";
 import { ErrorObject } from "ajv";
 import React from "react";
+
+type UISchemaElement = {
+  type: string;
+  label?: string;
+  scope?: string;
+  elements?: UISchemaElement[];
+};
+const baseUischema = uischema as { type: string; elements: UISchemaElement[] };
 
 const renderers = [
   ...materialRenderers,
@@ -115,8 +128,26 @@ export function AddAppConfigDialog({
 }: DialogProps): React.JSX.Element {
   const [data, setData] = useState<AppConfigForm | null>(null);
   const [errors, setErrors] = useState<ErrorObject[] | undefined>([]);
+  const [hasCameraTube, setHasCameraTube] = useState(false);
   const detectorRecord = useDetectorStore((state) => state.detectorRecord);
   const beamlineConfigStore = useBeamlineConfigStore();
+  const parentTheme = useTheme();
+  const denseTheme = createTheme(parentTheme, {
+    components: {
+      MuiFormControl: { defaultProps: { size: "small", fullWidth: true } },
+      MuiInputBase: { defaultProps: { size: "small" } },
+    },
+  });
+
+  const displayUischema = useMemo(
+    () => ({
+      ...baseUischema,
+      elements: baseUischema.elements.filter(
+        (el) => hasCameraTube || el.label !== "Camera tube",
+      ),
+    }),
+    [hasCameraTube],
+  );
 
   const newSchema = {
     ...schema,
@@ -134,9 +165,11 @@ export function AddAppConfigDialog({
     const { name, cameraTube, ...rest } = data;
 
     let newCameraTube: IOCircularDevice | undefined = undefined;
-    if (cameraTube?.diameter) {
-      const newCentre = { ...data.beamstop.centre, ...cameraTube.centre };
-      newCameraTube = { diameter: cameraTube.diameter, centre: newCentre };
+    if (cameraTube?.diameter && cameraTube.centre) {
+      newCameraTube = {
+        diameter: cameraTube.diameter,
+        centre: cameraTube.centre,
+      };
     }
 
     beamlineConfigStore.addNewPreset(name, {
@@ -144,6 +177,7 @@ export function AddAppConfigDialog({
       ...rest,
     });
     setData(null);
+    setHasCameraTube(false);
     handleClose();
   };
 
@@ -173,19 +207,39 @@ export function AddAppConfigDialog({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Stack spacing={1} sx={{ p: 2, mt: 1, mb: 1 }}>
-          <UnitProvider value={FormUnits}>
-            <JsonForms
-              data={data}
-              onChange={({ data, errors }) => {
-                setData(data as AppConfigForm);
-                setErrors(errors);
-              }}
-              schema={newSchema}
-              uischema={uischema}
-              renderers={renderers}
-            />
-          </UnitProvider>
+        <Stack spacing={2} sx={{ p: 2, mt: 1, mb: 1 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                size="small"
+                checked={hasCameraTube}
+                onChange={(_, checked) => {
+                  setHasCameraTube(checked);
+                  if (!checked) {
+                    setData((prev) =>
+                      prev ? { ...prev, cameraTube: undefined } : prev,
+                    );
+                  }
+                }}
+              />
+            }
+            label="Has camera tube"
+          />
+          <ThemeProvider theme={denseTheme}>
+            <UnitProvider value={FormUnits}>
+              <JsonForms
+                data={data}
+                onChange={({ data, errors }) => {
+                  setData(data as AppConfigForm);
+                  setErrors(errors);
+                }}
+                schema={newSchema}
+                uischema={displayUischema}
+                renderers={renderers}
+                config={{ restrict: true, trim: true }}
+              />
+            </UnitProvider>
+          </ThemeProvider>
           <Button
             variant="outlined"
             type="submit"
