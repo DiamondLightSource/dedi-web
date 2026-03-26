@@ -101,8 +101,14 @@ export const useDetectorStore = create<DetectorStore>((set) => ({
       return {
         detectorRecord: updatedDetectorRecord,
         userDetectorRecord: updatedUserRecord,
-        name: state.name === name ? Object.keys(updatedDetectorRecord)[0] : state.name,
-        detector: state.name === name ? Object.values(updatedDetectorRecord)[0] : state.detector,
+        name:
+          state.name === name
+            ? Object.keys(updatedDetectorRecord)[0]
+            : state.name,
+        detector:
+          state.name === name
+            ? Object.values(updatedDetectorRecord)[0]
+            : state.detector,
       };
     }),
 }));

@@ -18,8 +18,8 @@ test("constructor swaps values when min > max", () => {
 });
 
 test("constructor throws when units have incompatible base dimensions", () => {
-  expect(() =>
-    new UnitRange(mathjs.unit(1, "m"), mathjs.unit(1, "kg")),
+  expect(
+    () => new UnitRange(mathjs.unit(1, "m"), mathjs.unit(1, "kg")),
   ).toThrow();
 });
 
@@ -65,4 +65,3 @@ test("apply transforms min and max with the given function", () => {
   expect(result.min.toNumber("m^2")).toBeCloseTo(6);
   expect(result.max.toNumber("m^2")).toBeCloseTo(12);
 });
-

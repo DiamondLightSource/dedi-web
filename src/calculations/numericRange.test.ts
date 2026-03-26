@@ -96,4 +96,3 @@ test("intersect returns null when input is null", () => {
   const r = new NumericRange(1, 10);
   expect(r.intersect(null)).toBeNull();
 });
-

@@ -82,5 +82,4 @@ export default class UnitRange {
   apply(func: (value: mathjs.Unit) => mathjs.Unit): UnitRange {
     return new UnitRange(func(this.min), func(this.max));
   }
-
 }

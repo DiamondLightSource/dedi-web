@@ -1,8 +1,5 @@
 import { expect, test } from "vitest";
-import {
-  calculateQValue,
-  calculateDistanceFromQValue,
-} from "./qvalue";
+import { calculateQValue, calculateDistanceFromQValue } from "./qvalue";
 
 // --- calculateQValue ---
 

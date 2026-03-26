@@ -119,4 +119,3 @@ test("getRectangleIntersectionRange returns null when vertical ray is beside the
   );
   expect(result).toBeNull();
 });
-

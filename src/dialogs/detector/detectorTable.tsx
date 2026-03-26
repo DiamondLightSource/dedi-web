@@ -1,5 +1,10 @@
 import { AppDetector } from "../../utils/types";
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridToolbar,
+} from "@mui/x-data-grid";
 import { useDetectorStore } from "../../data-entry/detectorStore";
 import { LengthUnits } from "../../utils/units";
 import { useTheme } from "@mui/material/styles";
