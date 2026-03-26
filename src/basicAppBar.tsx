@@ -1,7 +1,7 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Chip } from "@mui/material";
+import { Chip, Tooltip } from "@mui/material";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useBeamlineConfigStore } from "./data-entry/beamlineconfigStore";
@@ -59,26 +59,29 @@ export default function BasicAppBar() {
           />
         )}
         {isDirtyBeamstop && (
-          <Chip
-            icon={<WarningAmberIcon />}
-            label={`Beamstop ⌀ does not match ${currentPresetName}`}
-            deleteIcon={<RestartAltIcon />}
-            onDelete={handleResetBeamstop}
-            color="warning"
-            size="small"
-            sx={{ fontFamily: "monospace" }}
-          />
+          <Tooltip title={`The beamstop diameter does not match ${currentPresetName} (${preset.beamstop.diameter} mm). Click to reset value.`}>
+            <Chip
+              icon={<WarningAmberIcon />}
+              deleteIcon={<RestartAltIcon />}
+              onDelete={handleResetBeamstop}
+              color="warning"
+              size="small"
+              sx={{ fontFamily: "monospace" }}
+            />
+          </Tooltip>
+
         )}
         {isDirtyCameraTube && (
+          <Tooltip title={`The camera tube diameter does not match ${currentPresetName} (${preset.cameraTube ? preset.cameraTube.diameter : "N/A"} mm). Click to reset value.`}>
           <Chip
             icon={<WarningAmberIcon />}
-            label={`Camera tube ⌀ does not match ${currentPresetName}`}
             deleteIcon={<RestartAltIcon />}
             onDelete={handleResetCameraTube}
             color="warning"
             size="small"
             sx={{ fontFamily: "monospace" }}
           />
+          </Tooltip>
         )}
       </Toolbar>
     </AppBar>
