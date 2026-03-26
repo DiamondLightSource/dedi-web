@@ -94,15 +94,15 @@ export default function RangeTable(props: {
               <TableCell align="center">
                 {isNaN(qRange.min.toNumber())
                   ? ""
-                  : qRange.min.toNumber().toExponential(3)}
+                  : qRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="center">
                 {isNaN(qRange.max.toNumber())
                   ? ""
-                  : qRange.max.toNumber().toExponential(3)}
+                  : qRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="center">
-                <FormControl sx={{ minWidth: 120 }}>
+                <FormControl sx={{ minWidth: 80 }}>
                   <InputLabel>q</InputLabel>
                   <Select
                     size="small"
@@ -128,15 +128,15 @@ export default function RangeTable(props: {
               <TableCell align="center">
                 {isNaN(sRange.min.toNumber())
                   ? ""
-                  : sRange.min.toNumber().toExponential(3)}
+                  : sRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="center">
                 {isNaN(sRange.max.toNumber())
                   ? ""
-                  : sRange.max.toNumber().toExponential(3)}
+                  : sRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="center">
-                <FormControl sx={{ minWidth: 120 }}>
+                <FormControl sx={{ minWidth: 80 }}>
                   <InputLabel>s</InputLabel>
                   <Select
                     size="small"
@@ -162,15 +162,15 @@ export default function RangeTable(props: {
               <TableCell align="center">
                 {isNaN(dRange.min.toNumber())
                   ? ""
-                  : dRange.min.toNumber().toExponential(3)}
+                  : dRange.min.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="center">
                 {isNaN(dRange.max.toNumber())
                   ? ""
-                  : dRange.max.toNumber().toExponential(3)}
+                  : dRange.max.toNumber().toFixed(4)}
               </TableCell>
               <TableCell align="center">
-                <FormControl sx={{ minWidth: 120 }}>
+                <FormControl sx={{ minWidth: 80 }}>
                   <InputLabel>d</InputLabel>
                   <Select
                     size="small"

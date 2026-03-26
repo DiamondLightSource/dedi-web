@@ -61,7 +61,7 @@ export default function BasicAppBar() {
         {isDirtyBeamstop && (
           <Chip
             icon={<WarningAmberIcon />}
-            label="Beamstop ⌀ mismatch"
+            label={`Beamstop ⌀ does not match ${currentPresetName}`}
             deleteIcon={<RestartAltIcon />}
             onDelete={handleResetBeamstop}
             color="warning"
@@ -72,7 +72,7 @@ export default function BasicAppBar() {
         {isDirtyCameraTube && (
           <Chip
             icon={<WarningAmberIcon />}
-            label="Camera tube ⌀ mismatch"
+            label={`Camera tube ⌀ does not match ${currentPresetName}`}
             deleteIcon={<RestartAltIcon />}
             onDelete={handleResetCameraTube}
             color="warning"

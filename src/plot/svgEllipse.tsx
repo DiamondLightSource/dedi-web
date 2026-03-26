@@ -14,7 +14,13 @@ function SvgAxisAlignedEllipse(props: Props): React.JSX.Element | null {
   const rx = endx.distanceTo(start);
   const ry = endy.distanceTo(start);
 
-  if (!isFinite(rx) || !isFinite(ry) || !isFinite(start.x) || !isFinite(start.y)) return null;
+  if (
+    !isFinite(rx) ||
+    !isFinite(ry) ||
+    !isFinite(start.x) ||
+    !isFinite(start.y)
+  )
+    return null;
 
   return <ellipse cx={start.x} cy={start.y} rx={rx} ry={ry} {...svgProps} />;
 }

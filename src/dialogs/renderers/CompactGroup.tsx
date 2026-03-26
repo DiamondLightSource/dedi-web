@@ -38,4 +38,3 @@ const CompactGroupRenderer = (props: any) => {
 };
 
 export default withJsonFormsLayoutProps(CompactGroupRenderer);
-

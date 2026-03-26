@@ -11,7 +11,10 @@ import QSpace from "./qspace";
 
 const makeQSpace = (cameraLength: number, wavelength: number) =>
   new QSpace(
-    { origin: new Vector3(0, 0, cameraLength), beamVector: new Vector3(0, 0, 1) },
+    {
+      origin: new Vector3(0, 0, cameraLength),
+      beamVector: new Vector3(0, 0, 1),
+    },
     wavelength,
   );
 

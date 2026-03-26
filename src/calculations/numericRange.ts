@@ -51,5 +51,4 @@ export default class NumericRange {
       Math.min(input.max, this.max),
     );
   }
-
 }

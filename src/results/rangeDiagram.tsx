@@ -3,7 +3,8 @@ import UnitRange from "../calculations/unitRange";
 import { AngstromSymbol } from "../utils/units";
 
 const formatUnit = (u: import("mathjs").Unit): string =>
-  u.format({ precision: 3 })
+  u
+    .format({ precision: 3 })
     .replace("angstrom^-1", `${AngstromSymbol}⁻¹`)
     .replace("angstrom", AngstromSymbol)
     .replace("nm^-1", "nm⁻¹");
@@ -109,7 +110,13 @@ export function RangeDiagram({
       ))}
 
       {/* Requested min marker — line + label above bar */}
-      <line x1={requestedMin} y1={8} x2={requestedMin} y2={124} style={lineStyle} />
+      <line
+        x1={requestedMin}
+        y1={8}
+        x2={requestedMin}
+        y2={124}
+        style={lineStyle}
+      />
       <text
         x={requestedMin}
         y={30}
@@ -120,7 +127,13 @@ export function RangeDiagram({
       </text>
 
       {/* Requested max marker — line + label above bar */}
-      <line x1={requestedMax} y1={8} x2={requestedMax} y2={124} style={lineStyle} />
+      <line
+        x1={requestedMax}
+        y1={8}
+        x2={requestedMax}
+        y2={124}
+        style={lineStyle}
+      />
       <text
         x={requestedMax}
         y={30}
@@ -132,14 +145,27 @@ export function RangeDiagram({
 
       {/* Axis baseline */}
       <line
-        x1={0} y1={124} x2={1000} y2={124}
+        x1={0}
+        y1={124}
+        x2={1000}
+        y2={124}
         style={{ stroke: theme.palette.text.disabled, strokeWidth: 2 }}
       />
       {/* Visible range endpoint ticks */}
-      <line x1={0} y1={124} x2={0} y2={140}
-        style={{ stroke: theme.palette.text.disabled, strokeWidth: 2 }} />
-      <line x1={1000} y1={124} x2={1000} y2={140}
-        style={{ stroke: theme.palette.text.disabled, strokeWidth: 2 }} />
+      <line
+        x1={0}
+        y1={124}
+        x2={0}
+        y2={140}
+        style={{ stroke: theme.palette.text.disabled, strokeWidth: 2 }}
+      />
+      <line
+        x1={1000}
+        y1={124}
+        x2={1000}
+        y2={140}
+        style={{ stroke: theme.palette.text.disabled, strokeWidth: 2 }}
+      />
 
       {/* Visible range scale labels */}
       <text x={8} y={168} textAnchor="start" style={axisTextStyle}>
