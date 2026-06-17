@@ -292,7 +292,7 @@ function getScaleFactor(
     2 * Math.PI,
     mathjs.multiply(cameraLength, wavelength.to(LengthUnits.metre)),
   );
-  if (typeof scaleFactor === "number" || !("units" in scaleFactor)) {
+  if (typeof scaleFactor !== "object" || scaleFactor === null || !("units" in scaleFactor)) {
     throw new TypeError("scaleFactor should be a Unit not a number");
   }
   return scaleFactor;

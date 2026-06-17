@@ -9,7 +9,7 @@ export enum ScatteringOptions {
 
 export const convertFromQToS = (quantity: Unit): Unit => {
   const result = multiply(quantity, 2 * Math.PI);
-  if (typeof result == "number" || !("units" in result)) {
+  if (typeof result !== "object" || result === null || !("units" in result)) {
     throw TypeError("name this error later ");
   }
   return result;
@@ -17,7 +17,7 @@ export const convertFromQToS = (quantity: Unit): Unit => {
 
 export const convertFromSToQ = (quantity: Unit): Unit => {
   const result = divide(quantity, 2 * Math.PI);
-  if (typeof result == "number" || !("units" in result)) {
+  if (typeof result !== "object" || result === null || !("units" in result)) {
     throw TypeError("name this error later ");
   }
   return result;
@@ -25,7 +25,7 @@ export const convertFromSToQ = (quantity: Unit): Unit => {
 
 export const convertFromQtoD = (quantity: Unit): Unit => {
   const result = divide(2 * Math.PI, quantity);
-  if (typeof result == "number" || !("units" in result)) {
+  if (typeof result !== "object" || result === null || !("units" in result)) {
     throw TypeError("name this error later ");
   }
   return result;
