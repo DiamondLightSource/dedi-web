@@ -31,13 +31,13 @@ export class UnitVector {
    */
   multiply(other: UnitVector | Vector3 | Vector2): UnitVector {
     const newx = multiply(this.x, other.x);
-    if (typeof newx === "number" || !("units" in newx)) {
+    if (typeof newx !== "object" || newx === null || !("units" in newx)) {
       throw TypeError("Units of unit vector may be incorrect");
     }
     this.x = newx;
 
     const newy = multiply(this.y, other.y);
-    if (typeof newy === "number" || !("units" in newy)) {
+    if (typeof newy !== "object" || newy === null || !("units" in newy)) {
       throw TypeError("");
     }
     this.y = newy;

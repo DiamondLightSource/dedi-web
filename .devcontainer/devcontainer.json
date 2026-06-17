@@ -9,7 +9,9 @@
     "dockerfile": "../Dockerfile"
   },
   // Features to add to the dev container. More info: https://containers.dev/features.
-  // "features": {},
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [3000],
   // // Uncomment the next line to run commands after the container is created.
@@ -22,5 +24,6 @@
   ],
   // make the workspace folder the same inside and outside of the container
   "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
-  "workspaceFolder": "${localWorkspaceFolder}"
+  "workspaceFolder": "${localWorkspaceFolder}",
+  "overrideCommand": true
 }

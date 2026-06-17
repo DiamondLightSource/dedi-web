@@ -9,7 +9,7 @@ import {
 } from "@h5web/lib";
 import { Card, CardContent, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
-import { Unit, createUnit, unit } from "mathjs";
+import { type Unit, createUnit, unit } from "mathjs";
 import { Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
 import { getPointForQ } from "../calculations/qvalue";
@@ -430,18 +430,6 @@ export default function CentrePlot(): React.JSX.Element {
 }
 
 function updatePixelUnits(detector: AppDetector): void {
-  /* eslint-disable */
-  // @ts-ignore
-  if (Unit.UNITS.xpixel) {
-    // @ts-ignore
-    delete Unit.UNITS.xpixel;
-  }
-  // @ts-ignore
-  if (Unit.UNITS.ypixel) {
-    // @ts-ignore
-    delete Unit.UNITS.ypixel;
-  }
-  createUnit("xpixel", detector.pixelSize.width.toString());
-  createUnit("ypixel", detector.pixelSize.height.toString());
-  /* eslint-enable */
+  createUnit("xpixel", detector.pixelSize.width.toString(), { override: true });
+  createUnit("ypixel", detector.pixelSize.height.toString(), { override: true });
 }

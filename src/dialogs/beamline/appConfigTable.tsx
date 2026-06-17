@@ -121,10 +121,9 @@ export default function AppConfigTable(): React.JSX.Element {
       rows={displayArray}
       getRowId={(row: AppConfigTableRow) => row.name}
       columns={columns}
-      components={{ Toolbar: GridToolbar }}
-      rowsPerPageOptions={[5, 10, 20, 100]}
+      slots={{ toolbar: GridToolbar }}
+      pageSizeOptions={[5, 10, 20, 100]}
       sx={{ border: 0 }}
-      disableSelectionOnClick
     />
   );
 }

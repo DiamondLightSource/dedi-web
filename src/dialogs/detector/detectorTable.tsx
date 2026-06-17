@@ -109,10 +109,9 @@ export default function DetectorTable() {
       rows={displayArray}
       getRowId={(row: DetectorTableRow) => row.name}
       columns={columns}
-      components={{ Toolbar: GridToolbar }}
-      rowsPerPageOptions={[5, 10, 20, 100]}
+      slots={{ toolbar: GridToolbar }}
+      pageSizeOptions={[5, 10, 20, 100]}
       sx={{ border: 0 }}
-      disableSelectionOnClick
     />
   );
 }
