@@ -22,7 +22,7 @@
     "@jsonforms/react": "~3.8.0",
     "@mui/icons-material": "^7.0.0",
     "@mui/material": "^7.0.0",
-    "@mui/x-data-grid": "^8.0.0",
+    "@mui/x-data-grid": "^9.5.0",
     "@mui/x-date-pickers": "^8.0.0",
     "@react-three/fiber": "^8.16.2",
     "mathjs": "^15.0.0",
