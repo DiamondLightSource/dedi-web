@@ -21,7 +21,7 @@
     "@jsonforms/material-renderers": "~3.8.0",
     "@jsonforms/react": "~3.8.0",
     "@mui/icons-material": "^7.0.0",
-    "@mui/material": "^7.0.0",
+    "@mui/material": "^9.1.1",
     "@mui/x-data-grid": "^8.0.0",
     "@mui/x-date-pickers": "^8.0.0",
     "@react-three/fiber": "^8.16.2",
