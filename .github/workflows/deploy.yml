@@ -8,7 +8,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    concurrency: ci-${{github.ref}}
+    concurrency:
+      group: ci-${{ github.ref }}
+      cancel-in-progress: true
+    permissions:
+      contents: write
     steps:
       - name: Checkout Source
         uses: actions/checkout@v7
@@ -19,16 +23,22 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: "24.1.0"
+          cache: 'npm'
 
-      - name: Install, test, and build
-        run: |
-          npm ci
-          npm run lint
-          npm run test
-          npm run build
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build
 
       - name: Deploy to GH Pages 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@v4.8.0
         with:
           folder: ./dist
           branch: gh-pages
