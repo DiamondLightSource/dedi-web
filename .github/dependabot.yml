@@ -7,4 +7,39 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      mui:
+        patterns:
+          - "@mui/*"
+          - "@emotion/*"
+      jsonforms:
+        patterns:
+          - "@jsonforms/*"
+      vite:
+        patterns:
+          - "vite"
+          - "vitest"
+          - "@vitejs/*"
+      eslint:
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@eslint/*"
+          - "@typescript-eslint/*"
+          - "typescript-eslint"
+          - "prettier"
+          - "eslint-config-prettier"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "react-*"
+          - "@types/react"
+          - "@types/react-*"
+      three:
+        patterns:
+          - "three"
+          - "@types/three"
+          - "@react-three/*"
