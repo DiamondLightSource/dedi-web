@@ -50,17 +50,20 @@ export default function BasicAppBar() {
           Dedi Web
         </Typography>
         {isWavelengthUnset && (
-          <Chip
-            icon={<WarningAmberIcon />}
-            label="Wavelength not set"
-            color="warning"
-            size="small"
-            sx={{ fontFamily: "monospace" }}
-          />
+          <Tooltip title={`Set a wavelength or energy to calculate the Q range`}>
+            <Chip
+              icon={<WarningAmberIcon />}
+              label="Wavelength not set"
+              color="warning"
+              size="small"
+              sx={{ fontFamily: "monospace" }}
+            />
+          </Tooltip>
         )}
         {isDirtyBeamstop && (
           <Tooltip title={`The beamstop diameter does not match ${currentPresetName} (${preset.beamstop.diameter} mm). Click to reset value.`}>
             <Chip
+              label="Beamstop diameter changed"
               icon={<WarningAmberIcon />}
               deleteIcon={<RestartAltIcon />}
               onDelete={handleResetBeamstop}
@@ -74,6 +77,7 @@ export default function BasicAppBar() {
         {isDirtyCameraTube && (
           <Tooltip title={`The camera tube diameter does not match ${currentPresetName} (${preset.cameraTube ? preset.cameraTube.diameter : "N/A"} mm). Click to reset value.`}>
           <Chip
+            label="Camera tube diameter changed"
             icon={<WarningAmberIcon />}
             deleteIcon={<RestartAltIcon />}
             onDelete={handleResetCameraTube}
