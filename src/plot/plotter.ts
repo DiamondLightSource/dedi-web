@@ -249,7 +249,21 @@ function createCalibrant(
     beamlineConfig.cameraLength ?? NaN,
     LengthUnits.metre,
   );
-  const maxRing = Math.min(...calibrant.d);
+  
+  const camLenSI = camLen.toSI().toNumber();
+  const waveSI = beamlineConfig.wavelength.toSI().toNumber();
+
+  // Filter to only d-spacings that are physically accessible at this wavelength
+  const accessibleD = calibrant.d.filter((d) => {
+    const q = convertFromDtoQ(mathjs.unit(d, "nm")).toSI().toNumber();
+    return calculateDistanceFromQValue(q, camLenSI, waveSI) !== null;
+  });
+
+  if (accessibleD.length === 0) {
+    return zeroCalibrant;
+  }
+
+  const maxRing = Math.min(...accessibleD);
   const qValue = convertFromDtoQ(mathjs.unit(maxRing, "nm"));
 
   const ptX = getPointForQ(
@@ -267,8 +281,6 @@ function createCalibrant(
     beamstopCentre,
   );
 
-  const camLenSI = camLen.toSI().toNumber();
-  const waveSI = beamlineConfig.wavelength.toSI().toNumber();
   const maxDist =
     calculateDistanceFromQValue(qValue.toSI().toNumber(), camLenSI, waveSI) ??
     1;
