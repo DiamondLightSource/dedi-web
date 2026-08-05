@@ -4,17 +4,16 @@ import {
   Button,
   Card,
   FormControl,
-  IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Slider,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import { useDetectorStore } from "./detectorStore";
 import { useBeamstopStore } from "./beamstopStore";
 import { useCameraTubeStore } from "./cameraTubeStore";
@@ -131,17 +130,29 @@ export default function BeamlineSelector(): React.JSX.Element {
     beamlineConfigStore.updateAngleUnits(event.target.value as AngleUnits);
   };
 
-  const stepCameraLength = (direction: 1 | -1) => {
-    const { cameraLength, cameraLimits } = beamlineConfigStore.beamline;
-    const step = cameraLimits.step.toNumber();
-    const min = cameraLimits.min.toNumber();
-    const max = cameraLimits.max.toNumber();
-    if (cameraLength == null) {
-      beamlineConfigStore.updateCameraLength(min);
-      return;
-    }
-    const next = Math.round((cameraLength + direction * step) * 1e9) / 1e9;
-    beamlineConfigStore.updateCameraLength(Math.min(max, Math.max(min, next)));
+  const normalizeCameraLength = (value: number) => {
+    // Round input values to valid multiples of step within min/max limits
+    const min = beamline.cameraLimits.min.toNumber();
+    const max = beamline.cameraLimits.max.toNumber();
+    const step = beamline.cameraLimits.step.toNumber();
+    const clamped = Math.min(Math.max(value, min), max);
+    const rounded = min + Math.round((clamped - min) / step) * step;
+
+    return Math.min(Math.max(rounded, min), max);
+  };
+
+  const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
+    beamlineConfigStore.updateCameraLength(parseNumericInput(event.target.value));
+  };
+
+  const handleCameraLengthBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    const value = parseNumericInput(event.target.value);
+
+    beamlineConfigStore.updateCameraLength(
+      normalizeCameraLength(
+        value ?? beamline.cameraLimits.min.toNumber()
+      )
+    );
   };
 
   return (
@@ -266,43 +277,41 @@ export default function BeamlineSelector(): React.JSX.Element {
         </Stack>
 
         {/* Camera length */}
-        <InfoRow label="Camera length">
-          <IconButton
-            size="small"
-            onClick={() => stepCameraLength(-1)}
-            disabled={
-              beamline.cameraLength !== null &&
-              beamline.cameraLength <= beamline.cameraLimits.min.toNumber()
+          <Stack>
+            <InfoRow label="Camera Length">
+              <TextField
+              type="number"
+              size="small"
+              value={sanitizeNumber(beamline.cameraLength) ?? beamline.cameraLimits.min.toNumber()}
+              onChange={handleCameraLength}
+              onBlur={handleCameraLengthBlur}
+              sx={{ width: 150 }}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">m</InputAdornment>
+                  ),
+                },
+                htmlInput: {
+                  min: beamline.cameraLimits.min.toNumber(),
+                  max: beamline.cameraLimits.max.toNumber(),
+                  step: beamline.cameraLimits.step.toNumber(),
+                }
+              }}
+              />
+            </InfoRow>
+            <Slider
+            min={beamline.cameraLimits.min.toNumber()}
+            max={beamline.cameraLimits.max.toNumber()}
+            step={beamline.cameraLimits.step.toNumber()}
+            value={beamline.cameraLength ?? beamline.cameraLimits.min.toNumber()}
+            onChange={(_: Event, value: number | number[]) =>
+              beamlineConfigStore.updateCameraLength(value as number)
             }
-          >
-            <RemoveIcon fontSize="small" />
-          </IconButton>
-          <Typography
-            sx={{
-              flexGrow: 1,
-              textAlign: "center",
-              border: "1px solid",
-              borderColor: "divider",
-              borderRadius: 1,
-              px: 1,
-              py: "6px",
-              fontSize: "0.875rem",
-              fontFamily: "monospace",
-            }}
-          >
-            {sanitizeNumber(beamline.cameraLength)} m
-          </Typography>
-          <IconButton
-            size="small"
-            onClick={() => stepCameraLength(1)}
-            disabled={
-              beamline.cameraLength !== null &&
-              beamline.cameraLength >= beamline.cameraLimits.max.toNumber()
-            }
-          >
-            <AddIcon fontSize="small" />
-          </IconButton>
-        </InfoRow>
+            valueLabelDisplay="auto"
+            valueLabelFormat={(v: number) => `${v} m`}
+            />
+          </Stack>
 
         {/* Angle */}
         <InfoRow label="Angle">
