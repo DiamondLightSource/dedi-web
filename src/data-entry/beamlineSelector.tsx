@@ -30,6 +30,12 @@ import {
 } from "../utils/units";
 import { secondaryButtonSx } from "../utils/styles";
 import { sanitizeNumber } from "../utils/types";
+import {
+  blockNegativeDrop,
+  blockNegativeKey,
+  blockNegativePaste,
+  nonNegativeInputProps,
+} from "../utils/numericInput";
 import { InfoRow } from "../utils/InfoRow";
 import {
   AppConfigTableDialog,
@@ -213,6 +219,7 @@ export default function BeamlineSelector(): React.JSX.Element {
             value={sanitizeNumber(beamlineConfigStore.userEnergy)}
             onChange={handleEnergy}
             sx={{ flexGrow: 1 }}
+            slotProps={{ htmlInput: nonNegativeInputProps }}
           />
           <FormControl size="small">
             <InputLabel>units</InputLabel>
@@ -240,6 +247,7 @@ export default function BeamlineSelector(): React.JSX.Element {
             value={sanitizeNumber(beamlineConfigStore.userWavelength)}
             onChange={handleWavelength}
             sx={{ flexGrow: 1 }}
+            slotProps={{ htmlInput: nonNegativeInputProps }}
           />
           <FormControl size="small">
             <InputLabel>units</InputLabel>
@@ -296,7 +304,10 @@ export default function BeamlineSelector(): React.JSX.Element {
                   min: beamline.cameraLimits.min.toNumber(),
                   max: beamline.cameraLimits.max.toNumber(),
                   step: beamline.cameraLimits.step.toNumber(),
-                }
+                  onKeyDown: blockNegativeKey,
+                  onPaste: blockNegativePaste,
+                  onDrop: blockNegativeDrop,
+                },
               }}
               />
             </InfoRow>

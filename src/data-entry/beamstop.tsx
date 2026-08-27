@@ -16,6 +16,7 @@ import { useBeamstopStore } from "./beamstopStore";
 import { useDetectorStore } from "./detectorStore";
 import { AppDetector } from "../utils/types";
 import { sanitizeNumber } from "../utils/types";
+import { nonNegativeInputProps } from "../utils/numericInput";
 import { InfoRow } from "../utils/InfoRow";
 import { secondaryButtonSx } from "../utils/styles";
 import React from "react";
@@ -85,6 +86,7 @@ export default function BeamStopDataEntry(): React.JSX.Element {
             value={sanitizeNumber(beamstopStore.beamstop.diameter.toNumber())}
             onChange={handleDiameter}
             sx={{ flexGrow: 1 }}
+            slotProps={{ htmlInput: nonNegativeInputProps }}
           />
           <FormControl size="small">
             <InputLabel>units</InputLabel>
@@ -114,8 +116,13 @@ export default function BeamStopDataEntry(): React.JSX.Element {
             value={sanitizeNumber(beamstopStore.beamstop.clearance)}
             onChange={handleClearance}
             sx={{ flexGrow: 1 }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">px</InputAdornment>
+                ),
+              },
+              htmlInput: nonNegativeInputProps,
             }}
           />
         </InfoRow>
@@ -130,10 +137,12 @@ export default function BeamStopDataEntry(): React.JSX.Element {
               value={sanitizeNumber(beamstopStore.beamstop.centre.x)}
               onChange={handleX}
               sx={{ flexGrow: 1 }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">px</InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">px</InputAdornment>
+                  ),
+                },
               }}
             />
             <TextField
@@ -143,10 +152,12 @@ export default function BeamStopDataEntry(): React.JSX.Element {
               value={sanitizeNumber(beamstopStore.beamstop.centre.y)}
               onChange={handleY}
               sx={{ flexGrow: 1 }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">px</InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">px</InputAdornment>
+                  ),
+                },
               }}
             />
           </InfoRow>

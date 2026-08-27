@@ -24,13 +24,11 @@
           "properties": {
             "x": {
               "label": "x",
-              "type": "number",
-              "minimum": 0
+              "type": "number"
             },
             "y": {
               "label": "y",
-              "type": "number",
-              "minimum": 0
+              "type": "number"
             }
           },
           "required": ["x", "y"]
@@ -58,13 +56,11 @@
           "properties": {
             "x": {
               "label": "x",
-              "type": "number",
-              "minimum": 0
+              "type": "number"
             },
             "y": {
               "label": "y",
-              "type": "number",
-              "minimum": 0
+              "type": "number"
             }
           },
           "required": ["x", "y"]
