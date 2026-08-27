@@ -10,6 +10,11 @@ import {
 import { InputAdornment } from "@mui/material";
 import { UnitContext } from "../utils";
 import {
+  blockNegativeDrop,
+  blockNegativeKey,
+  blockNegativePaste,
+} from "../../utils/numericInput";
+import {
   ControlProps,
   isIntegerControl,
   RankedTester,
@@ -35,9 +40,24 @@ export const MuiInputIntegerUnit = React.memo(function MuiInputInteger(
     handleChange,
     config,
     label,
+    schema,
   } = props;
   const InputComponent = useInputComponent();
-  const inputProps = { step: "1" };
+
+  // Honour the schema's lower bound in the input itself: `min` alone only
+  // constrains the spinner, so a non-negative field also rejects the minus
+  // sign as it is typed, pasted or dropped in.
+  const minimum = schema?.minimum;
+  const inputProps = {
+    step: "1",
+    ...(minimum !== undefined && { min: minimum }),
+    ...(minimum !== undefined &&
+      minimum >= 0 && {
+        onKeyDown: blockNegativeKey,
+        onPaste: blockNegativePaste,
+        onDrop: blockNegativeDrop,
+      }),
+  };
 
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 

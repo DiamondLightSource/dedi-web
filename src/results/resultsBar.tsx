@@ -26,6 +26,7 @@ import RangeTable from "./rangeTable";
 import { ScatteringOptions } from "./scatteringQuantities";
 import { convertFromQtoD, convertFromQToS } from "./scatteringQuantities";
 import { sanitizeNumber } from "../utils/types";
+import { nonNegativeInputProps } from "../utils/numericInput";
 
 export interface ResultsConfig {
   requested: ScatteringOptions;
@@ -229,17 +230,20 @@ export default function ResultsBar({
                 size="small"
                 value={sanitizeNumber(config.requestedMin)}
                 onChange={handleRequestedMin}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Typography
-                        variant="body2"
-                        sx={{ minWidth: "4.5em", textAlign: "right" }}
-                      >
-                        {units}
-                      </Typography>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Typography
+                          variant="body2"
+                          sx={{ minWidth: "4.5em", textAlign: "right" }}
+                        >
+                          {units}
+                        </Typography>
+                      </InputAdornment>
+                    ),
+                  },
+                  htmlInput: nonNegativeInputProps,
                 }}
               />
               <TextField
@@ -248,17 +252,20 @@ export default function ResultsBar({
                 size="small"
                 value={sanitizeNumber(config.requestedMax)}
                 onChange={handleRequestedMax}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Typography
-                        variant="body2"
-                        sx={{ minWidth: "4.5em", textAlign: "right" }}
-                      >
-                        {units}
-                      </Typography>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Typography
+                          variant="body2"
+                          sx={{ minWidth: "4.5em", textAlign: "right" }}
+                        >
+                          {units}
+                        </Typography>
+                      </InputAdornment>
+                    ),
+                  },
+                  htmlInput: nonNegativeInputProps,
                 }}
               />
             </Stack>
