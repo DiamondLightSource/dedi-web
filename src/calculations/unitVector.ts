@@ -52,7 +52,7 @@ export class UnitVector {
    * @param scalar a given number
    * @returns
    */
-  divivdeByScalar(scalar: number): UnitVector {
+  divideByScalar(scalar: number): UnitVector {
     this.x = divide(this.x, scalar);
     this.y = divide(this.y, scalar);
     return this;

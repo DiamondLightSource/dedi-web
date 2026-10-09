@@ -65,9 +65,9 @@ export function asUnit(value: MathType, context: string): Unit {
 }
 
 /**
- * Converts energy in kilo electronvolts to wavelength in nm
- * @param energy energy in keV
- * @returns wavelength in nm
+ * Converts a photon energy to its wavelength, λ = hc / E.
+ * @param energy energy in any energy unit (e.g. eV, keV)
+ * @returns wavelength; mathjs picks the prefix, so convert with `.to()`
  */
 export const energy2WavelengthConverter = (energy: Unit): Unit =>
   asUnit(
@@ -76,9 +76,9 @@ export const energy2WavelengthConverter = (energy: Unit): Unit =>
   );
 
 /**
- * Converts wavelength in nm to energy in kilo elctronvolts
- * @param wavelength in nm
- * @returns energy in keV
+ * Converts a photon wavelength to its energy, E = hc / λ.
+ * @param wavelength wavelength in any length unit (e.g. nm, angstrom)
+ * @returns energy; mathjs picks the prefix, so convert with `.to()`
  */
 export const wavelength2EnergyConverter = (wavelength: Unit): Unit =>
   asUnit(
@@ -87,8 +87,8 @@ export const wavelength2EnergyConverter = (wavelength: Unit): Unit =>
   );
 
 /**
- * A function to process numeric texbox inputs in a consistant way.
- * @param input input string from the texbox
+ * A function to process numeric text box inputs in a consistent way.
+ * @param input input string from the text box
  * @returns a valid float or null
  */
 export const parseNumericInput = (input: string): number | null => {

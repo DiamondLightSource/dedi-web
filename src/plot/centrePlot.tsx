@@ -57,7 +57,7 @@ function getUnit(value: number, config: ResultsConfig): Unit {
 }
 
 /**
- * A react componenet that plots a diagram of the system
+ * A React component that plots a diagram of the system
  * @returns
  */
 export default function CentrePlot(): React.JSX.Element {
