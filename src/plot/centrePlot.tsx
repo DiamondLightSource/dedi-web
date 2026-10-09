@@ -9,11 +9,11 @@ import {
 } from "@h5web/lib";
 import { Card, CardContent, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
-import { type Unit, createUnit, unit } from "mathjs";
+import { type Unit, unit } from "mathjs";
 import { Vector3 } from "three";
 import { computeQrange } from "../calculations/qrange";
 import { getPointForQ } from "../calculations/qvalue";
-import { UnitVector } from "../calculations/unitVector";
+import { pixelPosition } from "../calculations/pixels";
 import { useBeamlineConfigStore } from "../data-entry/beamlineconfigStore";
 import { useBeamstopStore } from "../data-entry/beamstopStore";
 import { useCameraTubeStore } from "../data-entry/cameraTubeStore";
@@ -99,9 +99,6 @@ export default function CentrePlot(): React.JSX.Element {
   );
   const calibrant = plotConfig.calibrantRecord[plotConfig.currentCalibrant];
 
-  // Update pixel units and calculate qrange together — updatePixelUnits must
-  // run before computeQrange since both the Plotter and qrange calculation
-  // depend on the "xpixel"/"ypixel" mathjs units being registered first.
   const {
     minPoint,
     maxPoint,
@@ -109,7 +106,6 @@ export default function CentrePlot(): React.JSX.Element {
     accessibleQRanges,
     accessibleSegments,
   } = useMemo(() => {
-    updatePixelUnits(detector);
     console.info(formatLogMessage("Calculating Q range"));
     return computeQrange(detector, beamstop, beamlineConfig, cameraTube);
   }, [detector, beamstop, cameraTube, beamlineConfig]);
@@ -119,10 +115,7 @@ export default function CentrePlot(): React.JSX.Element {
   const requestedSegments = useMemo((): [number, number][] => {
     if (!requestedRange) return [[0, 1]];
     const camLen = unit(beamlineConfig.cameraLength ?? NaN, "m");
-    const beamstopCentre = new UnitVector(
-      unit(beamstop.centre.x ?? NaN, "xpixel"),
-      unit(beamstop.centre.y ?? NaN, "ypixel"),
-    );
+    const beamstopCentre = pixelPosition(beamstop.centre, detector);
     const reqMinSI = getPointForQ(
       requestedRange.min,
       beamlineConfig.angle,
@@ -159,6 +152,7 @@ export default function CentrePlot(): React.JSX.Element {
     maxPoint,
     beamstop,
     beamlineConfig,
+    detector,
   ]);
 
   const {
@@ -427,9 +421,4 @@ export default function CentrePlot(): React.JSX.Element {
       />
     </Stack>
   );
-}
-
-function updatePixelUnits(detector: AppDetector): void {
-  createUnit("xpixel", detector.pixelSize.width.toString(), { override: true });
-  createUnit("ypixel", detector.pixelSize.height.toString(), { override: true });
 }

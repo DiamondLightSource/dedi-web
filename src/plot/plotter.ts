@@ -15,6 +15,7 @@ import {
 } from "../utils/types";
 import { LengthUnits, asUnit } from "../utils/units";
 import { UnitVector } from "../calculations/unitVector";
+import { lengthToPixels, pixelPosition } from "../calculations/pixels";
 import { PlotAxes } from "./plotStore";
 import UnitRange from "../calculations/unitRange";
 import {
@@ -31,8 +32,13 @@ const millimetreTransform: CoordinateTransform = (x, y) =>
   new Vector3(x.to("mm").toNumber(), y.to("mm").toNumber());
 
 /** Plots in detector pixel coordinates. */
-const pixelTransform: CoordinateTransform = (x, y) =>
-  new Vector3(x.to("xpixel").toNumber(), y.to("ypixel").toNumber());
+function makePixelTransform(detector: AppDetector): CoordinateTransform {
+  return (x, y) =>
+    new Vector3(
+      lengthToPixels(x, detector.pixelSize.width),
+      lengthToPixels(y, detector.pixelSize.height),
+    );
+}
 
 /** Plots in reciprocal space (nm⁻¹), centred on the beamstop. */
 function makeReciprocalTransform(
@@ -85,20 +91,14 @@ export function createPlots(
 ): PlotObjects {
   const resolvedCameraTube = cameraTube ?? defaultCameraTube;
 
-  const beamstopCentre = new UnitVector(
-    mathjs.unit(beamstop.centre.x ?? NaN, "xpixel"),
-    mathjs.unit(beamstop.centre.y ?? NaN, "ypixel"),
-  );
-
-  const cameraTubeCentre = new UnitVector(
-    mathjs.unit(resolvedCameraTube.centre.x ?? NaN, "xpixel"),
-    mathjs.unit(resolvedCameraTube.centre.y ?? NaN, "ypixel"),
-  );
+  const beamstopCentre = pixelPosition(beamstop.centre, detector);
+  const cameraTubeCentre = pixelPosition(resolvedCameraTube.centre, detector);
 
   const transform = getCoordinateTransform(
     unitAxes,
     beamlineConfig,
     beamstopCentre,
+    detector,
   );
 
   const startVector = transform(
@@ -123,7 +123,12 @@ export function createPlots(
       resolvedCameraTube.diameter,
     ),
     plotDetector: createDetector(transform, detector),
-    plotClearance: createClearance(transform, beamstopCentre, beamstop),
+    plotClearance: createClearance(
+      transform,
+      beamstopCentre,
+      beamstop,
+      detector,
+    ),
     plotVisibleRange: { start: startVector, end: endVector },
     plotRequestedRange: createRequestedRange(
       transform,
@@ -161,12 +166,14 @@ function createDetector(
   transform: CoordinateTransform,
   detector: AppDetector,
 ): PlotRectangle {
+  const lower = pixelPosition({ x: 0, y: 0 }, detector);
+  const upper = pixelPosition(
+    { x: detector.resolution.width, y: detector.resolution.height },
+    detector,
+  );
   return {
-    lowerBound: transform(mathjs.unit(0, "xpixel"), mathjs.unit(0, "ypixel")),
-    upperBound: transform(
-      mathjs.unit(detector.resolution.width, "xpixel"),
-      mathjs.unit(detector.resolution.height, "ypixel"),
-    ),
+    lowerBound: transform(lower.x, lower.y),
+    upperBound: transform(upper.x, upper.y),
   };
 }
 
@@ -174,24 +181,20 @@ function createClearance(
   transform: CoordinateTransform,
   beamstopCentre: UnitVector,
   beamstop: AppBeamstop,
+  detector: AppDetector,
 ): PlotEllipse {
   const radius = mathjs.divide(beamstop.diameter, 2);
   const clearancePx = beamstop.clearance ?? 0;
+  const clearance = pixelPosition({ x: clearancePx, y: clearancePx }, detector);
   return {
     centre: transform(beamstopCentre.x, beamstopCentre.y),
     endPointX: transform(
-      mathjs.add(
-        mathjs.add(beamstopCentre.x, radius),
-        mathjs.unit(clearancePx, "xpixel"),
-      ),
+      mathjs.add(mathjs.add(beamstopCentre.x, radius), clearance.x),
       beamstopCentre.y,
     ),
     endPointY: transform(
       beamstopCentre.x,
-      mathjs.add(
-        mathjs.add(beamstopCentre.y, radius),
-        mathjs.unit(clearancePx, "ypixel"),
-      ),
+      mathjs.add(mathjs.add(beamstopCentre.y, radius), clearance.y),
     ),
   };
 }
@@ -313,6 +316,7 @@ function getCoordinateTransform(
   unitAxes: PlotAxes,
   beamlineConfig: AppBeamline,
   beamstopCentre: UnitVector,
+  detector: AppDetector,
 ): CoordinateTransform {
   if (
     unitAxes === PlotAxes.reciprocal &&
@@ -328,7 +332,7 @@ function getCoordinateTransform(
     );
   }
   if (unitAxes === PlotAxes.pixel) {
-    return pixelTransform;
+    return makePixelTransform(detector);
   }
   return millimetreTransform;
 }
