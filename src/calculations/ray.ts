@@ -9,7 +9,7 @@ export class Ray {
   initial_point: Vector2;
 
   /**
-   * Create a ray object from an intial point and direction vector
+   * Create a ray object from an initial point and direction vector
    * @param direction Vector representing the direction of the ray
    * @param initial_point Vector representing the initial point of the ray
    */
