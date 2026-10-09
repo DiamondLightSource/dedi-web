@@ -5,7 +5,20 @@ import {
   wavelength2EnergyConverter,
   parseNumericInput,
   enforceRangeLimits,
+  asUnit,
 } from "./units";
+
+// --- asUnit ---
+
+test("asUnit returns a Unit unchanged", () => {
+  const u = unit(3, "nm");
+  expect(asUnit(u, "test")).toBe(u);
+});
+
+test("asUnit throws a TypeError naming the context for a non-Unit", () => {
+  expect(() => asUnit(3, "myConverter")).toThrow(TypeError);
+  expect(() => asUnit(3, "myConverter")).toThrow(/myConverter/);
+});
 
 // --- energy2WavelengthConverter ---
 // Known value: 12.4 keV ↔ ~0.1 nm  (hc ≈ 1.2398 eV·μm)

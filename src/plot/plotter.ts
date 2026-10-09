@@ -13,7 +13,7 @@ import {
   AppDetector,
   Calibrant,
 } from "../utils/types";
-import { LengthUnits } from "../utils/units";
+import { LengthUnits, asUnit } from "../utils/units";
 import { UnitVector } from "../calculations/unitVector";
 import { PlotAxes } from "./plotStore";
 import UnitRange from "../calculations/unitRange";
@@ -300,14 +300,13 @@ function getScaleFactor(
   wavelength: mathjs.Unit,
   cameraLength: mathjs.Unit,
 ): mathjs.Unit {
-  const scaleFactor = mathjs.divide(
-    2 * Math.PI,
-    mathjs.multiply(cameraLength, wavelength.to(LengthUnits.metre)),
+  return asUnit(
+    mathjs.divide(
+      2 * Math.PI,
+      mathjs.multiply(cameraLength, wavelength.to(LengthUnits.metre)),
+    ),
+    "getScaleFactor",
   );
-  if (typeof scaleFactor !== "object" || scaleFactor === null || !("units" in scaleFactor)) {
-    throw new TypeError("scaleFactor should be a Unit not a number");
-  }
-  return scaleFactor;
 }
 
 function getCoordinateTransform(

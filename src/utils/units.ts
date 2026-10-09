@@ -1,4 +1,4 @@
-import { Unit, unit, multiply, divide } from "mathjs";
+import { type MathType, Unit, divide, isUnit, multiply, unit } from "mathjs";
 
 // Useful constants
 export const CSPEED = unit(299792458, "m/s");
@@ -48,30 +48,43 @@ export enum AngleUnits {
 }
 
 /**
+ * Narrows a mathjs arithmetic result back to a Unit.
+ *
+ * mathjs types several Unit operations (e.g. Unit × number, number ÷ Unit,
+ * Unit ÷ Unit) as returning the broad MathType, even when the result is
+ * always a Unit for our inputs.
+ * @param value result of a mathjs operation
+ * @param context name of the caller, included in the error message
+ * @returns the value as a Unit
+ */
+export function asUnit(value: MathType, context: string): Unit {
+  if (!isUnit(value)) {
+    throw new TypeError(`${context}: expected a Unit result`);
+  }
+  return value;
+}
+
+/**
  * Converts energy in kilo electronvolts to wavelength in nm
  * @param energy energy in keV
  * @returns wavelength in nm
  */
-export const energy2WavelengthConverter = (energy: Unit): Unit => {
-  const result = divide(multiply(PLANCK, CSPEED), energy.toSI());
-  if (typeof result == "number" || !("units" in result)) {
-    throw TypeError("The Units for constants h and c are wrong");
-  }
-  return result;
-};
+export const energy2WavelengthConverter = (energy: Unit): Unit =>
+  asUnit(
+    divide(multiply(PLANCK, CSPEED), energy.toSI()),
+    "energy2WavelengthConverter",
+  );
 
 /**
  * Converts wavelength in nm to energy in kilo elctronvolts
  * @param wavelength in nm
  * @returns energy in keV
  */
-export const wavelength2EnergyConverter = (wavelength: Unit): Unit => {
-  const result = divide(multiply(PLANCK, CSPEED), wavelength.toSI());
-  if (typeof result == "number" || !("units" in result)) {
-    throw TypeError("units for constants h and c are wrong");
-  }
-  return result;
-};
+export const wavelength2EnergyConverter = (wavelength: Unit): Unit =>
+  asUnit(
+    divide(multiply(PLANCK, CSPEED), wavelength.toSI()),
+    "wavelength2EnergyConverter",
+  );
 
 // Could be dead code
 /**
