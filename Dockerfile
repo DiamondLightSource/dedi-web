@@ -1,11 +1,20 @@
-FROM registry.hub.docker.com/library/node:24-alpine as base
+# syntax=docker/dockerfile:1
 
-ENV APP_DIR /dedi-web
+# ---- Build: install the exact lockfile dependencies and build the static site
+FROM docker.io/library/node:24-alpine AS build
+WORKDIR /app
 
-COPY . ${APP_DIR}
-WORKDIR ${APP_DIR}
+# Copy the manifests first so the dependency layer is cached between builds
+COPY package.json package-lock.json ./
+RUN npm ci
 
-RUN npm install --legacy-peer-deps .
-RUN npm run build 
+COPY . .
+# Serve from the root of the container, not the GitHub Pages sub-path
+ARG BASE_PATH=/
+ENV BASE_PATH=${BASE_PATH}
+RUN npm run build
 
-CMD ["npm", "run", "preview"]
+# ---- Runtime: static files only, served by nginx as a non-root user on 8080
+FROM docker.io/nginxinc/nginx-unprivileged:1.29-alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 8080
