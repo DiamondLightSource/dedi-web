@@ -118,6 +118,37 @@ export const enforceRangeLimits = (
   return value;
 };
 
+/** Number of digits after the decimal point in a number's shortest form. */
+const decimalPlaces = (n: number): number => {
+  const [mantissa, exponent] = String(n).split("e");
+  const fraction = mantissa.split(".")[1]?.length ?? 0;
+  return Math.max(0, fraction - Number(exponent ?? 0));
+};
+
+/**
+ * Snaps a value to the nearest multiple of `step` above `min`, within
+ * [min, max]. The result is rounded to the decimal places of `min` and
+ * `step`, so 0.1-sized steps give 0.3 rather than 0.30000000000000004.
+ * A non-positive step only clamps the value.
+ * @param value input value
+ * @param min lowest allowed value (the first step)
+ * @param max highest allowed value
+ * @param step distance between allowed values
+ * @returns the snapped value
+ */
+export const snapToStep = (
+  value: number,
+  min: number,
+  max: number,
+  step: number,
+): number => {
+  const clamped = enforceRangeLimits(min, max, value);
+  if (!(step > 0)) return clamped;
+  const snapped = min + Math.round((clamped - min) / step) * step;
+  const places = Math.max(decimalPlaces(min), decimalPlaces(step));
+  return enforceRangeLimits(min, max, Number(snapped.toFixed(places)));
+};
+
 /**
  * Add timestamp to log message
  * @param message

@@ -100,9 +100,9 @@
           "minimum": 0
         },
         "step": {
-          "label": "max",
+          "label": "step",
           "type": "number",
-          "minimum": 0
+          "exclusiveMinimum": 0
         }
       },
       "required": ["min", "max", "step"]
