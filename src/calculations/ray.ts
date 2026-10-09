@@ -48,13 +48,13 @@ export class Ray {
    * and restricts it to the interval [0, infinity]
    * @param t1 Interval endpoint 1
    * @param t2 Interval endpoint 2
-   * @returns Restricted numeric range
+   * @returns Restricted numeric range, or null if the interval lies
+   * entirely behind the ray (both endpoints negative)
    */
-  static getParameterRange(t1: number, t2: number): NumericRange {
-    let tMin = Math.min(t1, t2);
+  static getParameterRange(t1: number, t2: number): NumericRange | null {
     const tMax = Math.max(t1, t2);
-    if (tMin < 0) tMin = 0;
-    return new NumericRange(tMin, tMax);
+    if (tMax < 0) return null;
+    return new NumericRange(Math.max(0, Math.min(t1, t2)), tMax);
   }
 
   /**
@@ -68,7 +68,7 @@ export class Ray {
     radius: number,
     centre: Vector2,
   ): NumericRange | null {
-    const diff = this.initial_point.clone().add(centre.multiplyScalar(-1));
+    const diff = this.initial_point.clone().sub(centre);
     const a = this.direction.dot(this.direction);
     const b = 2 * diff.dot(this.direction);
     const c = diff.dot(diff) - Math.pow(radius, 2);
