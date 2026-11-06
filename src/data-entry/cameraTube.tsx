@@ -16,6 +16,7 @@ import { useDetectorStore } from "./detectorStore";
 import { useBeamstopStore } from "./beamstopStore";
 import { LengthUnits, MuSymbol } from "../utils/units";
 import { sanitizeNumber } from "../utils/types";
+import { nonNegativeInputProps } from "../utils/numericInput";
 import { InfoRow } from "../utils/InfoRow";
 import { secondaryButtonSx } from "../utils/styles";
 import React from "react";
@@ -105,6 +106,7 @@ export default function CameraTubeDataEntry(): React.JSX.Element {
             value={cameraTubeStore.cameraTube.diameter.toNumber()}
             onChange={handleDiameter}
             sx={{ flexGrow: 1 }}
+            slotProps={{ htmlInput: nonNegativeInputProps }}
           />
           <FormControl size="small">
             <InputLabel>units</InputLabel>
@@ -135,10 +137,12 @@ export default function CameraTubeDataEntry(): React.JSX.Element {
               value={sanitizeNumber(cameraTubeStore.cameraTube.centre.x)}
               onChange={handleX}
               sx={{ flexGrow: 1 }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">px</InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">px</InputAdornment>
+                  ),
+                },
               }}
             />
             <TextField
@@ -148,10 +152,12 @@ export default function CameraTubeDataEntry(): React.JSX.Element {
               value={sanitizeNumber(cameraTubeStore.cameraTube.centre.y)}
               onChange={handleY}
               sx={{ flexGrow: 1 }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">px</InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">px</InputAdornment>
+                  ),
+                },
               }}
             />
           </InfoRow>
