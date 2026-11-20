@@ -5,7 +5,46 @@ import {
   wavelength2EnergyConverter,
   parseNumericInput,
   enforceRangeLimits,
+  asUnit,
+  snapToStep,
 } from "./units";
+
+// --- snapToStep ---
+
+test("snapToStep rounds to the nearest step above the minimum", () => {
+  expect(snapToStep(2.6, 1.9, 9.9, 0.25)).toBe(2.65);
+  expect(snapToStep(2.0, 1.9, 9.9, 0.25)).toBe(1.9);
+});
+
+test("snapToStep clamps values outside the limits", () => {
+  expect(snapToStep(0.5, 1.9, 9.9, 0.25)).toBe(1.9);
+  expect(snapToStep(12, 1.9, 9.9, 0.25)).toBe(9.9);
+});
+
+test("snapToStep returns exact decimals for steps that are not binary fractions", () => {
+  // 0 + 3 * 0.1 is 0.30000000000000004 in floating point
+  expect(snapToStep(0.3, 0, 3, 0.1)).toBe(0.3);
+  expect(snapToStep(1.2, 0, 3, 0.1)).toBe(1.2);
+  expect(snapToStep(1.15, 0.05, 3, 0.1)).toBe(1.15);
+});
+
+test("snapToStep only clamps when the step is not positive", () => {
+  expect(snapToStep(2.37, 1, 3, 0)).toBe(2.37);
+  expect(snapToStep(5, 1, 3, 0)).toBe(3);
+  expect(snapToStep(2.37, 1, 3, -0.5)).toBe(2.37);
+});
+
+// --- asUnit ---
+
+test("asUnit returns a Unit unchanged", () => {
+  const u = unit(3, "nm");
+  expect(asUnit(u, "test")).toBe(u);
+});
+
+test("asUnit throws a TypeError naming the context for a non-Unit", () => {
+  expect(() => asUnit(3, "myConverter")).toThrow(TypeError);
+  expect(() => asUnit(3, "myConverter")).toThrow(/myConverter/);
+});
 
 // --- energy2WavelengthConverter ---
 // Known value: 12.4 keV ↔ ~0.1 nm  (hc ≈ 1.2398 eV·μm)

@@ -44,11 +44,11 @@ interface VisibilitySettings {
 }
 
 function getVisibilitySettings(
-  visableQRange: UnitRange,
+  visibleQRange: UnitRange,
   requestedRange: NumericRange | null,
   config: ResultsConfig,
 ): VisibilitySettings {
-  if (!(visableQRange && requestedRange)) {
+  if (!(visibleQRange && requestedRange)) {
     return {
       textBoxUnits: null,
       diagramVisible: null,
@@ -59,7 +59,7 @@ function getVisibilitySettings(
   if (config.requested === ScatteringOptions.d) {
     return {
       textBoxUnits: config.dUnits,
-      diagramVisible: visableQRange
+      diagramVisible: visibleQRange
         .apply(convertFromQtoD)
         .to(config.dUnits as string),
       diagramRequested: UnitRange.fromNumericRange(
@@ -72,7 +72,7 @@ function getVisibilitySettings(
   if (config.requested === ScatteringOptions.s) {
     return {
       textBoxUnits: config.sUnits,
-      diagramVisible: visableQRange
+      diagramVisible: visibleQRange
         .apply(convertFromQToS)
         .to(config.sUnits as string),
       diagramRequested: UnitRange.fromNumericRange(
@@ -84,7 +84,7 @@ function getVisibilitySettings(
 
   return {
     textBoxUnits: config.qUnits,
-    diagramVisible: visableQRange.to(config.qUnits as string),
+    diagramVisible: visibleQRange.to(config.qUnits as string),
     diagramRequested: UnitRange.fromNumericRange(
       requestedRange,
       config.qUnits as string,

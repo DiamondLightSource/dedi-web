@@ -49,11 +49,11 @@
           "minimum": 1
         },
         "horizontalGap": {
-          "type": "number",
+          "type": "integer",
           "minimum": 0
         },
         "verticalGap": {
-          "type": "number",
+          "type": "integer",
           "minimum": 0
         },
         "missingModules": {

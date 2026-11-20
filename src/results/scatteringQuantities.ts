@@ -1,4 +1,5 @@
 import { Unit, divide, multiply } from "mathjs";
+import { asUnit } from "../utils/units";
 
 // Enum for the scattering display quantity
 export enum ScatteringOptions {
@@ -7,28 +8,16 @@ export enum ScatteringOptions {
   d = "d",
 }
 
-export const convertFromQToS = (quantity: Unit): Unit => {
-  const result = multiply(quantity, 2 * Math.PI);
-  if (typeof result !== "object" || result === null || !("units" in result)) {
-    throw TypeError("name this error later ");
-  }
-  return result;
-};
+// s = q / 2π = 1 / d
+export const convertFromQToS = (quantity: Unit): Unit =>
+  asUnit(divide(quantity, 2 * Math.PI), "convertFromQToS");
 
-export const convertFromSToQ = (quantity: Unit): Unit => {
-  const result = divide(quantity, 2 * Math.PI);
-  if (typeof result !== "object" || result === null || !("units" in result)) {
-    throw TypeError("name this error later ");
-  }
-  return result;
-};
+// q = 2π · s
+export const convertFromSToQ = (quantity: Unit): Unit =>
+  asUnit(multiply(quantity, 2 * Math.PI), "convertFromSToQ");
 
-export const convertFromQtoD = (quantity: Unit): Unit => {
-  const result = divide(2 * Math.PI, quantity);
-  if (typeof result !== "object" || result === null || !("units" in result)) {
-    throw TypeError("name this error later ");
-  }
-  return result;
-};
+// d = 2π / q (and q = 2π / d)
+export const convertFromQtoD = (quantity: Unit): Unit =>
+  asUnit(divide(2 * Math.PI, quantity), "convertFromQtoD");
 
 export const convertFromDtoQ = convertFromQtoD;
