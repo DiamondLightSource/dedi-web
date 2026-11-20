@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 import { unit } from "mathjs";
 import { computeQrange } from "./qrange";
+import { calculateQValue } from "./qvalue";
 import { createInternalDetector } from "../presets/presetManager";
 import { AppBeamline, AppBeamstop } from "../utils/types";
 
@@ -34,7 +35,7 @@ function beamline(angleDeg: number): AppBeamline {
 
 /** q = 4π·sin(θ)/λ with tan(2θ) = r/L, in m⁻¹. */
 const qAt = (r: number, L: number, lambda: number) =>
-  (4 * Math.PI * Math.sin(Math.atan(r / L) / 2)) / lambda;
+  calculateQValue(r, L, lambda)!;
 
 test("computeQrange runs without any global pixel units registered", () => {
   expect(() => computeQrange(detector, beamstop, beamline(0))).not.toThrow();
@@ -58,4 +59,24 @@ test("computeQrange returns no visible range when the detector is behind the bea
   const offDetector: AppBeamstop = { ...beamstop, centre: { x: -100, y: 250 } };
   const { visibleQRange } = computeQrange(detector, offDetector, beamline(180));
   expect(visibleQRange).toBeNull();
+});
+
+test("computeQrange gives the full q-range across the camera and wavelength limits", () => {
+  // 10 px clearance × 0.1 mm = 1 mm, so r runs from 1 mm to 50 mm along +x.
+  // Max q: far edge, shortest L (1 m), shortest λ (0.05 nm).
+  // Min q: near edge, longest L (10 m), longest λ (0.2 nm).
+  const withClearance: AppBeamstop = { ...beamstop, clearance: 10 };
+  const { fullQRange } = computeQrange(detector, withClearance, beamline(0));
+  expect(fullQRange!.max / qAt(0.05, 1, 0.05e-9)).toBeCloseTo(1, 6);
+  expect(fullQRange!.min / qAt(0.001, 10, 0.2e-9)).toBeCloseTo(1, 6);
+});
+
+test("computeQrange's full q-range contains the visible q-range", () => {
+  const withClearance: AppBeamstop = { ...beamstop, clearance: 10 };
+  const { fullQRange, visibleQRange } = computeQrange(
+    detector,
+    withClearance,
+    beamline(0),
+  );
+  expect(fullQRange!.containsRange(visibleQRange!)).toBe(true);
 });

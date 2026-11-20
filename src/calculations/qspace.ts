@@ -15,9 +15,9 @@ export interface DetectorProperties {
 export default class QSpace {
   detProps: DetectorProperties;
   /** Wavevector magnitude: k = 2π / λ */
-  private kMag: number;
+  private readonly kMag: number;
   /** Negative incident wavevector: −k_i */
-  private negKi: Vector3;
+  private readonly negKi: Vector3;
 
   constructor(detProps: DetectorProperties, wavelength: number) {
     this.detProps = detProps;
@@ -32,12 +32,6 @@ export default class QSpace {
     const displacement = new Vector3(-pixel.x, -pixel.y, 0);
     displacement.add(this.detProps.origin);
     return this.convertToQ(displacement);
-  }
-
-  /** Update the wavevector magnitude for a new wavelength. */
-  public setWavelength(wavelength: number): void {
-    this.kMag = (2 * Math.PI) / wavelength;
-    this.negKi = this.detProps.beamVector.clone().multiplyScalar(-this.kMag);
   }
 
   /**

@@ -86,7 +86,6 @@ export const wavelength2EnergyConverter = (wavelength: Unit): Unit =>
     "wavelength2EnergyConverter",
   );
 
-// Could be dead code
 /**
  * A function to process numeric texbox inputs in a consistant way.
  * @param input input string from the texbox

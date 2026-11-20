@@ -13,7 +13,7 @@ import {
   AppDetector,
   Calibrant,
 } from "../utils/types";
-import { LengthUnits, asUnit } from "../utils/units";
+import { LengthUnits } from "../utils/units";
 import { UnitVector } from "../calculations/unitVector";
 import { lengthToPixels, pixelPosition } from "../calculations/pixels";
 import { PlotAxes } from "./plotStore";
@@ -21,6 +21,7 @@ import UnitRange from "../calculations/unitRange";
 import {
   getPointForQ,
   calculateDistanceFromQValue,
+  calculateQValue,
 } from "../calculations/qvalue";
 import { convertFromDtoQ } from "../results/scatteringQuantities";
 
@@ -40,22 +41,32 @@ function makePixelTransform(detector: AppDetector): CoordinateTransform {
     );
 }
 
-/** Plots in reciprocal space (nm⁻¹), centred on the beamstop. */
+/**
+ * Plots in reciprocal space (nm⁻¹), centred on the beamstop. Each point is
+ * placed at its exact |q| = 4π·sin(θ)/λ, tan(2θ) = r/L, along its direction
+ * from the beam centre. Lines through the beam centre and rings around it map
+ * exactly; other straight edges (detector, mask) are curved in q-space and are
+ * only approximated by the shapes drawn through their mapped points.
+ */
 function makeReciprocalTransform(
-  scaleFactor: mathjs.Unit,
+  wavelength: mathjs.Unit,
+  cameraLength: mathjs.Unit,
   centre: UnitVector,
 ): CoordinateTransform {
-  return (x, y) =>
-    new Vector3(
-      mathjs
-        .multiply(scaleFactor, mathjs.subtract(x, centre.x))
-        .to("nm^-1")
-        .toNumber(),
-      mathjs
-        .multiply(scaleFactor, mathjs.subtract(y, centre.y))
-        .to("nm^-1")
-        .toNumber(),
-    );
+  const lambda = wavelength.toNumber(LengthUnits.metre);
+  const L = cameraLength.toNumber(LengthUnits.metre);
+  const cx = centre.x.toNumber(LengthUnits.metre);
+  const cy = centre.y.toNumber(LengthUnits.metre);
+  return (x, y) => {
+    const dx = x.toNumber(LengthUnits.metre) - cx;
+    const dy = y.toNumber(LengthUnits.metre) - cy;
+    const r = Math.hypot(dx, dy);
+    if (r === 0) return new Vector3(0, 0);
+    const q = mathjs
+      .unit(calculateQValue(r, L, lambda) ?? NaN, "m^-1")
+      .toNumber("nm^-1");
+    return new Vector3((q * dx) / r, (q * dy) / r);
+  };
 }
 
 const defaultCameraTube: AppCircularDevice = {
@@ -252,7 +263,7 @@ function createCalibrant(
     beamlineConfig.cameraLength ?? NaN,
     LengthUnits.metre,
   );
-  
+
   const camLenSI = camLen.toSI().toNumber();
   const waveSI = beamlineConfig.wavelength.toSI().toNumber();
 
@@ -284,32 +295,28 @@ function createCalibrant(
     beamstopCentre,
   );
 
-  const maxDist =
-    calculateDistanceFromQValue(qValue.toSI().toNumber(), camLenSI, waveSI) ??
-    1;
+  // Ring radii as fractions of the outermost ring, measured in plot space
+  // (along +x) so they suit any axes: distance ratios on mm/pixel axes,
+  // q ratios on q axes.
+  const centre = transform(beamstopCentre.x, beamstopCentre.y);
+  const endPointX = transform(ptX.x, ptX.y);
+  const radiusInPlot = (d: number) => {
+    const pt = getPointForQ(
+      convertFromDtoQ(mathjs.unit(d, "nm")),
+      mathjs.unit(0, "deg"),
+      camLen,
+      beamlineConfig.wavelength,
+      beamstopCentre,
+    );
+    return transform(pt.x, pt.y).x - centre.x;
+  };
+  const maxRadius = endPointX.x - centre.x;
 
   return {
-    endPointX: transform(ptX.x, ptX.y),
+    endPointX,
     endPointY: transform(ptY.x, ptY.y),
-    ringFractions: calibrant.d.map((d) => {
-      const q = convertFromDtoQ(mathjs.unit(d, "nm")).toSI().toNumber();
-      const dist = calculateDistanceFromQValue(q, camLenSI, waveSI) ?? 0;
-      return dist / maxDist;
-    }),
+    ringFractions: accessibleD.map((d) => radiusInPlot(d) / maxRadius),
   };
-}
-
-function getScaleFactor(
-  wavelength: mathjs.Unit,
-  cameraLength: mathjs.Unit,
-): mathjs.Unit {
-  return asUnit(
-    mathjs.divide(
-      2 * Math.PI,
-      mathjs.multiply(cameraLength, wavelength.to(LengthUnits.metre)),
-    ),
-    "getScaleFactor",
-  );
 }
 
 function getCoordinateTransform(
@@ -324,10 +331,8 @@ function getCoordinateTransform(
     !isNaN(beamlineConfig.wavelength.toNumber())
   ) {
     return makeReciprocalTransform(
-      getScaleFactor(
-        beamlineConfig.wavelength,
-        mathjs.unit(beamlineConfig.cameraLength, LengthUnits.metre),
-      ),
+      beamlineConfig.wavelength,
+      mathjs.unit(beamlineConfig.cameraLength, LengthUnits.metre),
       beamstopCentre,
     );
   }
