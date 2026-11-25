@@ -82,7 +82,7 @@ Then open `http://localhost:8080`. The image serves from `/`; pass `--build-arg 
 
 `.devcontainer/devcontainer.json` sets up Node 24, installs dependencies with `npm ci`, and adds the ESLint, Prettier and Vitest extensions. In VS Code, run **Dev Containers: Reopen in Container**, then `npm run dev` inside it; port 3000 is forwarded automatically.
 
-The container runs as the non-root `node` user. On Linux with Docker its UID is matched to yours, so files it creates stay owned by you. With rootless Podman, add `"--userns=keep-id"` to `runArgs` for the same effect.
+The config targets rootless Podman 4.3 or newer. Point VS Code at it with the user setting `"dev.containers.dockerPath": "podman"`. The container runs as the non-root `node` user, and `--userns=keep-id:uid=1000,gid=1000` maps your host user onto it, so it can write the workspace and files it creates stay owned by you. To use Docker instead, delete the `--userns=...` entry from `runArgs` and the `"updateRemoteUserUID": false` line; Dev Containers will then match the `node` UID to yours.
 
 ## Usage
 

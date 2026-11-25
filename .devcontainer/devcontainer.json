@@ -1,9 +1,10 @@
 // For format details, see https://aka.ms/devcontainer.json
 {
   "name": "dedi-web",
-  // Node 24 to match CI; runs as the non-root "node" user, whose UID is
-  // matched to yours on Linux so files in the workspace stay owned by you.
+  // Node 24 to match CI; runs as the non-root "node" user (UID 1000).
   "image": "mcr.microsoft.com/devcontainers/typescript-node:24",
+  "containerUser": "node",
+  "remoteUser": "node",
 
   "postCreateCommand": "npm ci",
 
@@ -13,8 +14,18 @@
     "3000": { "label": "Vite dev server", "onAutoForward": "openBrowser" }
   },
 
-  // Lets the container read the bind-mounted workspace on SELinux hosts
-  "runArgs": ["--security-opt=label=disable"],
+  // Set up for rootless Podman (set VS Code's "dev.containers.dockerPath" to
+  // "podman"). keep-id maps your host user onto "node" (1000) inside the
+  // container, so it can write the bind-mounted workspace and files it
+  // creates are owned by you on the host, whatever your host UID is. Podman
+  // does the mapping, so the Dev Containers UID rewrite is turned off.
+  // label=disable lets the container read the workspace on SELinux hosts.
+  // Docker users: delete the "--userns=..." entry and "updateRemoteUserUID".
+  "runArgs": [
+    "--userns=keep-id:uid=1000,gid=1000",
+    "--security-opt=label=disable"
+  ],
+  "updateRemoteUserUID": false,
 
   "customizations": {
     "vscode": {
