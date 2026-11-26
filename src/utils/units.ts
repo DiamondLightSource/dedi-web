@@ -1,4 +1,4 @@
-import { Unit, unit, multiply, divide } from "mathjs";
+import { type MathType, Unit, divide, isUnit, multiply, unit } from "mathjs";
 
 // Useful constants
 export const CSPEED = unit(299792458, "m/s");
@@ -48,35 +48,47 @@ export enum AngleUnits {
 }
 
 /**
- * Converts energy in kilo electronvolts to wavelength in nm
- * @param energy energy in keV
- * @returns wavelength in nm
+ * Narrows a mathjs arithmetic result back to a Unit.
+ *
+ * mathjs types several Unit operations (e.g. Unit × number, number ÷ Unit,
+ * Unit ÷ Unit) as returning the broad MathType, even when the result is
+ * always a Unit for our inputs.
+ * @param value result of a mathjs operation
+ * @param context name of the caller, included in the error message
+ * @returns the value as a Unit
  */
-export const energy2WavelengthConverter = (energy: Unit): Unit => {
-  const result = divide(multiply(PLANCK, CSPEED), energy.toSI());
-  if (typeof result == "number" || !("units" in result)) {
-    throw TypeError("The Units for constants h and c are wrong");
+export function asUnit(value: MathType, context: string): Unit {
+  if (!isUnit(value)) {
+    throw new TypeError(`${context}: expected a Unit result`);
   }
-  return result;
-};
+  return value;
+}
 
 /**
- * Converts wavelength in nm to energy in kilo elctronvolts
- * @param wavelength in nm
- * @returns energy in keV
+ * Converts a photon energy to its wavelength, λ = hc / E.
+ * @param energy energy in any energy unit (e.g. eV, keV)
+ * @returns wavelength; mathjs picks the prefix, so convert with `.to()`
  */
-export const wavelength2EnergyConverter = (wavelength: Unit): Unit => {
-  const result = divide(multiply(PLANCK, CSPEED), wavelength.toSI());
-  if (typeof result == "number" || !("units" in result)) {
-    throw TypeError("units for constants h and c are wrong");
-  }
-  return result;
-};
+export const energy2WavelengthConverter = (energy: Unit): Unit =>
+  asUnit(
+    divide(multiply(PLANCK, CSPEED), energy.toSI()),
+    "energy2WavelengthConverter",
+  );
 
-// Could be dead code
 /**
- * A function to process numeric texbox inputs in a consistant way.
- * @param input input string from the texbox
+ * Converts a photon wavelength to its energy, E = hc / λ.
+ * @param wavelength wavelength in any length unit (e.g. nm, angstrom)
+ * @returns energy; mathjs picks the prefix, so convert with `.to()`
+ */
+export const wavelength2EnergyConverter = (wavelength: Unit): Unit =>
+  asUnit(
+    divide(multiply(PLANCK, CSPEED), wavelength.toSI()),
+    "wavelength2EnergyConverter",
+  );
+
+/**
+ * A function to process numeric text box inputs in a consistent way.
+ * @param input input string from the text box
  * @returns a valid float or null
  */
 export const parseNumericInput = (input: string): number | null => {
@@ -103,6 +115,37 @@ export const enforceRangeLimits = (
   if (value > max) return max;
   if (value < min) return min;
   return value;
+};
+
+/** Number of digits after the decimal point in a number's shortest form. */
+const decimalPlaces = (n: number): number => {
+  const [mantissa, exponent] = String(n).split("e");
+  const fraction = mantissa.split(".")[1]?.length ?? 0;
+  return Math.max(0, fraction - Number(exponent ?? 0));
+};
+
+/**
+ * Snaps a value to the nearest multiple of `step` above `min`, within
+ * [min, max]. The result is rounded to the decimal places of `min` and
+ * `step`, so 0.1-sized steps give 0.3 rather than 0.30000000000000004.
+ * A non-positive step only clamps the value.
+ * @param value input value
+ * @param min lowest allowed value (the first step)
+ * @param max highest allowed value
+ * @param step distance between allowed values
+ * @returns the snapped value
+ */
+export const snapToStep = (
+  value: number,
+  min: number,
+  max: number,
+  step: number,
+): number => {
+  const clamped = enforceRangeLimits(min, max, value);
+  if (!(step > 0)) return clamped;
+  const snapped = min + Math.round((clamped - min) / step) * step;
+  const places = Math.max(decimalPlaces(min), decimalPlaces(step));
+  return enforceRangeLimits(min, max, Number(snapped.toFixed(places)));
 };
 
 /**

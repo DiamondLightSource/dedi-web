@@ -6,7 +6,7 @@ import { color2String } from "../plot/plotUtils";
 import SquareIcon from "@mui/icons-material/Square";
 
 /**
- * Renders a popover componenet with a color picker from react-color
+ * Renders a popover component with a color picker from react-color
  * @param props The current colour value, and change callback
  * @returns
  */

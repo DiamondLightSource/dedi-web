@@ -26,8 +26,10 @@ DEDI is inspired by the DEDI perspective in [DAWN Science](https://dawnsci.org/)
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or later recommended)
-- A package manager: `npm`, `yarn`, or `pnpm`
+- [Node.js](https://nodejs.org/) v24 or later (CI tests on 24 and 26)
+- `npm` (the repo's lockfile is `package-lock.json`)
+
+Or use the [dev container](#developing-in-a-dev-container), which needs only Docker or Podman.
 
 ### Installation
 
@@ -58,6 +60,29 @@ npm run build
 ```
 
 Output is written to `dist/`. The app can also be previewed with `npm run preview`.
+
+The build assumes the app is served from `/dedi-web/`, as on GitHub Pages. To serve it from another path, set `BASE_PATH`:
+
+```bash
+BASE_PATH=/ npm run build
+```
+
+### Running with Docker
+
+The `Dockerfile` builds the static site and serves it with nginx as a non-root user on port 8080:
+
+```bash
+docker build -t dedi-web .
+docker run --rm -p 8080:8080 dedi-web
+```
+
+Then open `http://localhost:8080`. The image serves from `/`; pass `--build-arg BASE_PATH=/some/path/` to serve from a sub-path behind a proxy. Podman works with the same commands.
+
+### Developing in a dev container
+
+`.devcontainer/devcontainer.json` sets up Node 24, installs dependencies with `npm ci`, and adds the ESLint, Prettier and Vitest extensions. In VS Code, run **Dev Containers: Reopen in Container**, then `npm run dev` inside it; port 3000 is forwarded automatically.
+
+The config targets rootless Podman 4.3 or newer. Point VS Code at it with the user setting `"dev.containers.dockerPath": "podman"`. The container runs as the non-root `node` user, and `--userns=keep-id:uid=1000,gid=1000` maps your host user onto it, so it can write the workspace and files it creates stay owned by you. To use Docker instead, delete the `--userns=...` entry from `runArgs` and the `"updateRemoteUserUID": false` line; Dev Containers will then match the `node` UID to yours.
 
 ## Usage
 

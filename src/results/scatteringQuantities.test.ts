@@ -11,10 +11,17 @@ import {
 
 // --- convertFromQToS ---
 
-test("convertFromQToS multiplies q by 2π to give s", () => {
+test("convertFromQToS divides q by 2π to give s", () => {
   const q = unit(1, "nm^-1");
   const s = convertFromQToS(q);
-  expect(s.toNumber("nm^-1")).toBeCloseTo(2 * Math.PI);
+  expect(s.toNumber("nm^-1")).toBeCloseTo(1 / (2 * Math.PI));
+});
+
+test("convertFromQToS gives s = 1/d for the same q", () => {
+  const q = unit(4, "nm^-1");
+  const s = convertFromQToS(q).toNumber("nm^-1");
+  const d = convertFromQtoD(q).toNumber("nm");
+  expect(s).toBeCloseTo(1 / d);
 });
 
 test("convertFromQToS scales linearly", () => {
@@ -28,10 +35,10 @@ test("convertFromQToS scales linearly", () => {
 
 // --- convertFromSToQ ---
 
-test("convertFromSToQ divides s by 2π to give q", () => {
-  const s = unit(2 * Math.PI, "nm^-1");
+test("convertFromSToQ multiplies s by 2π to give q", () => {
+  const s = unit(1, "nm^-1");
   const q = convertFromSToQ(s);
-  expect(q.toNumber("nm^-1")).toBeCloseTo(1);
+  expect(q.toNumber("nm^-1")).toBeCloseTo(2 * Math.PI);
 });
 
 // --- convertFromQToS and convertFromSToQ are inverses ---

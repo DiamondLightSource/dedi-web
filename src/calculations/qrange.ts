@@ -11,6 +11,7 @@ import {
 import NumericRange from "./numericRange";
 import { formatLogMessage } from "../utils/units";
 import { UnitVector } from "./unitVector";
+import { pixelPosition } from "./pixels";
 
 /**
  * Is returned from computeQrange if the full
@@ -88,10 +89,7 @@ export function computeQrange(
   // Intersect with the camera tube circle when present
   let intersection = detectorRange;
   if (cameraTube && cameraTube.diameter.toSI().toNumber() !== 0) {
-    const tubeCentre = new UnitVector(
-      mathjs.unit(cameraTube.centre.x ?? NaN, "xpixel"),
-      mathjs.unit(cameraTube.centre.y ?? NaN, "ypixel"),
-    )
+    const tubeCentre = pixelPosition(cameraTube.centre, detector)
       .toSI()
       .toVector2();
     const tubeRadius = mathjs.divide(cameraTube.diameter, 2).toSI().toNumber();
@@ -211,22 +209,17 @@ function convertToSIUnits(
 } {
   const cameraLength = mathjs.unit(beamline.cameraLength ?? NaN, "m");
   const beamstopRadius = mathjs.divide(beamstop.diameter, 2);
-  const clearance = new UnitVector(
-    mathjs.unit(beamstop.clearance ?? NaN, "xpixel"),
-    mathjs.unit(beamstop.clearance ?? NaN, "ypixel"),
+  const clearance = pixelPosition(
+    { x: beamstop.clearance, y: beamstop.clearance },
+    detector,
   ).add(new UnitVector(beamstopRadius, beamstopRadius));
-  const centre = new UnitVector(
-    mathjs.unit(beamstop.centre.x ?? NaN, "xpixel"),
-    mathjs.unit(beamstop.centre.y ?? NaN, "ypixel"),
+  const centre = pixelPosition(beamstop.centre, detector);
+  const detectorSize = pixelPosition(
+    { x: detector.resolution.width, y: detector.resolution.height },
+    detector,
   );
-  const detectorSize = new UnitVector(
-    mathjs.unit(detector.resolution.width, "xpixel"),
-    mathjs.unit(detector.resolution.height, "ypixel"),
-  );
-  const pixelSizeX =
-    detectorSize.x.toSI().toNumber() / detector.resolution.width;
-  const pixelSizeY =
-    detectorSize.y.toSI().toNumber() / detector.resolution.height;
+  const pixelSizeX = detector.pixelSize.width.toSI().toNumber();
+  const pixelSizeY = detector.pixelSize.height.toSI().toNumber();
   return {
     clearance,
     centre,

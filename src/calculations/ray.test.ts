@@ -39,20 +39,24 @@ test("getPointAtDistance returns the point the given Euclidean distance from the
 
 test("getParameterRange sorts t1 and t2", () => {
   const r = Ray.getParameterRange(7, 3);
-  expect(r.min).toBe(3);
-  expect(r.max).toBe(7);
+  expect(r?.min).toBe(3);
+  expect(r?.max).toBe(7);
 });
 
 test("getParameterRange clamps negative tMin to 0", () => {
   const r = Ray.getParameterRange(-5, 8);
-  expect(r.min).toBe(0);
-  expect(r.max).toBe(8);
+  expect(r?.min).toBe(0);
+  expect(r?.max).toBe(8);
 });
 
 test("getParameterRange leaves already-valid positive range unchanged", () => {
   const r = Ray.getParameterRange(3, 7);
-  expect(r.min).toBe(3);
-  expect(r.max).toBe(7);
+  expect(r?.min).toBe(3);
+  expect(r?.max).toBe(7);
+});
+
+test("getParameterRange returns null when the whole interval is behind the ray", () => {
+  expect(Ray.getParameterRange(-5, -2)).toBeNull();
 });
 
 // --- getCircleIntersectionRange ---
@@ -70,6 +74,38 @@ test("getCircleIntersectionRange returns null when ray misses circle", () => {
   // Ray along +x from origin, circle at (5,5) radius 1 — too far above the ray
   const ray = new Ray(new Vector2(1, 0), new Vector2(0, 0));
   expect(ray.getCircleIntersectionRange(1, new Vector2(5, 5))).toBeNull();
+});
+
+test("getCircleIntersectionRange returns null when the circle is behind the ray", () => {
+  // Ray along +x from (5,5); circle at (0,5) radius 1 spans t in [-6,-4]
+  const ray = new Ray(new Vector2(1, 0), new Vector2(5, 5));
+  expect(ray.getCircleIntersectionRange(1, new Vector2(0, 5))).toBeNull();
+});
+
+test("getCircleIntersectionRange does not mutate the centre argument", () => {
+  const ray = new Ray(new Vector2(1, 0), new Vector2(0, 0));
+  const centre = new Vector2(5, 3);
+  ray.getCircleIntersectionRange(3, centre);
+  expect(centre.x).toBe(5);
+  expect(centre.y).toBe(3);
+});
+
+test("getCircleIntersectionRange gives the same result when called twice with one centre", () => {
+  // Ray along +x from origin, circle at (5,0) radius 3 → t in [2,8]
+  const ray = new Ray(new Vector2(1, 0), new Vector2(0, 0));
+  const centre = new Vector2(5, 0);
+  ray.getCircleIntersectionRange(3, centre);
+  const second = ray.getCircleIntersectionRange(3, centre);
+  expect(second?.min).toBeCloseTo(2);
+  expect(second?.max).toBeCloseTo(8);
+});
+
+test("getCircleIntersectionRange starts at t=0 when the ray starts inside the circle", () => {
+  // Ray along +x from origin; circle at origin radius 2 spans t in [-2,2]
+  const ray = new Ray(new Vector2(1, 0), new Vector2(0, 0));
+  const result = ray.getCircleIntersectionRange(2, new Vector2(0, 0));
+  expect(result?.min).toBeCloseTo(0);
+  expect(result?.max).toBeCloseTo(2);
 });
 
 // --- getRectangleIntersectionRange ---
@@ -118,4 +154,45 @@ test("getRectangleIntersectionRange returns null when vertical ray is beside the
     new Vector2(4, 6),
   );
   expect(result).toBeNull();
+});
+
+test("getRectangleIntersectionRange returns null when the rectangle is behind a horizontal ray", () => {
+  // Ray: initial=(5,5), direction=(1,0); rect x:[0,1], y:[0,10] spans t in [-5,-4]
+  const ray = new Ray(new Vector2(1, 0), new Vector2(5, 5));
+  const result = ray.getRectangleIntersectionRange(
+    new Vector2(0, 10),
+    new Vector2(1, 10),
+  );
+  expect(result).toBeNull();
+});
+
+test("getRectangleIntersectionRange returns null when the rectangle is behind a diagonal ray", () => {
+  // Ray: initial=(5,5), direction=(1,1); rect x:[0,2], y:[0,2] spans t in [-5,-3]
+  const ray = new Ray(new Vector2(1, 1), new Vector2(5, 5));
+  const result = ray.getRectangleIntersectionRange(
+    new Vector2(0, 2),
+    new Vector2(2, 2),
+  );
+  expect(result).toBeNull();
+});
+
+test("getRectangleIntersectionRange returns null when the rectangle is behind a vertical ray", () => {
+  // Ray: initial=(1,10), direction=(0,1); rect x:[0,2], y:[0,4] spans t in [-10,-6]
+  const ray = new Ray(new Vector2(0, 1), new Vector2(1, 10));
+  const result = ray.getRectangleIntersectionRange(
+    new Vector2(0, 4),
+    new Vector2(2, 4),
+  );
+  expect(result).toBeNull();
+});
+
+test("getRectangleIntersectionRange starts at t=0 when the ray starts inside the rectangle", () => {
+  // Ray: initial=(1,1), direction=(1,0); rect x:[0,4], y:[0,2] → exits at t=3
+  const ray = new Ray(new Vector2(1, 0), new Vector2(1, 1));
+  const result = ray.getRectangleIntersectionRange(
+    new Vector2(0, 2),
+    new Vector2(4, 2),
+  );
+  expect(result?.min).toBeCloseTo(0);
+  expect(result?.max).toBeCloseTo(3);
 });

@@ -26,6 +26,7 @@ import {
   WavelengthUnits,
   energy2WavelengthConverter,
   parseNumericInput,
+  snapToStep,
   wavelength2EnergyConverter,
 } from "../utils/units";
 import { secondaryButtonSx } from "../utils/styles";
@@ -136,16 +137,14 @@ export default function BeamlineSelector(): React.JSX.Element {
     beamlineConfigStore.updateAngleUnits(event.target.value as AngleUnits);
   };
 
-  const normalizeCameraLength = (value: number) => {
-    // Round input values to valid multiples of step within min/max limits
-    const min = beamline.cameraLimits.min.toNumber();
-    const max = beamline.cameraLimits.max.toNumber();
-    const step = beamline.cameraLimits.step.toNumber();
-    const clamped = Math.min(Math.max(value, min), max);
-    const rounded = min + Math.round((clamped - min) / step) * step;
-
-    return Math.min(Math.max(rounded, min), max);
-  };
+  // Round input values to valid multiples of step within min/max limits
+  const normalizeCameraLength = (value: number) =>
+    snapToStep(
+      value,
+      beamline.cameraLimits.min.toNumber(),
+      beamline.cameraLimits.max.toNumber(),
+      beamline.cameraLimits.step.toNumber(),
+    );
 
   const handleCameraLength = (event: React.ChangeEvent<HTMLInputElement>) => {
     beamlineConfigStore.updateCameraLength(parseNumericInput(event.target.value));
@@ -290,7 +289,7 @@ export default function BeamlineSelector(): React.JSX.Element {
               <TextField
               type="number"
               size="small"
-              value={sanitizeNumber(beamline.cameraLength) ?? beamline.cameraLimits.min.toNumber()}
+              value={sanitizeNumber(beamline.cameraLength)}
               onChange={handleCameraLength}
               onBlur={handleCameraLengthBlur}
               sx={{ width: 150 }}

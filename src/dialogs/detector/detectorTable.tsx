@@ -6,6 +6,8 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { useDetectorStore } from "../../data-entry/detectorStore";
+import { useBeamlineConfigStore } from "../../data-entry/beamlineconfigStore";
+import { beamlinesUsingDetector } from "../../presets/presetManager";
 import { LengthUnits } from "../../utils/units";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -48,6 +50,7 @@ export default function DetectorTable() {
   }
 
   const userNames = new Set(Object.keys(detectorStore.userDetectorRecord));
+  const beamlinePresets = useBeamlineConfigStore((state) => state.presetRecord);
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "Name", flex: 1 },
@@ -86,17 +89,28 @@ export default function DetectorTable() {
       headerName: "",
       width: 48,
       sortable: false,
-      renderCell: (params: GridRenderCellParams<DetectorTableRow>) =>
-        userNames.has(params.row.name) ? (
-          <Tooltip title="Delete" placement="left">
-            <IconButton
-              size="small"
-              onClick={() => detectorStore.deleteDetector(params.row.name)}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
+      renderCell: (params: GridRenderCellParams<DetectorTableRow>) => {
+        if (!userNames.has(params.row.name)) return null;
+        const usedBy = beamlinesUsingDetector(params.row.name, beamlinePresets);
+        const title =
+          usedBy.length > 0
+            ? `Can't delete: used by ${usedBy.join(", ")}`
+            : "Delete";
+        return (
+          <Tooltip title={title} placement="left">
+            {/* span keeps the tooltip working while the button is disabled */}
+            <span>
+              <IconButton
+                size="small"
+                disabled={usedBy.length > 0}
+                onClick={() => detectorStore.deleteDetector(params.row.name)}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </span>
           </Tooltip>
-        ) : null,
+        );
+      },
     },
   ];
 

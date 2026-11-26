@@ -94,6 +94,16 @@ export function createAppConfig(beamline: IOBeamline): AppConfig {
   };
 }
 
+/** Names of the beamline presets whose detector is `detectorName`. */
+export function beamlinesUsingDetector(
+  detectorName: string,
+  beamlines: Record<string, IOBeamline>,
+): string[] {
+  return Object.entries(beamlines)
+    .filter(([, beamline]) => beamline.detector === detectorName)
+    .map(([name]) => name);
+}
+
 export const detectorRecord: Record<string, AppDetector> = Object.fromEntries(
   Object.entries(detectorData as Record<string, IODetector>).map(
     ([key, value]) => [key, createInternalDetector(value)],

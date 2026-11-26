@@ -60,22 +60,15 @@ test("pixel at 45-degree scatter gives the correct |q|", () => {
   expect(q.length()).toBeCloseTo(Math.sqrt(2 - Math.sqrt(2)));
 });
 
-// --- setWavelength ---
+// --- wavelength ---
 
 test("halving the wavelength doubles |q| for the same pixel position", () => {
   // kMag = 2π/λ, so halving λ doubles kMag and therefore doubles |q|
-  const qs = makeQSpace(1, 2 * Math.PI); // kMag = 1
   const pixel = new Vector2(1, 0);
-
-  const q1 = qs.qFromPixelPosition(pixel).length();
-  qs.setWavelength(Math.PI); // kMag = 2
-  const q2 = qs.qFromPixelPosition(pixel).length();
+  const q1 = makeQSpace(1, 2 * Math.PI)
+    .qFromPixelPosition(pixel)
+    .length(); // kMag = 1
+  const q2 = makeQSpace(1, Math.PI).qFromPixelPosition(pixel).length(); // kMag = 2
 
   expect(q2).toBeCloseTo(2 * q1);
-});
-
-test("setWavelength does not affect the beam-centre result of |q| = 0", () => {
-  const qs = makeQSpace(1, 2 * Math.PI);
-  qs.setWavelength(0.5);
-  expect(qs.qFromPixelPosition(new Vector2(0, 0)).length()).toBeCloseTo(0);
 });

@@ -15,11 +15,13 @@ import {
 } from "../utils/types";
 import { LengthUnits } from "../utils/units";
 import { UnitVector } from "../calculations/unitVector";
+import { lengthToPixels, pixelPosition } from "../calculations/pixels";
 import { PlotAxes } from "./plotStore";
 import UnitRange from "../calculations/unitRange";
 import {
   getPointForQ,
   calculateDistanceFromQValue,
+  calculateQValue,
 } from "../calculations/qvalue";
 import { convertFromDtoQ } from "../results/scatteringQuantities";
 
@@ -31,25 +33,40 @@ const millimetreTransform: CoordinateTransform = (x, y) =>
   new Vector3(x.to("mm").toNumber(), y.to("mm").toNumber());
 
 /** Plots in detector pixel coordinates. */
-const pixelTransform: CoordinateTransform = (x, y) =>
-  new Vector3(x.to("xpixel").toNumber(), y.to("ypixel").toNumber());
-
-/** Plots in reciprocal space (nm⁻¹), centred on the beamstop. */
-function makeReciprocalTransform(
-  scaleFactor: mathjs.Unit,
-  centre: UnitVector,
-): CoordinateTransform {
+function makePixelTransform(detector: AppDetector): CoordinateTransform {
   return (x, y) =>
     new Vector3(
-      mathjs
-        .multiply(scaleFactor, mathjs.subtract(x, centre.x))
-        .to("nm^-1")
-        .toNumber(),
-      mathjs
-        .multiply(scaleFactor, mathjs.subtract(y, centre.y))
-        .to("nm^-1")
-        .toNumber(),
+      lengthToPixels(x, detector.pixelSize.width),
+      lengthToPixels(y, detector.pixelSize.height),
     );
+}
+
+/**
+ * Plots in reciprocal space (nm⁻¹), centred on the beamstop. Each point is
+ * placed at its exact |q| = 4π·sin(θ)/λ, tan(2θ) = r/L, along its direction
+ * from the beam centre. Lines through the beam centre and rings around it map
+ * exactly; other straight edges (detector, mask) are curved in q-space and are
+ * only approximated by the shapes drawn through their mapped points.
+ */
+function makeReciprocalTransform(
+  wavelength: mathjs.Unit,
+  cameraLength: mathjs.Unit,
+  centre: UnitVector,
+): CoordinateTransform {
+  const lambda = wavelength.toNumber(LengthUnits.metre);
+  const L = cameraLength.toNumber(LengthUnits.metre);
+  const cx = centre.x.toNumber(LengthUnits.metre);
+  const cy = centre.y.toNumber(LengthUnits.metre);
+  return (x, y) => {
+    const dx = x.toNumber(LengthUnits.metre) - cx;
+    const dy = y.toNumber(LengthUnits.metre) - cy;
+    const r = Math.hypot(dx, dy);
+    if (r === 0) return new Vector3(0, 0);
+    const q = mathjs
+      .unit(calculateQValue(r, L, lambda) ?? NaN, "m^-1")
+      .toNumber("nm^-1");
+    return new Vector3((q * dx) / r, (q * dy) / r);
+  };
 }
 
 const defaultCameraTube: AppCircularDevice = {
@@ -85,20 +102,14 @@ export function createPlots(
 ): PlotObjects {
   const resolvedCameraTube = cameraTube ?? defaultCameraTube;
 
-  const beamstopCentre = new UnitVector(
-    mathjs.unit(beamstop.centre.x ?? NaN, "xpixel"),
-    mathjs.unit(beamstop.centre.y ?? NaN, "ypixel"),
-  );
-
-  const cameraTubeCentre = new UnitVector(
-    mathjs.unit(resolvedCameraTube.centre.x ?? NaN, "xpixel"),
-    mathjs.unit(resolvedCameraTube.centre.y ?? NaN, "ypixel"),
-  );
+  const beamstopCentre = pixelPosition(beamstop.centre, detector);
+  const cameraTubeCentre = pixelPosition(resolvedCameraTube.centre, detector);
 
   const transform = getCoordinateTransform(
     unitAxes,
     beamlineConfig,
     beamstopCentre,
+    detector,
   );
 
   const startVector = transform(
@@ -123,7 +134,12 @@ export function createPlots(
       resolvedCameraTube.diameter,
     ),
     plotDetector: createDetector(transform, detector),
-    plotClearance: createClearance(transform, beamstopCentre, beamstop),
+    plotClearance: createClearance(
+      transform,
+      beamstopCentre,
+      beamstop,
+      detector,
+    ),
     plotVisibleRange: { start: startVector, end: endVector },
     plotRequestedRange: createRequestedRange(
       transform,
@@ -161,12 +177,14 @@ function createDetector(
   transform: CoordinateTransform,
   detector: AppDetector,
 ): PlotRectangle {
+  const lower = pixelPosition({ x: 0, y: 0 }, detector);
+  const upper = pixelPosition(
+    { x: detector.resolution.width, y: detector.resolution.height },
+    detector,
+  );
   return {
-    lowerBound: transform(mathjs.unit(0, "xpixel"), mathjs.unit(0, "ypixel")),
-    upperBound: transform(
-      mathjs.unit(detector.resolution.width, "xpixel"),
-      mathjs.unit(detector.resolution.height, "ypixel"),
-    ),
+    lowerBound: transform(lower.x, lower.y),
+    upperBound: transform(upper.x, upper.y),
   };
 }
 
@@ -174,24 +192,20 @@ function createClearance(
   transform: CoordinateTransform,
   beamstopCentre: UnitVector,
   beamstop: AppBeamstop,
+  detector: AppDetector,
 ): PlotEllipse {
   const radius = mathjs.divide(beamstop.diameter, 2);
   const clearancePx = beamstop.clearance ?? 0;
+  const clearance = pixelPosition({ x: clearancePx, y: clearancePx }, detector);
   return {
     centre: transform(beamstopCentre.x, beamstopCentre.y),
     endPointX: transform(
-      mathjs.add(
-        mathjs.add(beamstopCentre.x, radius),
-        mathjs.unit(clearancePx, "xpixel"),
-      ),
+      mathjs.add(mathjs.add(beamstopCentre.x, radius), clearance.x),
       beamstopCentre.y,
     ),
     endPointY: transform(
       beamstopCentre.x,
-      mathjs.add(
-        mathjs.add(beamstopCentre.y, radius),
-        mathjs.unit(clearancePx, "ypixel"),
-      ),
+      mathjs.add(mathjs.add(beamstopCentre.y, radius), clearance.y),
     ),
   };
 }
@@ -249,7 +263,7 @@ function createCalibrant(
     beamlineConfig.cameraLength ?? NaN,
     LengthUnits.metre,
   );
-  
+
   const camLenSI = camLen.toSI().toNumber();
   const waveSI = beamlineConfig.wavelength.toSI().toNumber();
 
@@ -281,39 +295,35 @@ function createCalibrant(
     beamstopCentre,
   );
 
-  const maxDist =
-    calculateDistanceFromQValue(qValue.toSI().toNumber(), camLenSI, waveSI) ??
-    1;
+  // Ring radii as fractions of the outermost ring, measured in plot space
+  // (along +x) so they suit any axes: distance ratios on mm/pixel axes,
+  // q ratios on q axes.
+  const centre = transform(beamstopCentre.x, beamstopCentre.y);
+  const endPointX = transform(ptX.x, ptX.y);
+  const radiusInPlot = (d: number) => {
+    const pt = getPointForQ(
+      convertFromDtoQ(mathjs.unit(d, "nm")),
+      mathjs.unit(0, "deg"),
+      camLen,
+      beamlineConfig.wavelength,
+      beamstopCentre,
+    );
+    return transform(pt.x, pt.y).x - centre.x;
+  };
+  const maxRadius = endPointX.x - centre.x;
 
   return {
-    endPointX: transform(ptX.x, ptX.y),
+    endPointX,
     endPointY: transform(ptY.x, ptY.y),
-    ringFractions: calibrant.d.map((d) => {
-      const q = convertFromDtoQ(mathjs.unit(d, "nm")).toSI().toNumber();
-      const dist = calculateDistanceFromQValue(q, camLenSI, waveSI) ?? 0;
-      return dist / maxDist;
-    }),
+    ringFractions: accessibleD.map((d) => radiusInPlot(d) / maxRadius),
   };
-}
-
-function getScaleFactor(
-  wavelength: mathjs.Unit,
-  cameraLength: mathjs.Unit,
-): mathjs.Unit {
-  const scaleFactor = mathjs.divide(
-    2 * Math.PI,
-    mathjs.multiply(cameraLength, wavelength.to(LengthUnits.metre)),
-  );
-  if (typeof scaleFactor !== "object" || scaleFactor === null || !("units" in scaleFactor)) {
-    throw new TypeError("scaleFactor should be a Unit not a number");
-  }
-  return scaleFactor;
 }
 
 function getCoordinateTransform(
   unitAxes: PlotAxes,
   beamlineConfig: AppBeamline,
   beamstopCentre: UnitVector,
+  detector: AppDetector,
 ): CoordinateTransform {
   if (
     unitAxes === PlotAxes.reciprocal &&
@@ -321,15 +331,13 @@ function getCoordinateTransform(
     !isNaN(beamlineConfig.wavelength.toNumber())
   ) {
     return makeReciprocalTransform(
-      getScaleFactor(
-        beamlineConfig.wavelength,
-        mathjs.unit(beamlineConfig.cameraLength, LengthUnits.metre),
-      ),
+      beamlineConfig.wavelength,
+      mathjs.unit(beamlineConfig.cameraLength, LengthUnits.metre),
       beamstopCentre,
     );
   }
   if (unitAxes === PlotAxes.pixel) {
-    return pixelTransform;
+    return makePixelTransform(detector);
   }
   return millimetreTransform;
 }

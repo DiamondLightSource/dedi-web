@@ -1,5 +1,6 @@
 import { Unit, unit, multiply, subtract, add, divide } from "mathjs";
 import { Vector2, Vector3 } from "three";
+import { asUnit } from "../utils/units";
 
 /**
  * A class to hold a vector of unit objects ( note units of x and y can be
@@ -30,18 +31,8 @@ export class UnitVector {
    * @returns
    */
   multiply(other: UnitVector | Vector3 | Vector2): UnitVector {
-    const newx = multiply(this.x, other.x);
-    if (typeof newx !== "object" || newx === null || !("units" in newx)) {
-      throw TypeError("Units of unit vector may be incorrect");
-    }
-    this.x = newx;
-
-    const newy = multiply(this.y, other.y);
-    if (typeof newy !== "object" || newy === null || !("units" in newy)) {
-      throw TypeError("");
-    }
-    this.y = newy;
-
+    this.x = asUnit(multiply(this.x, other.x), "UnitVector.multiply (x)");
+    this.y = asUnit(multiply(this.y, other.y), "UnitVector.multiply (y)");
     return this;
   }
 
@@ -61,7 +52,7 @@ export class UnitVector {
    * @param scalar a given number
    * @returns
    */
-  divivdeByScalar(scalar: number): UnitVector {
+  divideByScalar(scalar: number): UnitVector {
     this.x = divide(this.x, scalar);
     this.y = divide(this.y, scalar);
     return this;

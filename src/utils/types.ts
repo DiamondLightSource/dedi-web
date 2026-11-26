@@ -1,7 +1,7 @@
 import { Unit } from "mathjs";
 
 /**
- * Represnts a simple vector
+ * Represents a simple vector
  */
 export interface SimpleVector2 {
   x?: number | null;

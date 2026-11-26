@@ -1,11 +1,13 @@
 import { AppDetector, IODetector } from "../utils/types";
 import { create } from "zustand";
-import { LengthUnits } from "../utils/units";
+import { LengthUnits, formatLogMessage } from "../utils/units";
 import {
   detectorRecord,
   defaultConfig,
   createInternalDetector,
+  beamlinesUsingDetector,
 } from "../presets/presetManager";
+import { useBeamlineConfigStore } from "./beamlineconfigStore";
 import {
   loadUserDetectors,
   saveUserDetectors,
@@ -39,13 +41,16 @@ export interface DetectorStore {
   name: string;
   detectorRecord: Record<string, AppDetector>;
   userDetectorRecord: Record<string, IODetector>;
-  /** Switch to a different detector from the record by name. */
+  /** Switch to a different detector from the record by name; unknown names are ignored. */
   updateDetector: (newDetector: string) => void;
   /** Convert the pixel size units without changing the physical value. */
   updatePixelUnits: (newUnits: LengthUnits) => void;
   /** Add a custom detector to the record at runtime and persist it. */
   addNewDetector: (name: string, detector: AppDetector) => void;
-  /** Delete a user-added detector by name. Built-in detectors cannot be deleted. */
+  /**
+   * Delete a user-added detector by name. Built-in detectors, and detectors
+   * used by any beamline preset, cannot be deleted.
+   */
   deleteDetector: (name: string) => void;
 }
 
@@ -61,10 +66,20 @@ export const useDetectorStore = create<DetectorStore>((set) => ({
   detectorRecord: initialDetectorRecord,
   userDetectorRecord: persistedUserDetectors,
   updateDetector: (newDetector: string) =>
-    set((state) => ({
-      detector: state.detectorRecord[newDetector],
-      name: newDetector,
-    })),
+    set((state) => {
+      if (!(newDetector in state.detectorRecord)) {
+        console.warn(
+          formatLogMessage(
+            `Unknown detector "${newDetector}"; keeping current`,
+          ),
+        );
+        return state;
+      }
+      return {
+        detector: state.detectorRecord[newDetector],
+        name: newDetector,
+      };
+    }),
   updatePixelUnits: (newUnits: LengthUnits) =>
     set((state) => ({
       detector: {
@@ -91,6 +106,18 @@ export const useDetectorStore = create<DetectorStore>((set) => ({
   deleteDetector: (name: string) =>
     set((state) => {
       if (!(name in state.userDetectorRecord)) return state;
+      const usedBy = beamlinesUsingDetector(
+        name,
+        useBeamlineConfigStore.getState().presetRecord,
+      );
+      if (usedBy.length > 0) {
+        console.warn(
+          formatLogMessage(
+            `Not deleting detector "${name}"; used by: ${usedBy.join(", ")}`,
+          ),
+        );
+        return state;
+      }
       const updatedUserRecord = deleteUserDetector(
         name,
         state.userDetectorRecord,
